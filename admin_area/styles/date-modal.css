@@ -1,0 +1,46 @@
+/* date-modal.css
+   Reduce modal size site-wide but preserve explicitly large modals (.modal-lg)
+   This keeps date-selection popups compact across the admin area.
+*/
+
+/* Default: narrower dialogs for compact popups (dates, quick selects) */
+.modal .modal-dialog {
+  max-width: 520px;
+  margin: 30px auto;
+}
+
+/* Preserve large modals when the developer intentionally uses modal-lg */
+.modal .modal-dialog.modal-lg,
+.modal-lg {
+  max-width: 920px;
+}
+
+/* Slightly tighter modal content for compact appearance */
+.modal .modal-content {
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.modal .modal-body {
+  padding: 14px 18px;
+}
+
+.modal .modal-footer {
+  padding: 10px 16px;
+}
+
+/* Make date inputs slightly larger and centered inside compact modals */
+.modal input[type="date"],
+.modal input[type="text"].date-input,
+.modal .form-control.date-input {
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 576px) {
+  .modal .modal-dialog {
+    max-width: 92%;
+    margin: 18px auto;
+  }
+}

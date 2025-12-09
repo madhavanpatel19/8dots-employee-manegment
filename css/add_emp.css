@@ -1,0 +1,151 @@
+
+    body {
+      margin: 0;
+      font-family: Calibri, 'Segoe UI', sans-serif;
+      background: #f7f7f7;
+      color: #222;
+    }
+    .container {
+      max-width: 700px;
+      background: #fff;
+      margin: 60px auto;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    h1 {
+      text-align: center;
+      color: #2f4f6f;
+      margin-bottom: 30px;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 40px;
+      row-gap: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    .full-width {
+      grid-column: span 2;
+    }
+    .buttons {
+      grid-column: span 2;
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      background: #2f4f6f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #3b5f82;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #2f4f6f;
+      font-weight: 600;
+    }
+     body {
+      margin: 0;
+      font-family: Calibri, 'Segoe UI', sans-serif;
+      background: #f7f7f7;
+      color: #222;
+    }
+    .container {
+      max-width: 750px;
+      background: #fff;
+      margin: 60px auto;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    h1 {
+      text-align: center;
+      color: #2f4f6f;
+      margin-bottom: 30px;
+    }
+     label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    .full-width {
+      grid-column: span 2;
+    }
+    .buttons {
+      grid-column: span 2;
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      background: #2f4f6f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #3b5f82;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #2f4f6f;
+      font-weight: 600;
+    }
+    /* Salary structure */
+    .salary-structure {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 20px;
+      column-gap: 40px;
+      margin-top: 10px;
+    }
+    .salary-structure input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    .salary-structure label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+    h3 {
+      grid-column: span 2;
+      color: #2f4f6f;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }

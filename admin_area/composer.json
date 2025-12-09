@@ -1,0 +1,6 @@
+{
+    "require": {
+        "kreait/firebase-php": "*",
+        "guzzlehttp/guzzle": "*"
+    }
+}
