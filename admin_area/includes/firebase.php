@@ -9,7 +9,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Database;
 
-/**
+/** hello jsut chack
  * Get a singleton Firebase Realtime Database client.
  *
  * @return Database
