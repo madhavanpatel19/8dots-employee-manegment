@@ -142,18 +142,30 @@ if ($selected_emp) {
 }
 
 // ------------------ SALARY CALCULATION (simple formula) ------------------ //
-if ($base_salary <= 0) {
-    $base_salary_val = 30000.00;   // default
-} else {
-    $base_salary_val = (float)$base_salary;
+$override_basic = isset($_GET['basic']) ? (float)$_GET['basic'] : null;
+$override_hra   = isset($_GET['hra']) ? (float)$_GET['hra'] : null;
+$override_pf    = isset($_GET['pf']) ? (float)$_GET['pf'] : null;
+$override_tax   = isset($_GET['tax']) ? (float)$_GET['tax'] : null;
+$override_allow = isset($_GET['other_allow']) ? (float)$_GET['other_allow'] : null;
+$override_ded   = isset($_GET['other_ded']) ? (float)$_GET['other_ded'] : null;
+
+
+// ------------------ SALARY CALCULATION ------------------ //
+$base_salary_val = ($base_salary <= 0) ? 30000.00 : (float)$base_salary;
+
+// Use override if provided
+$hra   = ($override_hra   !== null) ? $override_hra   : round($base_salary_val * 0.20, 2);
+$pf    = ($override_pf    !== null) ? $override_pf    : round($base_salary_val * 0.05, 2);
+$tax   = ($override_tax   !== null) ? $override_tax   : round($base_salary_val * 0.10, 2);
+$other_allow = ($override_allow !== null) ? $override_allow : 0.00;
+$other_ded   = ($override_ded   !== null) ? $override_ded   : 0.00;
+
+if ($override_basic !== null) {
+    $base_salary_val = $override_basic;
 }
 
-$hra              = round($base_salary_val * 0.20, 2);
-$pf               = round($base_salary_val * 0.05, 2);
-$tax              = round($base_salary_val * 0.10, 2);
-$other            = 0.00;
-$gross            = $base_salary_val + $hra;
-$total_deductions = $pf + $tax + $other;
+$gross            = $base_salary_val + $hra + $other_allow;
+$total_deductions = $pf + $tax + $other_ded;
 $net              = $gross - $total_deductions;
 
 // ------------------ BASIC STYLES ------------------ //
@@ -205,7 +217,7 @@ if ($print_all_mode) {
                         <div class="form-group">
                             <div class="col-sm-offset-1 col-sm-10" style="padding-left: 2px;">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-search"></i> Show 
+                                    <i class="fa fa-search"></i> Show
                                 </button>
                                 <a href="index.php?dashboard" class="btn btn-default" style="margin-left:8px;">
                                     <i class="fa fa-arrow-left"></i> Back
@@ -234,9 +246,10 @@ if ($print_all_mode) {
                 $hra_local = round($base_val_local * 0.20, 2);
                 $pf_local = round($base_val_local * 0.05, 2);
                 $tax_local = round($base_val_local * 0.10, 2);
-                $other_local = 0.00;
-                $gross_local = $base_val_local + $hra_local;
-                $total_deductions_local = $pf_local + $tax_local + $other_local;
+                $other_allow_local = 0.00;
+                $other_ded_local   = 0.00;
+                $gross_local = $base_val_local + $hra_local + $other_allow_local;
+                $total_deductions_local = $pf_local + $tax_local + $other_ded_local;
                 $net_local = $gross_local - $total_deductions_local;
     ?>
                 <div class="salary-slip card" style="margin:14px auto; padding:18px; max-width:820px;">
@@ -245,7 +258,7 @@ if ($print_all_mode) {
                         <div class="company-left">
                             <img src="../other_images/company-logo.png" alt="Logo" class="company-logo" onerror="this.style.display='none'">
                             <div class="company-center">
-                                <h3 class="company-name">8Dots - Innovation IT Solution</h3>
+                                <h3 class="company-name">8Dots</h3>
                                 <div class="company-address">516, Shivam Trade Centre (STC), Near One World West, Ahmedabad, Gujarat 380058</div>
                                 <div class="company-meta-small">Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: 8dotsinfo@gmail.com</div>
                             </div>
@@ -290,9 +303,9 @@ if ($print_all_mode) {
                                 </tr>
                                 <tr>
                                     <td>Other Allowances</td>
-                                    <td class="amt"><?php echo format_money_with_symbol($other_local, $currency_symbol); ?></td>
+                                    <td class="amt"><?php echo format_money_with_symbol($other_allow_local, $currency_symbol); ?></td>
                                     <td>Other Deductions</td>
-                                    <td class="amt"><?php echo format_money_with_symbol(0, $currency_symbol); ?></td>
+                                    <td class="amt"><?php echo format_money_with_symbol($other_ded_local, $currency_symbol); ?></td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -468,6 +481,9 @@ if ($print_all_mode) {
                 }
                 ?>
                 <a href="<?php echo $back_url; ?>" class="btn btn-default">&larr; Back</a>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#amountModal" style="margin-left:8px;">
+                    Change Amount
+                </button>
             </div>
 
             <!-- HEADER -->
@@ -478,7 +494,7 @@ if ($print_all_mode) {
                         class="company-logo"
                         onerror="this.style.display='none'">
                     <div class="company-center">
-                        <h3 class="company-name">8Dots - Innovation IT Solution</h3>
+                        <h3 class="company-name">8Dots</h3>
                         <div class="company-address">
                             516, Shivam Trade Centre (STC), Near One World West, Ahmedabad, Gujarat 380058
                         </div>
@@ -537,9 +553,9 @@ if ($print_all_mode) {
                         </tr>
                         <tr>
                             <td>Other Allowances</td>
-                            <td class="amt"><?php echo format_money_with_symbol($other, $currency_symbol); ?></td>
+                            <td class="amt"><?php echo format_money_with_symbol($other_allow, $currency_symbol); ?></td>
                             <td>Other Deductions</td>
-                            <td class="amt"><?php echo format_money_with_symbol(0, $currency_symbol); ?></td>
+                            <td class="amt"><?php echo format_money_with_symbol($other_ded, $currency_symbol); ?></td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -593,6 +609,79 @@ if ($print_all_mode) {
             </script>
         <?php endif; ?>
     <?php endif; ?>
+</div>
+
+<!-- ================= AMOUNT EDIT MODAL ================= -->
+<div class="modal fade" id="amountModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="GET">
+                <input type="hidden" name="salary_slip" value="1">
+                <input type="hidden" name="emp_id" value="<?php echo (int)$selected_emp; ?>">
+                <input type="hidden" name="month" value="<?php echo htmlspecialchars($selected_month); ?>">
+                <input type="hidden" name="view" value="1">
+                <!-- allow overriden components -->
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Salary Amounts</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Basic Salary</label>
+                        <input type="number" step="0.01" name="basic"
+                            value="<?php echo $base_salary_val; ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>HRA</label>
+                        <input type="number" step="0.01" name="hra"
+                            value="<?php echo $hra; ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>PF</label>
+                        <input type="number" step="0.01" name="pf"
+                            value="<?php echo $pf; ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tax</label>
+                        <input type="number" step="0.01" name="tax"
+                            value="<?php echo $tax; ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Other Allowances</label>
+                        <input type="number" step="0.01" name="other_allow"
+                            value="<?php echo $other_allow; ?>"
+                            class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Other Deductions</label>
+                        <input type="number" step="0.01" name="other_ded"
+                            value="<?php echo $other_ded; ?>"
+                            class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Apply</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 </div>
 
 <script>

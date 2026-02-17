@@ -43,8 +43,10 @@ if (!$table_exists) {
         `emp_id` INT NOT NULL,
         `attendance_date` DATE NOT NULL,
         `check_in_time` TIME NULL,
+        `check_out_time` TIME NULL,
         `status` ENUM('present', 'absent', 'leave') DEFAULT 'present',
         `remarks` VARCHAR(255),
+        `performance` INT DEFAULT NULL,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE KEY `emp_date` (`emp_id`, `attendance_date`),
         FOREIGN KEY (`emp_id`) REFERENCES `emp_list` (`id`) ON DELETE CASCADE
@@ -55,6 +57,18 @@ if (!$table_exists) {
     $col_check = mysqli_query($con, "SHOW COLUMNS FROM attendance LIKE 'check_in_time'");
     if ($col_check && mysqli_num_rows($col_check) === 0) {
         mysqli_query($con, "ALTER TABLE `attendance` ADD `check_in_time` TIME NULL AFTER `attendance_date`");
+    }
+
+    // Ensure check_out_time column exists
+    $col_checkout = mysqli_query($con, "SHOW COLUMNS FROM attendance LIKE 'check_out_time'");
+    if ($col_checkout && mysqli_num_rows($col_checkout) === 0) {
+        mysqli_query($con, "ALTER TABLE `attendance` ADD `check_out_time` TIME NULL AFTER `check_in_time`");
+    }
+
+    // Ensure performance column exists
+    $col_perf = mysqli_query($con, "SHOW COLUMNS FROM attendance LIKE 'performance'");
+    if ($col_perf && mysqli_num_rows($col_perf) === 0) {
+        mysqli_query($con, "ALTER TABLE `attendance` ADD `performance` INT DEFAULT NULL AFTER `remarks`");
     }
 }
 
@@ -131,24 +145,27 @@ function normalize_checkin_time($raw)
     return null;
 }
 
-function save_attendance_record($con, $emp_id, $attendance_date, $status, $remarks = '', $check_in_time = null)
+function save_attendance_record($con, $emp_id, $attendance_date, $status, $remarks = '', $check_in_time = null, $check_out_time = null, $performance = null)
 {
     global $db;
     $eid  = (int)$emp_id;
     $date = mysqli_real_escape_string($con, $attendance_date);
     $st   = mysqli_real_escape_string($con, $status);
     $rm_raw   = $remarks;
-    $normalized_time = normalize_checkin_time($check_in_time);
-    $time = $normalized_time ? mysqli_real_escape_string($con, $normalized_time) : null;
+    $normalized_checkin = normalize_checkin_time($check_in_time);
+    $normalized_checkout = normalize_checkin_time($check_out_time);
+    $time_in = $normalized_checkin ? mysqli_real_escape_string($con, $normalized_checkin) : null;
+    $time_out = $normalized_checkout ? mysqli_real_escape_string($con, $normalized_checkout) : null;
+    $perf_val = is_numeric($performance) ? (int)$performance : null;
 
     // Auto-flag late if after 10:15 AM when marked present
     $late_cutoff = strtotime('1970-01-01 10:15:00');
-    if ($time && $status === 'present') {
-        $tstamp = strtotime('1970-01-01 ' . $normalized_time);
+    if ($time_in && $status === 'present') {
+        $tstamp = strtotime('1970-01-01 ' . $normalized_checkin);
         if ($tstamp !== false && $tstamp > $late_cutoff && stripos($rm_raw, 'late') === false) {
             $rm_raw = ($rm_raw ? $rm_raw . ' | ' : '') . 'Late check-in (after 10:15 AM)';
         }
-    }   
+    }
 
     $rm   = mysqli_real_escape_string($con, $rm_raw);
 
@@ -158,12 +175,25 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
         $existing = mysqli_fetch_assoc($check);
         $row_id = (int)$existing['id'];
         $update = "UPDATE attendance 
-                   SET status='$st', remarks='$rm', check_in_time " . ($time !== null ? "='$time'" : "=NULL") . " 
+                   SET status='$st', remarks='$rm', check_in_time " . ($time_in !== null ? "='$time_in'" : "=NULL") . ", 
+                       check_out_time " . ($time_out !== null ? "='$time_out'" : "=NULL");
+        if ($perf_val !== null) {
+            $update .= ", performance='$perf_val'";
+        }
+        $update .= " 
                    WHERE emp_id='$eid' AND attendance_date='$date'";
         $ok = mysqli_query($con, $update);
     } else {
-        $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, status, remarks) 
-                   VALUES ('$eid', '$date', " . ($time !== null ? "'$time'" : "NULL") . ", '$st', '$rm')";
+        $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks";
+        if ($perf_val !== null) {
+            $insert .= ", performance";
+        }
+        $insert .= ") 
+                   VALUES ('$eid', '$date', " . ($time_in !== null ? "'$time_in'" : "NULL") . ", " . ($time_out !== null ? "'$time_out'" : "NULL") . ", '$st', '$rm'";
+        if ($perf_val !== null) {
+            $insert .= ", '$perf_val'";
+        }
+        $insert .= ")";
         $ok = mysqli_query($con, $insert);
         if ($ok) {
             $row_id = (int)mysqli_insert_id($con);
@@ -184,7 +214,7 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
     return $ok;
 }
 
-function save_daily_attendance_batch($con, $date, $emp_ids, $statuses, $remarks_arr, $checkins_arr)
+function save_daily_attendance_batch($con, $date, $emp_ids, $statuses, $remarks_arr, $checkins_arr, $checkouts_arr = array(), $perf_arr = array())
 {
     if (!$date || !is_array($emp_ids)) return false;
     foreach ($emp_ids as $idx => $e) {
@@ -192,7 +222,9 @@ function save_daily_attendance_batch($con, $date, $emp_ids, $statuses, $remarks_
         $st  = isset($statuses[$idx]) ? $statuses[$idx] : 'absent';
         $rm  = isset($remarks_arr[$idx]) ? $remarks_arr[$idx] : '';
         $ci  = isset($checkins_arr[$idx]) ? $checkins_arr[$idx] : null;
-        save_attendance_record($con, $eid, $date, $st, $rm, $ci);
+        $co  = isset($checkouts_arr[$idx]) ? $checkouts_arr[$idx] : null;
+        $pf  = isset($perf_arr[$idx]) ? $perf_arr[$idx] : null;
+        save_attendance_record($con, $eid, $date, $st, $rm, $ci, $co, $pf);
     }
     return true;
 }
@@ -208,13 +240,15 @@ if (isset($_POST['save_attendance'])) {
     $status          = isset($_POST['status']) ? $_POST['status'] : '';
     $remarks         = isset($_POST['remarks']) ? $_POST['remarks'] : '';
     $check_in_time   = isset($_POST['check_in_time']) ? $_POST['check_in_time'] : '';
+    $check_out_time  = isset($_POST['check_out_time']) ? $_POST['check_out_time'] : '';
+    $performance     = isset($_POST['performance']) ? $_POST['performance'] : null;
 
     // Validate: if status is 'leave', remarks are mandatory
     if ($status === 'leave' && empty(trim($remarks))) {
         $message = "Remarks are mandatory for Leave status!";
         // Repopulate modal fields with previous values
         echo '<script>document.addEventListener("DOMContentLoaded", function() {';
-        echo 'openModal(' . json_encode($emp_id) . ', ' . json_encode($attendance_date) . ');';
+        echo 'openModal(' . json_encode($emp_id) . ', ' . json_encode($attendance_date) . ', ' . json_encode($check_in_time) . ', ' . json_encode($check_out_time) . ', ' . json_encode($remarks) . ', ' . json_encode($performance) . ');';
         echo 'setTimeout(function(){';
         echo 'document.getElementById("status").value = "leave";';
         echo 'document.getElementById("remarks").value = ' . json_encode($remarks) . ';';
@@ -225,7 +259,7 @@ if (isset($_POST['save_attendance'])) {
         if ($status === 'present' && empty($check_in_time)) {
             $message = "Check-in time is required for Present status.";
         } else {
-            save_attendance_record($con, $emp_id, $attendance_date, $status, $remarks, $check_in_time ?: null);
+            save_attendance_record($con, $emp_id, $attendance_date, $status, $remarks, $check_in_time ?: null, $check_out_time ?: null, $performance);
             $message = "Attendance updated successfully!";
         }
     } else {
@@ -240,6 +274,8 @@ if (isset($_POST['save_daily_attendance'])) {
     $statuses    = isset($_POST['status']) ? $_POST['status'] : array();
     $remarks_arr = isset($_POST['remarks_arr']) ? $_POST['remarks_arr'] : array();
     $checkins_arr = isset($_POST['check_in_time_arr']) ? $_POST['check_in_time_arr'] : array();
+    $checkouts_arr = isset($_POST['check_out_time_arr']) ? $_POST['check_out_time_arr'] : array();
+    $perf_arr      = isset($_POST['performance_arr']) ? $_POST['performance_arr'] : array();
 
     if ($date && is_array($emp_ids)) {
         // Validate: if any employee has 'leave' status, check remarks
@@ -257,11 +293,16 @@ if (isset($_POST['save_daily_attendance'])) {
                 $time_error = true;
                 break;
             }
+            // performance validation could be added here if desired
         }
         if (!$validation_error && !$time_error) {
-            save_daily_attendance_batch($con, $date, $emp_ids, $statuses, $remarks_arr, $checkins_arr);
+            save_daily_attendance_batch($con, $date, $emp_ids, $statuses, $remarks_arr, $checkins_arr, $checkouts_arr, $perf_arr);
             $message = "Daily attendance saved successfully!";
-            header('Location: attendance.php?daily=1&date=' . urlencode($date));
+            $redir = 'attendance.php?daily=1&date=' . urlencode($date);
+            if ($selected_emp_id > 0) {
+                $redir .= '&emp_id=' . $selected_emp_id;
+            }
+            header('Location: ' . $redir);
             exit;
         } else {
             // Repopulate daily form fields with previous values by keeping POST data in memory
@@ -269,6 +310,8 @@ if (isset($_POST['save_daily_attendance'])) {
             $_POST['status'] = $statuses;
             $_POST['remarks_arr'] = $remarks_arr;
             $_POST['check_in_time_arr'] = $checkins_arr;
+            $_POST['check_out_time_arr'] = $checkouts_arr;
+            $_POST['performance_arr'] = $perf_arr;
             if ($time_error) {
                 $message = "Check-in time is required for all employees.";
             }
@@ -426,7 +469,8 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     $next_date = date('Y-m-d', strtotime($selected_date . ' +1 day'));
                                     ?>
                                     <div class="nav-buttons">
-                                        <a href="attendance.php?daily=1&date=<?php echo $prev_date; ?>" title="Previous Day">
+                                        <?php $emp_q = $selected_emp_id > 0 ? '&emp_id=' . $selected_emp_id : ''; ?>
+                                        <a href="attendance.php?daily=1&date=<?php echo $prev_date . $emp_q; ?>" title="Previous Day">
                                             <i class="fa fa-chevron-left"></i>
                                         </a>
 
@@ -435,7 +479,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             <i class="fa fa-calendar"></i>
                                         </a>
 
-                                        <a href="attendance.php?daily=1&date=<?php echo $next_date; ?>" title="Next Day">
+                                        <a href="attendance.php?daily=1&date=<?php echo $next_date . $emp_q; ?>" title="Next Day">
                                             <i class="fa fa-chevron-right"></i>
                                         </a>
                                     </div>
@@ -498,7 +542,11 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         <?php if ($is_daily && $selected_date): ?>
                             <div class="employee-info">
                                 <h3><i class="fa fa-calendar"></i> Daily Attendance</h3>
-                                <p>Date: <?php echo date('d M, Y', strtotime($selected_date)); ?> | Employees: <?php echo count($employees_array); ?></p>
+                                <p>Date: <?php echo date('d M, Y', strtotime($selected_date)); ?>
+                                <?php if ($selected_emp_id > 0 && $employee_data): ?>
+                                    | Employee: <?php echo htmlspecialchars($employee_data['name']); ?> (ID <?php echo $selected_emp_id; ?>)
+                                <?php endif; ?>
+                                | Employees: <?php echo isset($loop_employees) ? count($loop_employees) : count($employees_array); ?></p>
                             </div>
 
                             <form method="POST">
@@ -510,24 +558,38 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 <th>#</th>
                                                 <th>Employee ID</th>
                                                 <th>Employee Name</th>
-                                            <th style="min-width:220px;">Status</th>
-                                            <th>Check-in Time</th>
-                                            <th>Remarks</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                            <?php foreach ($employees_array as $i => $emp):
+                                                <th style="min-width:220px;">Status</th>
+                                                <th>Check-in Time</th>
+                                                <th>Check-out Time</th>
+                                                <th>Performance</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                $loop_employees = $employees_array;
+                                if ($selected_emp_id > 0) {
+                                    // restrict to selected employee if exists and reindex
+                                    $loop_employees = array_values(array_filter($employees_array, function($e) use ($selected_emp_id) {
+                                        return (int)$e['id'] === $selected_emp_id;
+                                    }));
+                                }
+                                foreach ($loop_employees as $i => $emp):
                                                 $eid         = (int)$emp['id'];
                                                 // If POST (error), use submitted values, else use DB
                                                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['emp_id'][$i])) {
                                                     $pref_status = isset($_POST['status'][$i]) ? $_POST['status'][$i] : '';
                                                     $pref_remarks = isset($_POST['remarks_arr'][$i]) ? htmlspecialchars($_POST['remarks_arr'][$i]) : '';
                                                     $pref_checkin = isset($_POST['check_in_time_arr'][$i]) ? $_POST['check_in_time_arr'][$i] : '';
+                                                    $pref_checkout = isset($_POST['check_out_time_arr'][$i]) ? $_POST['check_out_time_arr'][$i] : '';
+                                                    $pref_performance = isset($_POST['performance_arr'][$i]) ? $_POST['performance_arr'][$i] : '';
                                                 } else {
                                                     $pref        = isset($daily_attendance[$eid]) ? $daily_attendance[$eid] : null;
                                                     $pref_status = $pref ? $pref['status'] : '';
                                                     $pref_remarks = $pref ? htmlspecialchars($pref['remarks']) : '';
-                                                    $pref_checkin = $pref ? htmlspecialchars($pref['check_in_time']) : '';
+                                                    $pref_checkin = $pref ? htmlspecialchars($pref['check_in_time']) : '10:00';
+                                                    $pref_checkout = $pref ? htmlspecialchars($pref['check_out_time']) : '';
+                                                    $pref_performance = $pref ? htmlspecialchars($pref['performance']) : '';
                                                 }
                                             ?>
                                                 <tr>
@@ -552,6 +614,12 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                     </td>
                                                     <td>
                                                         <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm">
+                                                    </td>
+                                                    <td>
+                                                        <input type="time" name="check_out_time_arr[]" value="<?php echo $pref_checkout; ?>" class="form-control input-sm">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" name="performance_arr[]" value="<?php echo isset($pref_performance) ? htmlspecialchars($pref_performance) : ''; ?>" min="0" max="100" placeholder="0-100" class="form-control input-sm">
                                                     </td>
                                                     <td>
                                                         <input type="text" name="remarks_arr[]" value="<?php echo $pref_remarks; ?>" placeholder="Optional remarks" class="form-control input-sm">
@@ -608,6 +676,8 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             <th>Day</th>
                                             <th>Status</th>
                                             <th>Check-in</th>
+                                            <th>Check-out</th>
+                                            <th>Performance</th>
                                             <th>Remarks</th>
                                         </tr>
                                     </thead>
@@ -625,12 +695,15 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             $status       = '';
                                             $status_class = 'unmarked';
                                             $remarks      = '';
+                                            $perf         = '';
 
                                             if (isset($attendance_data[$date])) {
                                                 $status       = ucfirst($attendance_data[$date]['status']);
                                                 $status_class = $attendance_data[$date]['status'];
                                                 $remarks      = htmlspecialchars($attendance_data[$date]['remarks'] ?? '');
                                                 $checkin      = htmlspecialchars($attendance_data[$date]['check_in_time'] ?? '');
+                                                $checkout     = htmlspecialchars($attendance_data[$date]['check_out_time'] ?? '');
+                                                $perf         = htmlspecialchars($attendance_data[$date]['performance'] ?? '');
                                                 $marked_days++;
 
                                                 if ($attendance_data[$date]['status'] === 'present') $present_count++;
@@ -639,6 +712,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             } else {
                                                 $status = '-';
                                                 $checkin = '';
+                                                $checkout = '';
                                             }
 
                                             echo '<tr>';
@@ -646,6 +720,8 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             echo '<td>' . $day_name . '</td>';
                                             echo '<td class="date-cell ' . $status_class . '" onclick="openModal(' . $selected_emp_id . ', \'' . $date . '\', \'' . $checkin . '\')" title="Click to mark attendance">' . $status . '</td>';
                                             echo '<td>' . ($checkin ? $checkin : '-') . '</td>';
+                                            echo '<td>' . ($checkout ? $checkout : '-') . '</td>';
+                                            echo '<td>' . ($perf !== '' ? $perf : '-') . '</td>';
                                             echo '<td class="remarks-cell">' . ($remarks ? $remarks : '-') . '</td>';
                                             echo '</tr>';
                                         }
@@ -671,7 +747,6 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         <?php endif; ?>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -701,6 +776,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                     <div class="form-group">
                         <label for="check_in_time">Check-in Time: <span style="color: #d9534f;">*</span></label>
                         <input type="time" id="check_in_time" name="check_in_time" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="check_out_time">Check-out Time:</label>
+                        <input type="time" id="check_out_time" name="check_out_time" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="performance">Performance (0-100):</label>
+                        <input type="number" min="0" max="100" id="performance" name="performance" class="form-control" placeholder="Optional">
                     </div>
                     <div class="form-group">
                         <label for="remarks">Remarks: <span id="remarksRequired" style="color: #d9534f; display:none;">*</span></label>
@@ -892,7 +975,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
         }
 
         // ---- MODAL (monthly mark) ----
-        function openModal(empId, date, checkIn = '') {
+        function openModal(empId, date, checkIn = '', checkOut = '', remarks = '', perf = '') {
             document.getElementById('emp_id').value = empId;
             document.getElementById('attendance_date').value = date;
             document.getElementById('modalDate').textContent = new Date(date).toLocaleDateString('en-GB', {
@@ -901,8 +984,10 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                 day: 'numeric'
             });
             document.getElementById('status').value = '';
-            document.getElementById('remarks').value = '';
-            document.getElementById('check_in_time').value = checkIn || '';
+            document.getElementById('remarks').value = remarks || '';
+            document.getElementById('check_in_time').value = checkIn || '10:00';
+            document.getElementById('check_out_time').value = checkOut || '';
+            document.getElementById('performance').value = perf || '';
             document.getElementById('attendanceModal').style.display = 'block';
             updateRemarksRequirement();
         }

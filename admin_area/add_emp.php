@@ -40,7 +40,7 @@ $db = firebase_db();
                         <label for="number" class="col-sm-3 control-label">Phone Number <span style="color: red;">*</span></label>
                         <div class="col-sm-9">
                             <input type="tel" id="number" name="number" class="form-control" placeholder="Enter 10-digit phone number" required maxlength="10" pattern="\d{10}" title="Enter 10 digit phone number" inputmode="numeric" />
-                            
+
                         </div>
                     </div>
 
@@ -135,13 +135,13 @@ $db = firebase_db();
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
-                             <a href="index.php?emp_directory" class="btn btn-default">
-                                <i class="fa fa-arrow-left"></i> Back 
+                            <a href="index.php?emp_directory" class="btn btn-default">
+                                <i class="fa fa-arrow-left"></i> Back
                             </a>
                             <button type="submit" name="submit" class="btn btn-primary">
-                                <i class="fa fa-save"></i> Add 
+                                <i class="fa fa-save"></i> Add
                             </button>
-                           
+
                         </div>
                     </div>
                 </form>
@@ -171,31 +171,31 @@ $db = firebase_db();
         el.addEventListener('input', calculateTotal);
     });
 
-        // Prevent future join date on client-side
-        const joinDateEl = document.getElementById('joinDate');
-        const form = document.getElementById('employeeForm');
-        if (form && joinDateEl) {
-            form.addEventListener('submit', function(e) {
-                const today = new Date().toISOString().slice(0,10);
-                if (joinDateEl.value && joinDateEl.value > today) {
-                    e.preventDefault();
-                    alert('Join date cannot be in the future. Please select a valid date.');
-                    joinDateEl.focus();
-                    return false;
-                }
-                // Validate phone number (10 digits)
-                const phoneEl = document.getElementById('number');
-                if (phoneEl && !/^[0-9]{10}$/.test(phoneEl.value)) {
-                    e.preventDefault();
-                    alert('Please enter a valid 10 digit contact number (digits only).');
-                    phoneEl.focus();
-                    return false;
-                }
-            });
-        }
+    // Prevent future join date on client-side
+    const joinDateEl = document.getElementById('joinDate');
+    const form = document.getElementById('employeeForm');
+    if (form && joinDateEl) {
+        form.addEventListener('submit', function(e) {
+            const today = new Date().toISOString().slice(0, 10);
+            if (joinDateEl.value && joinDateEl.value > today) {
+                e.preventDefault();
+                alert('Join date cannot be in the future. Please select a valid date.');
+                joinDateEl.focus();
+                return false;
+            }
+            // Validate phone number (10 digits)
+            const phoneEl = document.getElementById('number');
+            if (phoneEl && !/^[0-9]{10}$/.test(phoneEl.value)) {
+                e.preventDefault();
+                alert('Please enter a valid 10 digit contact number (digits only).');
+                phoneEl.focus();
+                return false;
+            }
+        });
+    }
 </script>
 
-<?php        
+<?php
 if (isset($_POST['submit'])) {
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $email = mysqli_real_escape_string($con, $_POST['email']);
@@ -208,9 +208,9 @@ if (isset($_POST['submit'])) {
     }
     $contact = mysqli_real_escape_string($con, $clean_contact);
     $address = mysqli_real_escape_string($con, $_POST['address']);
-    $blood = mysqli_real_escape_string($con, $_POST['blood']);  
+    $blood = mysqli_real_escape_string($con, $_POST['blood']);
     $gender = mysqli_real_escape_string($con, $_POST['gender']);
-    $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);    
+    $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
     $basic_salary = mysqli_real_escape_string($con, $_POST['basic_salary']);
     $hra = mysqli_real_escape_string($con, $_POST['hra']);
     $allowance = mysqli_real_escape_string($con, $_POST['allowance']);

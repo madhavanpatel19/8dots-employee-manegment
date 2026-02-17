@@ -85,6 +85,16 @@ if ($perfQuery && mysqli_num_rows($perfQuery) > 0) {
     }
 }
 
+// Additionally fetch today's performance recorded in attendance (daily)
+$dailyPerfMap = array();
+$today = date('Y-m-d');
+$dpQuery = mysqli_query($con, "SELECT emp_id, performance FROM attendance WHERE attendance_date='$today'");
+if ($dpQuery && mysqli_num_rows($dpQuery) > 0) {
+    while ($d = mysqli_fetch_assoc($dpQuery)) {
+        $dailyPerfMap[(int)$d['emp_id']] = $d['performance'];
+    }
+}
+
 // Build last 4 months list (including current) for history display
 $historyMonths = array();
 for ($i = 0; $i < 4; $i++) {
@@ -223,6 +233,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                 <th>Join Date</th>
                                 <th>Salary</th>
                                 <th>Performance<br><small><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></small></th>
+                                <th>Daily Perf<br><small><?php echo date('d M'); ?></small></th>
                                 <th>Documents</th>
                                 <th>Actions</th>
                             </tr>
@@ -244,6 +255,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     $salary = htmlspecialchars($row['salary']);
                                     $perfRow = isset($performanceMap[$pk]) ? $performanceMap[$pk] : null;
                                     $perfTotal = $perfRow ? (int)$perfRow['total'] : null;
+                                    $dailyVal = isset($dailyPerfMap[$pk]) ? (int)$dailyPerfMap[$pk] : null;
                                     $absentPrefill = $perfRow ? (int)$perfRow['absent'] : (isset($absencePoints[$pk]) ? $absencePoints[$pk] : 0);
                                     $latePrefill = $perfRow ? (int)$perfRow['late'] : (isset($latePoints[$pk]) ? $latePoints[$pk] : 0);
                                     // Build history payload for last 4 months
@@ -327,6 +339,17 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                         onclick="openPerformance(this)">
                                         <i class="fa fa-line-chart"></i> Set
                                     </button>
+                                </td>
+                                <td>
+                                    <?php if ($dailyVal !== null): ?>
+                                        <?php echo $dailyVal; ?>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                    <br>
+                                    <a href="attendance.php?daily=1&date=<?php echo date('Y-m-d'); ?>&emp_id=<?php echo $pk; ?>" class="btn btn-xs btn-warning" style="padding: 4px 6px; margin-top:4px;" title="Edit Today's Attendance">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
                                 </td>
                                 <td>
                                     <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn btn-xs btn-default" style="padding: 7px 8px;" title="View Documents">

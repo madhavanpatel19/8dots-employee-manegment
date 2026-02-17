@@ -36,7 +36,7 @@ if (!isset($_SESSION['admin_email'])) {
     <html>
 
     <head>
-        <title>8dots admin panel</title>
+        <title>8dots</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet">
         <link href="css/dashboard.css" rel="stylesheet">

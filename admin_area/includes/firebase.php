@@ -26,7 +26,7 @@ function firebase_db(): Database
 
     // 2) Service account JSON path (override with env if desired)
     $serviceAccount = getenv('FIREBASE_CREDENTIALS')
-        ?: __DIR__ . '/dots-56dac-firebase-adminsdk-fbsvc-07a558eed5.json';
+        ?: __DIR__ . '/dots-56dac-firebase-adminsdk-fbsvc-9d0686e475.json';
 
 
     // 3) Realtime Database URL
