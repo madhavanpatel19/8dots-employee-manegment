@@ -26,6 +26,7 @@ if ($perfRes && mysqli_num_rows($perfRes) === 1) {
 // Defaults from attendance for the selected month/year
 $absencePoints = 0;
 $latePoints = 0;
+$avgDailyPerfConverted = 0;
 $attendanceTable = mysqli_query($con, "SHOW TABLES LIKE 'attendance'");
 
 if ($attendanceTable && mysqli_num_rows($attendanceTable) > 0) {
@@ -57,23 +58,37 @@ if ($attendanceTable && mysqli_num_rows($attendanceTable) > 0) {
         if ($lateCount >= 4 && $lateCount <= 6) $latePoints = 5;
         if ($lateCount > 6) $latePoints = 0;
     }
+
+    // Calculate average daily performance for selected month/year
+    $avgPerfSql = "SELECT AVG(performance) as avg_perf
+                   FROM attendance
+                   WHERE emp_id='$empId' AND MONTH(attendance_date)='$month' AND YEAR(attendance_date)='$year'
+                   AND performance IS NOT NULL";
+    $avgPerfRes = mysqli_query($con, $avgPerfSql);
+    if ($avgPerfRes) {
+        $avgPerfRow = mysqli_fetch_assoc($avgPerfRes);
+        if ($avgPerfRow && $avgPerfRow['avg_perf'] !== null) {
+            $avgPerf = (float)$avgPerfRow['avg_perf'];
+            // Convert from 0-100 scale to 0-35 scale
+            $avgDailyPerfConverted = round(($avgPerf / 100) * 35, 2);
+        }
+    }
 }
 
 $data = array(
     'absent' => $perfRow ? (int)$perfRow['absent'] : $absencePoints,
     'late' => $perfRow ? (int)$perfRow['late'] : $latePoints,
     'task_sheet' => $perfRow ? (int)$perfRow['task_sheet'] : 0,
-    'performance_score' => $perfRow ? (int)$perfRow['performance_score'] : 0,
+    'performance_score' => $avgDailyPerfConverted,
     'dressing_behaviour' => $perfRow ? (int)$perfRow['dressing_behaviour'] : 0,
     'rnd' => $perfRow ? (int)$perfRow['rnd'] : 0,
-    'total' => $perfRow ? (int)$perfRow['total'] : 0,
+    'avg_perf' => $avgDailyPerfConverted,
     'year' => $year,
     'month' => $month,
     'existing' => $perfRow ? true : false
 );
 
-if (!$perfRow) {
-    $data['total'] = $data['absent'] + $data['late'] + $data['task_sheet'] + $data['performance_score'] + $data['dressing_behaviour'] + $data['rnd'];
-}
+// Always recalculate total with current month's average performance
+$data['total'] = $data['absent'] + $data['late'] + $data['task_sheet'] + $data['performance_score'] + $data['dressing_behaviour'] + $data['rnd'];
 
 echo json_encode(array('success' => true, 'data' => $data));

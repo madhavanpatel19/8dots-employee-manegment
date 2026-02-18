@@ -337,6 +337,21 @@ if ($is_daily && $selected_date) {
     $daily_attendance = get_daily_attendance($con, $selected_date);
 }
 
+// Calculate average daily performance for the month
+$avg_daily_performance = null;
+$daily_perf_count = 0;
+if ($selected_emp_id > 0) {
+    $avgQuery = mysqli_query($con, "SELECT AVG(performance) as avg_perf, COUNT(performance) as perf_count FROM attendance 
+                                    WHERE emp_id='$selected_emp_id' AND MONTH(attendance_date)='$current_month' 
+                                    AND YEAR(attendance_date)='$current_year' AND performance IS NOT NULL");
+    if ($avgQuery && $avgResult = mysqli_fetch_assoc($avgQuery)) {
+        if ((int)$avgResult['perf_count'] > 0) {
+            $avg_daily_performance = round((float)$avgResult['avg_perf'], 2);
+            $daily_perf_count = (int)$avgResult['perf_count'];
+        }
+    }
+}
+
 // Decide which screen to show
 $showSelectionScreen = (!$is_daily && $selected_emp_id == 0);
 $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
@@ -543,10 +558,10 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                             <div class="employee-info">
                                 <h3><i class="fa fa-calendar"></i> Daily Attendance</h3>
                                 <p>Date: <?php echo date('d M, Y', strtotime($selected_date)); ?>
-                                <?php if ($selected_emp_id > 0 && $employee_data): ?>
-                                    | Employee: <?php echo htmlspecialchars($employee_data['name']); ?> (ID <?php echo $selected_emp_id; ?>)
-                                <?php endif; ?>
-                                | Employees: <?php echo isset($loop_employees) ? count($loop_employees) : count($employees_array); ?></p>
+                                    <?php if ($selected_emp_id > 0 && $employee_data): ?>
+                                        | Employee: <?php echo htmlspecialchars($employee_data['name']); ?> (ID <?php echo $selected_emp_id; ?>)
+                                    <?php endif; ?>
+                                    | Employees: <?php echo isset($loop_employees) ? count($loop_employees) : count($employees_array); ?></p>
                             </div>
 
                             <form method="POST">
@@ -567,14 +582,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                         </thead>
                                         <tbody>
                                             <?php
-                                $loop_employees = $employees_array;
-                                if ($selected_emp_id > 0) {
-                                    // restrict to selected employee if exists and reindex
-                                    $loop_employees = array_values(array_filter($employees_array, function($e) use ($selected_emp_id) {
-                                        return (int)$e['id'] === $selected_emp_id;
-                                    }));
-                                }
-                                foreach ($loop_employees as $i => $emp):
+                                            $loop_employees = $employees_array;
+                                            if ($selected_emp_id > 0) {
+                                                // restrict to selected employee if exists and reindex
+                                                $loop_employees = array_values(array_filter($employees_array, function ($e) use ($selected_emp_id) {
+                                                    return (int)$e['id'] === $selected_emp_id;
+                                                }));
+                                            }
+                                            foreach ($loop_employees as $i => $emp):
                                                 $eid         = (int)$emp['id'];
                                                 // If POST (error), use submitted values, else use DB
                                                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['emp_id'][$i])) {
@@ -733,6 +748,26 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 A: <?php echo $absent_count; ?> |
                                                 L: <?php echo $leave_count; ?> |
                                                 Marked: <?php echo $marked_days; ?>
+                                            </td>
+
+                                            <td class="summary-row" style="background: #e8f4f8; border-top: 1px solid #ccc;">
+                                                <!-- <td colspan="5" style="text-align: right; font-weight: bold;">Average Daily Performance:</td> -->
+
+                                                <td>
+                                                    <?php if ($avg_daily_performance !== null): ?>
+                                                        <span style="background: #0275d8; color: white; padding: 4px 8px; border-radius: 3px; font-weight: bold;">
+                                                            <?php echo $avg_daily_performance; ?> / 100
+                                                        </span>
+                                                        <br>
+                                                        <small style="color: #666; display: block; margin-top: 2px;">
+                                                            (<?php echo $daily_perf_count; ?> day<?php echo $daily_perf_count != 1 ? 's' : ''; ?> recorded)
+                                                        </small>
+                                                    <?php else: ?>
+                                                        <span style="color: #999;">
+                                                            No daily performance recorded
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </td>
                                             </td>
                                             <td></td>
                                         </tr>

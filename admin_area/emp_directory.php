@@ -44,7 +44,12 @@ if (isset($_POST['save_performance'])) {
 
     $scores = array();
     foreach ($maxScores as $key => $limit) {
-        $val = isset($_POST[$key]) ? (int)$_POST[$key] : 0;
+        // Use float for performance_score to preserve decimals, int for others
+        if ($key === 'performance_score') {
+            $val = isset($_POST[$key]) ? (float)$_POST[$key] : 0;
+        } else {
+            $val = isset($_POST[$key]) ? (int)$_POST[$key] : 0;
+        }
         if ($val < 0) $val = 0;
         if ($val > $limit) $val = $limit;
         $scores[$key] = $val;
@@ -85,15 +90,7 @@ if ($perfQuery && mysqli_num_rows($perfQuery) > 0) {
     }
 }
 
-// Additionally fetch today's performance recorded in attendance (daily)
-$dailyPerfMap = array();
-$today = date('Y-m-d');
-$dpQuery = mysqli_query($con, "SELECT emp_id, performance FROM attendance WHERE attendance_date='$today'");
-if ($dpQuery && mysqli_num_rows($dpQuery) > 0) {
-    while ($d = mysqli_fetch_assoc($dpQuery)) {
-        $dailyPerfMap[(int)$d['emp_id']] = $d['performance'];
-    }
-}
+
 
 // Build last 4 months list (including current) for history display
 $historyMonths = array();
@@ -167,6 +164,30 @@ if ($attendanceTable && mysqli_num_rows($attendanceTable) > 0) {
     }
 }
 
+// Fetch average daily performance from attendance table and convert to 35-point scale
+$avgDailyPerformance = array();
+if ($attendanceTable && mysqli_num_rows($attendanceTable) > 0) {
+    $avgPerfSql = "SELECT emp_id, AVG(performance) as avg_perf, COUNT(performance) as perf_count 
+                   FROM attendance 
+                   WHERE MONTH(attendance_date)='$currentMonth' AND YEAR(attendance_date)='$currentYear' 
+                   AND performance IS NOT NULL 
+                   GROUP BY emp_id";
+    $avgPerfRes = mysqli_query($con, $avgPerfSql);
+    if ($avgPerfRes && mysqli_num_rows($avgPerfRes) > 0) {
+        while ($ap = mysqli_fetch_assoc($avgPerfRes)) {
+            $empId = (int)$ap['emp_id'];
+            $avgVal = (float)$ap['avg_perf'];
+            // Convert from 0-100 scale to 0-35 scale
+            $convertedScore = round(($avgVal / 100) * 35, 2);
+            $avgDailyPerformance[$empId] = array(
+                'average' => $avgVal,
+                'converted' => $convertedScore,
+                'count' => (int)$ap['perf_count']
+            );
+        }
+    }
+}
+
 function monthName($m)
 {
     return date('F', mktime(0, 0, 0, $m, 10));
@@ -233,7 +254,6 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                 <th>Join Date</th>
                                 <th>Salary</th>
                                 <th>Performance<br><small><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></small></th>
-                                <th>Daily Perf<br><small><?php echo date('d M'); ?></small></th>
                                 <th>Documents</th>
                                 <th>Actions</th>
                             </tr>
@@ -255,7 +275,6 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     $salary = htmlspecialchars($row['salary']);
                                     $perfRow = isset($performanceMap[$pk]) ? $performanceMap[$pk] : null;
                                     $perfTotal = $perfRow ? (int)$perfRow['total'] : null;
-                                    $dailyVal = isset($dailyPerfMap[$pk]) ? (int)$dailyPerfMap[$pk] : null;
                                     $absentPrefill = $perfRow ? (int)$perfRow['absent'] : (isset($absencePoints[$pk]) ? $absencePoints[$pk] : 0);
                                     $latePrefill = $perfRow ? (int)$perfRow['late'] : (isset($latePoints[$pk]) ? $latePoints[$pk] : 0);
                                     // Build history payload for last 4 months
@@ -333,23 +352,13 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                         data-absent="<?php echo $absentPrefill; ?>"
                                         data-late="<?php echo $latePrefill; ?>"
                                         data-task_sheet="<?php echo $perfRow ? (int)$perfRow['task_sheet'] : 0; ?>"
-                                        data-performance_score="<?php echo $perfRow ? (int)$perfRow['performance_score'] : 0; ?>"
+                                        data-performance_score="<?php echo $perfRow ? (float)$perfRow['performance_score'] : 0; ?>"
                                         data-dressing_behaviour="<?php echo $perfRow ? (int)$perfRow['dressing_behaviour'] : 0; ?>"
                                         data-rnd="<?php echo $perfRow ? (int)$perfRow['rnd'] : 0; ?>"
+                                        data-avg_perf="<?php echo isset($avgDailyPerformance[$pk]) ? $avgDailyPerformance[$pk]['converted'] : 0; ?>"
                                         onclick="openPerformance(this)">
                                         <i class="fa fa-line-chart"></i> Set
                                     </button>
-                                </td>
-                                <td>
-                                    <?php if ($dailyVal !== null): ?>
-                                        <?php echo $dailyVal; ?>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
-                                    <br>
-                                    <a href="attendance.php?daily=1&date=<?php echo date('Y-m-d'); ?>&emp_id=<?php echo $pk; ?>" class="btn btn-xs btn-warning" style="padding: 4px 6px; margin-top:4px;" title="Edit Today's Attendance">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
                                 </td>
                                 <td>
                                     <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn btn-xs btn-default" style="padding: 7px 8px;" title="View Documents">
@@ -481,7 +490,8 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Performance (Max 35)</label>
-                                <input type="number" name="performance_score" id="perf_core" class="form-control" min="0" max="35" value="0" required>
+                                <input type="number" name="performance_score" id="perf_core" class="form-control" min="0" max="35" value="0" readonly>
+                                <small style="color:#64748b;">Auto from daily average performance</small>
                             </div>
                         </div>
                     </div>
@@ -504,6 +514,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     </div>
                     <input type="hidden" name="emp_id" id="perf_emp_id" value="">
                     <input type="hidden" name="emp_name" id="perf_emp_name_field" value="">
+                    <input type="hidden" id="perf_avg_performance" value="0">
                     <input type="hidden" name="save_performance" value="1">
                 </div>
                 <div class="modal-footer">
@@ -676,14 +687,18 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             const n = parseInt(val, 10);
             return Number.isFinite(n) ? n : 0;
         };
+        const safeFloat = (val) => {
+            const n = parseFloat(val);
+            return Number.isFinite(n) ? n : 0;
+        };
         document.getElementById('perf_absent').value = safe(data.absent);
         document.getElementById('perf_late').value = safe(data.late);
         document.getElementById('perf_task').value = safe(data.task_sheet);
-        document.getElementById('perf_core').value = safe(data.performance_score);
+        document.getElementById('perf_core').value = safeFloat(data.performance_score);
         document.getElementById('perf_dress').value = safe(data.dressing_behaviour);
         document.getElementById('perf_rnd').value = safe(data.rnd);
-        const total = safe(data.total);
-        document.getElementById('perfTotalValue').textContent = total;
+        const total = safeFloat(data.total);
+        document.getElementById('perfTotalValue').textContent = total.toFixed(2);
         updatePerformanceTotal();
     }
 
@@ -719,31 +734,50 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         document.getElementById('perf_emp_id').value = data.emp;
         document.getElementById('perf_emp_name_field').value = data.name;
         document.getElementById('perfEmpName').textContent = data.name;
+        document.getElementById('perf_avg_performance').value = data.avg_perf || 0;
         if (perfMonthSelect) perfMonthSelect.value = defaultPerfMonth;
         if (perfYearSelect) perfYearSelect.value = defaultPerfYear;
         updateMonthYearLabel();
+
+        // Always use average performance (readonly field)
+        const performanceScore = parseFloat(data.avg_perf || '0');
 
         applyPerformanceData({
             absent: data.absent || 0,
             late: data.late || 0,
             task_sheet: data.task_sheet || 0,
-            performance_score: data.performance_score || 0,
+            performance_score: performanceScore,
             dressing_behaviour: data.dressing_behaviour || 0,
             rnd: data.rnd || 0,
-            total: ['absent','late','task_sheet','performance_score','dressing_behaviour','rnd']
+            total: ['absent','late','task_sheet','dressing_behaviour','rnd']
                 .map(k => parseInt(data[k] || '0', 10))
-                .reduce((a, b) => a + (Number.isFinite(b) ? b : 0), 0)
+                .reduce((a, b) => a + (Number.isFinite(b) ? b : 0), 0) + performanceScore
         });
         loadPerformanceForMonth(data.emp);
         $('#performanceModal').modal('show');
     }
 
+    function autoLoadAvgPerformance() {
+        const avgPerf = parseFloat(document.getElementById('perf_avg_performance').value || '0') || 0;
+        if (avgPerf > 0) {
+            document.getElementById('perf_core').value = avgPerf;
+            updatePerformanceTotal();
+        } else {
+            alert('No average daily performance data available for this month.');
+        }
+    }
+
     function updatePerformanceTotal() {
-        const total = ['perf_absent','perf_late','perf_task','perf_core','perf_dress','perf_rnd']
-            .map(id => parseInt(document.getElementById(id).value || '0', 10))
-            .reduce((a, b) => a + b, 0);
+        const absent = parseInt(document.getElementById('perf_absent').value || '0', 10);
+        const late = parseInt(document.getElementById('perf_late').value || '0', 10);
+        const task = parseInt(document.getElementById('perf_task').value || '0', 10);
+        const perf = parseFloat(document.getElementById('perf_core').value || '0');
+        const dress = parseInt(document.getElementById('perf_dress').value || '0', 10);
+        const rnd = parseInt(document.getElementById('perf_rnd').value || '0', 10);
+        
+        const total = absent + late + task + perf + dress + rnd;
         const totalBox = document.getElementById('perfTotalBox');
-        document.getElementById('perfTotalValue').textContent = total;
+        document.getElementById('perfTotalValue').textContent = total.toFixed(2);
         if (total > 100) {
             totalBox.classList.add('alert', 'alert-danger');
         } else {
@@ -757,7 +791,8 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     });
 
     document.getElementById('performanceForm').addEventListener('submit', function(e) {
-        const total = parseInt(document.getElementById('perfTotalValue').textContent, 10);
+        const totalText = document.getElementById('perfTotalValue').textContent;
+        const total = parseFloat(totalText);
         if (total > 100) {
             e.preventDefault();
             alert('Total cannot exceed 100.');
