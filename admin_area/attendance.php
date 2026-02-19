@@ -1,15 +1,33 @@
 <?php
 session_start();
 include("includes/db.php");
-require_once __DIR__ . '/includes/firebase_sync.php';
 
-$db = firebase_db();
+// Optional Firebase sync - only load if file exists
+$db = null;
+if (file_exists(__DIR__ . '/includes/firebase_sync.php')) {
+    require_once __DIR__ . '/includes/firebase_sync.php';
+    try {
+        $db = firebase_db();
+    } catch (Throwable $e) {
+        // Firebase not available, continue without it
+        $db = null;
+    }
+}
 
-// Check admin session
+// Check admin session and load admin row for sidebar
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('login.php','_self')</script>";
     exit;
 }
+$admin_session = $_SESSION['admin_email'];
+$run_a = mysqli_query($con, "SELECT admin_id FROM admins WHERE admin_email='" . mysqli_real_escape_string($con, $admin_session) . "' LIMIT 1");
+if ($run_a && $row_a = mysqli_fetch_assoc($run_a)) {
+    $admin_id = $row_a['admin_id'];
+} else {
+    $admin_id = 0;
+}
+include(__DIR__ . '/includes/admin_permissions.php');
+requireAdminPermission('attendance_view');
 
 // ------------ INPUTS (GET) ------------
 

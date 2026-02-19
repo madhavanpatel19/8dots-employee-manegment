@@ -2,6 +2,20 @@
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('login.php','_self')</script>";
 } else {
+    if (!function_exists('canAdminAccess')) {
+        include(__DIR__ . '/admin_permissions.php');
+    }
+    if (!isset($admin_name) && isset($con) && !empty($_SESSION['admin_email'])) {
+        $email = mysqli_real_escape_string($con, $_SESSION['admin_email']);
+        $res = @mysqli_query($con, "SELECT admin_id, admin_name FROM admins WHERE admin_email='$email' LIMIT 1");
+        if ($res && $row = mysqli_fetch_assoc($res)) {
+            $admin_id = isset($admin_id) ? $admin_id : $row['admin_id'];
+            $admin_name = $row['admin_name'];
+        } else {
+            $admin_name = $_SESSION['admin_email'];
+        }
+    }
+    $header_display_name = isset($admin_name) && $admin_name !== '' ? htmlspecialchars($admin_name) : htmlspecialchars($_SESSION['admin_email']);
 ?>
     <nav class="navbar navbar-inverse navbar-fixed-top"><!-- navbar navbar-inverse navbar-fixed-top Starts -->
         <div class="navbar-header"><!-- navbar-header Starts -->
@@ -16,10 +30,10 @@ if (!isset($_SESSION['admin_email'])) {
         <ul class="nav navbar-right top-nav"><!-- nav navbar-right top-nav Starts -->
             <li class="dropdown"><!-- dropdown Starts -->
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><!-- dropdown-toggle Starts -->
-                    <i class="fa fa-user"></i>
-        
+                    <i class="fa fa-user"></i> <?php echo $header_display_name; ?>
                 </a><!-- dropdown-toggle Ends -->
                 <ul class="dropdown-menu"><!-- dropdown-menu Starts -->
+                    <?php if (canAdminAccess('user_view')): ?>
                     <li><!-- li Starts -->
                         <a href="index.php?user_profile=<?php echo $admin_id; ?>">
                             <i class="fa fa-fw fa-user"></i> Profile
@@ -28,7 +42,9 @@ if (!isset($_SESSION['admin_email'])) {
                     <li><!-- li Starts -->
                         <a href="index.php?view_users">
                             <i class="fa fa-fw fa-users"></i> Users
-                        </a>            
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li class="divider"></li>
                     <li><!-- li Starts -->
                         <a href="logout.php">
@@ -202,45 +218,33 @@ if (!isset($_SESSION['admin_email'])) {
                         <i class="fa fa-fw fa-list"></i> View Orders
                     </a>
                 </li> -->
+                <?php if (canAdminAccess('employee_view') || canAdminAccess('attendance_view') || canAdminAccess('salary_view')): ?>
                 <li><!-- li Starts -->
                     <a href="#" data-toggle="collapse" data-target="#employees">
                         <i class="fa fa-fw fa-users"></i> Employees
                         <i class="fa fa-fw fa-caret-down"></i>
                     </a>
                     <ul id="employees" class="collapse">   
-                        <li>
-                            <a href="index.php?emp_directory"> View Employees </a>
-                        </li>
-                        <li>
-                            <a href="attendance.php"> Attendance </a>
-                        </li>
-                        <li>
-                            <a href="index.php?salary_slip"> Salary Slip </a>
-                        </li>
+                        <?php if (canAdminAccess('employee_view')): ?><li><a href="index.php?emp_directory"> View Employees </a></li><?php endif; ?>
+                        <?php if (canAdminAccess('attendance_view')): ?><li><a href="attendance.php"> Attendance </a></li><?php endif; ?>
+                        <?php if (canAdminAccess('salary_view')): ?><li><a href="index.php?salary_slip"> Salary Slip </a></li><?php endif; ?>
                     </ul>
-                </li><!-- li Ends -->   
+                </li><!-- li Ends -->
+                <?php endif; ?>   
+                <?php if (canAdminAccess('user_view') || canAdminAccess('user_update') || canAdminAccess('user_insert')): ?>
                 <li><!-- li Starts -->
                     <a href="#" data-toggle="collapse" data-target="#users">
                         <i class="fa fa-fw fa-gear"></i> Users
                         <i class="fa fa-fw fa-caret-down"></i>
                     </a>
                     <ul id="users" class="collapse">
-                        <li>
-                            <a href="index.php?insert_user"> Insert User </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_users"> View Users </a>
-                        </li>
-                        <li>
-                            <a href="index.php?user_profile=<?php echo $admin_id; ?>"> Edit Profile </a>
-                        </li>
+                        <?php if (canAdminAccess('user_insert')): ?><li><a href="index.php?insert_user"> Insert User </a></li><?php endif; ?>
+                        <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?view_users"> View Users </a></li><?php endif; ?>
+                        <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?user_profile=<?php echo $admin_id; ?>"> Edit Profile </a></li><?php endif; ?>
                     </ul>
                 </li><!-- li Ends -->
-                 <li><!-- li Starts -->
-                    <a href="index.php?dashboard">
-                        <i class="fa fa-fw fa-gear"></i> settings
-                    </a>
-                </li>
+                <?php endif; ?>
+                
                 <li><!-- li Starts -->
                     <a href="logout.php">
                         <i class="fa fa-fw fa-power-off"></i> Log Out

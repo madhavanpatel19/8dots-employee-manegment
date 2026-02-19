@@ -2,11 +2,13 @@
 session_start();
 include("includes/db.php");
 
-// Check admin session
+// Check admin session and permission
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('login.php','_self')</script>";
     exit;
 }
+include(__DIR__ . '/includes/admin_permissions.php');
+requireAdminPermission('attendance_view');
 
 // Get date range from GET/POST
 $report_type = isset($_GET['report_type']) ? $_GET['report_type'] : (isset($_POST['report_type']) ? $_POST['report_type'] : 'custom');

@@ -18,6 +18,7 @@ if (!isset($_SESSION['admin_email'])) {
     $admin_job = $row_admin['admin_job'];
     $admin_contact = $row_admin['admin_contact'];
     $admin_about = $row_admin['admin_about'];
+    include("includes/admin_permissions.php");
     // $get_products = "select * from products";
     // $run_products = mysqli_query($con, $get_products);
     // $count_products = mysqli_num_rows($run_products);
@@ -52,6 +53,9 @@ if (!isset($_SESSION['admin_email'])) {
             <div id="page-wrapper"><!-- page-wrapper Starts -->
                 <div class="container-fluid"><!-- container-fluid Starts -->
                     <?php
+                    if (isset($_GET['access_denied'])) {
+                        echo '<div class="alert alert-danger"><i class="fa fa-lock"></i> Access denied. You do not have permission to view that page.</div>';
+                    }
                     if (isset($_GET['dashboard'])) {
                         include("dashboard.php");
                     }
@@ -122,18 +126,23 @@ if (!isset($_SESSION['admin_email'])) {
                         include("payment_delete.php");
                     }
                     if (isset($_GET['insert_user'])) {
+                        requireAdminPermission('user_insert');
                         include("insert_user.php");
                     }
                     if (isset($_GET['view_users'])) {
+                        requireAdminPermission('user_view');
                         include("view_users.php");
                     }
                     if (isset($_GET['user_delete'])) {
+                        requireAdminPermission('user_update');
                         include("user_delete.php");
                     }
                     if (isset($_GET['edit_user'])) {
+                        requireAdminPermission('user_update');
                         include("edit_user.php");
                     }
                     if (isset($_GET['user_profile'])) {
+                        requireAdminPermission('user_view');
                         include("user_profile.php");
                     }
                     if (isset($_GET['insert_box'])) {
@@ -254,18 +263,23 @@ if (!isset($_SESSION['admin_email'])) {
                         include("edit_store.php");
                     }
                     if (isset($_GET['add_emp'])) {
+                        requireAdminPermission('employee_insert');
                         include("add_emp.php");
                     }
                     if (isset($_GET['emp_directory'])) {
+                        requireAdminPermission('employee_view');
                         include("emp_directory.php");
                     }
                     if (isset($_GET['edit_emp'])) {
+                        requireAdminPermission('employee_update');
                         include("edit_emp.php");
                     }
                     if (isset($_GET['attendance'])) {
+                        requireAdminPermission('attendance_view');
                         include("attendance.php");
                     }
                     if (isset($_GET['salary_slip'])) {
+                        requireAdminPermission('salary_view');
                         include("salary_slip.php");
                     }
                     ?>

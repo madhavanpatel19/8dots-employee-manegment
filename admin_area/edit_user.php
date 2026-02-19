@@ -4,18 +4,23 @@ if (!isset($_SESSION['admin_email'])) {
     exit;
 }
 include 'connection.php';
+if (!function_exists('isSuperAdmin')) {
+    include __DIR__ . '/includes/admin_permissions.php';
+}
+if (!function_exists('getUsedAdminPermissions')) {
+    require_once __DIR__ . '/../settings/permissions/permissions.php';
+}
 if (!isset($_GET['edit_user'])) {
     header('Location: view_users.php');
     exit;
 }
-$edit_id = intval($_GET['edit_user']);
-$get_admin = "select * from admins where admin_id='$edit_id'";
-$run_admin = mysqli_query($con, $get_admin);
+$edit_id = (int)$_GET['edit_user'];
+$run_admin = mysqli_query($con, "SELECT * FROM admins WHERE admin_id=" . $edit_id . " LIMIT 1");
 if (!$run_admin || mysqli_num_rows($run_admin) == 0) {
     echo "<div class='alert alert-danger'>User not found.</div>";
     exit;
 }
-$row_admin = mysqli_fetch_array($run_admin);
+$row_admin = mysqli_fetch_assoc($run_admin);
 $admin_id = $row_admin['admin_id'];
 $admin_name = $row_admin['admin_name'];
 $admin_email = $row_admin['admin_email'];
@@ -26,6 +31,12 @@ $admin_country = $row_admin['admin_country'];
 $admin_job = $row_admin['admin_job'];
 $admin_contact = $row_admin['admin_contact'];
 $admin_about = $row_admin['admin_about'];
+$current_super = isset($row_admin['is_super_admin']) ? (int)$row_admin['is_super_admin'] : 0;
+$perms_raw = isset($row_admin['permissions']) ? trim((string)$row_admin['permissions']) : '';
+$current_perms = [];
+if ($perms_raw !== '') {
+    $current_perms = array_values(array_filter(array_map('trim', explode(',', $perms_raw)), function($p) { return $p !== ''; }));
+}
 if (isset($_POST['update'])) {
     $admin_name = $_POST['admin_name'];
     $admin_email = $_POST['admin_email'];
@@ -41,7 +52,21 @@ if (isset($_POST['update'])) {
     } else {
         $admin_image = $new_admin_image;
     }
-    $update_admin = "update admins set admin_name='$admin_name',admin_email='$admin_email',admin_pass='$admin_pass',admin_image='$admin_image',admin_contact='$admin_contact',admin_country='$admin_country',admin_job='$admin_job',admin_about='$admin_about' where admin_id='$admin_id'";
+    $permissions = '';
+    if (!empty($_POST['permissions']) && is_array($_POST['permissions'])) {
+        $permissions = implode(',', array_map(function($p) use ($con) { return mysqli_real_escape_string($con, $p); }, $_POST['permissions']));
+    }
+    $is_super = (isset($_POST['is_super_admin']) && $_POST['is_super_admin'] == '1') ? 1 : 0;
+    $perm_esc = mysqli_real_escape_string($con, $permissions);
+    $name_esc = mysqli_real_escape_string($con, $admin_name);
+    $email_esc = mysqli_real_escape_string($con, $admin_email);
+    $pass_esc = mysqli_real_escape_string($con, $admin_pass);
+    $img_esc = mysqli_real_escape_string($con, $admin_image);
+    $contact_esc = mysqli_real_escape_string($con, $admin_contact);
+    $country_esc = mysqli_real_escape_string($con, $admin_country);
+    $job_esc = mysqli_real_escape_string($con, $admin_job);
+    $about_esc = mysqli_real_escape_string($con, $admin_about);
+    $update_admin = "UPDATE admins SET admin_name='$name_esc', admin_email='$email_esc', admin_pass='$pass_esc', admin_image='$img_esc', admin_contact='$contact_esc', admin_country='$country_esc', admin_job='$job_esc', admin_about='$about_esc', permissions='$perm_esc', is_super_admin='$is_super' WHERE admin_id='$admin_id'";
     $run_admin = mysqli_query($con, $update_admin);
     if ($run_admin) {
         echo "<script>alert('User Has Been Updated successfully')</script>";
@@ -122,6 +147,103 @@ if (isset($_POST['update'])) {
                             <img src="admin_images/<?php echo htmlspecialchars($admin_image); ?>" width="70" height="70">
                         </div>
                     </div>
+                    <?php if (function_exists('isSuperAdmin') && isSuperAdmin()): ?>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Super Admin: </label>
+                        <div class="col-md-6">
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="is_super_admin" value="1" <?php echo $current_super ? ' checked="checked"' : ''; ?>>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Full access (see and edit all)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Permissions: </label>
+                        <div class="col-md-6">
+                            <div class="permissions-container">
+                                <?php foreach (function_exists('getUsedAdminPermissions') ? getUsedAdminPermissions() : getAllPermissions() as $perm): ?>
+                                <?php $is_checked = in_array($perm, $current_perms, true); ?>
+                                <div class="permission-item">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" name="permissions[]" value="<?php echo htmlspecialchars($perm); ?>"<?php echo $is_checked ? ' checked="checked"' : ''; ?>>
+                                        <span class="toggle-slider"></span>
+                                        <span class="toggle-label"><?php echo htmlspecialchars(function_exists('getPermissionLabel') ? getPermissionLabel($perm) : ucwords(str_replace('_', ' ', $perm))); ?></span>
+                                    </label>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                    .permissions-container {
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        padding: 15px;
+                        background-color: #f9f9f9;
+                    }
+                    .permission-item {
+                        margin-bottom: 12px;
+                        padding-bottom: 12px;
+                        border-bottom: 1px solid #e0e0e0;
+                    }
+                    .permission-item:last-child {
+                        margin-bottom: 0;
+                        padding-bottom: 0;
+                        border-bottom: none;
+                    }
+                    .toggle-switch {
+                        position: relative;
+                        display: inline-block;
+                        width: 100%;
+                        cursor: pointer;
+                    }
+                    .toggle-switch input[type="checkbox"] {
+                        opacity: 0;
+                        width: 0;
+                        height: 0;
+                    }
+                    .toggle-slider {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: #ccc;
+                        transition: .4s;
+                        border-radius: 34px;
+                        width: 50px;
+                        height: 24px;
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin-right: 10px;
+                    }
+                    .toggle-slider:before {
+                        position: absolute;
+                        content: "";
+                        height: 18px;
+                        width: 18px;
+                        left: 3px;
+                        bottom: 3px;
+                        background-color: white;
+                        transition: .4s;
+                        border-radius: 50%;
+                    }
+                    .toggle-switch input:checked + .toggle-slider {
+                        background-color: #5cb85c;
+                    }
+                    .toggle-switch input:checked + .toggle-slider:before {
+                        transform: translateX(26px);
+                    }
+                    .toggle-label {
+                        margin-left: 60px;
+                        font-weight: normal;
+                        display: inline-block;
+                        vertical-align: middle;
+                        line-height: 24px;
+                    }
+                    </style>
                     <div class="form-group">
                         <label class="col-md-3 control-label"></label>
                         <div class="col-md-6">
