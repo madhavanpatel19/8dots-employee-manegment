@@ -130,6 +130,9 @@ if (!isset($_SESSION['admin_email'])) {
                     if (isset($_GET['user_delete'])) {
                         include("user_delete.php");
                     }
+                    if (isset($_GET['edit_user'])) {
+                        include("edit_user.php");
+                    }
                     if (isset($_GET['user_profile'])) {
                         include("user_profile.php");
                     }

@@ -236,6 +236,11 @@ if (!isset($_SESSION['admin_email'])) {
                         </li>
                     </ul>
                 </li><!-- li Ends -->
+                 <li><!-- li Starts -->
+                    <a href="index.php?dashboard">
+                        <i class="fa fa-fw fa-gear"></i> settings
+                    </a>
+                </li>
                 <li><!-- li Starts -->
                     <a href="logout.php">
                         <i class="fa fa-fw fa-power-off"></i> Log Out

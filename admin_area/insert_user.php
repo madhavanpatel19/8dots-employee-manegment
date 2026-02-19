@@ -4,8 +4,6 @@ if (!isset($_SESSION['admin_email'])) {
 } else {
 ?>
 <?php
-require_once __DIR__ . '/includes/firebase_sync.php';
-$db = firebase_db();
 ?>
     <div class='row'><!-- 1  row Starts -->
         <div class='col-lg-12'><!-- col-lg-12 Starts -->
@@ -102,13 +100,6 @@ $db = firebase_db();
         if ($run_admin) {
             $new_id = mysqli_insert_id($con);
             $rowRes = mysqli_query($con, "SELECT * FROM admins WHERE admin_id='$new_id' LIMIT 1");
-            if ($rowRes && $row = mysqli_fetch_assoc($rowRes)) {
-                try {
-                    firebase_sync_row($db, 'admins', (string)$new_id, $row);
-                } catch (Throwable $e) {
-                    // ignore Firebase sync failure
-                }
-            }
             echo "<script>alert('One User Has Been Inserted successfully')</script>";
             echo "<script>window.open('index.php?view_users','_self')</script>";
         }

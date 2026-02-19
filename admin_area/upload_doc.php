@@ -1,9 +1,6 @@
 <?php 
 session_start();
 include 'connection.php';
-require_once __DIR__ . '/includes/firebase_sync.php';
-
-$db = firebase_db();
 
 if (!isset($_GET['id'])) {
   die("Invalid request");
@@ -31,7 +28,6 @@ if (isset($_POST['upload'])) {
           'file_name' => $filename,
           'uploaded_at' => time(),
         ];
-        firebase_sync_row($db, 'employee_documents', (string)$docId, $row);
         $uploaded++;
       }
     }

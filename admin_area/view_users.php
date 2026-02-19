@@ -30,6 +30,7 @@ if (!isset($_SESSION['admin_email'])) {
                                     <th>User Image:</th>
                                     <th>User Country:</th>
                                     <th>User Job:</th>
+                                    <th>Edit User:</th>
                                     <th>Delete User:</th>
                                 </tr>
                             </thead><!-- thead Ends -->
@@ -51,6 +52,11 @@ if (!isset($_SESSION['admin_email'])) {
                                         <td><img src="admin_images/<?php echo $admin_image; ?>" width="60" height="60"></td>
                                         <td><?php echo $admin_country; ?></td>
                                         <td><?php echo $admin_job; ?></td>
+                                        <td>
+                                            <a href="index.php?edit_user=<?php echo $admin_id; ?>">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="index.php?user_delete=<?php echo $admin_id; ?>">
                                                 <i class="fa fa-trash-o"></i> Delete

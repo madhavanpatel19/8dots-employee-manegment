@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/connection.php';
-require_once __DIR__ . '/includes/firebase_sync.php';
 
-$db = firebase_db();
+
+
 ?>
 
 <div class="row">
@@ -233,11 +233,7 @@ if (isset($_POST['submit'])) {
         $last_id = mysqli_insert_id($con);
         $rowRes = mysqli_query($con, "SELECT * FROM emp_list WHERE id = '$last_id' LIMIT 1");
         if ($rowRes && $row = mysqli_fetch_assoc($rowRes)) {
-            try {
-                firebase_sync_row($db, 'emp_list', (string)$last_id, $row);
-            } catch (Throwable $e) {
-                // continue even if Firebase sync fails
-            }
+          
         }
         echo "<script>alert('Employee added successfully'); window.location.href='index.php?emp_directory';</script>";
     } else {

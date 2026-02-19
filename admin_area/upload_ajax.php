@@ -1,8 +1,5 @@
 <?php
 include 'connection.php';
-require_once __DIR__ . '/includes/firebase_sync.php';
-
-$db = firebase_db();
 
 if (isset($_POST['emp_id'])) {
     $id = intval($_POST['emp_id']);
@@ -21,7 +18,6 @@ if (isset($_POST['emp_id'])) {
                     'file_name' => $filename,
                     'uploaded_at' => time(),
                 ];
-                firebase_sync_row($db, 'employee_documents', (string)$docId, $row);
             }
         }
         echo "success";

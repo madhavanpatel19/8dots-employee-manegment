@@ -1,8 +1,6 @@
 <?php
 include 'connection.php';
-require_once __DIR__ . '/includes/firebase_sync.php';
-
-$db = firebase_db();  
+  
 
 $employee = null;
 if (isset($_GET['id'])) {
@@ -62,11 +60,7 @@ if (isset($_POST['update'])) {
     if ($result) {
         $rowRes = mysqli_query($con, "SELECT * FROM emp_list WHERE id = '$id' LIMIT 1");
         if ($rowRes && $row = mysqli_fetch_assoc($rowRes)) {
-            try {
-                firebase_sync_row($db, 'emp_list', (string)$id, $row);
-            } catch (Throwable $e) {
-                // ignore Firebase sync failure to not block UI
-            }
+           
         }
         echo "<script>
           alert('Employee updated successfully');
