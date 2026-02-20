@@ -703,7 +703,11 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                         $absent_count  = 0;
                                         $leave_count   = 0;
                                         $marked_days   = 0;
-
+                                        $today = date('Y-m-d');
+                                        $can_edit_today = false;
+                                        if (function_exists('canAdminAccess')) {
+                                            $can_edit_today = canAdminAccess('attendance_edit');
+                                        }
                                         for ($day = 1; $day <= $days_in_month; $day++) {
                                             $date     = sprintf('%04d-%02d-%02d', $current_year, $current_month, $day);
                                             $day_name = date('D', strtotime($date));
@@ -736,7 +740,12 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             echo '<tr>';
                                             echo '<td><strong>' . date('d-M', strtotime($date)) . '</strong></td>';
                                             echo '<td>' . $day_name . '</td>';
-                                            echo '<td class="date-cell ' . $status_class . '" onclick="openModal(' . $selected_emp_id . ', \'' . $date . '\', \'' . $checkin . '\')" title="Click to mark attendance">' . $status . '</td>';
+                                            // Lock editing for today if not permitted
+                                            if ($date === $today && !$can_edit_today) {
+                                                echo '<td class="date-cell ' . $status_class . '" title="Editing locked by admin permission">' . $status . '</td>';
+                                            } else {
+                                                echo '<td class="date-cell ' . $status_class . '" onclick="openModal(' . $selected_emp_id . ', \'" . $date . "\', \'" . $checkin . "\')" title="Click to mark attendance">' . $status . '</td>';
+                                            }
                                             echo '<td>' . ($checkin ? $checkin : '-') . '</td>';
                                             echo '<td>' . ($checkout ? $checkout : '-') . '</td>';
                                             echo '<td>' . ($perf !== '' ? $perf : '-') . '</td>';

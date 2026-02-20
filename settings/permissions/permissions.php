@@ -26,6 +26,7 @@ if (!function_exists('getAllPermissions')) {
             'attendance_delete',
             'attendance_view',
             'attendance_no_view',
+            'attendance_edit',
 
             'salary_insert',
             'salary_update',
@@ -55,6 +56,7 @@ if (!function_exists('getUsedAdminPermissions')) {
             'employee_view',
 
             'attendance_view',
+            'attendance_edit',
 
             'salary_view',
 
@@ -62,6 +64,16 @@ if (!function_exists('getUsedAdminPermissions')) {
             'user_update',
             'user_view',
         ];
+    /*
+    |--------------------------------------------------------------------------
+    | Check If User Has Attendance Edit Permission
+    |--------------------------------------------------------------------------
+    */
+    if (!function_exists('userCanEditAttendance')) {
+        function userCanEditAttendance($userId) {
+            return userHasPermission($userId, 'attendance_edit');
+        }
+    }
     }
 }
 
@@ -84,6 +96,7 @@ if (!function_exists('getPermissionLabel')) {
 function getUserRole($userId) {
     global $con;
 
+    $roleId = null;
     $stmt = $con->prepare("SELECT role_id FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
@@ -144,6 +157,16 @@ function userHasPermission($userId, $permission) {
     $roleId = getUserRole($userId);
     $permissions = getRolePermissions($roleId);
 
+    // If user is admin, allow attendance_edit, but only attendance_view if not editing
+    if (isAdmin($userId)) {
+        if ($permission === 'attendance_edit') {
+            return true;
+        }
+        if ($permission === 'attendance_view') {
+            // Only allow view if not editing
+            return !isset($_GET['edit']) || !$_GET['edit'];
+        }
+    }
     return in_array($permission, $permissions);
 }
 
@@ -164,13 +187,14 @@ function isAdmin($userId) {
         WHERE u.id = ?
     ");
 
+    $roleName = null;
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $stmt->bind_result($roleName);
     $stmt->fetch();
     $stmt->close();
 
-    return strtolower($roleName) === 'admin';
+    return strtolower((string)$roleName) === 'admin';
 }
 
 /*

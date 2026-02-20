@@ -77,7 +77,14 @@ function canAdminAccess($permission) {
     return false;
 }
 
-function requireAdminPermission($permission) {
+function requireAdminPermission($permission, $attendanceDate = null) {
+    // Special case: allow editing today's attendance for all admins
+    if ($permission === 'attendance_edit' && $attendanceDate !== null) {
+        $today = date('Y-m-d');
+        if ($attendanceDate === $today) {
+            return;
+        }
+    }
     if (canAdminAccess($permission)) {
         return;
     }
