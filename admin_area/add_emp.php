@@ -1,8 +1,11 @@
+
 <?php
 require_once __DIR__ . '/connection.php';
-
-
-
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require_once __DIR__ . '/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/PHPMailer/src/SMTP.php';
 ?>
 
 <div class="row">
@@ -217,6 +220,9 @@ if (isset($_POST['submit'])) {
     $deductions = mysqli_real_escape_string($con, $_POST['deductions']);
     $salary = mysqli_real_escape_string($con, $_POST['salary']);
 
+    // Generate random password
+    $plain_password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
+
     // Server-side validation: join date must not be in the future
     if (strtotime($joinDate) > strtotime(date('Y-m-d'))) {
         echo "<script>alert('Join date cannot be in the future. Please select a valid date.'); window.history.back();</script>";
@@ -224,18 +230,32 @@ if (isset($_POST['submit'])) {
     }
 
     $query = "INSERT INTO emp_list 
-              (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary) 
+              (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary, password) 
               VALUES 
-              ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic_salary', '$hra', '$allowance', '$deductions', '$salary')";
+              ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic_salary', '$hra', '$allowance', '$deductions', '$salary', '$plain_password')";
 
     $result = mysqli_query($con, $query);
     if ($result) {
-        $last_id = mysqli_insert_id($con);
-        $rowRes = mysqli_query($con, "SELECT * FROM emp_list WHERE id = '$last_id' LIMIT 1");
-        if ($rowRes && $row = mysqli_fetch_assoc($rowRes)) {
-          
+        // Send password to employee email
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'madhavanpatel19@gmail.com'; // your gmail
+            $mail->Password = 'yawi nqpw wbhp icrx';   // gmail app password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->setFrom('madhavanpatel19@gmail.com', '8DOTS');
+            $mail->addAddress($email);
+            $mail->isHTML(true);
+            $mail->Subject = 'Your 8DOTS Employee Login Password';
+            $mail->Body = "<h3>Welcome to 8DOTS!</h3><p>Your login password is: <b>$plain_password</b></p><p>Please use this password to log in at <a href='http://yourdomain.com/admin_area/emp-login.php'>Employee Login</a>.</p>";
+            $mail->send();
+        } catch (Exception $e) {
+            // Optionally log or display mail error
         }
-        echo "<script>alert('Employee added successfully'); window.location.href='index.php?emp_directory';</script>";
+        echo "<script>alert('Employee added successfully and password sent to email.'); window.location.href='index.php?emp_directory';</script>";
     } else {
         echo "<script>alert('Error adding employee: " . addslashes(mysqli_error($con)) . "');</script>";
     }

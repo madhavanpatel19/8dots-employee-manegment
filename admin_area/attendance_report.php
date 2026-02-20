@@ -110,11 +110,11 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
         $filename = 'Attendance_Report_' . $from_label . '.html';
         $period_text = 'Date: ' . htmlspecialchars($from_label);
         // include check-in and check-out times for daily reports
-        $table_headers = '<th>Employee ID</th><th>Employee Name</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Performance</th><th>Remarks</th>';
+        $table_headers = '<th>Employee ID</th><th>Employee Name</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Performance</th><th>Remarks</th><th>Created At</th>';
     } else {
         $filename = 'Attendance_Report_' . $from_label . '_to_' . $to_label . '.html';
         $period_text = 'Period: <strong>' . htmlspecialchars($from_label) . ' to ' . htmlspecialchars($to_label) . '</strong>';
-        $table_headers = '<th>Employee ID</th><th>Employee Name</th><th>Present</th><th>Absent</th><th>Leave</th><th>Total Days</th>';
+        $table_headers = '<th>Employee ID</th><th>Employee Name</th><th>Present</th><th>Absent</th><th>Leave</th><th>Total Days</th><th>Created At</th>';
     }
 
     header('Content-Type: text/html; charset=utf-8');
@@ -186,6 +186,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             $remarks = '-';
             $check_in = '-';
             $check_out = '-';
+            $created_at = '-';
 
             // Check if there's attendance record for this employee on this date
             if (isset($report_data[$emp_id][$from_date])) {
@@ -194,9 +195,10 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                 $remarks = !empty($att['remarks']) ? htmlspecialchars($att['remarks']) : '-';
                 $check_in = !empty($att['check_in_time']) ? $att['check_in_time'] : '-';
                 $check_out = !empty($att['check_out_time']) ? $att['check_out_time'] : '-';
+                $created_at = !empty($att['created_at']) ? date('Y-m-d H:i:s', strtotime($att['created_at'])) : '-';
 
                 $perfout = isset($att['performance']) && $att['performance'] !== null ? $att['performance'] : '-';
-            if ($att['status'] === 'present') {
+                if ($att['status'] === 'present') {
                     $status = '<span class="status-present">' . $status . '</span>';
                 } elseif ($att['status'] === 'absent') {
                     $status = '<span class="status-absent">' . $status . '</span>';
@@ -213,6 +215,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             echo '<td>' . $status . '</td>';
             echo '<td>' . $perfout . '</td>';
             echo '<td>' . $remarks . '</td>';
+            echo '<td>' . $created_at . '</td>';
             echo '</tr>';
         }
     } else {
@@ -232,6 +235,23 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             $total_absent += $absent;
             $total_leave += $leave;
 
+            // Find the earliest created_at for this employee in the range
+            $created_at = '-';
+            if (isset($report_data[$emp_id])) {
+                $min_created_at = null;
+                foreach ($report_data[$emp_id] as $att_row) {
+                    if (!empty($att_row['created_at'])) {
+                        $row_created = strtotime($att_row['created_at']);
+                        if ($min_created_at === null || $row_created < $min_created_at) {
+                            $min_created_at = $row_created;
+                        }
+                    }
+                }
+                if ($min_created_at !== null) {
+                    $created_at = date('Y-m-d H:i:s', $min_created_at);
+                }
+            }
+
             echo '<tr>';
             echo '<td>' . $emp_id . '</td>';
             echo '<td>' . htmlspecialchars($emp['name']) . '</td>';
@@ -239,21 +259,22 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             echo '<td class="status-absent">' . $absent . '</td>';
             echo '<td class="status-leave">' . $leave . '</td>';
             echo '<td>' . $total_days . '</td>';
+            echo '<td>' . $created_at . '</td>';
             echo '</tr>';
         }
-
-        echo '</tbody>';
-        echo '<tfoot>';
-        echo '<tr>';
-        echo '<td colspan="2">TOTAL</td>';
-        echo '<td class="status-present">' . $total_present . '</td>';
-        echo '<td class="status-absent">' . $total_absent . '</td>';
-        echo '<td class="status-leave">' . $total_leave . '</td>';
-        echo '<td>' . ($total_present + $total_absent + $total_leave) . '</td>';
-        echo '</tr>';
-        echo '</tfoot>';
     }
-
+        echo '</tbody>';
+        if ($report_type === "custom") {
+            echo '<tfoot>';
+            echo '<tr>';
+            echo '<td colspan="2">TOTAL</td>';
+            echo '<td class="status-present">' . $total_present . '</td>';
+            echo '<td class="status-absent">' . $total_absent . '</td>';
+            echo '<td class="status-leave">' . $total_leave . '</td>';
+            echo '<td>' . ($total_present + $total_absent + $total_leave) . '</td>';
+            echo '</tr>';
+            echo '</tfoot>';
+        }
     echo '</tbody>';
     echo '</table>';
 
@@ -645,12 +666,12 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                             <?php if ($report_type === 'daily'): ?>
                                                 <th>Remarks</th>
                                             <?php else: ?>
-
                                                 <th style="text-align:center;">Present</th>
                                                 <th style="text-align:center;">Absent</th>
                                                 <th style="text-align:center;">Leave</th>
                                                 <th style="text-align:center;">Total Days</th>
                                             <?php endif; ?>
+                                            <th>Created At</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -668,6 +689,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 $status_class = 'label-default';
                                                 $check_in = '-';
                                                 $check_out = '-';
+                                                $created_at = '-';
 
                                                 // Check if there's attendance record for this employee on this date
                                                 if (isset($report_data[$emp_id][$single_date])) {
@@ -676,6 +698,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                     $remarks = !empty($att['remarks']) ? htmlspecialchars($att['remarks']) : '-';
                                                     $check_in = !empty($att['check_in_time']) ? $att['check_in_time'] : '-';
                                                     $check_out = !empty($att['check_out_time']) ? $att['check_out_time'] : '-';
+                                                    $created_at = !empty($att['created_at']) ? date('Y-m-d H:i:s', strtotime($att['created_at'])) : '-';
 
                                                     if ($att['status'] === 'present') {
                                                         $status_class = 'label-success';
@@ -693,6 +716,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 echo '<td>' . htmlspecialchars($check_out) . '</td>';
                                                 echo '<td style="text-align:center;"><span class="label ' . $status_class . '">' . $status . '</span></td>';
                                                 echo '<td>' . $remarks . '</td>';
+                                                echo '<td>' . $created_at . '</td>';
                                                 echo '</tr>';
                                             }
                                         else:
@@ -708,14 +732,31 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 $total_absent += $absent;
                                                 $total_leave += $leave;
 
+                                                // Find the earliest created_at for this employee in the range
+                                                $created_at = '-';
+                                                if (isset($report_data[$emp_id])) {
+                                                    $min_created_at = null;
+                                                    foreach ($report_data[$emp_id] as $att_row) {
+                                                        if (!empty($att_row['created_at'])) {
+                                                            $row_created = strtotime($att_row['created_at']);
+                                                            if ($min_created_at === null || $row_created < $min_created_at) {
+                                                                $min_created_at = $row_created;
+                                                            }
+                                                        }
+                                                    }
+                                                    if ($min_created_at !== null) {
+                                                        $created_at = date('Y-m-d H:i:s', $min_created_at);
+                                                    }
+                                                }
+
                                                 echo '<tr>';
                                                 echo '<td>' . $emp_id . '</td>';
                                                 echo '<td>' . htmlspecialchars($emp['name']) . '</td>';
-                                                echo '<td style="text-align:center;"></td>';
                                                 echo '<td style="text-align:center; color:#27ae60; font-weight:bold;">' . $present . '</td>';
                                                 echo '<td style="text-align:center; color:#e74c3c; font-weight:bold;">' . $absent . '</td>';
                                                 echo '<td style="text-align:center; color:#f39c12; font-weight:bold;">' . $leave . '</td>';
                                                 echo '<td style="text-align:center;">' . $total_days . '</td>';
+                                                echo '<td>' . $created_at . '</td>';
                                                 echo '</tr>';
                                             }
                                         endif;

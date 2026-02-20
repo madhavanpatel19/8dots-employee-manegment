@@ -2,17 +2,7 @@
 session_start();
 include("includes/db.php");
 
-// Optional Firebase sync - only load if file exists
-$db = null;
-if (file_exists(__DIR__ . '/includes/firebase_sync.php')) {
-    require_once __DIR__ . '/includes/firebase_sync.php';
-    try {
-        $db = firebase_db();
-    } catch (Throwable $e) {
-        // Firebase not available, continue without it
-        $db = null;
-    }
-}
+
 
 // Check admin session and load admin row for sidebar
 if (!isset($_SESSION['admin_email'])) {
@@ -206,28 +196,20 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
         if ($perf_val !== null) {
             $insert .= ", performance";
         }
+        $insert .= ", created_at";
         $insert .= ") 
                    VALUES ('$eid', '$date', " . ($time_in !== null ? "'$time_in'" : "NULL") . ", " . ($time_out !== null ? "'$time_out'" : "NULL") . ", '$st', '$rm'";
         if ($perf_val !== null) {
             $insert .= ", '$perf_val'";
         }
-        $insert .= ")";
+        $insert .= ", NOW())";
         $ok = mysqli_query($con, $insert);
         if ($ok) {
             $row_id = (int)mysqli_insert_id($con);
         }
     }
 
-    if ($ok && $row_id !== null && isset($db)) {
-        $rowRes = mysqli_query($con, "SELECT * FROM attendance WHERE id='{$row_id}' LIMIT 1");
-        if ($rowRes && $row = mysqli_fetch_assoc($rowRes)) {
-            try {
-                firebase_sync_row($db, 'attendance', (string)$row_id, $row);
-            } catch (Throwable $e) {
-                // do not interrupt flow if Firebase fails
-            }
-        }
-    }
+
 
     return $ok;
 }
@@ -711,6 +693,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             <th>Check-in</th>
                                             <th>Check-out</th>
                                             <th>Performance</th>
+                                            <th>created_at</th>
                                             <th>Remarks</th>
                                         </tr>
                                     </thead>
@@ -736,6 +719,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 $remarks      = htmlspecialchars($attendance_data[$date]['remarks'] ?? '');
                                                 $checkin      = htmlspecialchars($attendance_data[$date]['check_in_time'] ?? '');
                                                 $checkout     = htmlspecialchars($attendance_data[$date]['check_out_time'] ?? '');
+                                                $created_at   = htmlspecialchars($attendance_data[$date]['created_at'] ?? '');
                                                 $perf         = htmlspecialchars($attendance_data[$date]['performance'] ?? '');
                                                 $marked_days++;
 
@@ -746,6 +730,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 $status = '-';
                                                 $checkin = '';
                                                 $checkout = '';
+                                                $created_at = '';
                                             }
 
                                             echo '<tr>';
@@ -755,6 +740,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             echo '<td>' . ($checkin ? $checkin : '-') . '</td>';
                                             echo '<td>' . ($checkout ? $checkout : '-') . '</td>';
                                             echo '<td>' . ($perf !== '' ? $perf : '-') . '</td>';
+                                            echo '<td>' . ($created_at ? $created_at : '-') . '</td>';
                                             echo '<td class="remarks-cell">' . ($remarks ? $remarks : '-') . '</td>';
                                             echo '</tr>';
                                         }

@@ -1,18 +1,19 @@
 <?php
+session_start();
 include 'connection.php';
 $errorFields = [];
 
-// Fetch employees for dropdown
-$employees = [];
-$empRes = mysqli_query($con, "SELECT id, name FROM emp_list ORDER BY name ASC");
-if ($empRes && mysqli_num_rows($empRes) > 0) {
-    while ($row = mysqli_fetch_assoc($empRes)) {
-        $employees[] = $row;
-    }
+// Only allow access if logged in
+if (!isset($_SESSION['emp_id']) || !isset($_SESSION['emp_name'])) {
+    header('Location: emp-login.php');
+    exit();
 }
 
+$emp_id = $_SESSION['emp_id'];
+$emp_name = $_SESSION['emp_name'];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $required = ['who', 'date', 'start_time', 'end_time', 'task'];
+    $required = ['date', 'start_time', 'end_time', 'task'];
     foreach ($required as $field) {
         if (empty($_POST[$field])) {
             $errorFields[] = $field;
@@ -21,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($errorFields)) {
         // Insert into attendance table
-        $emp_id = (int)$_POST['who'];
         $attendance_date = mysqli_real_escape_string($con, $_POST['date']);
         $check_in_time = mysqli_real_escape_string($con, $_POST['start_time']);
         $check_out_time = mysqli_real_escape_string($con, $_POST['end_time']);
@@ -48,189 +48,178 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>8DOTS - Worksheet</title>
     <meta charset="UTF-8">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #ede7f6;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #ffffff, #89888b);
+        min-height: 100vh;
+    }
 
-        .top-bar {
-            background-color: #673ab7;
-            height: 19px;
-        }
+    .form-container {
+        max-width: 750px;
+        margin: 40px auto;
+        padding: 20px;
+    }
 
-        .form-container {
-            max-width: 720px;
-            margin: -11px auto 50px;
-        }
+    .form-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: 0.3s ease;
+    }
 
-        .form-card {
-            background: #fff;
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-        }
+    .form-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
 
-        h1 {
-            margin: 0;
-            font-size: 30px;
-            font-weight: 500;
-        }
+    h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+    }
 
-        .subtitle {
-            color: #5f6368;
-            margin-top: 6px;
-            font-size: 15px;
-        }
+    .subtitle {
+        color: #777;
+        margin-top: 6px;
+        font-size: 15px;
+    }
 
-        .required-note {
-            color: #e38f8f;
-            font-size: 13px;
-            margin-top: 10px;
-        }
+    label {
+        font-size: 15px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 12px;
+        color: #444;
+    }
 
-        label {
-            font-size: 16px;
-            font-weight: 500;
-            display: block;
-            margin-bottom: 15px;
-        }
+    .required {
+        color: #e53935;
+    }
 
-        .required {
-            color: #f55050;
-        }
+    input,
+    textarea {
+        width: 20%;
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: 0.3s;
+        background: #f9f9f9;
+    }
 
-        input,
-        select,
-        textarea {
-            width: 20%;
-            border: none;
-            border-bottom: 1px solid #dadce0;
-            padding: 8px 0;
-            font-size: 15px;
-            background: transparent;
-        }
+    input:focus,
+    textarea:focus {
+        border-color: #673ab7;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(103,58,183,0.1);
+        outline: none;
+    }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-bottom: 2px solid #673ab7;
-        }
+    textarea {
+        resize: none;
+        height: 20px;
+    }
 
-        textarea {
-            resize: none;
-            height: 20px;
-        }
+    .button-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 
-        .error input,
-        .error select,
-        .error textarea {
-            border-bottom: 2px solid #eeeeee !important;
-        }
+    .btn-submit {
+        background: linear-gradient(135deg, #3ab73f, #349f3a);
+        color: white;
+        padding: 12px 28px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
 
-        .error-text {
-            color: #eeeeee;
-            font-size: 13px;
-            margin-top: 8px;
-        }
+    .btn-submit:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
 
+    .logout-btn a {
+        text-decoration: none;
+        background: #e53935;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .logout-btn a:hover {
+        background: #c62828;
+    }
+
+    .clear-link {
+        color: #673ab7;
+        font-size: 14px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .clear-link:hover {
+        text-decoration: underline;
+    }
+
+    .success-message {
+        color: #2e7d32;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .input-error {
+        border: 1px solid #e53935 !important;
+        background: #fff3f3;
+    }
+
+    @media (max-width: 600px) {
         .button-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: stretch;
         }
 
-        .btn-submit {
-            background-color: #673ab7;
-            color: white;
-            padding: 10px 28px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-submit:hover {
-            background-color: #5e35b1;
-        }
-
-        .clear-link {
-            color: #673ab7;
-            font-size: 14px;
-            text-decoration: none;
-        }
-
-        .clear-link:hover {
-            text-decoration: underline;
-        }
-
-        .success-message {
-            color: green;
-            font-size: 15px;
-        }
-
-        .select-wrapper {
-            position: relative;
-            width: 250px;
-            /* same compact width like Google Form */
-        }
-
-        .select-wrapper select {
+        .btn-submit,
+        .logout-btn a {
             width: 100%;
-            padding: 10px 35px 10px 12px;
-            font-size: 14px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            background-color: #f8f9fa;
-            appearance: none;
-            cursor: pointer;
+            text-align: center;
         }
-
-        /* Custom arrow */
-        .select-wrapper::after {
-            content: "▾";
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            color: #5f6368;
-            pointer-events: none;
-        }
-
-        /* Focus style */
-        .select-wrapper select:focus {
-            outline: none;
-            border: 2px solid #673ab7;
-            background-color: #fff;
-        }
-
-        /* Error style */
-        .error .select-wrapper select {
-            border: 2px solid #eeeeee;
-            background-color: #fff;
-        }
-
-        .input-error {
-            border-bottom: 2px solid #e38f8f !important;
-            background-color: #fffbe6;
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>
 
-    <div class="top-bar"></div>
+
 
     <div class="form-container">
 
         <div class="form-card">
             <h1>8DOTS - Worksheet</h1>
-            <div class="subtitle">Daily Activity</div>
-            <div class="required-note">* Indicates required question</div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div class="subtitle">Daily Activity</div>
+                <div class="logout-btn" style="margin-left:auto;">
+                    <a href="emp-logout.php">Logout</a>
+                </div>
+            </div>
+            <!-- <div class="required-note">* Indicates required question</div> -->
+            <div style="margin-top:10px; font-size:16px; color:#333;">
+                Employee: <strong><?php echo htmlspecialchars($emp_name); ?></strong> (ID: <strong><?php echo htmlspecialchars($emp_id); ?></strong>)
+            </div>
         </div>
 
         <?php if (!empty($success)) : ?>
@@ -241,23 +230,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         <?php endif; ?>
 
-        <form method="POST" onsubmit="return validateWorksheetForm();">
 
-            <!-- Who -->
-            <div class="form-card <?php echo in_array('who', $errorFields) ? 'error' : ''; ?>">
-                <label>Who are you? <span class="required">*</span></label>
-                <div class="select-wrapper">
-                    <select name="who" required>
-                        <option value="">Choose Employee</option>
-                        <?php foreach ($employees as $emp): ?>
-                            <option value="<?php echo $emp['id']; ?>" <?php if (isset($_POST['who']) && $_POST['who'] == $emp['id']) echo 'selected'; ?>><?php echo htmlspecialchars($emp['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <?php if (in_array('who', $errorFields)) : ?>
-                    <div class="error-text">This is a required question</div>
-                <?php endif; ?>
-            </div>
+        <form method="POST" onsubmit="return validateWorksheetForm();">
 
 
             <!-- Date -->
@@ -275,7 +249,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- Task -->
             <div class="form-card <?php echo in_array('task', $errorFields) ? 'error' : ''; ?>">
                 <label>Task Details <span class="required">*</span></label>
-                <textarea name="task" placeholder="Your answer" style="width: 100%;" required><?php echo isset($_POST['task']) ? htmlspecialchars($_POST['task']) : ''; ?></textarea>
+                <textarea name="task" placeholder="Your answer" style="width: 94%;" required><?php echo isset($_POST['task']) ? htmlspecialchars($_POST['task']) : ''; ?></textarea>
                 <?php if (in_array('task', $errorFields)) : ?>
                     <div class="error-text">This is a required question</div>
                 <?php endif; ?>
@@ -297,29 +271,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </div>
     <script>
-    function validateWorksheetForm() {
-        var who = document.querySelector('select[name="who"]');
-        var date = document.querySelector('input[name="date"]');
-        var start = document.querySelector('input[name="start_time"]');
-        var end = document.querySelector('input[name="end_time"]');
-        var task = document.querySelector('textarea[name="task"]');
-        var valid = true;
-        [who, date, start, end, task].forEach(function(field) {
-            if (!field.value) {
-                field.classList.add('input-error');
-                valid = false;
-            } else {
-                field.classList.remove('input-error');
-            }
-        });
-        return valid;
-    }
+        function validateWorksheetForm() {
+            var date = document.querySelector('input[name="date"]');
+            var start = document.querySelector('input[name="start_time"]');
+            var end = document.querySelector('input[name="end_time"]');
+            var task = document.querySelector('textarea[name="task"]');
+            var valid = true;
+            [date, start, end, task].forEach(function(field) {
+                if (!field.value) {
+                    field.classList.add('input-error');
+                    valid = false;
+                } else {
+                    field.classList.remove('input-error');
+                }
+            });
+            return valid;
+        }
     </script>
     <style>
-    .input-error {
-        border-bottom: 2px solid #e38f8f !important;
-        background-color: #fffbe6;
-    }
+        .input-error {
+            border-bottom: 2px solid #e38f8f !important;
+            background-color: #fffbe6;
+        }
     </style>
 
 </body>
