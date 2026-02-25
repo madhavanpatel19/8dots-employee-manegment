@@ -16,7 +16,7 @@ if (isset($_POST['login'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['emp_id'] = $user['id'];
         $_SESSION['emp_name'] = $user['name'];
-        header("Location: worksheet.php");
+        header("Location: emp_index.php?dashboard");
         exit();
     } else {
         $error = "Invalid Email or Password!";

@@ -59,6 +59,9 @@ if (!isset($_SESSION['admin_email'])) {
                     if (isset($_GET['dashboard'])) {
                         include("dashboard.php");
                     }
+                    if (isset($_GET['worksheettable'])) {
+                        include("worksheettable.php");
+                    }
                     if (isset($_GET['insert_product'])) {
                         include("insert_product.php");
                     }
@@ -281,6 +284,10 @@ if (!isset($_SESSION['admin_email'])) {
                     if (isset($_GET['salary_slip'])) {
                         requireAdminPermission('salary_view');
                         include("salary_slip.php");
+                    }
+                    if (isset($_GET['view_leave_requests'])) {
+                        requireAdminPermission('leave_view');
+                        include("view_leave_requests.php");
                     }
                     ?>
             </div><!-- page-wrapper Ends -->

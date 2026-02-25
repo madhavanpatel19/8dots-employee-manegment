@@ -272,8 +272,6 @@ if ($res && mysqli_num_rows($res) > 0) {
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- RIGHT: Admin Profile -->
+    </div>    <!-- RIGHT: Admin Profile -->
    
 </div> <!-- /row -->

@@ -34,16 +34,16 @@ if (!isset($_SESSION['admin_email'])) {
                 </a><!-- dropdown-toggle Ends -->
                 <ul class="dropdown-menu"><!-- dropdown-menu Starts -->
                     <?php if (canAdminAccess('user_view')): ?>
-                    <li><!-- li Starts -->
-                        <a href="index.php?user_profile=<?php echo $admin_id; ?>">
-                            <i class="fa fa-fw fa-user"></i> Profile
-                        </a>
-                    </li>
-                    <li><!-- li Starts -->
-                        <a href="index.php?view_users">
-                            <i class="fa fa-fw fa-users"></i> Users
-                        </a>
-                    </li>
+                        <li><!-- li Starts -->
+                            <a href="index.php?user_profile=<?php echo $admin_id; ?>">
+                                <i class="fa fa-fw fa-user"></i> Profile
+                            </a>
+                        </li>
+                        <li><!-- li Starts -->
+                            <a href="index.php?view_users">
+                                <i class="fa fa-fw fa-users"></i> Users
+                            </a>
+                        </li>
                     <?php endif; ?>
                     <li class="divider"></li>
                     <li><!-- li Starts -->
@@ -61,195 +61,44 @@ if (!isset($_SESSION['admin_email'])) {
                         <i class="fa fa-fw fa-dashboard"></i> Dashboard
                     </a>
                 </li><!-- li Ends -->
-                <!-- <li>Products li Starts -->
-                    <!-- <a href="#" data-toggle="collapse" data-target="#products">
-                        <i class="fa fa-fw fa-table"></i> Products
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="products" class="collapse">
-                        <li>
-                            <a href="index.php?insert_product"> Insert Products </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_products"> View Products </a>
-                        </li>
-                    </ul>
-                </li>Products li Ends -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#bundles">
-                        <i class="fa fa-fw fa-edit"></i> Bundles
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="bundles" class="collapse">
-                        <li>
-                            <a href="index.php?insert_bundle"> Insert Bundle </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_bundles"> View Bundles </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#relations">
-                        <i class="fa fa-fw fa-retweet"></i> Assign Products To Bundles Relations
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="relations" class="collapse">
-                        <li>
-                            <a href="index.php?insert_rel"> Insert Relation </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_rel"> View Relations </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#manufacturers">
-                        <i class="fa fa-fw fa-briefcase"></i> Manufacturers
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="manufacturers" class="collapse">
-                        <li>
-                            <a href="index.php?insert_manufacturer"> Insert Manufacturer </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_manufacturers"> View Manufacturers </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#p_cat">
-                        <i class="fa fa-fw fa-pencil"></i> Products Categories
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="p_cat" class="collapse">
-                        <li>
-                            <a href="index.php?insert_p_cat"> Insert Product Category </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_p_cats"> View Products Categories </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#cat">
-                        <i class="fa fa-fw fa-arrows-v"></i> Categories
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="cat" class="collapse">
-                        <li>
-                            <a href="index.php?insert_cat"> Insert Category </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_cats"> View Categories </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#store">
-                        <i class="fa fa-fw fa-briefcase"></i> store
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="store" class="collapse">
-                        <li>
-                            <a href="index.php?insert_store"> Insert store </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_store"> View store </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#contact_us">
-                        <i class="fa fa-fw fa-pencil"> </i> Contact Us Section
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="contact_us" class="collapse">
-                        <li>
-                            <a href="index.php?edit_contact_us"> Edit Contact Us </a>
-                        </li>
-                        <li>
-                            <a href="index.php?insert_enquiry"> Insert Enquiry Type </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_enquiry"> View Enquiry Types </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>about us li Starts -->
-                    <!-- <a href="index.php?edit_about_us">
-                        <i class="fa fa-fw fa-edit"></i> Edit About Us Page
-                    </a>
-                </li>about us li Ends -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#coupons">
-                        <i class="fa fa-fw fa-arrows-v"></i> Coupons
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="coupons" class="collapse">
-                        <li>
-                            <a href="index.php?insert_coupon"> Insert Coupon </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_coupons"> View Coupons </a>
-                        </li>
-                    </ul>
-                </li> -->
-                <!-- <li>
-                    <a href="#" data-toggle="collapse" data-target="#terms">
-                        <i class="fa fa-fw fa-table"></i> Terms
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="terms" class="collapse">
-                        <li>
-                            <a href="index.php?insert_term"> Insert Terms </a>
-                        </li>
-                        <li>
-                            <a href="index.php?view_terms"> View Terms </a>
-                        </li>
-                    </ul>-->
-                <!-- <li>
-                    <a href="index.php?view_customers">
-                        <i class="fa fa-fw fa-edit"></i> View Customers
-                    </a>
-                </li>
-                <li>
-                    <a href="index.php?view_orders">
-                        <i class="fa fa-fw fa-list"></i> View Orders
-                    </a>
-                </li> -->
                 <?php if (canAdminAccess('employee_view') || canAdminAccess('attendance_view') || canAdminAccess('salary_view')): ?>
-                <li><!-- li Starts -->
-                    <a href="#" data-toggle="collapse" data-target="#employees">
-                        <i class="fa fa-fw fa-users"></i> Employees
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="employees" class="collapse">   
-                        <?php if (canAdminAccess('employee_view')): ?><li><a href="index.php?emp_directory"> View Employees </a></li><?php endif; ?>
-                        <?php if (canAdminAccess('attendance_view')): ?><li><a href="attendance.php"> Attendance </a></li><?php endif; ?>
-                        <?php if (canAdminAccess('salary_view')): ?><li><a href="index.php?salary_slip"> Salary Slip </a></li><?php endif; ?>
-                    </ul>
-                </li><!-- li Ends -->
-                <?php endif; ?>   
-                <?php if (canAdminAccess('user_view') || canAdminAccess('user_update') || canAdminAccess('user_insert')): ?>
-                <li><!-- li Starts -->
-                    <a href="#" data-toggle="collapse" data-target="#users">
-                        <i class="fa fa-fw fa-gear"></i> Users
-                        <i class="fa fa-fw fa-caret-down"></i>
-                    </a>
-                    <ul id="users" class="collapse">
-                        <?php if (canAdminAccess('user_insert')): ?><li><a href="index.php?insert_user"> Insert User </a></li><?php endif; ?>
-                        <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?view_users"> View Users </a></li><?php endif; ?>
-                        <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?user_profile=<?php echo $admin_id; ?>"> Edit Profile </a></li><?php endif; ?>
-                    </ul>
-                </li><!-- li Ends -->
+                    <li><!-- li Starts -->
+                        <a href="#" data-toggle="collapse" data-target="#employees">
+                            <i class="fa fa-fw fa-users"></i> Employees
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                        <ul id="employees" class="collapse">
+                            <?php if (canAdminAccess('employee_view')): ?><li><a href="index.php?emp_directory"> View Employees </a></li><?php endif; ?>
+                            <?php if (canAdminAccess('attendance_view')): ?><li><a href="attendance.php"> Attendance </a></li><?php endif; ?>
+                            <?php if (canAdminAccess('leave_view')): ?><li><a href="index.php?view_leave_requests"> Leave Requests </a></li><?php endif; ?>
+                            <?php if (canAdminAccess('salary_view')): ?><li><a href="index.php?salary_slip"> Salary Slip </a></li><?php endif; ?>
+                        </ul>
+                    </li><!-- li Ends -->
                 <?php endif; ?>
-                
+                <?php if (canAdminAccess('user_view') || canAdminAccess('user_update') || canAdminAccess('user_insert')): ?>
+                    <li><!-- li Starts -->
+                        <a href="#" data-toggle="collapse" data-target="#users">
+                            <i class="fa fa-fw fa-gear"></i> Users
+                            <i class="fa fa-fw fa-caret-down"></i>
+                        </a>
+                        <ul id="users" class="collapse">
+                            <?php if (canAdminAccess('user_insert')): ?><li><a href="index.php?insert_user"> Insert User </a></li><?php endif; ?>
+                            <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?view_users"> View Users </a></li><?php endif; ?>
+                            <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?user_profile=<?php echo $admin_id; ?>"> Edit Profile </a></li><?php endif; ?>
+                        </ul>
+                    </li><!-- li Ends -->
+                <?php endif; ?>
+                <li><!-- li Starts -->
+                    <a href="index.php?worksheettable">
+                        <i class="fa fa-fw fa-table"></i>Worksheet
+                    </a>
+                </li><!-- li Ends -->
                 <li><!-- li Starts -->
                     <a href="logout.php">
                         <i class="fa fa-fw fa-power-off"></i> Log Out
                     </a>
                 </li><!-- li Ends -->
+
             </ul><!-- nav navbar-nav side-nav Ends -->
         </div><!-- collapse navbar-collapse navbar-ex1-collapse Ends -->
     </nav><!-- navbar navbar-inverse navbar-fixed-top Ends -->

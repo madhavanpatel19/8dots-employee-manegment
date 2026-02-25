@@ -56,6 +56,7 @@ function _adminPermissionAliases($permission) {
         'user_insert'     => ['add_permission'],
         'user_update'     => ['edit_user'],
         'user_view'       => ['show_user'],
+        'leave_view'      => ['show_leave'],
     ];
     $perms = [$permission];
     if (isset($map[$permission])) {
