@@ -16,6 +16,12 @@ if (!isset($_SESSION['admin_email'])) {
         }
     }
     $header_display_name = isset($admin_name) && $admin_name !== '' ? htmlspecialchars($admin_name) : htmlspecialchars($_SESSION['admin_email']);
+
+    // Count pending leave applications
+    $count_leave_query = "SELECT count(*) AS total FROM leave_applications WHERE status='pending'";
+    $run_count_leave = mysqli_query($con, $count_leave_query);
+    $row_count_leave = mysqli_fetch_array($run_count_leave);
+    $pending_leave_count = $row_count_leave['total'];
 ?>
     <nav class="navbar navbar-inverse navbar-fixed-top"><!-- navbar navbar-inverse navbar-fixed-top Starts -->
         <div class="navbar-header"><!-- navbar-header Starts -->
@@ -28,6 +34,14 @@ if (!isset($_SESSION['admin_email'])) {
             <a class="navbar-brand" href="index.php?dashboard">8dots</a>
         </div><!-- navbar-header Ends -->
         <ul class="nav navbar-right top-nav"><!-- nav navbar-right top-nav Starts -->
+            <li class="dropdown"><!-- notification dropdown Starts -->
+                <a href="index.php?view_leave_requests" class="dropdown-toggle">
+                    <i class="fa fa-bell"></i>
+                    <?php if ($pending_leave_count > 0) : ?>
+                        <span class="label label-danger" style="position: absolute; top: 10px; right: 5px; border-radius: 50%; padding: 2px 5px; font-size: 10px;"><?php echo $pending_leave_count; ?></span>
+                    <?php endif; ?>
+                </a>
+            </li><!-- notification dropdown Ends -->
             <li class="dropdown"><!-- dropdown Starts -->
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><!-- dropdown-toggle Starts -->
                     <i class="fa fa-user"></i> <?php echo $header_display_name; ?>
@@ -88,11 +102,13 @@ if (!isset($_SESSION['admin_email'])) {
                         </ul>
                     </li><!-- li Ends -->
                 <?php endif; ?>
+                <?php if (canAdminAccess('worksheet_view')): ?>
                 <li><!-- li Starts -->
                     <a href="index.php?worksheettable">
                         <i class="fa fa-fw fa-table"></i>Worksheet
                     </a>
                 </li><!-- li Ends -->
+                <?php endif; ?>
                 <li><!-- li Starts -->
                     <a href="logout.php">
                         <i class="fa fa-fw fa-power-off"></i> Log Out

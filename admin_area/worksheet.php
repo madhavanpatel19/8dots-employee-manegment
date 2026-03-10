@@ -55,51 +55,65 @@ $history_result = mysqli_query($con, $history_query);
 ?>
 
 <?php if (!$is_partial) : ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>8DOTS - Worksheet</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <style>
-        body { background: #f4f7f6; padding-top: 20px; }
-        .page-header { border-bottom: 1px solid #eee; margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-<?php endif; ?>
+    <!DOCTYPE html>
+    <html lang="en">
 
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">
-            <i class="fa fa-pencil-square-o"></i> Daily Worksheet
-            <small>Record your daily work activities</small>
-        </h1>
-        
-        <ol class="breadcrumb">
-            <li class="active">
-                <i class="fa fa-dashboard"></i> Dashboard / Worksheet
-            </li>
-        </ol>
-    </div>
-</div>
+    <head>
+        <title>8DOTS - Worksheet</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+        <style>
+            body {
+                background: #f4f7f6;
+                padding-top: 20px;
+            }
 
-<?php if ($successMessage) : ?>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <i class="fa fa-check"></i> <?php echo htmlspecialchars($successMessage); ?>
+            .page-header {
+                border-bottom: 1px solid #eee;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+        <?php endif; ?>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+
+                    <i class="fa fa-pencil-square-o"></i> Daily Worksheet
+                    <div style="text-align: right; margin-top: 20px; margin-bottom: 20px;">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#addWorksheetModal">
+                            <i class="fa fa-plus"></i> Add Worksheet
+                        </button>
+                    </div>
+                </h1>
+
+                <ol class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-dashboard"></i> Dashboard / Worksheet
+                    </li>
+                </ol>
+            </div>
         </div>
-    </div>
-</div>
-<?php endif; ?>
 
-<div class="row">
+        <?php if ($successMessage) : ?>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <i class="fa fa-check"></i> <?php echo htmlspecialchars($successMessage); ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -151,67 +165,120 @@ $history_result = mysqli_query($con, $history_query);
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-history fa-fw"></i> Recent Submissions</h3>
-            </div>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Check-in</th>
-                                <th>Check-out</th>
-                                <th>Task Details</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (mysqli_num_rows($history_result) > 0) : ?>
-                                <?php while ($row = mysqli_fetch_assoc($history_result)) : ?>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-history fa-fw"></i> Recent Submissions</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
                                     <tr>
-                                        <td style="white-space: nowrap;"><?php echo date('d M Y', strtotime($row['attendance_date'])); ?></td>
-                                        <td><?php echo $row['check_in_time']; ?></td>
-                                        <td><?php echo $row['check_out_time']; ?></td>
-                                        <td><?php echo nl2br(htmlspecialchars($row['remarks'])); ?></td>
+                                        <th>Date</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Task Details</th>
                                     </tr>
-                                <?php endwhile; ?>
-                            <?php else : ?>
-                                <tr><td colspan="4" class="text-center">No recent records found.</td></tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                    <?php if (mysqli_num_rows($history_result) > 0) : ?>
+                                        <?php while ($row = mysqli_fetch_assoc($history_result)) : ?>
+                                            <tr>
+                                                <td style="white-space: nowrap;"><?php echo date('d M Y', strtotime($row['attendance_date'])); ?></td>
+                                                <td><?php echo $row['check_in_time']; ?></td>
+                                                <td><?php echo $row['check_out_time']; ?></td>
+                                                <td><?php echo nl2br(htmlspecialchars($row['remarks'])); ?></td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    <?php else : ?>
+                                        <tr>
+                                            <td colspan="4" class="text-center">No recent records found.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- <div style="text-align: right; margin-top: 10px;">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#addWorksheetModal">
+                                <i class="fa fa-plus"></i> Add Worksheet
+                            </button>
+                        </div> -->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<script>
-    function validateWorksheetForm() {
-        var date = document.querySelector('input[name="date"]');
-        var start = document.querySelector('input[name="start_time"]');
-        var end = document.querySelector('input[name="end_time"]');
-        var task = document.querySelector('textarea[name="task"]');
-        var valid = true;
-        [date, start, end, task].forEach(function(field) {
-            if (!field.value) {
-                field.parentElement.classList.add('has-error');
-                valid = false;
-            } else {
-                field.parentElement.classList.remove('has-error');
+        <!-- Add Worksheet Modal -->
+        <div class="modal fade" id="addWorksheetModal" tabindex="-1" role="dialog" aria-labelledby="addWorksheetModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addWorksheetModalLabel">Add Worksheet</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" method="POST" onsubmit="return validateWorksheetForm();">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Date <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                    <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Check-in Time <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                    <input type="time" name="start_time" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Check-out Time <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                    <input type="time" name="end_time" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Task Details <span class="text-danger">*</span></label>
+                                <div class="col-md-8">
+                                    <textarea name="task" class="form-control" rows="4" placeholder="Describe your work..." required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-8">
+                                    <button type="submit" class="btn btn-primary">Submit Worksheet</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:10px;">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function validateWorksheetForm() {
+                var date = document.querySelector('input[name="date"]');
+                var start = document.querySelector('input[name="start_time"]');
+                var end = document.querySelector('input[name="end_time"]');
+                var task = document.querySelector('textarea[name="task"]');
+                var valid = true;
+                [date, start, end, task].forEach(function(field) {
+                    if (!field.value) {
+                        field.parentElement.classList.add('has-error');
+                        valid = false;
+                    } else {
+                        field.parentElement.classList.remove('has-error');
+                    }
+                });
+                return valid;
             }
-        });
-        return valid;
-    }
-</script>
+        </script>
 
-<?php if (!$is_partial) : ?>
-    </div>
-</body>
-</html>
+        <?php if (!$is_partial) : ?>
+        </div>
+    </body>
+
+    </html>
 <?php endif; ?>

@@ -74,6 +74,12 @@ $result = mysqli_query($con, $query);
     </div>
 </div>
 
+<div style="text-align: right; margin-top: 20px; margin-bottom: 20px;">
+    <button class="btn btn-success" data-toggle="modal" data-target="#applyLeaveModal">
+        <i class="fa fa-plus"></i> Apply Leave
+    </button>
+</div>
+
 <?php if ($successMessage) : ?>
 <div class="row">
     <div class="col-lg-12">
@@ -87,7 +93,7 @@ $result = mysqli_query($con, $query);
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel panel-default">
+        <!-- <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-paper-plane fa-fw"></i> Apply New Leave</h3>
             </div>
@@ -96,39 +102,67 @@ $result = mysqli_query($con, $query);
                     Employee: <?php echo htmlspecialchars($emp_name); ?> (ID: <?php echo htmlspecialchars($emp_id); ?>)
                 </div>
                 
-                <form class="form-horizontal" method="POST">
-                    
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">From Date <span class="text-danger">*</span></label>
-                        <div class="col-md-6">
-                            <input type="date" name="leave_from" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">To Date <span class="text-danger">*</span></label>
-                        <div class="col-md-6">
-                            <input type="date" name="leave_to" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Reason for Leave <span class="text-danger">*</span></label>
-                        <div class="col-md-6">
-                            <textarea name="reason" class="form-control" rows="5" placeholder="Enter reason for leave..." required></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-3 control-label"></label>
-                        <div class="col-md-6">
-                            <button type="submit" name="apply_leave" class="btn btn-primary">Submit Application</button>
-                            <a href="leave_application.php" class="btn btn-default" style="margin-left:10px;">Cancel</a>
-                        </div>
-                    </div>
-                </form>
+                 Modal trigger only, form moved to modal below
             </div>
-        </div>
+        </div> -->
+
+            <!-- Apply Leave Modal -->
+            <div class="modal fade" id="applyLeaveModal" tabindex="-1" role="dialog" aria-labelledby="applyLeaveModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="applyLeaveModalLabel">Apply Leave</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" method="POST" onsubmit="return validateLeaveForm();">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">From Date <span class="text-danger">*</span></label>
+                                    <div class="col-md-8">
+                                        <input type="date" name="leave_from" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">To Date <span class="text-danger">*</span></label>
+                                    <div class="col-md-8">
+                                        <input type="date" name="leave_to" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Reason for Leave <span class="text-danger">*</span></label>
+                                    <div class="col-md-8">
+                                        <textarea name="reason" class="form-control" rows="4" placeholder="Enter reason for leave..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-3 col-md-8">
+                                        <button type="submit" name="apply_leave" class="btn btn-primary">Submit Application</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:10px;">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            function validateLeaveForm() {
+                var from = document.querySelector('#applyLeaveModal input[name="leave_from"]');
+                var to = document.querySelector('#applyLeaveModal input[name="leave_to"]');
+                var reason = document.querySelector('#applyLeaveModal textarea[name="reason"]');
+                var valid = true;
+                [from, to, reason].forEach(function(field) {
+                    if (!field.value) {
+                        field.parentElement.classList.add('has-error');
+                        valid = false;
+                    } else {
+                        field.parentElement.classList.remove('has-error');
+                    }
+                });
+                return valid;
+            }
+            </script>
     </div>
 </div>
 

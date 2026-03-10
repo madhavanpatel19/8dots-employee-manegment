@@ -37,6 +37,8 @@ if (!function_exists('getAllPermissions')) {
             'user_insert',
             'user_update',
             'user_view',
+            'worksheet_view',
+            'leave_view',
         ];
     }
 }
@@ -63,6 +65,8 @@ if (!function_exists('getUsedAdminPermissions')) {
             'user_insert',
             'user_update',
             'user_view',
+            'worksheet_view',
+            'leave_view',
         ];
     /*
     |--------------------------------------------------------------------------
