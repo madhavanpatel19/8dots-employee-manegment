@@ -290,6 +290,10 @@ if (!isset($_SESSION['admin_email'])) {
                         requireAdminPermission('worksheet_view');
                         include("worksheettable.php");
                     }
+                    if (isset($_GET['announcement'])) {
+                        requireAdminPermission('announcement_view');
+                        include("announcement.php");
+                    }
                     ?>
             </div><!-- page-wrapper Ends -->
         </div><!-- wrapper Ends -->

@@ -43,9 +43,9 @@ if (!isset($_SESSION['admin_email'])) {
                 </a>
             </li><!-- notification dropdown Ends -->
             <li class="dropdown"><!-- dropdown Starts -->
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><!-- dropdown-toggle Starts -->
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-user"></i> <?php echo $header_display_name; ?>
-                </a><!-- dropdown-toggle Ends -->
+                </a>
                 <ul class="dropdown-menu"><!-- dropdown-menu Starts -->
                     <?php if (canAdminAccess('user_view')): ?>
                         <li><!-- li Starts -->
@@ -108,6 +108,13 @@ if (!isset($_SESSION['admin_email'])) {
                         <i class="fa fa-fw fa-table"></i>Worksheet
                     </a>
                 </li><!-- li Ends -->
+                <?php endif; ?>
+                <?php if(canAdminAccess('announcement_view')): ?>
+                    <li><!-- li Starts -->
+                        <a href="index.php?announcement">
+                            <i class="fa fa-fw fa-bullhorn"></i>Announcement
+                        </a>
+                    </li><!-- li Ends -->
                 <?php endif; ?>
                 <li><!-- li Starts -->
                     <a href="logout.php">

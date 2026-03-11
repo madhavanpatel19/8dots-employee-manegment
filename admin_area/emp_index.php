@@ -41,6 +41,8 @@ if (!isset($_SESSION['emp_id'])) {
                     } elseif (isset($_GET['emp_salary_slip'])) {
                         $_GET['partial'] = true; // Flag for emp_salary_slip.php
                         include("emp_salary_slip.php");
+                    } elseif (isset($_GET['view_announcement'])) {
+                        include("view_announcement.php");
                     } else {
                         include("emp_dashboard.php");
                     }
