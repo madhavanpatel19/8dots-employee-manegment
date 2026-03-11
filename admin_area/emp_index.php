@@ -38,6 +38,9 @@ if (!isset($_SESSION['emp_id'])) {
                     } elseif (isset($_GET['leave_application'])) {
                         $_GET['partial'] = true; // Flag for leave_application.php
                         include("leave_application.php");
+                    } elseif (isset($_GET['emp_salary_slip'])) {
+                        $_GET['partial'] = true; // Flag for emp_salary_slip.php
+                        include("emp_salary_slip.php");
                     } else {
                         include("emp_dashboard.php");
                     }

@@ -46,6 +46,11 @@ if (!isset($_SESSION['emp_id'])) {
                         <i class="fa fa-fw fa-paper-plane"></i> Leave Application
                     </a>
                 </li>
+                    <li>
+                            <a href="emp_index.php?emp_salary_slip">
+                                <i class="fa fa-fw fa-money"></i> Salary Slip
+                            </a>
+                    </li>
                 <li>
                     <a href="emp-logout.php">
                         <i class="fa fa-fw fa-power-off"></i> Log Out

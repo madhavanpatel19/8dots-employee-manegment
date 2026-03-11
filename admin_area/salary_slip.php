@@ -107,6 +107,35 @@ if ($res) {
     }
 }
 
+// ------------------ SALARY SAVE HANDLER ------------------ //
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_salary_amounts'])) {
+    $emp_id_save = (int)$_POST['emp_id'];
+    $basic    = (float)$_POST['basic'];
+    $hra_val  = (float)$_POST['hra'];
+    $pf_val   = (float)$_POST['pf'];
+    $tax_val  = (float)$_POST['tax'];
+    $allow    = (float)$_POST['other_allow'];
+    $ded      = (float)$_POST['other_ded'];
+
+    $update_q = "UPDATE emp_list SET 
+        basic_salary = $basic, 
+        hra = $hra_val, 
+        pf = $pf_val, 
+        tax = $tax_val, 
+        allowance = $allow, 
+        deductions = $ded 
+        WHERE id = $emp_id_save";
+    
+    if (mysqli_query($con, $update_q)) {
+        echo "<script>alert('Salary amounts updated successfully!');</script>";
+        // Refresh to show updated values
+        echo "<script>window.location.href='index.php?salary_slip=1&emp_id=$emp_id_save&month=" . urlencode($_POST['month']) . "&view=1';</script>";
+        exit();
+    } else {
+        echo "<script>alert('Error updating salary: " . mysqli_error($con) . "');</script>";
+    }
+}
+
 // ------------------ GET FILTER VALUES ------------------ //
 $selected_emp   = isset($_GET['emp_id']) ? (int)$_GET['emp_id'] : 0;
 $selected_month = isset($_GET['month']) && $_GET['month'] !== ''
@@ -125,44 +154,50 @@ $base_salary = 0.00;
 $designation = '';
 $department  = '';
 
+// Initial defaults for components
+$db_basic = null;
+$db_hra   = null;
+$db_pf    = null;
+$db_tax   = null;
+$db_allow = null;
+$db_ded   = null;
+
 if ($selected_emp) {
     $q = mysqli_query(
         $con,
-        "SELECT id, name, COALESCE(salary, '') AS salary
-         FROM emp_list
-         WHERE id = '" . (int)$selected_emp . "'
-         LIMIT 1"
+        "SELECT * FROM emp_list WHERE id = '" . (int)$selected_emp . "' LIMIT 1"
     );
     if ($q && mysqli_num_rows($q)) {
         $employee    = mysqli_fetch_assoc($q);
         $base_salary = $employee['salary'] !== '' ? (float)$employee['salary'] : 0.00;
         $designation = isset($employee['designation']) ? $employee['designation'] : '';
         $department  = isset($employee['department']) ? $employee['department'] : '';
+        
+        $db_basic = $employee['basic_salary'];
+        $db_hra   = $employee['hra'];
+        $db_pf    = $employee['pf'];
+        $db_tax   = $employee['tax'];
+        $db_allow = $employee['allowance'];
+        $db_ded   = $employee['deductions'];
     }
 }
 
-// ------------------ SALARY CALCULATION (simple formula) ------------------ //
-$override_basic = isset($_GET['basic']) ? (float)$_GET['basic'] : null;
-$override_hra   = isset($_GET['hra']) ? (float)$_GET['hra'] : null;
-$override_pf    = isset($_GET['pf']) ? (float)$_GET['pf'] : null;
-$override_tax   = isset($_GET['tax']) ? (float)$_GET['tax'] : null;
-$override_allow = isset($_GET['other_allow']) ? (float)$_GET['other_allow'] : null;
-$override_ded   = isset($_GET['other_ded']) ? (float)$_GET['other_ded'] : null;
-
-
 // ------------------ SALARY CALCULATION ------------------ //
-$base_salary_val = ($base_salary <= 0) ? 30000.00 : (float)$base_salary;
+// Use DB values if present, otherwise calculate defaults
+$base_salary_val = ($db_basic !== null) ? (float)$db_basic : (($base_salary <= 0) ? 30000.00 : (float)$base_salary);
+$hra   = ($db_hra   !== null) ? (float)$db_hra   : round($base_salary_val * 0.20, 2);
+$pf    = ($db_pf    !== null) ? (float)$db_pf    : round($base_salary_val * 0.05, 2);
+$tax   = ($db_tax   !== null) ? (float)$db_tax   : round($base_salary_val * 0.10, 2);
+$other_allow = ($db_allow !== null) ? (float)$db_allow : 0.00;
+$other_ded   = ($db_ded   !== null) ? (float)$db_ded   : 0.00;
 
-// Use override if provided
-$hra   = ($override_hra   !== null) ? $override_hra   : round($base_salary_val * 0.20, 2);
-$pf    = ($override_pf    !== null) ? $override_pf    : round($base_salary_val * 0.05, 2);
-$tax   = ($override_tax   !== null) ? $override_tax   : round($base_salary_val * 0.10, 2);
-$other_allow = ($override_allow !== null) ? $override_allow : 0.00;
-$other_ded   = ($override_ded   !== null) ? $override_ded   : 0.00;
-
-if ($override_basic !== null) {
-    $base_salary_val = $override_basic;
-}
+// Allow temporary GET overrides if needed (optional, keeping for flexibility)
+if (isset($_GET['basic'])) $base_salary_val = (float)$_GET['basic'];
+if (isset($_GET['hra']))   $hra = (float)$_GET['hra'];
+if (isset($_GET['pf']))    $pf = (float)$_GET['pf'];
+if (isset($_GET['tax']))   $tax = (float)$_GET['tax'];
+if (isset($_GET['other_allow'])) $other_allow = (float)$_GET['other_allow'];
+if (isset($_GET['other_ded']))   $other_ded = (float)$_GET['other_ded'];
 
 $gross            = $base_salary_val + $hra + $other_allow;
 $total_deductions = $pf + $tax + $other_ded;
@@ -251,7 +286,7 @@ if ($print_all_mode) {
                 $gross_local = $base_val_local + $hra_local + $other_allow_local;
                 $total_deductions_local = $pf_local + $tax_local + $other_ded_local;
                 $net_local = $gross_local - $total_deductions_local;
-    ?>
+                ?>
                 <div class="salary-slip card" style="margin:14px auto; padding:18px; max-width:820px;">
                     <div class="slip-top-decor"></div>
                     <div class="slip-header">
@@ -616,11 +651,9 @@ if ($print_all_mode) {
     <div class="modal-dialog">
         <div class="modal-content">
 
-            <form method="GET">
-                <input type="hidden" name="salary_slip" value="1">
+            <form method="POST">
                 <input type="hidden" name="emp_id" value="<?php echo (int)$selected_emp; ?>">
                 <input type="hidden" name="month" value="<?php echo htmlspecialchars($selected_month); ?>">
-                <input type="hidden" name="view" value="1">
                 <!-- allow overriden components -->
 
                 <div class="modal-header">
@@ -674,7 +707,7 @@ if ($print_all_mode) {
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Apply</button>
+                    <button type="submit" name="save_salary_amounts" class="btn btn-primary">Save & Apply</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
 
