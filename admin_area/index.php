@@ -58,10 +58,7 @@ if (!isset($_SESSION['admin_email'])) {
                     }
                     if (isset($_GET['dashboard'])) {
                         include("dashboard.php");
-                    }
-                    if (isset($_GET['worksheettable'])) {
-                        include("worksheettable.php");
-                    }
+                    }   
                     if (isset($_GET['insert_product'])) {
                         include("insert_product.php");
                     }
@@ -288,6 +285,10 @@ if (!isset($_SESSION['admin_email'])) {
                     if (isset($_GET['view_leave_requests'])) {
                         requireAdminPermission('leave_view');
                         include("view_leave_requests.php");
+                    }
+                    if (isset($_GET['worksheettable'])) {   
+                        requireAdminPermission('worksheet_view');
+                        include("worksheettable.php");
                     }
                     ?>
             </div><!-- page-wrapper Ends -->
