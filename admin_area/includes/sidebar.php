@@ -102,19 +102,19 @@ if (!isset($_SESSION['admin_email'])) {
                         </ul>
                     </li><!-- li Ends -->
                 <?php endif; ?>
-                <?php if (canAdminAccess('worksheet_view')): ?>
-                <li><!-- li Starts -->
-                    <a href="index.php?worksheettable">
-                        <i class="fa fa-fw fa-table"></i>Worksheet
-                    </a>
-                </li><!-- li Ends -->
-                <?php endif; ?>
                 <?php if(canAdminAccess('announcement_view')): ?>
                     <li><!-- li Starts -->
                         <a href="index.php?announcement">
                             <i class="fa fa-fw fa-bullhorn"></i>Announcement
                         </a>
                     </li><!-- li Ends -->
+                <?php endif; ?>        
+                <?php if (canAdminAccess('worksheet_view')): ?>
+                <li>
+                    <a href="index.php?worksheettable">
+                        <i class="fa fa-fw fa-table"></i>Worksheet
+                    </a>
+                </li>
                 <?php endif; ?>
                 <li><!-- li Starts -->
                     <a href="logout.php">

@@ -78,17 +78,40 @@ $selected_month = isset($_GET['month']) && $_GET['month'] !== '' ? $_GET['month'
 $view_mode = isset($_GET['view']) && $_GET['view'] == '1';
 
 // Fetch salary slip for this employee and month
-$q = mysqli_query($con, "SELECT * FROM emp_list WHERE id = '" . (int)$emp_id . "' LIMIT 1");
+$month_q = mysqli_real_escape_string($con, $selected_month);
+$q = mysqli_query($con, "SELECT e.*, 
+                h.basic_salary AS h_basic, 
+                h.hra AS h_hra, 
+                h.pf AS h_pf, 
+                h.tax AS h_tax, 
+                h.allowance AS h_allow, 
+                h.deductions AS h_ded
+         FROM emp_list e
+         LEFT JOIN emp_salary_history h ON e.id = h.emp_id AND h.month = '$month_q'
+         WHERE e.id = '" . (int)$emp_id . "' LIMIT 1");
 $employee = ($q && mysqli_num_rows($q)) ? mysqli_fetch_assoc($q) : null;
+
 $base_salary = $employee && $employee['salary'] !== '' ? (float)$employee['salary'] : 0.00;
 
-// Salary calculation components
-$base_salary_val = ($employee && $employee['basic_salary'] !== null) ? (float)$employee['basic_salary'] : (($base_salary <= 0) ? 30000.00 : (float)$base_salary);
-$hra = ($employee && $employee['hra'] !== null) ? (float)$employee['hra'] : round($base_salary_val * 0.20, 2);
-$pf = ($employee && $employee['pf'] !== null) ? (float)$employee['pf'] : round($base_salary_val * 0.05, 2);
-$tax = ($employee && $employee['tax'] !== null) ? (float)$employee['tax'] : round($base_salary_val * 0.10, 2);
-$other_allow = ($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00;
-$other_ded = ($employee && $employee['deductions'] !== null) ? (float)$employee['deductions'] : 0.00;
+// Salary calculation components (Prioritize history)
+$base_salary_val = ($employee && $employee['h_basic'] !== null) ? (float)$employee['h_basic'] : 
+                  (($employee && $employee['basic_salary'] !== null) ? (float)$employee['basic_salary'] : 
+                  (($base_salary <= 0) ? 30000.00 : (float)$base_salary));
+
+$hra = ($employee && $employee['h_hra'] !== null) ? (float)$employee['h_hra'] : 
+      (($employee && $employee['hra']   !== null) ? (float)$employee['hra'] : round($base_salary_val * 0.20, 2));
+
+$pf = ($employee && $employee['h_pf'] !== null) ? (float)$employee['h_pf'] : 
+     (($employee && $employee['pf']   !== null) ? (float)$employee['pf'] : round($base_salary_val * 0.05, 2));
+
+$tax = ($employee && $employee['h_tax'] !== null) ? (float)$employee['h_tax'] : 
+      (($employee && $employee['tax']   !== null) ? (float)$employee['tax'] : round($base_salary_val * 0.10, 2));
+
+$other_allow = ($employee && $employee['h_allow'] !== null) ? (float)$employee['h_allow'] : 
+              (($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00);
+
+$other_ded = ($employee && $employee['h_ded'] !== null) ? (float)$employee['h_ded'] : 
+            (($employee && $employee['deductions'] !== null) ? (float)$employee['deductions'] : 0.00);
 
 $gross = $base_salary_val + $hra + $other_allow;
 $total_deductions = $pf + $tax + $other_ded;
@@ -227,16 +250,35 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                     $m_val = date('Y-m', $ts);
                     $m_label = date('F, Y', $ts);
                     $is_current = ($m_val === date('Y-m'));
+                    $current_day = (int)date('d');
+                    
+                    // Fetch history for this row to show correct amount in table
+                    $row_q = mysqli_query($con, "SELECT net_pay FROM emp_salary_history WHERE emp_id = $emp_id AND month = '$m_val'");
+                    $row_data = mysqli_fetch_assoc($row_q);
+                    $row_salary = ($row_data && $row_data['net_pay'] !== null) ? (float)$row_data['net_pay'] : $base_salary_val;
+
+                    // Logic: Disable view for current month until end of month (e.g., after 25th)
+                    // unless a specific history record exists (admin manually saved it)
+                    $can_view = true;
+                    if ($is_current && $current_day < 25) {
+                        if (!$row_data) {
+                            $can_view = false;
+                        }
+                    }
                 ?>
                     <tr<?php if ($is_current) echo ' style="background:#eaf7ff;"'; ?>>
                         <td><?php echo (int)$emp_id; ?></td>
                         <td><?php echo htmlspecialchars($emp_name); ?></td>
                         <td><?php echo htmlspecialchars($m_label); ?></td>
-                        <td class="amt"><?php echo format_money_with_symbol($base_salary_val, $currency_symbol); ?></td>
+                        <td class="amt"><?php echo format_money_with_symbol($row_salary, $currency_symbol); ?></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-info view-slip-btn" data-month="<?php echo $m_val; ?>">
-                                <i class="fa fa-eye"></i> View
-                            </button>
+                            <?php if ($can_view): ?>
+                                <button type="button" class="btn btn-sm btn-info view-slip-btn" data-month="<?php echo $m_val; ?>">
+                                    <i class="fa fa-eye"></i> View
+                                </button>
+                            <?php else: ?>
+                                <span class="text-muted" title="Available at month end"><i class="fa fa-lock"></i> Locked</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php } ?>

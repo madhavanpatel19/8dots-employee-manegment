@@ -65,7 +65,7 @@ if (!function_exists('getUsedAdminPermissions')) {
             'user_insert',
             'user_update',
             'user_view',
-            'worksheet_view',
+            'worksheettable_view',
             'leave_view',
         ];
     /*

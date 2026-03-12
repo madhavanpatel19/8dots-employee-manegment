@@ -58,7 +58,7 @@ if (!isset($_SESSION['admin_email'])) {
                     }
                     if (isset($_GET['dashboard'])) {
                         include("dashboard.php");
-                    }   
+                    }
                     if (isset($_GET['insert_product'])) {
                         include("insert_product.php");
                     }
@@ -286,19 +286,27 @@ if (!isset($_SESSION['admin_email'])) {
                         requireAdminPermission('leave_view');
                         include("view_leave_requests.php");
                     }
-                    if (isset($_GET['worksheettable'])) {   
-                        requireAdminPermission('worksheet_view');
-                        include("worksheettable.php");
+                    if (isset($_GET['worksheettable'])) {
+
+                        if (function_exists('requireAdminPermission')) {
+                            requireAdminPermission('worksheettable_view');
+                        }
+
+                        if (file_exists("worksheettable.php")) {
+                            include("worksheettable.php");
+                        } else {
+                            echo "<div class='alert alert-danger'>worksheettable.php file not found</div>";
+                        }
                     }
                     if (isset($_GET['announcement'])) {
                         requireAdminPermission('announcement_view');
                         include("announcement.php");
                     }
                     ?>
-            </div><!-- page-wrapper Ends -->
-        </div><!-- wrapper Ends -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+                </div><!-- page-wrapper Ends -->
+            </div><!-- wrapper Ends -->
+            <script src="js/jquery.min.js"></script>
+            <script src="js/bootstrap.min.js"></script>
     </body>
 
     </html>

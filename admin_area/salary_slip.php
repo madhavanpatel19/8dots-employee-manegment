@@ -110,6 +110,7 @@ if ($res) {
 // ------------------ SALARY SAVE HANDLER ------------------ //
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_salary_amounts'])) {
     $emp_id_save = (int)$_POST['emp_id'];
+    $month_save  = mysqli_real_escape_string($con, $_POST['month']);
     $basic    = (float)$_POST['basic'];
     $hra_val  = (float)$_POST['hra'];
     $pf_val   = (float)$_POST['pf'];
@@ -117,23 +118,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_salary_amounts']
     $allow    = (float)$_POST['other_allow'];
     $ded      = (float)$_POST['other_ded'];
 
-    $update_q = "UPDATE emp_list SET 
+    $gross_pay = $basic + $hra_val + $allow;
+    $total_ded = $pf_val + $tax_val + $ded;
+    $net_pay   = $gross_pay - $total_ded;
+
+    // 1. Update the history table (Primary storage for month-specific data)
+    $history_q = "INSERT INTO emp_salary_history 
+        (emp_id, month, basic_salary, hra, pf, tax, allowance, deductions, gross_pay, total_deductions, net_pay)
+        VALUES ($emp_id_save, '$month_save', $basic, $hra_val, $pf_val, $tax_val, $allow, $ded, $gross_pay, $total_ded, $net_pay)
+        ON DUPLICATE KEY UPDATE 
         basic_salary = $basic, 
         hra = $hra_val, 
         pf = $pf_val, 
         tax = $tax_val, 
         allowance = $allow, 
-        deductions = $ded 
-        WHERE id = $emp_id_save";
+        deductions = $ded,
+        gross_pay = $gross_pay,
+        total_deductions = $total_ded,
+        net_pay = $net_pay";
     
-    if (mysqli_query($con, $update_q)) {
-        echo "<script>alert('Salary amounts updated successfully!');</script>";
-        // Refresh to show updated values
-        echo "<script>window.location.href='index.php?salary_slip=1&emp_id=$emp_id_save&month=" . urlencode($_POST['month']) . "&view=1';</script>";
-        exit();
-    } else {
-        echo "<script>alert('Error updating salary: " . mysqli_error($con) . "');</script>";
-    }
+    mysqli_query($con, $history_q);
+
+    echo "<script>alert('Salary amounts updated successfully for $month_save!');</script>";
+    // Refresh to show updated values
+    echo "<script>window.location.href='index.php?salary_slip=1&emp_id=$emp_id_save&month=" . urlencode($month_save) . "&view=1';</script>";
+    exit();
 }
 
 // ------------------ GET FILTER VALUES ------------------ //
@@ -163,9 +172,19 @@ $db_allow = null;
 $db_ded   = null;
 
 if ($selected_emp) {
+    // Join with history table for selected month
     $q = mysqli_query(
         $con,
-        "SELECT * FROM emp_list WHERE id = '" . (int)$selected_emp . "' LIMIT 1"
+        "SELECT e.*, 
+                h.basic_salary AS h_basic, 
+                h.hra AS h_hra, 
+                h.pf AS h_pf, 
+                h.tax AS h_tax, 
+                h.allowance AS h_allow, 
+                h.deductions AS h_ded
+         FROM emp_list e
+         LEFT JOIN emp_salary_history h ON e.id = h.emp_id AND h.month = '" . mysqli_real_escape_string($con, $selected_month) . "'
+         WHERE e.id = '" . (int)$selected_emp . "' LIMIT 1"
     );
     if ($q && mysqli_num_rows($q)) {
         $employee    = mysqli_fetch_assoc($q);
@@ -173,12 +192,13 @@ if ($selected_emp) {
         $designation = isset($employee['designation']) ? $employee['designation'] : '';
         $department  = isset($employee['department']) ? $employee['department'] : '';
         
-        $db_basic = $employee['basic_salary'];
-        $db_hra   = $employee['hra'];
-        $db_pf    = $employee['pf'];
-        $db_tax   = $employee['tax'];
-        $db_allow = $employee['allowance'];
-        $db_ded   = $employee['deductions'];
+        // Prioritize history values if they exist
+        $db_basic = ($employee['h_basic'] !== null) ? $employee['h_basic'] : $employee['basic_salary'];
+        $db_hra   = ($employee['h_hra']   !== null) ? $employee['h_hra']   : $employee['hra'];
+        $db_pf    = ($employee['h_pf']    !== null) ? $employee['h_pf']    : $employee['pf'];
+        $db_tax   = ($employee['h_tax']   !== null) ? $employee['h_tax']   : $employee['tax'];
+        $db_allow = ($employee['h_allow'] !== null) ? $employee['h_allow'] : $employee['allowance'];
+        $db_ded   = ($employee['h_ded']   !== null) ? $employee['h_ded']   : $employee['deductions'];
     }
 }
 
@@ -273,16 +293,28 @@ if ($print_all_mode) {
 
         // If print_all_mode is requested, render full slips for each employee and trigger print
         if (isset($print_all_mode) && $print_all_mode):
-            foreach ($employees as $emp):
-                $emp_id_local = isset($emp['id']) ? (int)$emp['id'] : 0;
-                $emp_name_local = isset($emp['name']) ? $emp['name'] : '';
+            // Fetch all employees and their history for this month
+            $all_emp_q = mysqli_query($con, 
+                "SELECT e.id, e.name, e.salary, 
+                        h.basic_salary AS h_basic, h.hra AS h_hra, h.pf AS h_pf, h.tax AS h_tax, 
+                        h.allowance AS h_allow, h.deductions AS h_ded
+                 FROM emp_list e
+                 LEFT JOIN emp_salary_history h ON e.id = h.emp_id AND h.month = '$current_month'
+                 ORDER BY e.name ASC"
+            );
+            while ($emp = mysqli_fetch_assoc($all_emp_q)):
+                $emp_id_local = (int)$emp['id'];
+                $emp_name_local = $emp['name'];
                 $emp_salary_raw = (isset($emp['salary']) && $emp['salary'] !== '') ? (float)$emp['salary'] : 0.00;
-                $base_val_local = ($emp_salary_raw <= 0) ? 30000.00 : $emp_salary_raw;
-                $hra_local = round($base_val_local * 0.20, 2);
-                $pf_local = round($base_val_local * 0.05, 2);
-                $tax_local = round($base_val_local * 0.10, 2);
-                $other_allow_local = 0.00;
-                $other_ded_local   = 0.00;
+                
+                // Prioritize history values
+                $base_val_local = ($emp['h_basic'] !== null) ? (float)$emp['h_basic'] : (($emp_salary_raw <= 0) ? 30000.00 : $emp_salary_raw);
+                $hra_local = ($emp['h_hra'] !== null) ? (float)$emp['h_hra'] : round($base_val_local * 0.20, 2);
+                $pf_local  = ($emp['h_pf'] !== null) ? (float)$emp['h_pf'] : round($base_val_local * 0.05, 2);
+                $tax_local = ($emp['h_tax'] !== null) ? (float)$emp['h_tax'] : round($base_val_local * 0.10, 2);
+                $other_allow_local = ($emp['h_allow'] !== null) ? (float)$emp['h_allow'] : 0.00;
+                $other_ded_local   = ($emp['h_ded']   !== null) ? (float)$emp['h_ded'] : 0.00;
+
                 $gross_local = $base_val_local + $hra_local + $other_allow_local;
                 $total_deductions_local = $pf_local + $tax_local + $other_ded_local;
                 $net_local = $gross_local - $total_deductions_local;
@@ -375,7 +407,7 @@ if ($print_all_mode) {
                     </div>
                 </div>
             <?php
-            endforeach; // employees
+            endwhile; // employees
             ?>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -395,11 +427,19 @@ if ($print_all_mode) {
             $current_month = $selected_month ? $selected_month : date('Y-m');
             $current_month_label = date('F, Y', strtotime($current_month . '-01'));
             $emp_slips = array();
-            foreach ($employees as $emp) {
+            $list_q = mysqli_query($con, 
+                "SELECT e.id, e.name, e.salary, h.net_pay
+                 FROM emp_list e
+                 LEFT JOIN emp_salary_history h ON e.id = h.emp_id AND h.month = '$current_month'
+                 ORDER BY e.name ASC"
+            );
+            while ($emp = mysqli_fetch_assoc($list_q)) {
+                $base_salary_local = (isset($emp['salary']) && $emp['salary'] !== '') ? (float)$emp['salary'] : 30000.00;
                 $emp_slips[] = array(
                     'id' => $emp['id'],
                     'name' => $emp['name'],
-                    'salary' => isset($emp['salary']) ? $emp['salary'] : 0,
+                    'salary' => ($emp['net_pay'] !== null) ? (float)$emp['net_pay'] : $base_salary_local,
+                    'is_custom' => ($emp['net_pay'] !== null)
                 );
             }
         ?>
