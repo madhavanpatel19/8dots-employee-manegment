@@ -13,8 +13,6 @@ if (!isset($_SESSION['emp_id']) || !isset($_SESSION['emp_name'])) {
 $emp_id = $_SESSION['emp_id'];
 $emp_name = $_SESSION['emp_name'];
 
-$is_partial = isset($_GET['partial']);
-
 // Handle Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_leave'])) {
     $leave_from = mysqli_real_escape_string($con, $_POST['leave_from']);
@@ -28,12 +26,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['apply_leave'])) {
     if (empty($errorFields)) {
         $insert = "INSERT INTO leave_applications (emp_id, leave_from, leave_to, reason, status) VALUES ('$emp_id', '$leave_from', '$leave_to', '$reason', 'pending')";
         if (mysqli_query($con, $insert)) {
-            $successMessage = "Leave application submitted successfully!";
+            $_SESSION['leave_success'] = "Leave application submitted successfully!";
         } else {
-            $successMessage = "Error: " . mysqli_error($con);
+            $_SESSION['leave_error'] = "Error: " . mysqli_error($con);
         }
+    } else {
+        $_SESSION['leave_error'] = "Please fill in all required fields.";
     }
+
+    // Redirect to prevent form resubmission using JavaScript since HTML might already be sent
+    $redirect_url = $_SERVER['PHP_SELF'];
+    if (isset($_GET['leave_application'])) {
+        $redirect_url = "emp_index.php?leave_application";
+    }
+    echo "<script>window.open('$redirect_url','_self');</script>";
+    exit();
 }
+
+// Retrieve messages from session if they exist
+if (isset($_SESSION['leave_success'])) {
+    $successMessage = $_SESSION['leave_success'];
+    unset($_SESSION['leave_success']);
+}
+if (isset($_SESSION['leave_error'])) {
+    $successMessage = $_SESSION['leave_error']; // Reusing the same variable for display logic below
+    unset($_SESSION['leave_error']);
+}
+
+$is_partial = isset($_GET['partial']);
 
 // Fetch Previous Leave Applications
 $query = "SELECT * FROM leave_applications WHERE emp_id = '$emp_id' ORDER BY created_at DESC";

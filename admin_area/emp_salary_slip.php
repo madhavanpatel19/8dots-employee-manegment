@@ -1,13 +1,21 @@
 <?php
-
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-include "connection.php";
+if (!isset($con) || !$con) {
+    include("connection.php");
+}
 
 if (!isset($_SESSION['emp_id'])) {
-    echo "<script>window.open('emp-login.php','_self')</script>";
+
+    // If AJAX request
+    if (isset($_GET['ajax'])) {
+        echo "SessionExpired";
+        exit();
+    }
+
+    header("Location: emp-login.php");
     exit();
 }
 
@@ -28,9 +36,34 @@ function number_to_words($number)
     $no = floor($number);
     $decimal = round(($number - $no) * 100);
     $words = array(
-        '0' => 'Zero', '1' => 'One', '2' => 'Two', '3' => 'Three', '4' => 'Four', '5' => 'Five', '6' => 'Six', '7' => 'Seven', '8' => 'Eight', '9' => 'Nine', '10' => 'Ten',
-        '11' => 'Eleven', '12' => 'Twelve', '13' => 'Thirteen', '14' => 'Fourteen', '15' => 'Fifteen', '16' => 'Sixteen', '17' => 'Seventeen', '18' => 'Eighteen', '19' => 'Nineteen', '20' => 'Twenty',
-        '30' => 'Thirty', '40' => 'Forty', '50' => 'Fifty', '60' => 'Sixty', '70' => 'Seventy', '80' => 'Eighty', '90' => 'Ninety'
+        '0' => 'Zero',
+        '1' => 'One',
+        '2' => 'Two',
+        '3' => 'Three',
+        '4' => 'Four',
+        '5' => 'Five',
+        '6' => 'Six',
+        '7' => 'Seven',
+        '8' => 'Eight',
+        '9' => 'Nine',
+        '10' => 'Ten',
+        '11' => 'Eleven',
+        '12' => 'Twelve',
+        '13' => 'Thirteen',
+        '14' => 'Fourteen',
+        '15' => 'Fifteen',
+        '16' => 'Sixteen',
+        '17' => 'Seventeen',
+        '18' => 'Eighteen',
+        '19' => 'Nineteen',
+        '20' => 'Twenty',
+        '30' => 'Thirty',
+        '40' => 'Forty',
+        '50' => 'Fifty',
+        '60' => 'Sixty',
+        '70' => 'Seventy',
+        '80' => 'Eighty',
+        '90' => 'Ninety'
     );
 
     if ($no == 0) {
@@ -66,12 +99,17 @@ function number_to_words($number)
             $i++;
         }
     }
-    if ($decimal > 0) { $result .= ' and ' . $decimal . '/100'; }
+    if ($decimal > 0) {
+        $result .= ' and ' . $decimal . '/100';
+    }
     return $result;
 }
 
-$emp_id = $_SESSION['emp_id'];
+$emp_id = (int)$_SESSION['emp_id'];
 $emp_name = $_SESSION['emp_name'];
+
+// Security: Force emp_id to the session value to prevent viewing others
+$_GET['emp_id'] = $emp_id;
 
 // Get selected month
 $selected_month = isset($_GET['month']) && $_GET['month'] !== '' ? $_GET['month'] : date('Y-m');
@@ -88,30 +126,23 @@ $q = mysqli_query($con, "SELECT e.*,
                 h.deductions AS h_ded
          FROM emp_list e
          LEFT JOIN emp_salary_history h ON e.id = h.emp_id AND h.month = '$month_q'
-         WHERE e.id = '" . (int)$emp_id . "' LIMIT 1");
+         WHERE e.id = " . (int)$emp_id . " LIMIT 1");
 $employee = ($q && mysqli_num_rows($q)) ? mysqli_fetch_assoc($q) : null;
 
 $base_salary = $employee && $employee['salary'] !== '' ? (float)$employee['salary'] : 0.00;
 
 // Salary calculation components (Prioritize history)
-$base_salary_val = ($employee && $employee['h_basic'] !== null) ? (float)$employee['h_basic'] : 
-                  (($employee && $employee['basic_salary'] !== null) ? (float)$employee['basic_salary'] : 
-                  (($base_salary <= 0) ? 30000.00 : (float)$base_salary));
+$base_salary_val = ($employee && $employee['h_basic'] !== null) ? (float)$employee['h_basic'] : (($employee && $employee['basic_salary'] !== null) ? (float)$employee['basic_salary'] : (($base_salary <= 0) ? 30000.00 : (float)$base_salary));
 
-$hra = ($employee && $employee['h_hra'] !== null) ? (float)$employee['h_hra'] : 
-      (($employee && $employee['hra']   !== null) ? (float)$employee['hra'] : round($base_salary_val * 0.20, 2));
+$hra = ($employee && $employee['h_hra'] !== null) ? (float)$employee['h_hra'] : (($employee && $employee['hra']   !== null) ? (float)$employee['hra'] : round($base_salary_val * 0.20, 2));
 
-$pf = ($employee && $employee['h_pf'] !== null) ? (float)$employee['h_pf'] : 
-     (($employee && $employee['pf']   !== null) ? (float)$employee['pf'] : round($base_salary_val * 0.05, 2));
+$pf = ($employee && $employee['h_pf'] !== null) ? (float)$employee['h_pf'] : (($employee && $employee['pf']   !== null) ? (float)$employee['pf'] : round($base_salary_val * 0.05, 2));
 
-$tax = ($employee && $employee['h_tax'] !== null) ? (float)$employee['h_tax'] : 
-      (($employee && $employee['tax']   !== null) ? (float)$employee['tax'] : round($base_salary_val * 0.10, 2));
+$tax = ($employee && $employee['h_tax'] !== null) ? (float)$employee['h_tax'] : (($employee && $employee['tax']   !== null) ? (float)$employee['tax'] : round($base_salary_val * 0.10, 2));
 
-$other_allow = ($employee && $employee['h_allow'] !== null) ? (float)$employee['h_allow'] : 
-              (($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00);
+$other_allow = ($employee && $employee['h_allow'] !== null) ? (float)$employee['h_allow'] : (($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00);
 
-$other_ded = ($employee && $employee['h_ded'] !== null) ? (float)$employee['h_ded'] : 
-            (($employee && $employee['deductions'] !== null) ? (float)$employee['deductions'] : 0.00);
+$other_ded = ($employee && $employee['h_ded'] !== null) ? (float)$employee['h_ded'] : (($employee && $employee['deductions'] !== null) ? (float)$employee['deductions'] : 0.00);
 
 $gross = $base_salary_val + $hra + $other_allow;
 $total_deductions = $pf + $tax + $other_ded;
@@ -122,12 +153,12 @@ $currency_symbol = '&#8377;';
 // Handle AJAX request for viewing a slip
 if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
     ob_start();
-    ?>
+?>
     <div id="slip-content" class="salary-slip card" style="margin:10px auto; padding:18px; max-width:820px;">
         <div class="slip-top-decor"></div>
         <div class="slip-header">
             <div class="company-left">
-                <img src="../other_images/company-logo.png" alt="Logo" class="company-logo" onerror="this.style.display='none'">
+                <img src="other_images/company-logo.png" alt="Logo" class="company-logo" onerror="this.style.display='none'">
                 <div class="company-center">
                     <h3 class="company-name">8Dots</h3>
                     <div class="company-address">516, Shivam Trade Centre (STC), Near One World West, Ahmedabad, Gujarat 380058</div>
@@ -147,7 +178,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                 <p><strong>Employee ID:</strong> <?php echo (int)$emp_id; ?></p>
             </div>
             <div class="emp-right">
-                <p><strong>Pay Date:</strong> <?php echo date('d M Y'); ?></p>
+                <p><strong>Pay Date:</strong> <?php echo date('t M Y', strtotime($selected_month . '-01')); ?></p>
             </div>
         </div>
 
@@ -211,7 +242,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             </div>
         </div>
     </div>
-    <?php
+<?php
     $content = ob_get_clean();
     echo $content;
     exit();
@@ -222,10 +253,28 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
 <link href="css/salary-slip.css" rel="stylesheet">
 <style>
     @media print {
-        body * { visibility: hidden; }
-        #salarySlipModalBody, #salarySlipModalBody * { visibility: visible; }
-        #salarySlipModalBody { position: absolute; left: 0; top: 0; width: 100%; }
-        .modal-header, .modal-footer, .btn, .no-print { display: none !important; }
+        body * {
+            visibility: hidden;
+        }
+
+        #salarySlipModalBody,
+        #salarySlipModalBody * {
+            visibility: visible;
+        }
+
+        #salarySlipModalBody {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        .modal-header,
+        .modal-footer,
+        .btn,
+        .no-print {
+            display: none !important;
+        }
     }
 </style>
 
@@ -244,19 +293,37 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             </thead>
             <tbody>
                 <?php
-                // Show last 12 months
+                // Show last 12 months, but not before join date
+                $join_month = ($employee && !empty($employee['join_date']) && $employee['join_date'] !== '0000-00-00') 
+                            ? date('Y-m', strtotime($employee['join_date'])) 
+                            : '1970-01';
+
                 for ($i = 0; $i < 12; $i++) {
                     $ts = strtotime("-{$i} month");
                     $m_val = date('Y-m', $ts);
+                    
+                    // Stop if we go before join date
+                    if ($m_val < $join_month) break;
+
                     $m_label = date('F, Y', $ts);
                     $is_current = ($m_val === date('Y-m'));
                     $current_day = (int)date('d');
-                    
-                    // Fetch history for this row to show correct amount in table
-                    $row_q = mysqli_query($con, "SELECT net_pay FROM emp_salary_history WHERE emp_id = $emp_id AND month = '$m_val'");
-                    $row_data = mysqli_fetch_assoc($row_q);
-                    $row_salary = ($row_data && $row_data['net_pay'] !== null) ? (float)$row_data['net_pay'] : $base_salary_val;
 
+                    // Fetch history for this row to show correct amount in table
+                    $row_q = mysqli_query($con, "SELECT net_pay FROM emp_salary_history WHERE emp_id = '" . (int)$emp_id . "' AND month = '$m_val'");
+                    $row_data = mysqli_fetch_assoc($row_q);
+                    
+                    if ($row_data && $row_data['net_pay'] !== null) {
+                        $row_salary = (float)$row_data['net_pay'];
+                    } else {
+                        // Calculate default row salary if no history
+                        $row_base = $employee && $employee['salary'] !== '' ? (float)$employee['salary'] : 30000.00;
+                        $row_hra = round($row_base * 0.20, 2);
+                        $row_pf = round($row_base * 0.05, 2);
+                        $row_tax = round($row_base * 0.10, 2);
+                        $row_salary = $row_base + $row_hra - $row_pf - $row_tax;
+                    }
+                    
                     // Logic: Disable view for current month until end of month (e.g., after 25th)
                     // unless a specific history record exists (admin manually saved it)
                     $can_view = true;
@@ -273,15 +340,17 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                         <td class="amt"><?php echo format_money_with_symbol($row_salary, $currency_symbol); ?></td>
                         <td>
                             <?php if ($can_view): ?>
-                                <button type="button" class="btn btn-sm btn-info view-slip-btn" data-month="<?php echo $m_val; ?>">
+                                <button type="button"
+                                    class="btn btn-sm btn-info view-slip-btn"
+                                    data-month="<?php echo $m_val; ?>">
                                     <i class="fa fa-eye"></i> View
                                 </button>
                             <?php else: ?>
                                 <span class="text-muted" title="Available at month end"><i class="fa fa-lock"></i> Locked</span>
                             <?php endif; ?>
                         </td>
-                    </tr>
-                <?php } ?>
+                        </tr>
+                    <?php } ?>
             </tbody>
         </table>
     </div>
@@ -302,6 +371,9 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                     <button type="button" class="btn btn-primary" id="modalPrintBtn">
                         <i class="fa fa-print"></i> Print
                     </button>
+                    <button type="button" class="btn btn-success" id="modalDownloadBtn">
+                        <i class="fa fa-download"></i> Save as PDF
+                    </button>
                 </div>
             </div>
         </div>
@@ -310,19 +382,55 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
-        $(function() {
-            $('.view-slip-btn').on('click', function() {
-                var month = $(this).data('month');
-                $('#salarySlipModalBody').html('<div style="text-align:center; padding:40px;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Loading...</div>');
-                $('#salarySlipModal').modal('show');
-                $.get('emp_salary_slip.php', { month: month, view: 1, ajax: 1 }, function(data) {
-                    $('#salarySlipModalBody').html(data);
-                });
-            });
+        $(document).ready(function() {
 
-            $('#modalPrintBtn').on('click', function() {
+            $('.view-slip-btn').click(function() {
+
+                var month = $(this).data('month');
+
+                $('#salarySlipModalBody').html(
+                    '<div style="text-align:center;padding:40px;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Loading...</div>'
+                );
+
+                $('#salarySlipModal').modal('show');
+
+                $.ajax({
+                    url: 'emp_salary_slip.php',
+                    type: 'GET',
+                    data: {
+                        month: month,
+                        view: 1,
+                        ajax: 1
+                    },
+                    success: function(data) {
+
+                        if (data.trim() === "SessionExpired") {
+                            window.location = "emp-login.php";
+                            return;
+                        }
+
+                        $('#salarySlipModalBody').html(data);
+
+                    },
+                    error: function() {
+                        $('#salarySlipModalBody').html(
+                            '<div style="text-align:center;color:red;">Error loading salary slip.</div>'
+                        );
+                    }
+                });
+
+            });
+            
+            // Print Button Event
+            $('#modalPrintBtn').click(function() {
                 window.print();
             });
+            
+            // Download Button Event (Save as PDF)
+            $('#modalDownloadBtn').click(function() {
+                window.print();
+            });
+
         });
     </script>
 </div>

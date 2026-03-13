@@ -208,9 +208,9 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     <div class="col-lg-12">
         <h1 class="page-header">
             Employee Directory
-            <a href="index.php?add_emp" style="font-size: 14px; margin-left: 20px;" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Add New Employee 
-            </a>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addEmployeeModal">
+                <i class="fa fa-user-plus"></i> Add new Employee
+            </button>
         </h1>
         <ol class="breadcrumb">
             <li class="active">
@@ -282,11 +282,11 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     foreach ($historyMonths as $hm) {
                                         $k = $hm['year'] . '-' . $hm['month'];
                                         $val = isset($historyTotals[$pk][$k]) ? $historyTotals[$pk][$k] : 0;
-                                    $histSeries[] = array(
-                                        'label' => $hm['label'],
-                                        'value' => $val
-                                    );
-                                }
+                                        $histSeries[] = array(
+                                            'label' => $hm['label'],
+                                            'value' => $val
+                                        );
+                                    }
                                     $histJson = htmlspecialchars(json_encode($histSeries), ENT_QUOTES, 'UTF-8');
                                     $breakdown = array(
                                         array('label' => 'Absent (auto)', 'max' => 20, 'user' => $absentPrefill),
@@ -307,82 +307,105 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                         $ts = strtotime($join);
                                         if ($ts !== false) $join = date('d-m-Y', $ts);
                                     }
-                                    ?>
-                            <tr>
-                                <td><?php echo $pk; ?></td>
-                                <td><?php echo $name; ?></td>
-                                <td><?php echo $phone; ?></td>
-                                <td><?php echo $email; ?></td>
-                                <td><?php echo $address; ?></td>
-                                <td><?php echo $blood; ?></td>
-                                <td><?php echo $gender; ?></td>
-                                <td><?php echo $join; ?></td>
-                                <td><?php echo $salary; ?></td>
-                                <td>
-                                    <?php
-                                    $scoreClass = 'score-plain';
-                                    if ($perfRow) {
-                                        if ($perfTotal < 30) {
-                                            $scoreClass = 'score-red';
-                                        } elseif ($perfTotal <= 49) {
-                                            $scoreClass = 'score-gray';
-                                        } elseif ($perfTotal <= 69) {
-                                            $scoreClass = 'score-amber';
-                                        } else {
-                                            $scoreClass = 'score-green';
-                                        }
-                                    }
-                                    ?>
-                                    <button
-                                        type="button"
-                                        class="btn btn-xs score-btn <?php echo $scoreClass; ?> <?php echo $perfRow ? '' : 'btn-default'; ?>"
-                                        style="padding: 6px 10px; margin-bottom: 6px; border-width: 1px;"
-                                        data-history="<?php echo $histJson; ?>"
-                                        data-breakdown="<?php echo $breakdownJson; ?>"
-                                        data-total="<?php echo $effectiveTotal; ?>"
-                                        data-empname="<?php echo $name; ?>"
-                                        onclick="openPerfHistory(this)">
-                                        <?php echo $perfRow ? ($perfTotal . ' / 100') : 'Not set'; ?>
-                                    </button><br>
-                                    <button 
-                                        class="btn btn-xs btn-warning" 
-                                        style="padding: 6px 8px;"
-                                        data-emp="<?php echo $pk; ?>"
-                                        data-name="<?php echo $name; ?>"
-                                        data-absent="<?php echo $absentPrefill; ?>"
-                                        data-late="<?php echo $latePrefill; ?>"
-                                        data-task_sheet="<?php echo $perfRow ? (int)$perfRow['task_sheet'] : 0; ?>"
-                                        data-performance_score="<?php echo $perfRow ? (float)$perfRow['performance_score'] : 0; ?>"
-                                        data-dressing_behaviour="<?php echo $perfRow ? (int)$perfRow['dressing_behaviour'] : 0; ?>"
-                                        data-rnd="<?php echo $perfRow ? (int)$perfRow['rnd'] : 0; ?>"
-                                        data-avg_perf="<?php echo isset($avgDailyPerformance[$pk]) ? $avgDailyPerformance[$pk]['converted'] : 0; ?>"
-                                        onclick="openPerformance(this)">
-                                        <i class="fa fa-line-chart"></i> Set
-                                    </button>
-                                </td>
-                                <td>
-                                    <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn btn-xs btn-default" style="padding: 7px 8px;" title="View Documents">
-                                        <i class="fa fa-file"></i> View
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="index.php?edit_emp&id=<?php echo $pk; ?>" class="btn btn-xs btn-info" style="margin-right: 5px; padding: 7px 8px;" title="Edit">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                    <a href="javascript:void(0)" onclick="deleteEmployee(<?php echo $pk; ?>)" class="btn btn-xs btn-danger" style="padding: 7px 8px;" title="Delete">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php
+                            ?>
+                                    <tr>
+                                        <td><?php echo $pk; ?></td>
+                                        <td><?php echo $name; ?></td>
+                                        <td><?php echo $phone; ?></td>
+                                        <td><?php echo $email; ?></td>
+                                        <td><?php echo $address; ?></td>
+                                        <td><?php echo $blood; ?></td>
+                                        <td><?php echo $gender; ?></td>
+                                        <td><?php echo $join; ?></td>
+                                        <td><?php echo $salary; ?></td>
+                                        <td>
+                                            <?php
+                                            $scoreClass = 'score-plain';
+                                            if ($perfRow) {
+                                                if ($perfTotal < 30) {
+                                                    $scoreClass = 'score-red';
+                                                } elseif ($perfTotal <= 49) {
+                                                    $scoreClass = 'score-gray';
+                                                } elseif ($perfTotal <= 69) {
+                                                    $scoreClass = 'score-amber';
+                                                } else {
+                                                    $scoreClass = 'score-green';
+                                                }
+                                            }
+                                            ?>
+                                            <button
+                                                type="button"
+                                                class="btn btn-xs score-btn <?php echo $scoreClass; ?> <?php echo $perfRow ? '' : 'btn-default'; ?>"
+                                                style="padding: 6px 10px; margin-bottom: 6px; border-width: 1px;"
+                                                data-history="<?php echo $histJson; ?>"
+                                                data-breakdown="<?php echo $breakdownJson; ?>"
+                                                data-total="<?php echo $effectiveTotal; ?>"
+                                                data-empname="<?php echo $name; ?>"
+                                                onclick="openPerfHistory(this)">
+                                                <?php echo $perfRow ? ($perfTotal . ' / 100') : 'Not set'; ?>
+                                            </button><br>
+                                            <button
+                                                class="btn btn-xs btn-warning"
+                                                style="padding: 6px 8px;"
+                                                data-emp="<?php echo $pk; ?>"
+                                                data-name="<?php echo $name; ?>"
+                                                data-absent="<?php echo $absentPrefill; ?>"
+                                                data-late="<?php echo $latePrefill; ?>"
+                                                data-task_sheet="<?php echo $perfRow ? (int)$perfRow['task_sheet'] : 0; ?>"
+                                                data-performance_score="<?php echo $perfRow ? (float)$perfRow['performance_score'] : 0; ?>"
+                                                data-dressing_behaviour="<?php echo $perfRow ? (int)$perfRow['dressing_behaviour'] : 0; ?>"
+                                                data-rnd="<?php echo $perfRow ? (int)$perfRow['rnd'] : 0; ?>"
+                                                data-avg_perf="<?php echo isset($avgDailyPerformance[$pk]) ? $avgDailyPerformance[$pk]['converted'] : 0; ?>"
+                                                onclick="openPerformance(this)">
+                                                <i class="fa fa-line-chart"></i> Set
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn btn-xs btn-default" style="padding: 7px 8px;" title="View Documents">
+                                                <i class="fa fa-file"></i> View
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <button
+                                                class="btn btn-xs btn-info"
+                                                style="padding:6px 8px; display:block; margin-bottom:4px;"
+                                                data-toggle="modal"
+                                                data-target="#editEmployeeModal"
+
+                                                data-id="<?php echo $pk; ?>"
+                                                data-name="<?php echo $name; ?>"
+                                                data-phone="<?php echo $phone; ?>"
+                                                data-email="<?php echo $email; ?>"
+                                                data-address="<?php echo $address; ?>"
+                                                data-join="<?php echo $row['join_date']; ?>"
+                                                data-basic="<?php echo $row['basic_salary']; ?>"
+                                                data-hra="<?php echo $row['hra']; ?>"
+                                                data-allowance="<?php echo $row['allowance']; ?>"
+                                                data-deductions="<?php echo $row['deductions']; ?>"
+                                                data-salary="<?php echo $row['salary']; ?>"
+
+                                                onclick="openEditEmployee(this)">
+
+                                                <i class="fa fa-edit"></i> Edit
+                                            </button>
+                                            <a href="javascript:void(0)"
+                                                onclick="deleteEmployee(<?php echo $pk; ?>)"
+                                                class="btn btn-xs btn-danger"
+                                                style="padding:6px 4px; display:block;"
+                                                title="Delete">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php
                                 }
                             } else {
                                 ?>
-                            <tr>
-                                <td colspan="12" style="text-align: center; padding: 20px; color: #999;">
-                                    <i class="fa fa-inbox"></i> No employees found.
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td colspan="12" style="text-align: center; padding: 20px; color: #999;">
+                                        <i class="fa fa-inbox"></i> No employees found.
+                                    </td>
+                                </tr>
                             <?php
                             }
                             ?>
@@ -604,7 +627,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     // Close popup with ESC key
-    document.addEventListener('keydown', function (e) {
+    document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             if (popup.style.display === 'flex') closePopup();
         }
@@ -614,12 +637,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     function deleteDocument(docId, empId) {
         if (confirm('Are you sure you want to delete this document?')) {
             fetch('delete_document.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'doc_id=' + docId
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'doc_id=' + docId
+                })
                 .then(res => res.text())
                 .then(result => {
                     if (result.trim() === 'success') {
@@ -637,9 +660,9 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         const formData = new FormData(e.target);
 
         fetch('upload_ajax.php', {
-            method: 'POST',
-            body: formData
-        })
+                method: 'POST',
+                body: formData
+            })
             .then(res => res.text())
             .then(result => {
                 if (result.trim() === 'success') {
@@ -655,12 +678,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     function deleteEmployee(id) {
         if (confirm('Are you sure you want to delete this employee? This action cannot be undone.')) {
             fetch('delete_emp.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'id=' + id
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'id=' + id
+                })
                 .then(res => res.text())
                 .then(result => {
                     if (result.trim() === 'success') {
@@ -749,7 +772,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             performance_score: performanceScore,
             dressing_behaviour: data.dressing_behaviour || 0,
             rnd: data.rnd || 0,
-            total: ['absent','late','task_sheet','dressing_behaviour','rnd']
+            total: ['absent', 'late', 'task_sheet', 'dressing_behaviour', 'rnd']
                 .map(k => parseInt(data[k] || '0', 10))
                 .reduce((a, b) => a + (Number.isFinite(b) ? b : 0), 0) + performanceScore
         });
@@ -774,7 +797,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         const perf = parseFloat(document.getElementById('perf_core').value || '0');
         const dress = parseInt(document.getElementById('perf_dress').value || '0', 10);
         const rnd = parseInt(document.getElementById('perf_rnd').value || '0', 10);
-        
+
         const total = absent + late + task + perf + dress + rnd;
         const totalBox = document.getElementById('perfTotalBox');
         document.getElementById('perfTotalValue').textContent = total.toFixed(2);
@@ -785,7 +808,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         }
     }
 
-    ['perf_absent','perf_late','perf_task','perf_core','perf_dress','perf_rnd'].forEach(id => {
+    ['perf_absent', 'perf_late', 'perf_task', 'perf_core', 'perf_dress', 'perf_rnd'].forEach(id => {
         const el = document.getElementById(id);
         el.addEventListener('input', updatePerformanceTotal);
     });
@@ -842,7 +865,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             const center = pad + idx * slot + slot / 2;
             const x = center - barWidth / 2;
             const y = height - pad - h;
-            const c = scoreColor(capped); 
+            const c = scoreColor(capped);
             const barW = Math.max(10, Math.min(barWidth, 18));
             bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="7" fill="${c}" opacity="0.92" stroke="rgba(15,23,42,0.4)" stroke-width="0.5"></rect>`;
             labels += `<text x="${center}" y="${y - 8}" fill="#0f172a" font-size="11" text-anchor="middle">${capped}</text>`;
@@ -909,7 +932,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(180deg, rgba(2,6,23,0.45), rgba(2,6,23,0.6));
+        background: linear-gradient(180deg, rgba(2, 6, 23, 0.45), rgba(2, 6, 23, 0.6));
         backdrop-filter: blur(4px) saturate(120%);
         justify-content: center;
         align-items: center;
@@ -925,8 +948,8 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         max-height: 82vh;
         overflow-y: auto;
         border-radius: 8px;
-        box-shadow: 0 12px 36px rgba(2,6,23,0.32);
-        border: 1px solid rgba(15,23,42,0.06);
+        box-shadow: 0 12px 36px rgba(2, 6, 23, 0.32);
+        border: 1px solid rgba(15, 23, 42, 0.06);
     }
 
     .popup-content h3 {
@@ -950,7 +973,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         border-radius: 6px;
         padding: 10px 14px;
         margin-bottom: 10px;
-        border: 1px solid rgba(15,23,42,0.04);
+        border: 1px solid rgba(15, 23, 42, 0.04);
     }
 
     .doc-item a {
@@ -979,33 +1002,613 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     /* Header controls */
-    .popup-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:10px; border-bottom:1px solid rgba(15,23,42,0.04); margin-bottom:14px; }
-    .popup-header h3{ flex:1; text-align:center; margin:0; font-size:18px }
-    .popup-back, .popup-close{ background:transparent; border:none; color:#334155; font-size:14px; cursor:pointer; padding:6px 10px; border-radius:6px }
-    .popup-back{ display:inline-flex; align-items:center; gap:8px; color:#0f172a; background:linear-gradient(90deg,#f8fafc,#eef2ff); box-shadow: inset 0 -1px 0 rgba(255,255,255,0.4); }
-    .popup-back i{ font-size:13px }
-    .popup-close{ color:#64748b }
+    .popup-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+        margin-bottom: 14px;
+    }
 
-    .upload-box{ margin-top:0; background:#fff; border:1px dashed rgba(15,23,42,0.06); padding:14px; border-radius:6px }
+    .popup-header h3 {
+        flex: 1;
+        text-align: center;
+        margin: 0;
+        font-size: 18px
+    }
+
+    .popup-back,
+    .popup-close {
+        background: transparent;
+        border: none;
+        color: #334155;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 6px
+    }
+
+    .popup-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #0f172a;
+        background: linear-gradient(90deg, #f8fafc, #eef2ff);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .popup-back i {
+        font-size: 13px
+    }
+
+    .popup-close {
+        color: #64748b
+    }
+
+    .upload-box {
+        margin-top: 0;
+        background: #fff;
+        border: 1px dashed rgba(15, 23, 42, 0.06);
+        padding: 14px;
+        border-radius: 6px
+    }
 
     /* Make popup content scroll nicely on small screens */
-    @media (max-width:600px){ .popup-content{ max-width:94%; padding:14px } .popup-header h3{ font-size:16px } }
+    @media (max-width:600px) {
+        .popup-content {
+            max-width: 94%;
+            padding: 14px
+        }
+
+        .popup-header h3 {
+            font-size: 16px
+        }
+    }
 
     /* Performance history modal */
-    #performanceHistoryModal .modal-content{ border-radius:10px; border:1px solid #e2e8f0; box-shadow:0 16px 44px rgba(15,23,42,0.16); }
-    #performanceHistoryModal .modal-header{ border-bottom:1px solid #e2e8f0; }
-    .history-chart-box{ background:linear-gradient(180deg,#f8fafc,#eef2ff); border:1px solid #e2e8f0; border-radius:12px; padding:14px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); }
-    .history-table-wrap{ margin-top:14px; border:1px solid #e2e8f0; border-radius:12px; padding:12px; background:#ffffff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
-    .history-table-title{ display:flex; align-items:center; justify-content:space-between; gap:12px; font-weight:600; color:#0f172a; }
-    .history-total-pill{ display:inline-block; background:#0ea5e9; color:#fff; padding:4px 10px; border-radius:999px; font-weight:700; font-size:12px; letter-spacing:0.01em; }
-    .history-breakdown-table thead th{ background:#f8fafc; color:#475569; font-size:12px; text-transform:uppercase; letter-spacing:0.02em; border-bottom:1px solid #e2e8f0; }
-    .history-breakdown-table tbody td{ vertical-align:middle; color:#0f172a; }
-    .history-point-badge{ display:inline-block; padding:4px 9px; border-radius:10px; font-weight:700; font-size:12px; background:#e2e8f0; color:#0f172a; }
-    .history-empty-row{ text-align:center; color:#94a3b8; }
-    .score-btn{ border-color: transparent; }
-    .score-plain{ background:#f8fafc; color:#0f172a; border-color:#e2e8f0; }
-    .score-red{ background:#ef4444; color:#fff; border-color:#dc2626; }
-    .score-gray{ background:#94a3b8; color:#0f172a; border-color:#94a3b8; }
-    .score-amber{ background:#f59e0b; color:#0f172a; border-color:#d97706; }
-    .score-green{ background:#22c55e; color:#fff; border-color:#16a34a; }
+    #performanceHistoryModal .modal-content {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 16px 44px rgba(15, 23, 42, 0.16);
+    }
+
+    #performanceHistoryModal .modal-header {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .history-chart-box {
+        background: linear-gradient(180deg, #f8fafc, #eef2ff);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .history-table-wrap {
+        margin-top: 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        background: #ffffff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .history-table-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .history-total-pill {
+        display: inline-block;
+        background: #0ea5e9;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.01em;
+    }
+
+    .history-breakdown-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .history-breakdown-table tbody td {
+        vertical-align: middle;
+        color: #0f172a;
+    }
+
+    .history-point-badge {
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 12px;
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .history-empty-row {
+        text-align: center;
+        color: #94a3b8;
+    }
+
+    .score-btn {
+        border-color: transparent;
+    }
+
+    .score-plain {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #e2e8f0;
+    }
+
+    .score-red {
+        background: #ef4444;
+        color: #fff;
+        border-color: #dc2626;
+    }
+
+    .score-gray {
+        background: #94a3b8;
+        color: #0f172a;
+        border-color: #94a3b8;
+    }
+
+    .score-amber {
+        background: #f59e0b;
+        color: #0f172a;
+        border-color: #d97706;
+    }
+
+    .score-green {
+        background: #22c55e;
+        color: #fff;
+        border-color: #16a34a;
+    }
 </style>
+
+
+<?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+require_once __DIR__ . '/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/PHPMailer/src/SMTP.php';
+?>
+
+<div class="modal fade" id="addEmployeeModal">
+    <div class="modal-dialog modal-lg" style="width: 650px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-user-plus"></i> Add New Employee</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <form method="POST" class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Employee Name *</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Phone *</label>
+                        <div class="col-sm-9">
+                            <input type="tel" name="number" class="form-control" maxlength="10" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Email *</label>
+                        <div class="col-sm-9">
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Address *</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="address" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Blood Group *</label>
+                        <div class="col-sm-9">
+                            <select name="blood" class="form-control" required>
+                                <option value="">Select</option>
+                                <option>A+</option>
+                                <option>B+</option>
+                                <option>O+</option>
+                                <option>AB+</option>
+                                <option>A-</option>
+                                <option>B-</option>
+                                <option>O-</option>
+                                <option>AB-</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Gender *</label>
+                        <div class="col-sm-9">
+                            <select name="gender" class="form-control" required>
+                                <option value="">Select</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Join Date *</label>
+                        <div class="col-sm-9">
+                            <input type="date" name="joinDate" class="form-control" max="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h4>Salary Structure</h4>
+                    <hr>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Basic Pay *</label>
+                        <div class="col-sm-9">
+                            <input type="number" id="basic_salary" name="basic_salary" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">HRA</label>
+                        <div class="col-sm-9">
+                            <input type="number" id="hra" name="hra" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Allowance</label>
+                        <div class="col-sm-9">
+                            <input type="number" id="allowance" name="allowance" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Deductions</label>
+                        <div class="col-sm-9">
+                            <input type="number" id="deductions" name="deductions" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Total Salary</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="salary" name="salary" class="form-control" readonly>
+                        </div>
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button type="submit" name="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Add Employee
+                </button>
+
+            </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        function calculateTotal() {
+
+            let basic = parseFloat(document.getElementById('basic_salary')?.value) || 0;
+            let hra = parseFloat(document.getElementById('hra')?.value) || 0;
+            let allowance = parseFloat(document.getElementById('allowance')?.value) || 0;
+            let deduction = parseFloat(document.getElementById('deductions')?.value) || 0;
+
+            let total = basic + hra + allowance - deduction;
+
+            document.getElementById('salary').value = total.toFixed(2);
+
+        }
+
+        ['basic_salary', 'hra', 'allowance', 'deductions'].forEach(function(id) {
+
+            let el = document.getElementById(id);
+
+            if (el) {
+                el.addEventListener('input', calculateTotal);
+            }
+
+        });
+
+    });
+</script>
+<?php
+
+if (isset($_POST['submit'])) {
+
+    $name = mysqli_real_escape_string($con, $_POST['name']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+
+    $contact = preg_replace('/\D+/', '', $_POST['number']);
+
+    if (strlen($contact) != 10) {
+        echo "<script>alert('Phone must be 10 digits');</script>";
+        exit();
+    }
+
+    $address = mysqli_real_escape_string($con, $_POST['address']);
+    $blood = mysqli_real_escape_string($con, $_POST['blood']);
+    $gender = mysqli_real_escape_string($con, $_POST['gender']);
+    $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
+
+    $basic = $_POST['basic_salary'] ?? 0;
+    $hra = $_POST['hra'] ?? 0;
+    $allowance = $_POST['allowance'] ?? 0;
+    $deductions = $_POST['deductions'] ?? 0;
+    $salary = $_POST['salary'] ?? 0;
+
+    // Generate random password
+    $plainPassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
+
+    // Save password directly (NO HASH)
+    $query = "INSERT INTO emp_list
+    (name,phone_number,address,email,blood_group,gender,join_date,basic_salary,hra,allowance,deductions,salary,password)
+    VALUES
+    ('$name','$contact','$address','$email','$blood','$gender','$joinDate','$basic','$hra','$allowance','$deductions','$salary','$plainPassword')";
+
+    $run = mysqli_query($con, $query);
+
+    if ($run) {
+
+        $mail = new PHPMailer(true);
+
+        try {
+
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'madhavanpatel19@gmail.com';
+            $mail->Password = 'yawi nqpw wbhp icrx';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            $mail->setFrom('madhavanpatel19@gmail.com', '8DOTS');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Employee Login Password';
+
+            $mail->Body = "
+            <h3>Welcome to 8DOTS</h3>
+            <p>Your login password is: <b>$plainPassword</b></p>
+            <p>Please login from Employee Portal.</p>
+            ";
+
+            $mail->send();
+        } catch (Exception $e) {
+            // Mail error ignored
+        }
+
+        echo "<script>
+        alert('Employee Added Successfully');
+        window.location='index.php?emp_directory';
+        </script>";
+    } else {
+
+        echo "<script>alert('Database Error');</script>";
+    }
+}
+?>
+
+
+<?php
+if (isset($_POST['update'])) {
+
+    $id = mysqli_real_escape_string($con, $_POST['id']);
+
+    $name = mysqli_real_escape_string($con, $_POST['name']);
+    $phone = mysqli_real_escape_string($con, $_POST['number']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+    $address = mysqli_real_escape_string($con, $_POST['address']);
+    $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
+
+    $basic = mysqli_real_escape_string($con, $_POST['basic_salary']);
+    $hra = mysqli_real_escape_string($con, $_POST['hra']);
+    $allowance = mysqli_real_escape_string($con, $_POST['allowance']);
+    $deductions = mysqli_real_escape_string($con, $_POST['deductions']);
+    $salary = mysqli_real_escape_string($con, $_POST['salary']);
+
+    mysqli_query($con, "UPDATE emp_list SET
+
+name='$name',
+phone_number='$phone',
+email='$email',
+address='$address',
+join_date='$joinDate',
+basic_salary='$basic',
+hra='$hra',
+allowance='$allowance',
+deductions='$deductions',
+salary='$salary'
+
+WHERE id='$id'");
+
+    echo "<script>
+alert('Employee Updated Successfully');
+window.location='index.php?emp_directory';
+</script>";
+}
+?>
+<div class="modal fade" id="editEmployeeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Employee</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <form method="POST" class="form-horizontal">
+
+                    <input type="hidden" name="id" id="edit_id">
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="name" id="edit_name" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Phone</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="number" id="edit_phone" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Email</label>
+                        <div class="col-sm-9">
+                            <input type="email" name="email" id="edit_email" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Address</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="address" id="edit_address" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Join Date</label>
+                        <div class="col-sm-9">
+                            <input type="date" name="joinDate" id="edit_join" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Basic Salary</label>
+                        <div class="col-sm-9">
+                            <input type="number" name="basic_salary" id="edit_basic" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">HRA</label>
+                        <div class="col-sm-9">
+                            <input type="number" name="hra" id="edit_hra" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Allowance</label>
+                        <div class="col-sm-9">
+                            <input type="number" name="allowance" id="edit_allowance" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Deductions</label>
+                        <div class="col-sm-9">
+                            <input type="number" name="deductions" id="edit_deductions" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Total Salary</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="salary" id="edit_salary" class="form-control" readonly>
+                        </div>
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" name="update" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Update
+                </button>
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    function openEditEmployee(btn) {
+
+        document.getElementById('edit_id').value = btn.dataset.id;
+        document.getElementById('edit_name').value = btn.dataset.name;
+        document.getElementById('edit_phone').value = btn.dataset.phone;
+        document.getElementById('edit_email').value = btn.dataset.email;
+        document.getElementById('edit_address').value = btn.dataset.address;
+        document.getElementById('edit_join').value = btn.dataset.join;
+
+        document.getElementById('edit_basic').value = btn.dataset.basic;
+        document.getElementById('edit_hra').value = btn.dataset.hra;
+        document.getElementById('edit_allowance').value = btn.dataset.allowance;
+        document.getElementById('edit_deductions').value = btn.dataset.deductions;
+        document.getElementById('edit_salary').value = btn.dataset.salary;
+
+    }
+
+    function calculateEditSalary() {
+
+        let basic = parseFloat(document.getElementById('edit_basic').value) || 0;
+        let hra = parseFloat(document.getElementById('edit_hra').value) || 0;
+        let allowance = parseFloat(document.getElementById('edit_allowance').value) || 0;
+        let deduction = parseFloat(document.getElementById('edit_deductions').value) || 0;
+
+        document.getElementById('edit_salary').value = (basic + hra + allowance - deduction).toFixed(2);
+
+    }
+
+    ['edit_basic', 'edit_hra', 'edit_allowance', 'edit_deductions'].forEach(function(id) {
+
+        let el = document.getElementById(id);
+
+        if (el) {
+            el.addEventListener('input', calculateEditSalary);
+        }
+
+    });
+</script>
