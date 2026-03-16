@@ -269,11 +269,38 @@ $history_result = mysqli_query($con, $history_query);
                         field.parentElement.classList.add('has-error');
                         valid = false;
                     } else {
+                        // Weekend blocking for Worksheet
+                        if (field.name === 'date') {
+                            var dateVal = new Date(field.value);
+                            var day = dateVal.getDay();
+                            if (day === 0 || day === 6) {
+                                alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                field.value = "";
+                                valid = false;
+                            }
+                        }
                         field.parentElement.classList.remove('has-error');
                     }
                 });
                 return valid;
             }
+
+            // Direct listener for date input
+            document.addEventListener('DOMContentLoaded', function() {
+                var worksheetDate = document.querySelector('input[name="date"]');
+                if (worksheetDate) {
+                    worksheetDate.addEventListener('change', function() {
+                        if (this.value) {
+                            var dateVal = new Date(this.value);
+                            var day = dateVal.getDay();
+                            if (day === 0 || day === 6) {
+                                alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                this.value = "";
+                            }
+                        }
+                    });
+                }
+            });
         </script>
 
         <?php if (!$is_partial) : ?>

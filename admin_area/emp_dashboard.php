@@ -23,6 +23,7 @@ $res = mysqli_query($con, $q);
 $today_record = mysqli_fetch_assoc($res);
 ?>
 
+
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
@@ -31,6 +32,29 @@ $today_record = mysqli_fetch_assoc($res);
         </h1>
     </div>
 </div>
+<?php
+// Fetch latest announcement for ticker
+$ticker_q = "SELECT title FROM announcements ORDER BY created_at DESC LIMIT 1";
+$ticker_res = mysqli_query($con, $ticker_q);
+if ($ticker_res && mysqli_num_rows($ticker_res) > 0) {
+    $ticker_row = mysqli_fetch_array($ticker_res);
+    $latest_announcement = $ticker_row['title'];
+?>
+<div class="row">
+    <div class="col-lg-12">
+        <!-- Rolling Announcement Ticker -->
+        <div style="background-color: #fce4ec; color: #a62047; padding: 10px 15px; margin-bottom: 25px; border-radius: 6px; border-left: 4px solid #e91e63; font-weight: bold; overflow: hidden; white-space: nowrap; display: flex; align-items: center;">
+            <i class="fa fa-bullhorn" style="margin-right: 15px; font-size: 16px;"></i>
+            <span style="font-size: 14px; margin-right: 10px;">LATEST ANNOUNCEMENT:</span>
+            <marquee behavior="scroll" direction="left" scrollamount="6" style="flex-grow: 1; font-weight: normal; font-size: 15px;">
+                <?php echo htmlspecialchars($latest_announcement); ?>
+            </marquee>
+        </div>
+    </div>
+</div>
+<?php } ?>
+
+
 
 <div class="row">
     <div class="col-lg-4 col-md-4">

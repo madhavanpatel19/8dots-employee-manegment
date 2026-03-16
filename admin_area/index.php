@@ -307,7 +307,99 @@ if (!isset($_SESSION['admin_email'])) {
             </div><!-- wrapper Ends -->
             <script src="js/jquery.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
+            <script>
+                /* Ask browser notification permission & register service worker */
+                document.addEventListener("DOMContentLoaded", function() {
+                    if (!("Notification" in window)) {
+                        console.log("This browser does not support notifications");
+                        return;
+                    }
+
+                    if (Notification.permission !== "granted") {
+                        Notification.requestPermission();
+                    }
+                    
+                    if ('serviceWorker' in navigator) {
+                        navigator.serviceWorker.register('sw.js').then(function(registration) {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        }).catch(function(err) {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                    }
+
+                    /* check admin notifications every 5 seconds */
+                    setInterval(checkAdminNotifications, 5000);
+                });
+
+                function showAnnouncementNotification(title, message) {
+                    // Play notification sound
+                    var audio = new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-bounce.m4a');
+                    audio.play().catch(function(error) {
+                        console.log("Audio play failed:", error);
+                    });
+
+                    // OS Desktop Notification
+                    if (Notification.permission === "granted") {
+                        navigator.serviceWorker.ready.then(function(registration) {
+                            registration.showNotification(title, {
+                                body: message,
+                                icon: "img/notification.png",
+                                requireInteraction: true
+                            });
+                        }).catch(function() {
+                            var notification = new Notification(title, {
+                                body: message,
+                                icon: "img/notification.png",
+                                requireInteraction: true
+                            });
+                            notification.onclick = function() {
+                                window.focus();
+                                this.close();
+                            };
+                        });
+                    }
+
+                    // In-App Toast Notification (Guarantees visual display on PC)
+                    var toast = document.createElement('div');
+                    toast.style.position = 'fixed';
+                    toast.style.top = '20px';
+                    toast.style.right = '20px';
+                    toast.style.backgroundColor = '#6dc16fff'; // Green success color
+                    toast.style.color = '#fff';
+                    toast.style.padding = '15px 20px';
+                    toast.style.borderRadius = '5px';
+                    toast.style.zIndex = '99999';
+                    toast.style.boxShadow = '0 4px 6px rgba(0,0,0,0.3)';
+                    toast.style.minWidth = '250px';
+                    toast.style.fontFamily = 'Arial, sans-serif';
+                    
+                    toast.innerHTML = '<strong style="font-size:16px;">🔔 ' + title + '</strong><br><span style="font-size:14px;">' + message + '</span>';
+                    
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(function() {
+                        toast.style.opacity = '0';
+                        toast.style.transition = 'opacity 0.5s ease-in-out';
+                        setTimeout(function() {
+                            toast.remove();
+                        }, 500);
+                    }, 7000); // Remove after 7 seconds
+                }
+
+                /* ajax check */
+                function checkAdminNotifications() {
+                    fetch("check_admin_notifications.php")
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "new") {
+                                showAnnouncementNotification(data.title, data.message);
+                            }
+                        })
+                        .catch(error => console.log('Error checking admin notifications:', error));
+                }
+            </script>
     </body>
+
 
     </html>
 <?php } ?>

@@ -540,7 +540,28 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 if (dailyInput) {
                                     dailyInput.addEventListener('change', function() {
                                         if (this.value) {
+                                            var date = new Date(this.value);
+                                            var day = date.getDay(); // 0 is Sun, 6 is Sat
+                                            if (day === 0 || day === 6) {
+                                                alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                                this.value = "<?php echo $selected_date; ?>"; // Reset to current selected date
+                                                return;
+                                            }
                                             window.location.href = 'attendance.php?daily=1&date=' + encodeURIComponent(this.value);
+                                        }
+                                    });
+                                }
+
+                                var initialDayInput = document.getElementById('daySelectInitial');
+                                if (initialDayInput) {
+                                    initialDayInput.addEventListener('change', function() {
+                                        if (this.value) {
+                                            var date = new Date(this.value);
+                                            var day = date.getDay();
+                                            if (day === 0 || day === 6) {
+                                                alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                                this.value = "";
+                                            }
                                         }
                                     });
                                 }
@@ -730,8 +751,16 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 if ($attendance_data[$date]['status'] === 'present') $present_count++;
                                                 elseif ($attendance_data[$date]['status'] === 'absent')  $absent_count++;
                                                 elseif ($attendance_data[$date]['status'] === 'leave')   $leave_count++;
+                                                elseif ($attendance_data[$date]['status'] === 'holiday') {
+                                                    // No count increase for now unless requested
+                                                }
                                             } else {
-                                                $status = '-';
+                                                if ($day_name === 'Sat' || $day_name === 'Sun') {
+                                                    $status = 'Holiday';
+                                                    $status_class = 'holiday';
+                                                } else {
+                                                    $status = '-';
+                                                }
                                                 $checkin = '';
                                                 $checkout = '';
                                                 $created_at = '';

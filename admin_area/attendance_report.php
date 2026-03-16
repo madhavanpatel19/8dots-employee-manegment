@@ -147,6 +147,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
     echo '.status-present { color: #27ae60; font-weight: bold; }';
     echo '.status-absent { color: #e74c3c; font-weight: bold; }';
     echo '.status-leave { color: #f39c12; font-weight: bold; }';
+    echo '.status-holiday { color: #3498db; font-weight: bold; }';
     echo '.report-table tfoot { background: #95a5a6; color: #fff; font-weight: bold; }';
     echo '.report-table tfoot tr td { padding: 10px 6px; border: 1px solid #7f8c8d; font-size: 11px; text-align: center; }';
     // echo '.report-table tfoot tr td:nth-child(1) { text-align: left; }';
@@ -204,6 +205,13 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                     $status = '<span class="status-absent">' . $status . '</span>';
                 } elseif ($att['status'] === 'leave') {
                     $status = '<span class="status-leave">' . $status . '</span>';
+                } elseif ($att['status'] === 'holiday') {
+                    $status = '<span class="status-holiday">' . $status . '</span>';
+                }
+            } else {
+                $day_name = date('D', strtotime($from_date));
+                if ($day_name === 'Sat' || $day_name === 'Sun') {
+                    $status = '<span class="status-holiday">Holiday</span>';
                 }
             }
 
@@ -706,6 +714,14 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                         $status_class = 'label-danger';
                                                     } elseif ($att['status'] === 'leave') {
                                                         $status_class = 'label-warning';
+                                                    } elseif ($att['status'] === 'holiday') {
+                                                        $status_class = 'label-info';
+                                                    }
+                                                } else {
+                                                    $day_name = date('D', strtotime($single_date));
+                                                    if ($day_name === 'Sat' || $day_name === 'Sun') {
+                                                        $status = 'Holiday';
+                                                        $status_class = 'label-info';
                                                     }
                                                 }
 
@@ -811,6 +827,18 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                     $('#customDateModal').modal('show');
                 }
             }
+
+            // Weekend blocking for date inputs
+            $('#modalSingleDate, #modalFromDate, #modalToDate').on('change', function() {
+                if (this.value) {
+                    var date = new Date(this.value);
+                    var day = date.getDay(); // 0 is Sun, 6 is Sat
+                    if (day === 0 || day === 6) {
+                        alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                        this.value = "";
+                    }
+                }
+            });
         });
     </script>
 </body>
