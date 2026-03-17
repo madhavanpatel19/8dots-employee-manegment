@@ -83,6 +83,33 @@ body {
     color: black;
 }
 
+/* Hide scrollbar from sidebar and its container but keep it scrollable */
+.side-nav,
+.navbar-ex1-collapse {
+    -ms-overflow-style: none !important;
+    /* IE and Edge */
+    scrollbar-width: none !important;
+    /* Firefox */
+}
+
+.side-nav::-webkit-scrollbar,
+.navbar-ex1-collapse::-webkit-scrollbar {
+    display: none !important;
+    /* Chrome, Safari and Opera */
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Ensure container doesn't show scrollbar during transitions */
+.navbar-ex1-collapse {
+    overflow: hidden !important;
+}
+
+/* Optional: remove horizontal scroll if needed */
+body {
+    overflow-x: hidden;
+}
+
 /* Sidebar Styles */
 
 @media (min-width: 768px) {
