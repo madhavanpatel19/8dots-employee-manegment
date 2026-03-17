@@ -27,9 +27,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($errorFields)) {
         // Insert into attendance table
         $attendance_date = mysqli_real_escape_string($con, $_POST['date']);
-        $check_in_time = mysqli_real_escape_string($con, $_POST['start_time']);
-        $check_out_time = mysqli_real_escape_string($con, $_POST['end_time']);
-        $remarks = mysqli_real_escape_string($con, $_POST['task']);
+        $today_date = date('Y-m-d');
+
+        // Server-side validation: only allow current date
+        if ($attendance_date !== $today_date) {
+            $errorFields[] = 'date';
+            $successMessage = "Error: You can only submit worksheet for the current date.";
+        } else {
+            $check_in_time = mysqli_real_escape_string($con, $_POST['start_time']);
+            $check_out_time = mysqli_real_escape_string($con, $_POST['end_time']);
+            $remarks = mysqli_real_escape_string($con, $_POST['task']);
+        }
 
         // Check if record exists for this emp/date
         $check = mysqli_query($con, "SELECT id FROM attendance WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'");
@@ -105,9 +113,9 @@ $history_result = mysqli_query($con, $history_query);
         <?php if ($successMessage) : ?>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="alert alert-success alert-dismissable">
+                    <div class="alert <?php echo strpos($successMessage, 'Error') !== false ? 'alert-danger' : 'alert-success'; ?> alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <i class="fa fa-check"></i> <?php echo htmlspecialchars($successMessage); ?>
+                        <i class="fa <?php echo strpos($successMessage, 'Error') !== false ? 'fa-exclamation-triangle' : 'fa-check'; ?>"></i> <?php echo htmlspecialchars($successMessage); ?>
                     </div>
                 </div>
             </div>
@@ -225,7 +233,8 @@ $history_result = mysqli_query($con, $history_query);
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Date <span class="text-danger">*</span></label>
                                 <div class="col-md-8">
-                                    <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                                    <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" readonly>
+                                    <small class="text-muted">Worksheet can only be filled for today.</small>
                                 </div>
                             </div>
                             <div class="form-group">

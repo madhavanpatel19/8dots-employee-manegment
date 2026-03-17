@@ -45,7 +45,7 @@ if ($ticker_res && mysqli_num_rows($ticker_res) > 0) {
         <!-- Rolling Announcement Ticker -->
         <div style="background-color: #fce4ec; color: #a62047; padding: 10px 15px; margin-bottom: 25px; border-radius: 6px; border-left: 4px solid #e91e63; font-weight: bold; overflow: hidden; white-space: nowrap; display: flex; align-items: center;">
             <i class="fa fa-bullhorn" style="margin-right: 15px; font-size: 16px;"></i>
-            <span style="font-size: 14px; margin-right: 10px;">LATEST ANNOUNCEMENT:</span>
+            <!-- <span style="font-size: 14px; margin-right: 10px;">LATEST ANNOUNCEMENT:</span> -->
             <marquee behavior="scroll" direction="left" scrollamount="6" style="flex-grow: 1; font-weight: normal; font-size: 15px;">
                 <?php echo htmlspecialchars($latest_announcement); ?>
             </marquee>

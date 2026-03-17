@@ -139,7 +139,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
     echo '.report-table { width: 100%; border-collapse: collapse; margin-top: 15px; }';
     echo '.report-table thead { background: #34495e; color: #fff; }';
     echo '.report-table thead tr th { padding: 10px 6px; text-align: center; font-weight: bold; font-size: 11px; border: 1px solid #2c3e50; }';
-    echo '.report-table tbody tr td { padding: 8px 6px; border: 1px solid #bdc3c7; font-size: 11px; text-align: center; }';
+    echo '.report-table tbody tr td { padding: 8px 6px; border: 1px solid #bdc3c7; font-size: 11px; text-align: center; word-wrap: break-word; word-break: break-word; white-space: normal; }';
     // echo '.report-table tbody tr td:nth-child(2) { text-align: left; }';
     // // echo '.report-table tbody tr td:nth-child(4) { text-align: left; }';
     echo '.report-table tbody tr:nth-child(odd) { background: #ecf0f1; }';
@@ -193,7 +193,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             if (isset($report_data[$emp_id][$from_date])) {
                 $att = $report_data[$emp_id][$from_date];
                 $status = ucfirst($att['status']);
-                $remarks = !empty($att['remarks']) ? htmlspecialchars($att['remarks']) : '-';
+                $remarks = !empty($att['remarks']) ? nl2br(htmlspecialchars($att['remarks'])) : '-';
                 $check_in = !empty($att['check_in_time']) ? $att['check_in_time'] : '-';
                 $check_out = !empty($att['check_out_time']) ? $att['check_out_time'] : '-';
                 $created_at = !empty($att['created_at']) ? date('Y-m-d H:i:s', strtotime($att['created_at'])) : '-';
@@ -222,7 +222,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             echo '<td>' . htmlspecialchars($check_out) . '</td>';
             echo '<td>' . $status . '</td>';
             echo '<td>' . $perfout . '</td>';
-            echo '<td>' . $remarks . '</td>';
+            echo '<td style="max-width: 250px; text-align: left;">' . $remarks . '</td>';
             echo '<td>' . $created_at . '</td>';
             echo '</tr>';
         }
@@ -664,22 +664,22 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                 <table class="table table-bordered table-striped" style="margin-top: 15px;">
                                     <thead>
                                         <tr style="background: #f5f5f5;">
-                                            <th>Employee ID</th>
-                                            <th>Employee Name</th>
+                                            <th style="white-space: nowrap;">Employee ID</th>
+                                            <th style="white-space: nowrap;">Employee Name</th>
                                             <?php if ($report_type === 'daily'): ?>
-                                                <th>Check In</th>
-                                                <th>Check Out</th>
+                                                <th style="white-space: nowrap;">Check In</th>
+                                                <th style="white-space: nowrap;">Check Out</th>
                                             <?php endif; ?>
-                                            <th style="text-align:center;">Status</th>
+                                            <th style="text-align:center; white-space: nowrap;">Status</th>
                                             <?php if ($report_type === 'daily'): ?>
-                                                <th>Remarks</th>
+                                                <th style="width: 35%;">Remarks</th>
                                             <?php else: ?>
-                                                <th style="text-align:center;">Present</th>
-                                                <th style="text-align:center;">Absent</th>
-                                                <th style="text-align:center;">Leave</th>
-                                                <th style="text-align:center;">Total Days</th>
+                                                <th style="text-align:center; white-space: nowrap;">Present</th>
+                                                <th style="text-align:center; white-space: nowrap;">Absent</th>
+                                                <th style="text-align:center; white-space: nowrap;">Leave</th>
+                                                <th style="text-align:center; white-space: nowrap;">Total Days</th>
                                             <?php endif; ?>
-                                            <th>Created At</th>
+                                            <th style="white-space: nowrap;">Created At</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -703,7 +703,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 if (isset($report_data[$emp_id][$single_date])) {
                                                     $att = $report_data[$emp_id][$single_date];
                                                     $status = ucfirst($att['status']);
-                                                    $remarks = !empty($att['remarks']) ? htmlspecialchars($att['remarks']) : '-';
+                                                    $remarks = !empty($att['remarks']) ? nl2br(htmlspecialchars($att['remarks'])) : '-';
                                                     $check_in = !empty($att['check_in_time']) ? $att['check_in_time'] : '-';
                                                     $check_out = !empty($att['check_out_time']) ? $att['check_out_time'] : '-';
                                                     $created_at = !empty($att['created_at']) ? date('Y-m-d H:i:s', strtotime($att['created_at'])) : '-';
@@ -726,13 +726,13 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 }
 
                                                 echo '<tr>';
-                                                echo '<td>' . $emp_id . '</td>';
-                                                echo '<td>' . htmlspecialchars($emp['name']) . '</td>';
-                                                echo '<td>' . htmlspecialchars($check_in) . '</td>';
-                                                echo '<td>' . htmlspecialchars($check_out) . '</td>';
-                                                echo '<td style="text-align:center;"><span class="label ' . $status_class . '">' . $status . '</span></td>';
-                                                echo '<td>' . $remarks . '</td>';
-                                                echo '<td>' . $created_at . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . $emp_id . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . htmlspecialchars($emp['name']) . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . htmlspecialchars($check_in) . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . htmlspecialchars($check_out) . '</td>';
+                                                echo '<td style="text-align:center; white-space: nowrap;"><span class="label ' . $status_class . '">' . $status . '</span></td>';
+                                                echo '<td style="word-wrap: break-word; word-break: break-word; white-space: normal;">' . $remarks . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . $created_at . '</td>';
                                                 echo '</tr>';
                                             }
                                         else:
@@ -766,13 +766,13 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 }
 
                                                 echo '<tr>';
-                                                echo '<td>' . $emp_id . '</td>';
-                                                echo '<td>' . htmlspecialchars($emp['name']) . '</td>';
-                                                echo '<td style="text-align:center; color:#27ae60; font-weight:bold;">' . $present . '</td>';
-                                                echo '<td style="text-align:center; color:#e74c3c; font-weight:bold;">' . $absent . '</td>';
-                                                echo '<td style="text-align:center; color:#f39c12; font-weight:bold;">' . $leave . '</td>';
-                                                echo '<td style="text-align:center;">' . $total_days . '</td>';
-                                                echo '<td>' . $created_at . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . $emp_id . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . htmlspecialchars($emp['name']) . '</td>';
+                                                echo '<td style="text-align:center; color:#27ae60; font-weight:bold; white-space: nowrap;">' . $present . '</td>';
+                                                echo '<td style="text-align:center; color:#e74c3c; font-weight:bold; white-space: nowrap;">' . $absent . '</td>';
+                                                echo '<td style="text-align:center; color:#f39c12; font-weight:bold; white-space: nowrap;">' . $leave . '</td>';
+                                                echo '<td style="text-align:center; white-space: nowrap;">' . $total_days . '</td>';
+                                                echo '<td style="white-space: nowrap;">' . $created_at . '</td>';
                                                 echo '</tr>';
                                             }
                                         endif;

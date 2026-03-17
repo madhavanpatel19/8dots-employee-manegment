@@ -289,7 +289,7 @@ if (!isset($_SESSION['admin_email'])) {
                     if (isset($_GET['worksheettable'])) {
 
                         if (function_exists('requireAdminPermission')) {
-                            requireAdminPermission('worksheettable_view');
+                            requireAdminPermission('worksheet_view');
                         }
 
                         if (file_exists("worksheettable.php")) {

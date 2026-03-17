@@ -92,35 +92,110 @@ if (!isset($_SESSION['admin_email'])) {
                         ?>
                         <div class='form-group'>
                             <label class='col-md-3 control-label'>Permissions:</label>
-                            <div class='col-md-6'>
+                            <div class='col-md-9'>
                                 <div class='permissions-container'>
                                     <?php
-                                    $permList = function_exists('getUsedAdminPermissions') ? getUsedAdminPermissions() : (function_exists('getAllPermissions') ? getAllPermissions() : []);
-                                    foreach ($permList as $perm):
-                                        $label = function_exists('getPermissionLabel') ? getPermissionLabel($perm) : ucwords(str_replace('_', ' ', $perm));
+                                    $categories = [
+                                        'Employee Management' => ['employee_insert', 'employee_update', 'employee_delete', 'employee_view'],
+                                        'Attendance & Leaves' => ['attendance_view', 'attendance_edit', 'leave_view', 'worksheet_view'],
+                                        'Finance & Salary' => ['salary_view'],
+                                        'User & System' => ['user_insert', 'user_update', 'user_view', 'announcement_view']
+                                    ];
+
+                                    foreach ($categories as $catName => $perms):
                                     ?>
-                                        <div class='permission-item'>
-                                            <label class='toggle-switch'>
-                                                <input type='checkbox' name='permissions[]' value='<?php echo htmlspecialchars($perm); ?>'>
-                                                <span class='toggle-slider'></span>
-                                                <span class='toggle-label'><?php echo htmlspecialchars($label); ?></span>
-                                            </label>
+                                        <div class="permission-group">
+                                            <h4 class="permission-cat-title"><?php echo $catName; ?></h4>
+                                            <div class="permission-grid">
+                                                <?php foreach ($perms as $perm): 
+                                                    $label = function_exists('getPermissionLabel') ? getPermissionLabel($perm) : ucwords(str_replace('_', ' ', $perm));
+                                                ?>
+                                                    <div class='permission-item'>
+                                                        <label class='toggle-switch'>
+                                                            <input type='checkbox' name='permissions[]' value='<?php echo htmlspecialchars($perm); ?>'>
+                                                            <span class='toggle-slider'></span>
+                                                            <span class='toggle-label'><?php echo htmlspecialchars($label); ?></span>
+                                                        </label>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
                         <style>
-                            .permissions-container { border: 1px solid #ddd; border-radius: 4px; padding: 15px; background: #f9f9f9; }
-                            .permission-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
-                            .permission-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-                            .toggle-switch { position: relative; display: inline-block; width: 100%; cursor: pointer; }
-                            .toggle-switch input[type="checkbox"] { opacity: 0; width: 0; height: 0; }
-                            .toggle-slider { position: absolute; left: 0; top: 0; width: 50px; height: 24px; background: #ccc; transition: .4s; border-radius: 34px; display: inline-block; vertical-align: middle; margin-right: 10px; }
-                            .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
-                            .toggle-switch input:checked + .toggle-slider { background: #5cb85c; }
-                            .toggle-switch input:checked + .toggle-slider:before { transform: translateX(26px); }
-                            .toggle-label { margin-left: 60px; font-weight: normal; display: inline-block; vertical-align: middle; line-height: 24px; }
+                            .permissions-container { 
+                                border: 1px solid #e1e8ed; 
+                                border-radius: 8px; 
+                                padding: 20px; 
+                                background: #ffffff;
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                            }
+                            .permission-group { margin-bottom: 25px; }
+                            .permission-group:last-child { margin-bottom: 0; }
+                            .permission-cat-title { 
+                                font-size: 15px; 
+                                font-weight: 700; 
+                                color: #2c3e50; 
+                                margin-bottom: 15px; 
+                                padding-bottom: 8px; 
+                                border-bottom: 2px solid #f1f4f6;
+                                display: flex;
+                                align-items: center;
+                            }
+                            .permission-grid {
+                                display: grid;
+                                grid-template-columns: repeat(2, 1fr);
+                                gap: 15px;
+                            }
+                            .permission-item { 
+                                background: #f8fafc;
+                                padding: 10px 15px;
+                                border-radius: 6px;
+                                border: 1px solid #edf2f7;
+                                transition: all 0.2s;
+                            }
+                            .permission-item:hover {
+                                background: #f1f5f9;
+                                border-color: #cbd5e0;
+                            }
+                            .toggle-switch { position: relative; display: flex; align-items: center; width: 100%; cursor: pointer; margin-bottom: 0; }
+                            .toggle-switch input[type="checkbox"] { opacity: 0; width: 0; height: 0; position: absolute; }
+                            .toggle-slider { 
+                                position: relative; 
+                                flex-shrink: 0;
+                                width: 44px; 
+                                height: 22px; 
+                                background: #cbd5e0; 
+                                transition: .3s; 
+                                border-radius: 22px; 
+                                display: inline-block;
+                                margin-right: 12px;
+                            }
+                            .toggle-slider:before { 
+                                position: absolute; 
+                                content: ""; 
+                                height: 16px; 
+                                width: 16px; 
+                                left: 3px; 
+                                bottom: 3px; 
+                                background: white; 
+                                transition: .3s; 
+                                border-radius: 50%;
+                                box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                            }
+                            .toggle-switch input:checked + .toggle-slider { background: #2ecc71; }
+                            .toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+                            .toggle-label { 
+                                font-size: 13px;
+                                font-weight: 500; 
+                                color: #4a5568;
+                                line-height: 1.2;
+                            }
+                            @media (max-width: 768px) {
+                                .permission-grid { grid-template-columns: 1fr; }
+                            }
                         </style>
 
                         <div class='form-group'><!-- form-group Starts -->

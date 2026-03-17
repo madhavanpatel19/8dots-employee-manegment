@@ -75,32 +75,54 @@ if (!isset($_SESSION['admin_email'])) {
                         <i class="fa fa-fw fa-dashboard"></i> Dashboard
                     </a>
                 </li><!-- li Ends -->
-                <?php if (canAdminAccess('employee_view') || canAdminAccess('attendance_view') || canAdminAccess('salary_view')): ?>
-                    <li><!-- li Starts -->
-                        <a href="#" data-toggle="collapse" data-target="#employees">
-                            <i class="fa fa-fw fa-users"></i> Employees
-                            <i class="fa fa-fw fa-caret-down"></i>
-                        </a>
-                        <ul id="employees" class="collapse">
-                            <?php if (canAdminAccess('employee_view')): ?><li><a href="index.php?emp_directory"> View Employees </a></li><?php endif; ?>
-                            <?php if (canAdminAccess('attendance_view')): ?><li><a href="attendance.php"> Attendance </a></li><?php endif; ?>
-                            <?php if (canAdminAccess('leave_view')): ?><li><a href="index.php?view_leave_requests"> Leave Requests </a></li><?php endif; ?>
-                            <?php if (canAdminAccess('salary_view')): ?><li><a href="index.php?salary_slip"> Salary Slip </a></li><?php endif; ?>
-                        </ul>
-                    </li><!-- li Ends -->
+                <?php if (canAdminAccess('employee_view')): ?>
+                <li>
+                    <a href="index.php?emp_directory">
+                        <i class="fa fa-fw fa-users"></i> View Employees
+                    </a>
+                </li>
                 <?php endif; ?>
-                <?php if (canAdminAccess('user_view') || canAdminAccess('user_update') || canAdminAccess('user_insert')): ?>
-                    <li><!-- li Starts -->
-                        <a href="#" data-toggle="collapse" data-target="#users">
-                            <i class="fa fa-fw fa-gear"></i> Users
-                            <i class="fa fa-fw fa-caret-down"></i>
-                        </a>
-                        <ul id="users" class="collapse">
-                            <?php if (canAdminAccess('user_insert')): ?><li><a href="index.php?insert_user"> Insert User </a></li><?php endif; ?>
-                            <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?view_users"> View Users </a></li><?php endif; ?>
-                            <?php if (canAdminAccess('user_view')): ?><li><a href="index.php?user_profile=<?php echo $admin_id; ?>"> Edit Profile </a></li><?php endif; ?>
-                        </ul>
-                    </li><!-- li Ends -->
+                <?php if (canAdminAccess('attendance_view')): ?>
+                <li>
+                    <a href="attendance.php">
+                        <i class="fa fa-fw fa-calendar"></i> Attendance
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('leave_view')): ?>
+                <li>
+                    <a href="index.php?view_leave_requests">
+                        <i class="fa fa-fw fa-file-text"></i> Leave Requests
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('salary_view')): ?>
+                <li>
+                    <a href="index.php?salary_slip">
+                        <i class="fa fa-fw fa-money"></i> Salary Slip
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('user_insert')): ?>
+                <li>
+                    <a href="index.php?insert_user">
+                        <i class="fa fa-fw fa-user-plus"></i> Insert User
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('user_view')): ?>
+                <li>
+                    <a href="index.php?view_users">
+                        <i class="fa fa-fw fa-user-secret"></i> View Users
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('user_view')): ?>
+                <li>
+                    <a href="index.php?user_profile=<?php echo $admin_id; ?>">
+                        <i class="fa fa-fw fa-user"></i> Edit Profile
+                    </a>
+                </li>
                 <?php endif; ?>
                 <?php if(canAdminAccess('announcement_view')): ?>
                     <li><!-- li Starts -->

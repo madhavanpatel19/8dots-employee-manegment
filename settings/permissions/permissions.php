@@ -1,5 +1,6 @@
 <?php
-// permissions.php - Professional Permission Management System
+// permissions.php - Permission Definition and Logic Bridge
+// This file defines the permission list and provides compatibility functions.
 
 require_once __DIR__ . '/../../admin_area/connection.php';
 
@@ -7,215 +8,114 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/*
-|--------------------------------------------------------------------------
-| Get All Available System Permissions
-|--------------------------------------------------------------------------
-*/
+/**
+ * Get All Available System Permissions
+ */
 if (!function_exists('getAllPermissions')) {
     function getAllPermissions() {
         return [
-            'employee_insert',
-            'employee_update',
-            'employee_delete',
-            'employee_view',
-            'employee_no_view',
-
-            'attendance_insert',
-            'attendance_update',
-            'attendance_delete',
-            'attendance_view',
-            'attendance_no_view',
-            'attendance_edit',
-
-            'salary_insert',
-            'salary_update',
-            'salary_delete',
-            'salary_view',
-            'salary_no_view',
-
-            'user_insert',
-            'user_update',
-            'user_view',
-            'worksheet_view',
-            'leave_view',
+            'employee_insert', 'employee_update', 'employee_delete', 'employee_view',
+            'attendance_insert', 'attendance_update', 'attendance_delete', 'attendance_view', 'attendance_edit',
+            'salary_insert', 'salary_update', 'salary_delete', 'salary_view',
+            'user_insert', 'user_update', 'user_view',
+            'worksheet_view', 'leave_view', 'announcement_view'
         ];
     }
 }
 
-/*
-|--------------------------------------------------------------------------
-| Get permissions that actually control admin area access (used in pages)
-| Use this in Insert/Edit User forms so only "used" permissions are shown.
-|--------------------------------------------------------------------------
-*/
+/**
+ * Get permissions used in admin forms (checkboxes)
+ */
 if (!function_exists('getUsedAdminPermissions')) {
     function getUsedAdminPermissions() {
         return [
-            'employee_insert',
-            'employee_update',
-            'employee_delete',
-            'employee_view',
-
-            'attendance_view',
-            'attendance_edit',
-
+            'employee_insert', 'employee_update', 'employee_delete', 'employee_view',
+            'attendance_view', 'attendance_edit',
             'salary_view',
-
-            'user_insert',
-            'user_update',
-            'user_view',
-            'worksheettable_view',
-            'leave_view',
+            'user_insert', 'user_update', 'user_view',
+            'worksheet_view', 'leave_view', 'announcement_view'
         ];
-    /*
-    |--------------------------------------------------------------------------
-    | Check If User Has Attendance Edit Permission
-    |--------------------------------------------------------------------------
-    */
-    if (!function_exists('userCanEditAttendance')) {
-        function userCanEditAttendance($userId) {
-            return userHasPermission($userId, 'attendance_edit');
-        }
-    }
     }
 }
 
-/*
-|--------------------------------------------------------------------------
-| Get human-readable label for a permission key
-|--------------------------------------------------------------------------
-*/
+/**
+ * Human-readable labels for permission keys
+ */
 if (!function_exists('getPermissionLabel')) {
     function getPermissionLabel($permissionKey) {
-        return ucwords(str_replace('_', ' ', $permissionKey));
+        return ucwords(str_replace(['_', 'table'], [' ', ''], $permissionKey));
     }
 }
 
-/*
-|--------------------------------------------------------------------------
-| Get User Role ID
-|--------------------------------------------------------------------------
-*/
-function getUserRole($userId) {
-    global $con;
-
-    $roleId = null;
-    $stmt = $con->prepare("SELECT role_id FROM users WHERE id = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $stmt->bind_result($roleId);
-    $stmt->fetch();
-    $stmt->close();
-
-    return $roleId ?? null;
-}
-
-/*
-|--------------------------------------------------------------------------
-| Get Role Permissions (Cached in Session)
-|--------------------------------------------------------------------------
-*/
-function getRolePermissions($roleId) {
-    global $con;
-
-    if (!$roleId) return [];
-
-    // Cache permissions in session to reduce DB load
-    if (isset($_SESSION['role_permissions'][$roleId])) {
-        return $_SESSION['role_permissions'][$roleId];
-    }
-
-    $stmt = $con->prepare("
-        SELECT p.name 
-        FROM permissions p 
-        JOIN role_permissions rp ON p.id = rp.permission_id 
-        WHERE rp.role_id = ?
-    ");
-    $stmt->bind_param("i", $roleId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $permissions = [];
-    while ($row = $result->fetch_assoc()) {
-        $permissions[] = $row['name'];
-    }
-
-    $stmt->close();
-
-    // Store in session cache
-    $_SESSION['role_permissions'][$roleId] = $permissions;
-
-    return $permissions;
-}
-
-/*
-|--------------------------------------------------------------------------
-| Check If User Has Permission
-|--------------------------------------------------------------------------
-*/
-function userHasPermission($userId, $permission) {
-
-    if (!$userId) return false;
-
-    $roleId = getUserRole($userId);
-    $permissions = getRolePermissions($roleId);
-
-    // If user is admin, allow attendance_edit, but only attendance_view if not editing
-    if (isAdmin($userId)) {
-        if ($permission === 'attendance_edit') {
-            return true;
+/**
+ * Check if current logged-in user (admin) has a permission.
+ * Bridges to admin_permissions.php logic or falls back to direct DB check.
+ */
+if (!function_exists('userHasPermission')) {
+    function userHasPermission($userId, $permission) {
+        // If admin_permissions helper is loaded, prioritize its logic
+        if (function_exists('canAdminAccess')) {
+            return canAdminAccess($permission);
         }
-        if ($permission === 'attendance_view') {
-            // Only allow view if not editing
-            return !isset($_GET['edit']) || !$_GET['edit'];
+        
+        // Fallback: Check admins table directly using session
+        global $con;
+        if (isset($_SESSION['admin_email'])) {
+            $email = mysqli_real_escape_string($con, $_SESSION['admin_email']);
+            $res = mysqli_query($con, "SELECT is_super_admin, permissions FROM admins WHERE admin_email='$email' LIMIT 1");
+            if ($res && $row = mysqli_fetch_assoc($res)) {
+                if (!empty($row['is_super_admin'])) return true;
+                $perms = isset($row['permissions']) ? trim($row['permissions']) : '';
+                $perms_arr = $perms === '' ? [] : array_map('trim', explode(',', $perms));
+                return in_array($permission, $perms_arr, true);
+            }
+        }
+        return false;
+    }
+}
+
+/**
+ * Check if user is admin
+ */
+if (!function_exists('isAdmin')) {
+    function isAdmin($userId) {
+        if (isset($_SESSION['admin_email'])) return true;
+        
+        global $con;
+        $id_esc = mysqli_real_escape_string($con, $userId);
+        $res = mysqli_query($con, "SELECT admin_id FROM admins WHERE admin_id='$id_esc' LIMIT 1");
+        return ($res && mysqli_num_rows($res) > 0);
+    }
+}
+
+/**
+ * Required permission check for pages (internal bridge)
+ */
+if (!function_exists('requirePermission')) {
+    function requirePermission($permission) {
+        // Bridge to requireAdminPermission if it exists
+        if (function_exists('requireAdminPermission')) {
+            requireAdminPermission($permission);
+            return;
+        }
+
+        if (!userHasPermission(null, $permission)) {
+            $redirect = "index.php?dashboard&access_denied=1";
+            if (!headers_sent()) {
+                header("Location: $redirect");
+            } else {
+                echo "<script>window.location.href='$redirect';</script>";
+            }
+            exit();
         }
     }
-    return in_array($permission, $permissions);
 }
 
-/*
-|--------------------------------------------------------------------------
-| Check If User Is Admin
-|--------------------------------------------------------------------------
-*/
-function isAdmin($userId) {
-    global $con;
-
-    if (!$userId) return false;
-
-    $stmt = $con->prepare("
-        SELECT r.name 
-        FROM roles r
-        JOIN users u ON r.id = u.role_id
-        WHERE u.id = ?
-    ");
-
-    $roleName = null;
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $stmt->bind_result($roleName);
-    $stmt->fetch();
-    $stmt->close();
-
-    return strtolower((string)$roleName) === 'admin';
-}
-
-/*
-|--------------------------------------------------------------------------
-| Protect Page By Permission
-|--------------------------------------------------------------------------
-*/
-function requirePermission($permission) {
-
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: login.php");
-        exit();
-    }
-
-    $userId = $_SESSION['user_id'];
-
-    if (!userHasPermission($userId, $permission)) {
-        die("Access Denied. You do not have permission.");
+/**
+ * Attendance edit helper
+ */
+if (!function_exists('userCanEditAttendance')) {
+    function userCanEditAttendance($userId) {
+        return userHasPermission($userId, 'attendance_edit');
     }
 }

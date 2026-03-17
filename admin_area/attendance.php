@@ -591,14 +591,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     <table class="attendance-table">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
-                                                <th>Employee ID</th>
-                                                <th>Employee Name</th>
-                                                <th style="min-width:220px;">Status</th>
-                                                <th>Check-in Time</th>
-                                                <th>Check-out Time</th>
-                                                <th>Performance</th>
-                                                <th>Remarks</th>
+                                                <th style="white-space: nowrap;">#</th>
+                                                <th style="white-space: nowrap;">Employee ID</th>
+                                                <th style="white-space: nowrap;">Employee Name</th>
+                                                <th style="min-width:220px; white-space: nowrap;">Status</th>
+                                                <th style="white-space: nowrap;">Check-in Time</th>
+                                                <th style="white-space: nowrap;">Check-out Time</th>
+                                                <th style="white-space: nowrap;">Performance</th>
+                                                <th style="width: 30%;">Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -629,13 +629,13 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 }
                                             ?>
                                                 <tr>
-                                                    <td><?php echo $i + 1; ?></td>
-                                                    <td>
+                                                    <td style="white-space: nowrap;"><?php echo $i + 1; ?></td>
+                                                    <td style="white-space: nowrap;">
                                                         <?php echo $eid; ?>
                                                         <input type="hidden" name="emp_id[]" value="<?php echo $eid; ?>">
                                                     </td>
-                                                    <td><?php echo htmlspecialchars($emp['name']); ?></td>
-                                                    <td>
+                                                    <td style="white-space: nowrap;"><?php echo htmlspecialchars($emp['name']); ?></td>
+                                                    <td style="white-space: nowrap;">
                                                         <div class="status-options">
                                                             <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status == '') ? ' active' : ''; ?>">
                                                                 <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status == '') ? 'checked' : ''; ?>>P
@@ -708,13 +708,13 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 <table class="attendance-table">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Day</th>
-                                            <th>Status</th>
-                                            <th>Check-in</th>
-                                            <th>Check-out</th>
-                                            <th>Performance</th>
-                                            <th>created_at</th>
+                                            <th style="white-space: nowrap; width: 80px;">Date</th>
+                                            <th style="white-space: nowrap; width: 60px;">Day</th>
+                                            <th style="white-space: nowrap; width: 100px;">Status</th>
+                                            <th style="white-space: nowrap; width: 100px;">Check-in</th>
+                                            <th style="white-space: nowrap; width: 100px;">Check-out</th>
+                                            <th style="white-space: nowrap; width: 100px;">Performance</th>
+                                            <th style="white-space: nowrap; width: 160px;">Created At</th>
                                             <th>Remarks</th>
                                         </tr>
                                     </thead>
@@ -741,7 +741,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             if (isset($attendance_data[$date])) {
                                                 $status       = ucfirst($attendance_data[$date]['status']);
                                                 $status_class = $attendance_data[$date]['status'];
-                                                $remarks      = htmlspecialchars($attendance_data[$date]['remarks'] ?? '');
+                                                $remarks      = nl2br(htmlspecialchars($attendance_data[$date]['remarks'] ?? ''));
                                                 $checkin      = htmlspecialchars($attendance_data[$date]['check_in_time'] ?? '');
                                                 $checkout     = htmlspecialchars($attendance_data[$date]['check_out_time'] ?? '');
                                                 $created_at   = htmlspecialchars($attendance_data[$date]['created_at'] ?? '');
@@ -767,19 +767,19 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             }
 
                                             echo '<tr>';
-                                            echo '<td><strong>' . date('d-M', strtotime($date)) . '</strong></td>';
-                                            echo '<td>' . $day_name . '</td>';
+                                            echo '<td style="white-space: nowrap;"><strong>' . date('d-M', strtotime($date)) . '</strong></td>';
+                                            echo '<td style="white-space: nowrap;">' . $day_name . '</td>';
                                             // Lock editing for today if not permitted
                                             if ($date === $today && !$can_edit_today) {
-                                                echo '<td class="date-cell ' . $status_class . '" title="Editing locked by admin permission">' . $status . '</td>';
+                                                echo '<td class="date-cell ' . $status_class . '" title="Editing locked by admin permission" style="white-space: nowrap;">' . $status . '</td>';
                                             } else {
-                                                echo '<td class="date-cell ' . $status_class . '" onclick="openModal(' . $selected_emp_id . ', \'" . $date . "\', \'" . $checkin . "\')" title="Click to mark attendance">' . $status . '</td>';
+                                                echo '<td class="date-cell ' . $status_class . '" onclick="openModal(' . $selected_emp_id . ', \'' . $date . '\', \'' . $checkin . '\')" title="Click to mark attendance" style="white-space: nowrap;">' . $status . '</td>';
                                             }
-                                            echo '<td>' . ($checkin ? $checkin : '-') . '</td>';
-                                            echo '<td>' . ($checkout ? $checkout : '-') . '</td>';
-                                            echo '<td>' . ($perf !== '' ? $perf : '-') . '</td>';
-                                            echo '<td>' . ($created_at ? $created_at : '-') . '</td>';
-                                            echo '<td class="remarks-cell">' . ($remarks ? $remarks : '-') . '</td>';
+                                            echo '<td style="white-space: nowrap;">' . ($checkin ? $checkin : '-') . '</td>';
+                                            echo '<td style="white-space: nowrap;">' . ($checkout ? $checkout : '-') . '</td>';
+                                            echo '<td style="white-space: nowrap;">' . ($perf !== '' ? $perf : '-') . '</td>';
+                                            echo '<td style="white-space: nowrap;">' . ($created_at ? $created_at : '-') . '</td>';
+                                            echo '<td class="remarks-cell" style="max-width: 250px; word-wrap: break-word; word-break: break-word; white-space: normal;">' . ($remarks ? $remarks : '-') . '</td>';
                                             echo '</tr>';
                                         }
                                         ?>
@@ -795,21 +795,21 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             <td class="summary-row" style="background: #e8f4f8; border-top: 1px solid #ccc;">
                                                 <!-- <td colspan="5" style="text-align: right; font-weight: bold;">Average Daily Performance:</td> -->
 
-                                                <td>
-                                                    <?php if ($avg_daily_performance !== null): ?>
-                                                        <span style="background: #0275d8; color: white; padding: 4px 8px; border-radius: 3px; font-weight: bold;">
-                                                            <?php echo $avg_daily_performance; ?> / 100
-                                                        </span>
-                                                        <br>
-                                                        <small style="color: #666; display: block; margin-top: 2px;">
-                                                            (<?php echo $daily_perf_count; ?> day<?php echo $daily_perf_count != 1 ? 's' : ''; ?> recorded)
-                                                        </small>
-                                                    <?php else: ?>
-                                                        <span style="color: #999;">
-                                                            No daily performance recorded
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
+                                            <td>
+                                                <?php if ($avg_daily_performance !== null): ?>
+                                                    <span style="background: #0275d8; color: white; padding: 4px 8px; border-radius: 3px; font-weight: bold;">
+                                                        <?php echo $avg_daily_performance; ?> / 100
+                                                    </span>
+                                                    <br>
+                                                    <small style="color: #666; display: block; margin-top: 2px;">
+                                                        (<?php echo $daily_perf_count; ?> day<?php echo $daily_perf_count != 1 ? 's' : ''; ?> recorded)
+                                                    </small>
+                                                <?php else: ?>
+                                                    <span style="color: #999;">
+                                                        No daily performance recorded
+                                                    </span>
+                                                <?php endif; ?>
+                                            </td>
                                             </td>
                                             <td></td>
                                         </tr>
