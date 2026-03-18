@@ -195,8 +195,8 @@ if ($selected_emp) {
         // Prioritize history values if they exist
         $db_basic = ($employee['h_basic'] !== null) ? $employee['h_basic'] : $employee['basic_salary'];
         $db_hra   = ($employee['h_hra']   !== null) ? $employee['h_hra']   : $employee['hra'];
-        $db_pf    = ($employee['h_pf']    !== null) ? $employee['h_pf']    : $employee['pf'];
-        $db_tax   = ($employee['h_tax']   !== null) ? $employee['h_tax']   : $employee['tax'];
+        $db_pf    = ($employee['h_pf']    !== null) ? $employee['h_pf']    : null; // No default PF in emp_list
+        $db_tax   = ($employee['h_tax']   !== null) ? $employee['h_tax']   : null; // No default Tax in emp_list
         $db_allow = ($employee['h_allow'] !== null) ? $employee['h_allow'] : $employee['allowance'];
         $db_ded   = ($employee['h_ded']   !== null) ? $employee['h_ded']   : $employee['deductions'];
     }
@@ -204,7 +204,7 @@ if ($selected_emp) {
 
 // ------------------ SALARY CALCULATION ------------------ //
 // Use DB values if present, otherwise calculate defaults
-$base_salary_val = ($db_basic !== null) ? (float)$db_basic : (($base_salary <= 0) ? 30000.00 : (float)$base_salary);
+$base_salary_val = ($db_basic !== null && $db_basic > 0) ? (float)$db_basic : (($base_salary <= 0) ? 30000.00 : (float)$base_salary);
 $hra   = ($db_hra   !== null) ? (float)$db_hra   : round($base_salary_val * 0.20, 2);
 $pf    = ($db_pf    !== null) ? (float)$db_pf    : round($base_salary_val * 0.05, 2);
 $tax   = ($db_tax   !== null) ? (float)$db_tax   : round($base_salary_val * 0.10, 2);
@@ -224,7 +224,7 @@ $total_deductions = $pf + $tax + $other_ded;
 $net              = $gross - $total_deductions;
 
 // ------------------ BASIC STYLES ------------------ //
-echo '<link href="css/salary-slip.css" rel="stylesheet">';;
+echo '<link href="css/salary-slip.css" rel="stylesheet">';
 
 // Wrapper classes (flag print-all so CSS can adjust print rules)
 $slip_wrap_classes = 'salary-slip-wrap';
@@ -295,7 +295,7 @@ if ($print_all_mode) {
         if (isset($print_all_mode) && $print_all_mode):
             // Fetch all employees and their history for this month
             $all_emp_q = mysqli_query($con, 
-                "SELECT e.id, e.name, e.salary, 
+                "SELECT e.id, e.name, e.salary, e.basic_salary, e.hra, e.allowance, e.deductions,
                         h.basic_salary AS h_basic, h.hra AS h_hra, h.pf AS h_pf, h.tax AS h_tax, 
                         h.allowance AS h_allow, h.deductions AS h_ded
                  FROM emp_list e
@@ -308,12 +308,12 @@ if ($print_all_mode) {
                 $emp_salary_raw = (isset($emp['salary']) && $emp['salary'] !== '') ? (float)$emp['salary'] : 0.00;
                 
                 // Prioritize history values
-                $base_val_local = ($emp['h_basic'] !== null) ? (float)$emp['h_basic'] : (($emp_salary_raw <= 0) ? 30000.00 : $emp_salary_raw);
-                $hra_local = ($emp['h_hra'] !== null) ? (float)$emp['h_hra'] : round($base_val_local * 0.20, 2);
-                $pf_local  = ($emp['h_pf'] !== null) ? (float)$emp['h_pf'] : round($base_val_local * 0.05, 2);
+                $base_val_local = ($emp['h_basic'] !== null) ? (float)$emp['h_basic'] : (($emp['basic_salary'] !== null && $emp['basic_salary'] > 0) ? (float)$emp['basic_salary'] : (($emp_salary_raw <= 0) ? 30000.00 : $emp_salary_raw));
+                $hra_local = ($emp['h_hra'] !== null) ? (float)$emp['h_hra'] : (($emp['hra'] !== null) ? (float)$emp['hra'] : round($base_val_local * 0.20, 2));
+                $pf_local  = ($emp['h_pf']  !== null) ? (float)$emp['h_pf']  : round($base_val_local * 0.05, 2);
                 $tax_local = ($emp['h_tax'] !== null) ? (float)$emp['h_tax'] : round($base_val_local * 0.10, 2);
-                $other_allow_local = ($emp['h_allow'] !== null) ? (float)$emp['h_allow'] : 0.00;
-                $other_ded_local   = ($emp['h_ded']   !== null) ? (float)$emp['h_ded'] : 0.00;
+                $other_allow_local = ($emp['h_allow'] !== null) ? (float)$emp['h_allow'] : (($emp['allowance'] !== null) ? (float)$emp['allowance'] : 0.00);
+                $other_ded_local   = ($emp['h_ded']   !== null) ? (float)$emp['h_ded']   : (($emp['deductions'] !== null) ? (float)$emp['deductions'] : 0.00);
 
                 $gross_local = $base_val_local + $hra_local + $other_allow_local;
                 $total_deductions_local = $pf_local + $tax_local + $other_ded_local;
@@ -428,17 +428,32 @@ if ($print_all_mode) {
             $current_month_label = date('F, Y', strtotime($current_month . '-01'));
             $emp_slips = array();
             $list_q = mysqli_query($con, 
-                "SELECT e.id, e.name, e.salary, h.net_pay
+                "SELECT e.id, e.name, e.salary, e.basic_salary, e.hra, e.allowance, e.deductions, h.net_pay
                  FROM emp_list e
                  LEFT JOIN emp_salary_history h ON e.id = h.emp_id AND h.month = '$current_month'
                  ORDER BY e.name ASC"
             );
             while ($emp = mysqli_fetch_assoc($list_q)) {
-                $base_salary_local = (isset($emp['salary']) && $emp['salary'] !== '') ? (float)$emp['salary'] : 30000.00;
+                if ($emp['net_pay'] !== null) {
+                    $net_pay_final = (float)$emp['net_pay'];
+                } else {
+                    // Calculate fallback net pay using same logic as slips
+                    $emp_salary_raw = (isset($emp['salary']) && $emp['salary'] !== '') ? (float)$emp['salary'] : 0.00;
+                    $b_val = ($emp['basic_salary'] !== null && $emp['basic_salary'] > 0) ? (float)$emp['basic_salary'] : (($emp_salary_raw <= 0) ? 30000.00 : $emp_salary_raw);
+                    
+                    $h_val = ($emp['hra'] !== null) ? (float)$emp['hra'] : round($b_val * 0.20, 2);
+                    $p_val = round($b_val * 0.05, 2);
+                    $t_val = round($b_val * 0.10, 2);
+                    $a_val = ($emp['allowance'] !== null) ? (float)$emp['allowance'] : 0.00;
+                    $d_val = ($emp['deductions'] !== null) ? (float)$emp['deductions'] : 0.00;
+
+                    $net_pay_final = ($b_val + $h_val + $a_val) - ($p_val + $t_val + $d_val);
+                }
+
                 $emp_slips[] = array(
                     'id' => $emp['id'],
                     'name' => $emp['name'],
-                    'salary' => ($emp['net_pay'] !== null) ? (float)$emp['net_pay'] : $base_salary_local,
+                    'salary' => $net_pay_final,
                     'is_custom' => ($emp['net_pay'] !== null)
                 );
             }

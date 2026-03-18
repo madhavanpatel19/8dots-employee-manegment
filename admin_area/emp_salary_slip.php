@@ -132,13 +132,13 @@ $employee = ($q && mysqli_num_rows($q)) ? mysqli_fetch_assoc($q) : null;
 $base_salary = $employee && $employee['salary'] !== '' ? (float)$employee['salary'] : 0.00;
 
 // Salary calculation components (Prioritize history)
-$base_salary_val = ($employee && $employee['h_basic'] !== null) ? (float)$employee['h_basic'] : (($employee && $employee['basic_salary'] !== null) ? (float)$employee['basic_salary'] : (($base_salary <= 0) ? 30000.00 : (float)$base_salary));
+$base_salary_val = ($employee && $employee['h_basic'] !== null && $employee['h_basic'] > 0) ? (float)$employee['h_basic'] : (($employee && $employee['basic_salary'] !== null && $employee['basic_salary'] > 0) ? (float)$employee['basic_salary'] : (($base_salary <= 0) ? 30000.00 : (float)$base_salary));
 
-$hra = ($employee && $employee['h_hra'] !== null) ? (float)$employee['h_hra'] : (($employee && $employee['hra']   !== null) ? (float)$employee['hra'] : round($base_salary_val * 0.20, 2));
+$hra = ($employee && $employee['h_hra'] !== null) ? (float)$employee['h_hra'] : (($employee && $employee['hra'] !== null) ? (float)$employee['hra'] : round($base_salary_val * 0.20, 2));
 
-$pf = ($employee && $employee['h_pf'] !== null) ? (float)$employee['h_pf'] : (($employee && $employee['pf']   !== null) ? (float)$employee['pf'] : round($base_salary_val * 0.05, 2));
+$pf = ($employee && $employee['h_pf'] !== null) ? (float)$employee['h_pf'] : round($base_salary_val * 0.05, 2);
 
-$tax = ($employee && $employee['h_tax'] !== null) ? (float)$employee['h_tax'] : (($employee && $employee['tax']   !== null) ? (float)$employee['tax'] : round($base_salary_val * 0.10, 2));
+$tax = ($employee && $employee['h_tax'] !== null) ? (float)$employee['h_tax'] : round($base_salary_val * 0.10, 2);
 
 $other_allow = ($employee && $employee['h_allow'] !== null) ? (float)$employee['h_allow'] : (($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00);
 
@@ -316,12 +316,16 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                     if ($row_data && $row_data['net_pay'] !== null) {
                         $row_salary = (float)$row_data['net_pay'];
                     } else {
-                        // Calculate default row salary if no history
-                        $row_base = $employee && $employee['salary'] !== '' ? (float)$employee['salary'] : 30000.00;
-                        $row_hra = round($row_base * 0.20, 2);
+                        // Calculate default row salary if no history using profile fields
+                        $row_base = ($employee && $employee['basic_salary'] !== null && $employee['basic_salary'] > 0) ? (float)$employee['basic_salary'] : (($base_salary <= 0) ? 30000.00 : $base_salary);
+                        
+                        $row_hra = ($employee && $employee['hra'] !== null) ? (float)$employee['hra'] : round($row_base * 0.20, 2);
                         $row_pf = round($row_base * 0.05, 2);
                         $row_tax = round($row_base * 0.10, 2);
-                        $row_salary = $row_base + $row_hra - $row_pf - $row_tax;
+                        $row_allow = ($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00;
+                        $row_ded = ($employee && $employee['deductions'] !== null) ? (float)$employee['deductions'] : 0.00;
+                        
+                        $row_salary = ($row_base + $row_hra + $row_allow) - ($row_pf + $row_tax + $row_ded);
                     }
                     
                     // Logic: Disable view for current month until end of month (e.g., after 25th)
@@ -429,7 +433,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             // Download Button Event (Save as PDF)
             $('#modalDownloadBtn').click(function() {
                 window.print();
-            });
+              });
 
         });
     </script>

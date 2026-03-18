@@ -143,10 +143,10 @@ if ($ticker_res && mysqli_num_rows($ticker_res) > 0) {
                     if (mysqli_num_rows($recent_res) > 0) {
                         while($row = mysqli_fetch_assoc($recent_res)) {
                             $status_class = ($row['status'] == 'present') ? 'label-success' : 'label-danger';
-                            echo '<a href="#" class="list-group-item" style="border-left: none; border-right: none;">';
-                            echo '<span style="font-size: 13px; float: left;">' . date('d M Y', strtotime($row['attendance_date'])) . '</span>';
-                            echo '<span class="label ' . $status_class . ' pull-right" style="font-size: 13px;">' . strtoupper($row['status']) . '</span>';
-                            echo '<span style="font-size: 13px;">' . $row['remarks'] . '</span>';
+                            echo '<a href="#" class="list-group-item" style="border-left: none; border-right: none; display: flex; align-items: center; padding: 12px 15px;">';
+                            echo '<span style="font-size: 13px; width: 100px; flex-shrink: 0; color: #555;">' . date('d M Y', strtotime($row['attendance_date'])) . '</span>';
+                            echo '<span style="font-size: 13px; flex-grow: 1; color: #7f8c8d; text-align: center; padding: 0 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' . htmlspecialchars($row['remarks']) . '</span>';
+                            echo '<span class="label ' . $status_class . '" style="font-size: 11px; width: 85px; text-align: center; flex-shrink: 0; padding: 5px 0;">' . strtoupper($row['status']) . '</span>';
                             echo '</a>';
                         }
                     } else {

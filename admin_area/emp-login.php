@@ -25,29 +25,35 @@ if (isset($_POST['login'])) {
 ?>
 
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Login - 8DOTS</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Login | 8DOTS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
-
 <body>
+    <div class="login-wrap">
+        <div class="container">
+            <form class="form-login" method="POST">
+                <h2 class="form-login-heading">Employee Login</h2>
+                
+                <?php if ($error) echo "<div class='alert alert-danger'><i class='fa fa-exclamation-circle'></i> $error</div>"; ?>
 
-    <div class="form-login">
-        <h2 class="form-login-heading">8DOTS Login</h2>
-        <?php if ($error) echo "<div class='error' style='color:red;text-align:center;margin-bottom:10px;'>$error</div>"; ?>
-        <form method="POST">
-            <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
-            <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
-            <button type="submit" name="login" class="btn btn-primary" style="width:100%;margin-top:10px;">Login</button>
-        </form>
-        <div style="margin-top:15px;text-align:right;">
-            <a href="forgot_pass.php" style="color:#337ab7;text-decoration:underline;font-size:14px;">Forgot Password?</a>
+                <input type="email" name="email" class="form-control" placeholder="Email Address" required autocomplete="email">
+                <input type="password" name="password" class="form-control" placeholder="Password" required autocomplete="current-password">
+                
+                <button type="submit" name="login" class="btn-primary">
+                    Log in
+                </button>
+                <div class="forgot-link">
+                    <a href="forgot_pass.php">Forgot Password?</a>
+                </div>
+            </form>
         </div>
     </div>
-
 </body>
-
 </html>

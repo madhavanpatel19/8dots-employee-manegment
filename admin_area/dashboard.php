@@ -251,7 +251,11 @@ if ($res && mysqli_num_rows($res) > 0) {
                                         <td><?php echo htmlspecialchars($emp_name); ?></td>
                                         <td><?php echo date('M d, Y', strtotime($date)); ?></td>
                                         <td><span class="label <?php echo $badge_class; ?>"><?php echo $status; ?></span></td>
-                                        <td><?php echo $remarks; ?></td>
+                                        <td>
+                                            <div class="remarks-cell">
+                                                <?php echo nl2br($remarks); ?>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <?php
                                 }

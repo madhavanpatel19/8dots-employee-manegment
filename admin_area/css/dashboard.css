@@ -223,6 +223,29 @@
     padding: 6px 10px;
 }
 
+.remarks-cell {
+    max-width: 350px;
+    max-height: 80px;
+    overflow-y: auto;
+    text-align: left !important;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    word-wrap: break-word;
+    white-space: normal;
+    padding-right: 5px;
+}
+
+/* Custom scrollbar for remarks */
+.remarks-cell::-webkit-scrollbar {
+    width: 4px;
+}
+
+.remarks-cell::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
 .table tbody>tr>td strong {
     color: var(--text-primary);
 }
@@ -351,7 +374,6 @@
     box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
-.btn-danger:hover,
 .btn-danger:focus {
     background: #c0392b;
     color: #fff;
