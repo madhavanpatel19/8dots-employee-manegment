@@ -477,7 +477,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                             <div class="sheet-controls">
                                 <div class="control-group">
                                     <span class="month-year">
-                                        Daily Attendance – <?php echo date('d M Y', strtotime($selected_date)); ?>
+                                        Daily Attendance – <?php echo date('d-m-y', strtotime($selected_date)); ?>
                                     </span>
                                     <?php
                                     $prev_date = date('Y-m-d', strtotime($selected_date . ' -1 day'));
@@ -578,7 +578,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         <?php if ($is_daily && $selected_date): ?>
                             <div class="employee-info">
                                 <h3><i class="fa fa-calendar"></i> Daily Attendance</h3>
-                                <p>Date: <?php echo date('d M, Y', strtotime($selected_date)); ?>
+                                <p>Date: <?php echo date('d-m-y', strtotime($selected_date)); ?>
                                     <?php if ($selected_emp_id > 0 && $employee_data): ?>
                                         | Employee: <?php echo htmlspecialchars($employee_data['name']); ?> (ID <?php echo $selected_emp_id; ?>)
                                     <?php endif; ?>
@@ -767,7 +767,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             }
 
                                             echo '<tr>';
-                                            echo '<td style="white-space: nowrap;"><strong>' . date('d-M', strtotime($date)) . '</strong></td>';
+                                            echo '<td style="white-space: nowrap;"><strong>' . date('d-m-y', strtotime($date)) . '</strong></td>';
                                             echo '<td style="white-space: nowrap;">' . $day_name . '</td>';
                                             // Lock editing for today if not permitted
                                             if ($date === $today && !$can_edit_today) {
@@ -778,14 +778,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             echo '<td style="white-space: nowrap;">' . ($checkin ? $checkin : '-') . '</td>';
                                             echo '<td style="white-space: nowrap;">' . ($checkout ? $checkout : '-') . '</td>';
                                             echo '<td style="white-space: nowrap;">' . ($perf !== '' ? $perf : '-') . '</td>';
-                                            echo '<td style="white-space: nowrap;">' . ($created_at ? $created_at : '-') . '</td>';
+                                            echo '<td style="white-space: nowrap;">' . ($created_at ? date('d-m-y H:i:s', strtotime($created_at)) : '-') . '</td>';
                                             echo '<td class="remarks-cell" style="max-width: 250px; word-wrap: break-word; word-break: break-word; white-space: normal;">' . ($remarks ? $remarks : '-') . '</td>';
                                             echo '</tr>';
                                         }
                                         ?>
                                         <tr class="summary-row">
                                             <td colspan="3">TOTAL</td>
-                                            <td>
+                                            <td colspan="2">
                                                 P: <?php echo $present_count; ?> |
                                                 A: <?php echo $absent_count; ?> |
                                                 L: <?php echo $leave_count; ?> |
@@ -810,7 +810,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                     </span>
                                                 <?php endif; ?>
                                             </td>
-                                            </td>
+                                            
                                             <td></td>
                                         </tr>
                                     </tbody>

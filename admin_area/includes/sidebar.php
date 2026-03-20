@@ -22,6 +22,14 @@ if (!isset($_SESSION['admin_email'])) {
     $run_count_leave = mysqli_query($con, $count_leave_query);
     $row_count_leave = mysqli_fetch_array($run_count_leave);
     $pending_leave_count = $row_count_leave['total'];
+
+    // Count unread client feedback
+    $count_feedback_query = "SELECT count(*) AS total FROM customer_feedback WHERE is_read=0";
+    $run_count_feedback = mysqli_query($con, $count_feedback_query);
+    $row_count_feedback = mysqli_fetch_array($run_count_feedback);
+    $unread_feedback_count = $row_count_feedback['total'];
+
+    $total_notifications = $pending_leave_count + $unread_feedback_count;
 ?>
     <nav class="navbar navbar-inverse navbar-fixed-top"><!-- navbar navbar-inverse navbar-fixed-top Starts -->
         <div class="navbar-header"><!-- navbar-header Starts -->
@@ -35,12 +43,31 @@ if (!isset($_SESSION['admin_email'])) {
         </div><!-- navbar-header Ends -->
         <ul class="nav navbar-right top-nav"><!-- nav navbar-right top-nav Starts -->
             <li class="dropdown"><!-- notification dropdown Starts -->
-                <a href="index.php?view_leave_requests" class="dropdown-toggle">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-bell"></i>
-                    <?php if ($pending_leave_count > 0) : ?>
-                        <span class="label label-danger" style="position: absolute; top: 10px; right: 5px; border-radius: 50%; padding: 2px 5px; font-size: 10px;"><?php echo $pending_leave_count; ?></span>
+                    <?php if ($total_notifications > 0) : ?>
+                        <span class="label label-danger" style="position: absolute; top: 10px; right: 5px; border-radius: 50%; padding: 2px 5px; font-size: 10px;"><?php echo $total_notifications; ?></span>
                     <?php endif; ?>
                 </a>
+                <ul class="dropdown-menu">
+                    <?php if ($pending_leave_count > 0) : ?>
+                        <li>
+                            <a href="index.php?view_leave_requests">
+                                <i class="fa fa-file-text"></i> <?php echo $pending_leave_count; ?> New Leave Requests
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($unread_feedback_count > 0) : ?>
+                        <li>
+                            <a href="index.php?view_client_feedback">
+                                <i class="fa fa-comments"></i> <?php echo $unread_feedback_count; ?> New Client Feedbacks
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($total_notifications == 0) : ?>
+                        <li><a href="#">No new notifications</a></li>
+                    <?php endif; ?>
+                </ul>
             </li><!-- notification dropdown Ends -->
             <li class="dropdown"><!-- dropdown Starts -->
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -138,6 +165,11 @@ if (!isset($_SESSION['admin_email'])) {
                     </a>
                 </li>
                 <?php endif; ?>
+                <li>
+                    <a href="index.php?view_client_feedback">
+                        <i class="fa fa-fw fa-comments"></i> Client Feedback
+                    </a>
+                </li>
                 <li><!-- li Starts -->
                     <a href="logout.php">
                         <i class="fa fa-fw fa-power-off"></i> Log Out

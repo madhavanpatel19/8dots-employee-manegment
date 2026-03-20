@@ -305,7 +305,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     $breakdownJson = htmlspecialchars(json_encode($breakdown), ENT_QUOTES, 'UTF-8');
                                     if ($join) {
                                         $ts = strtotime($join);
-                                        if ($ts !== false) $join = date('d-m-Y', $ts);
+                                        if ($ts !== false) $join = date('d-m-y', $ts);
                                     }
                             ?>
                                     <tr>

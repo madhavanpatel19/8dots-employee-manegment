@@ -196,7 +196,7 @@ $history_result = mysqli_query($con, $history_query);
                                     <?php if (mysqli_num_rows($history_result) > 0) : ?>
                                         <?php while ($row = mysqli_fetch_assoc($history_result)) : ?>
                                             <tr>
-                                                <td style="white-space: nowrap;"><?php echo date('d M Y', strtotime($row['attendance_date'])); ?></td>
+                                                <td style="white-space: nowrap;"><?php echo date('d-m-y', strtotime($row['attendance_date'])); ?></td>
                                                 <td><?php echo $row['check_in_time']; ?></td>
                                                 <td><?php echo $row['check_out_time']; ?></td>
                                                 <td><?php echo nl2br(htmlspecialchars($row['remarks'])); ?></td>
@@ -257,8 +257,8 @@ $history_result = mysqli_query($con, $history_query);
                             </div>
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-8">
-                                    <button type="submit" class="btn btn-primary">Submit Worksheet</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:10px;">Cancel</button>
+                                     <button type="submit" class="btn btn-primary">Submit Worksheet</button>
                                 </div>
                             </div>
                         </form>

@@ -152,13 +152,13 @@ if (!isset($_SESSION['admin_email'])) {
                     </div>
 
                     <div class='modal-footer'>
+                    
+                        <button type='button' class='btn btn-default' data-dismiss='modal'>
+                            Cancel
+                        </button>
 
                         <button type='submit' name='submit_announcement' class='btn btn-success'>
                             <i class='fa fa-save'></i> Post Announcement
-                        </button>
-
-                        <button type='button' class='btn btn-default' data-dismiss='modal'>
-                            Cancel
                         </button>
 
                     </div>

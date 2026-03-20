@@ -271,12 +271,12 @@ if ($print_all_mode) {
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-1 col-sm-10" style="padding-left: 2px;">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-search"></i> Show
-                                </button>
-                                <a href="index.php?dashboard" class="btn btn-default" style="margin-left:8px;">
+                                <a href="index.php?dashboard" class="btn btn-default">
                                     <i class="fa fa-arrow-left"></i> Back
                                 </a>
+                                <button type="submit" class="btn btn-primary"  style="margin-left:8px;">
+                                    <i class="fa fa-search"></i> Show
+                                </button>
                             </div>
                         </div>
                     </form>

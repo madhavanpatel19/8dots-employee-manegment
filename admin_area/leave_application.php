@@ -165,8 +165,8 @@ $result = mysqli_query($con, $query);
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-offset-3 col-md-8">
-                                            <button type="submit" name="apply_leave" class="btn btn-primary">Submit Application</button>
                                             <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:10px;">Cancel</button>
+                                            <button type="submit" name="apply_leave" class="btn btn-primary">Submit Application</button>
                                         </div>
                                     </div>
                                 </form>

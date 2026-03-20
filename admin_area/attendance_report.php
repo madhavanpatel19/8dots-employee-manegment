@@ -103,8 +103,8 @@ if ($report_type === 'daily' && $single_date) {
 function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to_date, $report_type = 'range')
 {
     // Generate downloadable HTML file as PDF alternative
-    $from_label = date('d-M-Y', strtotime($from_date));
-    $to_label = date('d-M-Y', strtotime($to_date));
+    $from_label = date('d-m-y', strtotime($from_date));
+    $to_label = date('d-m-y', strtotime($to_date));
 
     if ($report_type === 'daily') {
         $filename = 'Attendance_Report_' . $from_label . '.html';
@@ -167,7 +167,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
     echo '<h1>ATTENDANCE REPORT</h1>';
     echo '<div class="company-info">8Dots</div>';
     echo '<p>' . $period_text . '</p>';
-    echo '<p>Generated on: ' . date('d-M-Y H:i:s') . '</p>';
+    echo '<p>Generated on: ' . date('d-m-y H:i:s') . '</p>';
     echo '</div>';
 
     // Report Table
@@ -196,7 +196,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                 $remarks = !empty($att['remarks']) ? nl2br(htmlspecialchars($att['remarks'])) : '-';
                 $check_in = !empty($att['check_in_time']) ? $att['check_in_time'] : '-';
                 $check_out = !empty($att['check_out_time']) ? $att['check_out_time'] : '-';
-                $created_at = !empty($att['created_at']) ? date('Y-m-d H:i:s', strtotime($att['created_at'])) : '-';
+                $created_at = !empty($att['created_at']) ? date('d-m-y H:i:s', strtotime($att['created_at'])) : '-';
 
                 $perfout = isset($att['performance']) && $att['performance'] !== null ? $att['performance'] : '-';
                 if ($att['status'] === 'present') {
@@ -706,7 +706,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                     $remarks = !empty($att['remarks']) ? nl2br(htmlspecialchars($att['remarks'])) : '-';
                                                     $check_in = !empty($att['check_in_time']) ? $att['check_in_time'] : '-';
                                                     $check_out = !empty($att['check_out_time']) ? $att['check_out_time'] : '-';
-                                                    $created_at = !empty($att['created_at']) ? date('Y-m-d H:i:s', strtotime($att['created_at'])) : '-';
+                                                    $created_at = !empty($att['created_at']) ? date('d-m-y H:i:s', strtotime($att['created_at'])) : '-';
 
                                                     if ($att['status'] === 'present') {
                                                         $status_class = 'label-success';
@@ -761,7 +761,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                         }
                                                     }
                                                     if ($min_created_at !== null) {
-                                                        $created_at = date('Y-m-d H:i:s', $min_created_at);
+                                                        $created_at = date('d-m-y H:i:s', $min_created_at);
                                                     }
                                                 }
 

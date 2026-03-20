@@ -104,10 +104,10 @@ $result = mysqli_query($con, $query);
                                 <tr>
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo $emp_name; ?></td>
-                                    <td><?php echo date('d-M-Y', strtotime($leave_from)); ?></td>
-                                    <td><?php echo date('d-M-Y', strtotime($leave_to)); ?></td>
+                                    <td><?php echo date('d-m-y', strtotime($leave_from)); ?></td>
+                                    <td><?php echo date('d-m-y', strtotime($leave_to)); ?></td>
                                     <td width="200"><?php echo $reason; ?></td>
-                                    <td><?php echo date('d-M-Y', strtotime($applied_on)); ?></td>
+                                    <td><?php echo date('d-m-y', strtotime($applied_on)); ?></td>
                                     <td>
                                         <?php if ($status == 'pending') : ?>
                                             <span class="label label-warning">Pending</span>

@@ -3,23 +3,23 @@ include("connection.php");
 
 if(isset($_POST['submit'])){
 
-    $name = $_POST['customer_name'];
-    $contact = $_POST['contact_number'];
-    $email = $_POST['email'];
-    $month = $_POST['service_month'];
+    $name = mysqli_real_escape_string($con, $_POST['customer_name']);
+    $contact = mysqli_real_escape_string($con, $_POST['contact_number']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+    $month = mysqli_real_escape_string($con, $_POST['service_month']);
 
-    $quality = $_POST['service_quality'];
-    $ontime = $_POST['service_on_time'];
-    $professional = $_POST['professionalism'];
+    $quality = mysqli_real_escape_string($con, $_POST['service_quality'] ?? '');
+    $ontime = mysqli_real_escape_string($con, $_POST['service_on_time'] ?? '');
+    $professional = mysqli_real_escape_string($con, $_POST['professionalism'] ?? '');
 
-    $overall = $_POST['overall_satisfaction'];
-    $recommend = $_POST['recommend'];
+    $overall = mysqli_real_escape_string($con, $_POST['overall_satisfaction'] ?? '');
+    $recommend = mysqli_real_escape_string($con, $_POST['recommend'] ?? '');
 
-    $liked = $_POST['liked'];
-    $improve = $_POST['improvement'];
-    $comments = $_POST['comments'];
+    $liked = mysqli_real_escape_string($con, $_POST['liked']);
+    $improve = mysqli_real_escape_string($con, $_POST['improvement']);
+    $comments = mysqli_real_escape_string($con, $_POST['comments']);
 
-    $rating = $_POST['rating'];
+    $rating = mysqli_real_escape_string($con, $_POST['rating'] ?? '0');
 
     $insert = "INSERT INTO customer_feedback 
     (customer_name, contact_number, email, service_month,
@@ -249,7 +249,7 @@ textarea {
 
 <br>
 
-<button class="btn btn-dark w-100">Submit Feedback</button>
+<button name="submit" class="btn btn-dark w-100">Submit Feedback</button>
 
 </form>
 

@@ -302,6 +302,10 @@ if (!isset($_SESSION['admin_email'])) {
                         requireAdminPermission('announcement_view');
                         include("announcement.php");
                     }
+                    if (isset($_GET['view_client_feedback'])) {
+                        // requireAdminPermission('client_feedback_view'); // Optional: check if permission exists
+                        include("view_client_feedback.php");
+                    }
                     ?>
                 </div><!-- page-wrapper Ends -->
             </div><!-- wrapper Ends -->
