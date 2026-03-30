@@ -278,7 +278,9 @@
     }
 
     /* Position the visible element for printing */
-    #slip, #slip-content, .salary-slip {
+    #slip,
+    #slip-content,
+    .salary-slip {
         position: absolute;
         left: 0;
         top: 0;
@@ -485,4 +487,87 @@
     content: "";
     display: block;
     clear: both;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .salary-slip {
+        padding: 15px;
+    }
+
+    .salary-slip .sign-left p,
+    .salary-slip .sign-right p {
+        width: 100%;
+    }
+
+    /* Preserve Slip Format: Ensure title and table stay intact */
+    .salary-slip .slip-header {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .salary-slip .company-left {
+        flex-direction: row;
+    }
+
+    .salary-slip .company-logo {
+        margin-right: 12px;
+        margin-bottom: 0;
+    }
+
+    .salary-slip .company-center {
+        text-align: left;
+    }
+
+    .salary-slip .slip-meta {
+        text-align: right;
+    }
+
+    .salary-slip .employee-info {
+        flex-direction: row;
+    }
+
+    .salary-slip .emp-left,
+    .salary-slip .emp-right {
+        width: 48%;
+        float: none;
+        text-align: left !important;
+    }
+
+    .salary-slip .emp-right {
+        text-align: right !important;
+    }
+
+    .slip-scroll-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 20px;
+    }
+
+    .salary-slip {
+        min-width: 750px;
+        /* Keep professional width */
+    }
+
+
+    /* Panel and form adjustments */
+    .slip-controls .panel {
+        max-width: 100% !important;
+    }
+
+    .slip-controls .form-horizontal .control-label {
+        text-align: left;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    .slip-controls .col-sm-6 {
+        width: 100%;
+    }
+
+    .slip-controls .form-control {
+        width: 100% !important;
+    }
 }

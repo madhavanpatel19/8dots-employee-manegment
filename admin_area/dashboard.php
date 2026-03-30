@@ -95,17 +95,15 @@ if ($res && mysqli_num_rows($res) > 0) {
 ?>
 
 <!-- Page Header -->
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">
-            <i class="fa fa-dashboard"></i> Dashboard
-            <small>System Overview</small>
-        </h1>
-    </div>
+<div class="custom-page-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 15px;">
+    <h1 style="margin: 0; border: none; padding: 0;">
+    <i class="fa fa-dashboard"></i> Dashboard
+    <small>System Overview</small>
+</h1>
 </div>
 
 <!-- Stats Cards Row -->
-<div class="row">
+<div class="row stats-row">
     <!-- Present Today Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
         <div class="stat-card stat-card-primary">
@@ -190,7 +188,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                     <table class="table table-striped table-hover table-center">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th class="hidden-xs">#</th>
                             <th>Employee ID</th>
                             <th>Employee Name</th>
                             <th>Date</th>
@@ -246,10 +244,13 @@ if ($res && mysqli_num_rows($res) > 0) {
                                     }
                                     ?>
                                     <tr>
-                                        <td><?php echo $i; ?></td>
+                                        <td class="hidden-xs"><?php echo $i; ?></td>
                                         <td><strong><?php echo $emp_id; ?></strong></td>
                                         <td><?php echo htmlspecialchars($emp_name); ?></td>
-                                        <td><?php echo date('M d, Y', strtotime($date)); ?></td>
+                                        <td>
+                                            <span class="hidden-xs"><?php echo date('M d, Y', strtotime($date)); ?></span>
+                                            <span class="visible-xs"><?php echo date('d M', strtotime($date)); ?></span>
+                                        </td>
                                         <td><span class="label <?php echo $badge_class; ?>"><?php echo $status; ?></span></td>
                                         <td>
                                             <div class="remarks-cell">

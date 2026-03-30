@@ -366,7 +366,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/attendance.css" rel="stylesheet">
+    <link href="css/attendance.css?v=1.1" rel="stylesheet">
 
 </head>
 
@@ -379,12 +379,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
                 <!-- INITIAL SELECTION SCREEN -->
                 <div id="selectionScreen" class="initial-selection" style="display: <?php echo $showSelectionScreen ? 'block' : 'none'; ?>;">
-                    <h2>
-                        <i class="fa fa-calendar" style="color:black"></i> Attendance Management
-                        <a href="attendance_report.php" class="btn btn-info" style="background-color: #000000ff; color:white; float:right; font-size:14px;">
-                            <i class="fa fa-file-text" style="color:white"></i> View Report
-                        </a>
-                    </h2>
+                    <div class="custom-page-header">
+                        <h2><i class="fa fa-calendar"></i> Attendance Management</h2>
+                        <div class="header-actions">
+                            <a href="attendance_report.php" class="btn btn-info btn-view-report" style="background-color: #000000; color:white;">
+                                <i class="fa fa-file-text" style="color:white"></i> View Report
+                            </a>
+                        </div>
+                    </div>
                     <form id="selectionForm" method="GET" class="selection-form">
                         <div class="selection-controls">
                             <div class="selection-control">
@@ -428,11 +430,13 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                 <!-- DATA SCREEN (MONTHLY or DAILY) -->
                 <div id="dataScreen" style="display: <?php echo $showDataScreen ? 'block' : 'none'; ?>;">
                     <div class="attendance-sheet-container">
-                        <div class="sheet-header">
+                        <div class="custom-page-header">
                             <h1><i class="fa fa-table"></i> Attendance Sheet</h1>
-                            <button type="button" class="change-selection-btn" onclick="changeSelection()">
-                                <i class="fa fa-arrow-left"></i> back
-                            </button>
+                            <div class="header-actions">
+                                <button type="button" class="btn btn-dark change-selection-btn" onclick="changeSelection()" style="background: #333333; color: white;">
+                                    <i class="fa fa-arrow-left"></i> back
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Monthly navigation only for monthly mode -->
@@ -576,13 +580,17 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
                         <!-- DAILY VIEW -->
                         <?php if ($is_daily && $selected_date): ?>
-                            <div class="employee-info">
-                                <h3><i class="fa fa-calendar"></i> Daily Attendance</h3>
-                                <p>Date: <?php echo date('d-m-y', strtotime($selected_date)); ?>
-                                    <?php if ($selected_emp_id > 0 && $employee_data): ?>
-                                        | Employee: <?php echo htmlspecialchars($employee_data['name']); ?> (ID <?php echo $selected_emp_id; ?>)
-                                    <?php endif; ?>
-                                    | Employees: <?php echo isset($loop_employees) ? count($loop_employees) : count($employees_array); ?></p>
+                            <div class="employee-info" style="margin-bottom: 25px;">
+                                <div class="custom-page-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 15px;">
+                                    <h3 style="margin: 0;"><i class="fa fa-calendar"></i> Daily Attendance</h3>
+                                    <div class="employee-info-points" style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 14px;">
+                                        <span class="info-point"><strong>Date:</strong> <?php echo date('d-m-y', strtotime($selected_date)); ?></span>
+                                        <?php if ($selected_emp_id > 0 && $employee_data): ?>
+                                            <span class="info-point"><strong>Employee:</strong> <?php echo htmlspecialchars($employee_data['name']); ?> (ID <?php echo $selected_emp_id; ?>)</span>
+                                        <?php endif; ?>
+                                        <span class="info-point"><strong>Total Employees:</strong> <span class="badge" style="background: #2c3e50;"><?php echo isset($loop_employees) ? count($loop_employees) : count($employees_array); ?></span></span>
+                                    </div>
+                                </div>
                             </div>
 
                             <form method="POST">
@@ -591,10 +599,10 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     <table class="attendance-table">
                                         <thead>
                                             <tr>
-                                                <th style="white-space: nowrap;">#</th>
-                                                <th style="white-space: nowrap;">Employee ID</th>
-                                                <th style="white-space: nowrap;">Employee Name</th>
-                                                <th style="min-width:220px; white-space: nowrap;">Status</th>
+                                                <th class="hidden-xs">#</th>
+                                                <th class="hidden-xs">Employee ID</th>
+                                                <th>Employee Name</th>
+                                                <th style="min-width:120px;">Status</th>
                                                 <th style="white-space: nowrap;">Check-in Time</th>
                                                 <th style="white-space: nowrap;">Check-out Time</th>
                                                 <th style="white-space: nowrap;">Performance</th>
@@ -629,12 +637,15 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                                 }
                                             ?>
                                                 <tr>
-                                                    <td style="white-space: nowrap;"><?php echo $i + 1; ?></td>
-                                                    <td style="white-space: nowrap;">
+                                                    <td class="hidden-xs"><?php echo $i + 1; ?></td>
+                                                    <td class="hidden-xs">
                                                         <?php echo $eid; ?>
                                                         <input type="hidden" name="emp_id[]" value="<?php echo $eid; ?>">
                                                     </td>
-                                                    <td style="white-space: nowrap;"><?php echo htmlspecialchars($emp['name']); ?></td>
+                                                    <td>
+                                                        <?php echo htmlspecialchars($emp['name']); ?>
+                                                        <input type="hidden" class="visible-xs" name="emp_id[]" value="<?php echo $eid; ?>">
+                                                    </td>
                                                     <td style="white-space: nowrap;">
                                                         <div class="status-options">
                                                             <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status == '') ? ' active' : ''; ?>">

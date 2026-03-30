@@ -49,7 +49,7 @@ if (!isset($_SESSION['admin_email'])) {
                         <span class="label label-danger" style="position: absolute; top: 10px; right: 5px; border-radius: 50%; padding: 2px 5px; font-size: 10px;"><?php echo $total_notifications; ?></span>
                     <?php endif; ?>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu dropdown-menu-right">
                     <?php if ($pending_leave_count > 0) : ?>
                         <li>
                             <a href="index.php?view_leave_requests">
@@ -73,7 +73,7 @@ if (!isset($_SESSION['admin_email'])) {
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-user"></i> <?php echo $header_display_name; ?>
                 </a>
-                <ul class="dropdown-menu"><!-- dropdown-menu Starts -->
+                <ul class="dropdown-menu dropdown-menu-right"><!-- dropdown-menu Starts -->
                     <?php if (canAdminAccess('user_view')): ?>
                         <li><!-- li Starts -->
                             <a href="index.php?user_profile=<?php echo $admin_id; ?>">

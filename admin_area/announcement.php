@@ -6,14 +6,14 @@ if (!isset($_SESSION['admin_email'])) {
 
     <div class='row'>
         <div class='col-lg-12'>
-            <h1 class='page-header'>
-                <i class='fa fa-pencil-square-o'></i> Announcement
-                <div style='text-align:right;margin-top:20px;margin-bottom:20px;'>
+            <div class="custom-page-header">
+                <h1><i class='fa fa-pencil-square-o'></i> Announcement</h1>
+                <div class="header-actions">
                     <button class='btn btn-success' data-toggle='modal' data-target='#addWorksheetModal'>
                         <i class='fa fa-plus'></i> Add announcement
                     </button>
                 </div>
-            </h1>
+            </div>
 
             <ol class='breadcrumb'>
                 <li class='active'>

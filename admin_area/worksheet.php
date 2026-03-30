@@ -90,17 +90,16 @@ $history_result = mysqli_query($con, $history_query);
         <div class="container">
         <?php endif; ?>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">
-
-                    <i class="fa fa-pencil-square-o"></i> Daily Worksheet
-                    <div style="text-align: right; margin-top: 20px; margin-bottom: 20px;">
-                        <button class="btn btn-success" data-toggle="modal" data-target="#addWorksheetModal">
-                            <i class="fa fa-plus"></i> Add Worksheet
-                        </button>
-                    </div>
-                </h1>
+        <div class="custom-page-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px;">
+            <h1 class="page-header" style="margin: 0; border: none; padding: 0;">
+                <i class="fa fa-pencil-square-o"></i> Daily Worksheet
+            </h1>
+            <div>
+                <button class="btn btn-success" data-toggle="modal" data-target="#addWorksheetModal">
+                    <i class="fa fa-plus"></i> Add Worksheet
+                </button>
+            </div>
+        </div>
 
                 <ol class="breadcrumb">
                     <li class="active">

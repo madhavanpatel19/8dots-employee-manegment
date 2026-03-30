@@ -1,3 +1,36 @@
+/* Force table to always be scrollable on mobile and header always visible */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto !important;
+    }
+    .table {
+        min-width: 500px !important;
+        width: 100% !important;
+    }
+    .table-responsive thead th {
+        position: sticky !important;
+        top: 0 !important;
+        background: #fff !important;
+        z-index: 99 !important;
+        border-bottom: 2px solid #222 !important;
+        color: #222 !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        padding: 8px 4px !important;
+        font-size: 12px !important;
+    }
+}
+.table-responsive thead th {
+    position: sticky !important;
+    top: 0 !important;
+    background: #fff !important;
+    z-index: 99 !important;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.04);
+    border-bottom: 2px solid #e0e0e0 !important;
+    color: #222 !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+}
 /*
 
 Template : E commerce Store in php and mysqli with bootstrap 3
@@ -28,6 +61,7 @@ body {
 
 
 }
+
 
 #wrapper {
 
@@ -108,6 +142,22 @@ body {
 /* Optional: remove horizontal scroll if needed */
 body {
     overflow-x: hidden;
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    body {
+        margin-top: 50px;
+        /* Fixed navbar height */
+    }
+
+    #wrapper {
+        padding-left: 0;
+    }
+
+    #page-wrapper {
+        padding: 15px;
+    }
 }
 
 /* Sidebar Styles */
@@ -152,9 +202,116 @@ body {
 
 }
 
+/* Mobile Sidebar Overrides */
+@media (max-width: 767px) {
+    .navbar-fixed-top {
+        border: none;
+        display: flex !important;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        height: 50px;
+        justify-content: space-between;
+    }
+
+    .navbar-header {
+        background-color: transparent;
+        width: auto;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0;
+        flex: 1;
+    }
+
+    .navbar-brand {
+        float: none;
+        display: block;
+        padding: 15px;
+        font-size: 18px;
+        line-height: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+    }
+
+    .navbar-toggle {
+        margin: 0 10px;
+        float: none;
+        display: block;
+        order: -1;
+        /* Move hamburger to the left */
+    }
+
+    .top-nav {
+        float: none;
+        position: static;
+        margin: 0;
+        padding: 0 5px;
+        border: none;
+        display: flex !important;
+        align-items: center;
+        background: transparent;
+        order: 3;
+    }
+
+    .top-nav>li {
+        float: none;
+        display: inline-block;
+    }
+
+    .top-nav>li>a {
+        padding: 10px 8px;
+        color: #999;
+    }
+
+    .navbar-inverse .navbar-collapse {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 100%;
+        background-color: #1a1a1a;
+        max-height: calc(100vh - 50px) !important;
+        overflow-y: auto !important;
+    }
+
+    /* Fix dropdown clipping on mobile */
+    .top-nav .dropdown-menu {
+        position: absolute;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, .15);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    }
+
+    .dropdown-menu-right {
+        right: 0;
+        left: auto;
+    }
+}
+
 .side-nav>li>ul {
     padding: 0;
     background: #000000;
+}
+
+.table-center .label {
+    display: inline-block;
+    padding: 6px 10px;
+}
+
+@media (max-width: 480px) {
+    .table-center .label {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
+    .table tbody>tr>td {
+        padding: 10px 4px;
+        font-size: 13px;
+    }
 }
 
 .side-nav>li>ul>li>a {
@@ -295,3 +452,399 @@ hr.dotted {
     color: #0088cc;
     margin-right: 5px;
 }
+
+/* Custom Responsive Page Header Standard */
+.custom-page-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+    padding-bottom: 12px !important;
+    margin: 30px 0 20px !important;
+    border-bottom: 1px solid #eee !important;
+    width: 100% !important;
+}
+
+.custom-page-header h1,
+.custom-page-header h2 {
+    margin: 0 !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+}
+
+.custom-page-header h1 small {
+    display: inline-block !important;
+    margin-left: 8px !important;
+    font-size: 0.7em !important;
+    white-space: nowrap !important;
+}
+
+
+.custom-page-header .header-actions {
+    display: flex !important;
+    gap: 10px !important;
+    align-items: center !important;
+}
+
+@media (max-width: 768px) {
+    .custom-page-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        gap: 12px !important;
+    }
+
+    .custom-page-header h1 {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+        white-space: nowrap;
+    }
+
+    .custom-page-header h1 small {
+        display: inline-block !important;
+        font-size: 14px !important;
+        margin-left: 6px !important;
+        white-space: nowrap;
+    }
+
+    .custom-page-header .header-actions {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+
+    .custom-page-header .header-actions .btn {
+        flex: 1 !important;
+        min-width: fit-content !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .custom-page-header h1,
+    .custom-page-header h2 {
+        font-size: 18px !important;
+    }
+
+    .custom-page-header h1 small {
+        font-size: 12px !important;
+    }
+}
+
+/* Premium Dashboard Stats Row */
+.stats-row [class*="col-"] {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .custom-page-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        text-align: left;
+    }
+
+    .custom-page-header .btn,
+    .custom-page-header .btn-group {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .stats-row [class*="col-"] {
+        margin-bottom: 15px;
+    }
+
+    .panel {
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .panel-body {
+        padding: 10px;
+    }
+
+    /* Dashboard Responsive Improvements */
+    .stats-row {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .stats-row [class*="col-"] {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .stat-card {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .stat-card .stat-number {
+        font-size: 22px;
+    }
+
+    .stat-card .stat-label {
+        font-size: 15px;
+    }
+
+    .stat-card-footer a {
+        font-size: 14px;
+    }
+
+    .panel-heading h4,
+    .panel-title {
+        font-size: 17px;
+    }
+
+    .remarks-cell {
+        word-break: break-word;
+        font-size: 13px;
+    }
+
+    .custom-page-header {
+        margin: 15px 0 10px 0 !important;
+        padding-bottom: 8px !important;
+    }
+
+    .table-responsive thead th,
+    .table tbody>tr>td {
+        padding: 8px 6px !important;
+    }
+
+
+    /* Responsive Employee Status Table Fixes */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+        scrollbar-color: #888 #f1f1f1;
+        scrollbar-width: thin;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+        background: #f1f1f1;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+
+
+    .table-responsive thead th {
+        position: sticky;
+        top: 0;
+        background: #fff !important;
+        z-index: 3;
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.04);
+        border-bottom: 2px solid #e0e0e0;
+        color: #222;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto !important;
+        }
+
+        .table {
+            min-width: 500px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .table {
+            min-width: 600px !important;
+        }
+    }
+
+
+    @media (max-width: 480px) {
+
+        .custom-page-header h1,
+        .custom-page-header h2 {
+            font-size: 20px !important;
+        }
+
+        .table {
+            min-width: 400px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 18px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+        }
+
+        .panel-heading h4,
+        .panel-title {
+            font-size: 15px;
+        }
+    }
+}
+/* ============================= */
+/* GLOBAL FIXES */
+/* ============================= */
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* ============================= */
+/* TABLE RESPONSIVE FIX (CLEAN) */
+/* ============================= */
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+/* Sticky Header */
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    background: #fff !important;
+    z-index: 5;
+    border-bottom: 2px solid #e0e0e0;
+    color: #222;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Scrollbar Style */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+/* ============================= */
+/* MOBILE (≤768px) */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+    body {
+        margin-top: 50px;
+    }
+
+    #wrapper {
+        padding-left: 0;
+    }
+
+    #page-wrapper {
+        padding: 15px;
+    }
+
+    /* Table Width Fix */
+    .table {
+        min-width: 700px;
+    }
+
+    /* Header Layout */
+    .custom-page-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    .custom-page-header .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .custom-page-header .btn {
+        width: 100%;
+    }
+
+    /* Panels */
+    .panel {
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .panel-body {
+        padding: 10px;
+    }
+
+}
+
+/* ============================= */
+/* SMALL MOBILE (≤480px) */
+/* ============================= */
+
+@media (max-width: 480px) {
+
+    .table {
+        min-width: 450px;
+    }
+
+    .custom-page-header h1,
+    .custom-page-header h2 {
+        font-size: 18px !important;
+    }
+
+    .panel-heading h4 {
+        font-size: 15px;
+    }
+
+}
+
+/* ============================= */
+/* TABLET (769px–1024px) */
+/* ============================= */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .table {
+        min-width: 800px;
+    }
+
+}
+
+/* ============================= */
+/* SIDEBAR SCROLL FIX */
+/* ============================= */
+
+.side-nav {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Hide scrollbar but keep scroll working */
+.side-nav::-webkit-scrollbar {
+    width: 0px;
+}
+
+.side-nav {
+    scrollbar-width: none;
+}
+
+
+

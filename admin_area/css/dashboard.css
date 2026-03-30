@@ -423,27 +423,55 @@
 }
 
 /* Responsive */
+@media (max-width: 991px) {
+    .col-md-3 {
+        width: 50%;
+        margin-bottom: 20px;
+    }
+}
+
 @media (max-width: 768px) {
+    .col-md-3, .col-sm-6 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
     .page-header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 15px 0;
+    }
+    
+    .page-header h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
     }
 
     .stat-card-header {
         font-size: 30px;
+        padding: 15px;
+        min-height: 80px;
     }
 
     .stat-number {
         font-size: 28px;
     }
 
-    .table {
-        font-size: 12px;
+    .table-responsive {
+        border: none;
     }
 
+    .table {
+        font-size: 13px;
+    }
+
+    .table thead {
+        display: none; /* Hide headers on very small screens? Actually let's keep them and allow scroll for now, but optimize padding */
+    }
+    
     .table thead>tr>th,
     .table tbody>tr>td {
-        padding: 8px;
+        padding: 10px 8px;
     }
 }
 

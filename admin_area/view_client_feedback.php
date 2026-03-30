@@ -19,11 +19,11 @@ if (!isset($_SESSION['admin_email'])) {
     <div class="row"><!-- 2 row Starts -->
         <div class="col-lg-12"><!-- col-lg-12 Starts -->
             <div class="panel panel-default"><!-- panel panel-default Starts -->
-                <div class="panel-heading"><!-- panel-heading Starts -->
-                    <h3 class="panel-title">
+                <div class="custom-page-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px;">
+                    <h3 class="panel-title" style="margin: 0;">
                         <i class="fa fa-comments fa-fw"></i> Client Feedback
                     </h3>
-                </div><!-- panel-heading Ends -->
+                </div>
 
                 <div class="panel-body"><!-- panel-body Starts -->
                     <div class="table-responsive"><!-- table-responsive Starts -->

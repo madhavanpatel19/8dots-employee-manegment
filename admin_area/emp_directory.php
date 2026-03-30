@@ -206,12 +206,14 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">
-            Employee Directory
-            <button class="btn btn-primary" data-toggle="modal" data-target="#addEmployeeModal">
-                <i class="fa fa-user-plus"></i> Add new Employee
-            </button>
-        </h1>
+        <div class="custom-page-header">
+            <h1><i class="fa fa-users"></i> Employee Directory</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addEmployeeModal">
+                    <i class="fa fa-user-plus"></i> Add new Employee
+                </button>
+            </div>
+        </div>
         <ol class="breadcrumb">
             <li class="active">
                 <i class="fa fa-users"></i> Employees
@@ -244,18 +246,18 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Blood Group</th>
-                                <th>Gender</th>
-                                <th>Join Date</th>
-                                <th>Salary</th>
-                                <th>Performance<br><small><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></small></th>
+                                <th class="col-number">ID</th>
+                                <th style="min-width: 150px;">Name</th>
+                                <th class="col-phone" style="min-width: 120px;">Phone</th>
+                                <th class="col-email" style="min-width: 180px;">Email</th>
+                                <th class="col-address" style="min-width: 200px;">Address</th>
+                                <th class="col-blood">Blood Group</th>
+                                <th class="col-gender">Gender</th>
+                                <th class="col-join">Join Date</th>
+                                <th class="col-salary">Salary</th>
+                                <th style="min-width: 150px;">Performance<br><small><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></small></th>
                                 <th>Documents</th>
-                                <th>Actions</th>
+                                <th class="col-actions" style="min-width: 100px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -309,15 +311,15 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     }
                             ?>
                                     <tr>
-                                        <td><?php echo $pk; ?></td>
+                                        <td class="col-number"><?php echo $pk; ?></td>
                                         <td><?php echo $name; ?></td>
-                                        <td><?php echo $phone; ?></td>
-                                        <td><?php echo $email; ?></td>
-                                        <td><?php echo $address; ?></td>
-                                        <td><?php echo $blood; ?></td>
-                                        <td><?php echo $gender; ?></td>
-                                        <td><?php echo $join; ?></td>
-                                        <td><?php echo $salary; ?></td>
+                                        <td class="col-phone"><?php echo $phone; ?></td>
+                                        <td class="col-email"><?php echo $email; ?></td>
+                                        <td class="col-address"><?php echo $address; ?></td>
+                                        <td class="col-blood"><?php echo $blood; ?></td>
+                                        <td class="col-gender"><?php echo $gender; ?></td>
+                                        <td class="col-join"><?php echo $join; ?></td>
+                                        <td class="col-salary"><?php echo $salary; ?></td>
                                         <td>
                                             <?php
                                             $scoreClass = 'score-plain';
@@ -365,7 +367,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                                 <i class="fa fa-file"></i> View
                                             </a>
                                         </td>
-                                        <td>
+                                        <td class="col-actions">
                                             <button
                                                 class="btn btn-xs btn-info"
                                                 style="padding:6px 8px; display:block; margin-bottom:4px;"

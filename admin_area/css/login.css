@@ -20,7 +20,7 @@ body {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  overflow: hidden; /* Prevent scrolling for the main body */
+  overflow-y: auto; /* Allow scrolling if content is taller than viewport */
 }
 
 .login-wrap {

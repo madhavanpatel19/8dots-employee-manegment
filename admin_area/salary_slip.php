@@ -247,7 +247,7 @@ if ($print_all_mode) {
                         <div class="form-group">
                             <label for="emp_id" class="col-sm-2 control-label">Employee</label>
                             <div class="col-sm-6">
-                                <select name="emp_id" id="emp_id" class="form-control" style="width:143%;" required>
+                                <select name="emp_id" id="emp_id" class="form-control" required>
                                     <option value="">-- Select Employee --</option>
                                     <?php foreach ($employees as $e): ?>
                                         <option value="<?php echo (int)$e['id']; ?>" <?php echo ($selected_emp == $e['id']) ? "selected" : ""; ?>>
@@ -265,7 +265,6 @@ if ($print_all_mode) {
                                     id="month"
                                     name="month"
                                     class="form-control"
-                                    style="width:143%;"
                                     value="<?php echo $selected_month ? htmlspecialchars($selected_month) : ''; ?>">
                             </div>
                         </div>
