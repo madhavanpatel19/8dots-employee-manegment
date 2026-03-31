@@ -246,18 +246,13 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
                             <tr>
-                                <th class="col-number">ID</th>
-                                <th style="min-width: 150px;">Name</th>
-                                <th class="col-phone" style="min-width: 120px;">Phone</th>
-                                <th class="col-email" style="min-width: 180px;">Email</th>
-                                <th class="col-address" style="min-width: 200px;">Address</th>
-                                <th class="col-blood">Blood Group</th>
-                                <th class="col-gender">Gender</th>
-                                <th class="col-join">Join Date</th>
-                                <th class="col-salary">Salary</th>
-                                <th style="min-width: 150px;">Performance<br><small><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></small></th>
-                                <th>Documents</th>
-                                <th class="col-actions" style="min-width: 100px;">Actions</th>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Image</th>
+                                <th>Employee Name</th>
+                                <th class="text-center">Information</th>
+                                <th class="text-center">Performance</th>
+                                <th class="text-center">Documents</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -269,76 +264,71 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     $pk = $row['id'];
                                     $name = htmlspecialchars($row['name']);
                                     $phone = htmlspecialchars($row['phone_number']);
-                                    $address = htmlspecialchars($row['address']);
                                     $email = htmlspecialchars($row['email']);
-                                    $blood = htmlspecialchars($row['blood_group']);
-                                    $gender = htmlspecialchars($row['gender']);
-                                    $join = htmlspecialchars($row['join_date']);
-                                    $salary = htmlspecialchars($row['salary']);
+                                    $img = !empty($row['employee_image']) ? 'uploads/' . $row['employee_image'] : 'admin_images/default.png';
+                                    
                                     $perfRow = isset($performanceMap[$pk]) ? $performanceMap[$pk] : null;
                                     $perfTotal = $perfRow ? (int)$perfRow['total'] : null;
                                     $absentPrefill = $perfRow ? (int)$perfRow['absent'] : (isset($absencePoints[$pk]) ? $absencePoints[$pk] : 0);
                                     $latePrefill = $perfRow ? (int)$perfRow['late'] : (isset($latePoints[$pk]) ? $latePoints[$pk] : 0);
-                                    // Build history payload for last 4 months
+                                    
+                                    // Build history payload
                                     $histSeries = array();
                                     foreach ($historyMonths as $hm) {
                                         $k = $hm['year'] . '-' . $hm['month'];
                                         $val = isset($historyTotals[$pk][$k]) ? $historyTotals[$pk][$k] : 0;
-                                        $histSeries[] = array(
-                                            'label' => $hm['label'],
-                                            'value' => $val
-                                        );
+                                        $histSeries[] = array('label' => $hm['label'], 'value' => $val);
                                     }
                                     $histJson = htmlspecialchars(json_encode($histSeries), ENT_QUOTES, 'UTF-8');
+                                    
                                     $breakdown = array(
                                         array('label' => 'Absent (auto)', 'max' => 20, 'user' => $absentPrefill),
                                         array('label' => 'Late (auto)', 'max' => 10, 'user' => $latePrefill),
                                         array('label' => 'Task Sheet', 'max' => 10, 'user' => $perfRow ? (int)$perfRow['task_sheet'] : 0),
-                                        array('label' => 'Performance', 'max' => 35, 'user' => $perfRow ? (int)$perfRow['performance_score'] : 0),
+                                        array('label' => 'Performance', 'max' => 35, 'user' => $perfRow ? (float)$perfRow['performance_score'] : 0),
                                         array('label' => 'Dressing & Behaviour', 'max' => 10, 'user' => $perfRow ? (int)$perfRow['dressing_behaviour'] : 0),
                                         array('label' => 'RND', 'max' => 15, 'user' => $perfRow ? (int)$perfRow['rnd'] : 0)
                                     );
                                     $calculatedTotal = 0;
-                                    foreach ($breakdown as $b) {
-                                        $calculatedTotal += isset($b['user']) ? (int)$b['user'] : 0;
-                                    }
+                                    foreach ($breakdown as $b) { $calculatedTotal += isset($b['user']) ? (float)$b['user'] : 0; }
                                     $effectiveTotal = ($perfTotal !== null) ? $perfTotal : $calculatedTotal;
                                     $breakdown[] = array('label' => 'Total', 'max' => 100, 'user' => $effectiveTotal);
                                     $breakdownJson = htmlspecialchars(json_encode($breakdown), ENT_QUOTES, 'UTF-8');
-                                    if ($join) {
-                                        $ts = strtotime($join);
-                                        if ($ts !== false) $join = date('d-m-y', $ts);
-                                    }
                             ?>
                                     <tr>
-                                        <td class="col-number"><?php echo $pk; ?></td>
-                                        <td><?php echo $name; ?></td>
-                                        <td class="col-phone"><?php echo $phone; ?></td>
-                                        <td class="col-email"><?php echo $email; ?></td>
-                                        <td class="col-address"><?php echo $address; ?></td>
-                                        <td class="col-blood"><?php echo $blood; ?></td>
-                                        <td class="col-gender"><?php echo $gender; ?></td>
-                                        <td class="col-join"><?php echo $join; ?></td>
-                                        <td class="col-salary"><?php echo $salary; ?></td>
-                                        <td>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 700; color: #64748b;"><?php echo $pk; ?></td>
+                                        <td class="text-center" style="vertical-align: middle;">
+                                            <div style="position: relative; display: inline-block;">
+                                                <img src="<?php echo $img; ?>" class="emp-table-img" alt="Profile" 
+                                                    onclick="viewImage('<?php echo $img; ?>', '<?php echo $name; ?>')"
+                                                    title="Click to zoom">
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            <div style="font-weight: 700; color: #1e293b;"><?php echo $name; ?></div>
+                                            <div style="font-size: 11px; color: #64748b;"><i class="fa fa-phone"></i> <?php echo $phone; ?></div>
+                                            <div style="font-size: 11px; color: #64748b;"><i class="fa fa-envelope"></i> <?php echo $email; ?></div>
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;"><i class="fa fa-calendar-check-o"></i> Joined: <?php echo (!empty($row['join_date']) && $row['join_date'] !== '0000-00-00') ? date('d-m-Y', strtotime($row['join_date'])) : '-'; ?></div>
+                                        </td>
+                                        <td class="text-center" style="vertical-align: middle;">
+                                            <button type="button" class="btn btn-xs btn-primary" style="padding: 6px 12px; border-radius: 6px; font-weight: 600;"
+                                                data-emp='<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>' 
+                                                onclick="openViewEmployee(this, 'section_personal')">
+                                                <i class="fa fa-eye"></i> View Profile
+                                            </button>
+                                        </td>
+                                        <td class="text-center" style="vertical-align: middle;">
                                             <?php
                                             $scoreClass = 'score-plain';
                                             if ($perfRow) {
-                                                if ($perfTotal < 30) {
-                                                    $scoreClass = 'score-red';
-                                                } elseif ($perfTotal <= 49) {
-                                                    $scoreClass = 'score-gray';
-                                                } elseif ($perfTotal <= 69) {
-                                                    $scoreClass = 'score-amber';
-                                                } else {
-                                                    $scoreClass = 'score-green';
-                                                }
+                                                if ($perfTotal < 30) $scoreClass = 'score-red';
+                                                elseif ($perfTotal <= 49) $scoreClass = 'score-gray';
+                                                elseif ($perfTotal <= 69) $scoreClass = 'score-amber';
+                                                else $scoreClass = 'score-green';
                                             }
                                             ?>
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs score-btn <?php echo $scoreClass; ?> <?php echo $perfRow ? '' : 'btn-default'; ?>"
-                                                style="padding: 6px 10px; margin-bottom: 6px; border-width: 1px;"
+                                            <button type="button" class="btn btn-xs score-btn <?php echo $scoreClass; ?> <?php echo $perfRow ? '' : 'btn-default'; ?>"
+                                                style="padding: 4px 8px; margin-bottom: 4px; border-radius: 4px;"
                                                 data-history="<?php echo $histJson; ?>"
                                                 data-breakdown="<?php echo $breakdownJson; ?>"
                                                 data-total="<?php echo $effectiveTotal; ?>"
@@ -346,9 +336,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                                 onclick="openPerfHistory(this)">
                                                 <?php echo $perfRow ? ($perfTotal . ' / 100') : 'Not set'; ?>
                                             </button><br>
-                                            <button
-                                                class="btn btn-xs btn-warning"
-                                                style="padding: 6px 8px;"
+                                            <button class="btn btn-xs btn-warning" style="padding: 4px 6px; font-size: 10px;"
                                                 data-emp="<?php echo $pk; ?>"
                                                 data-name="<?php echo $name; ?>"
                                                 data-absent="<?php echo $absentPrefill; ?>"
@@ -362,62 +350,52 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                                 <i class="fa fa-line-chart"></i> Set
                                             </button>
                                         </td>
-                                        <td>
-                                            <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn btn-xs btn-default" style="padding: 7px 8px;" title="View Documents">
+                                        <td class="text-center" style="vertical-align: middle;">
+                                            <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn btn-xs btn-default" style="padding: 6px 12px;" title="View Documents">
                                                 <i class="fa fa-file"></i> View
                                             </a>
                                         </td>
-                                        <td class="col-actions">
-                                            <button
-                                                class="btn btn-xs btn-info"
-                                                style="padding:6px 8px; display:block; margin-bottom:4px;"
-                                                data-toggle="modal"
-                                                data-target="#editEmployeeModal"
-
-                                                data-id="<?php echo $pk; ?>"
-                                                data-name="<?php echo $name; ?>"
-                                                data-phone="<?php echo $phone; ?>"
-                                                data-email="<?php echo $email; ?>"
-                                                data-address="<?php echo $address; ?>"
-                                                data-join="<?php echo $row['join_date']; ?>"
-                                                data-basic="<?php echo $row['basic_salary']; ?>"
-                                                data-hra="<?php echo $row['hra']; ?>"
-                                                data-allowance="<?php echo $row['allowance']; ?>"
-                                                data-deductions="<?php echo $row['deductions']; ?>"
-                                                data-salary="<?php echo $row['salary']; ?>"
-
-                                                onclick="openEditEmployee(this)">
-
-                                                <i class="fa fa-edit"></i> Edit
-                                            </button>
-                                            <a href="javascript:void(0)"
-                                                onclick="deleteEmployee(<?php echo $pk; ?>)"
-                                                class="btn btn-xs btn-danger"
-                                                style="padding:6px 4px; display:block;"
-                                                title="Delete">
-                                                <i class="fa fa-trash"></i> Delete
-                                            </a>
+                                        <td class="text-center" style="vertical-align: middle;">
+                                            <div style="display: flex; gap: 6px; justify-content: center;">
+                                                <button class="btn btn-xs btn-info" style="padding: 10px 12px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
+                                                    data-toggle="modal" data-target="#editEmployeeModal"
+                                                    data-id="<?php echo $pk; ?>" data-name="<?php echo $name; ?>"
+                                                    data-img="<?php echo $img; ?>"
+                                                    data-phone="<?php echo $phone; ?>" data-email="<?php echo $email; ?>"
+                                                    data-address="<?php echo $row['address']; ?>" data-join="<?php echo $row['join_date']; ?>"
+                                                    data-basic="<?php echo $row['basic_salary']; ?>" data-hra="<?php echo $row['hra']; ?>"
+                                                    data-allowance="<?php echo $row['allowance']; ?>" data-deductions="<?php echo $row['deductions']; ?>"
+                                                    data-salary="<?php echo $row['salary']; ?>" data-age="<?php echo $row['age']; ?>"
+                                                    data-dob="<?php echo $row['dob']; ?>" data-work_exp="<?php echo $row['work_experience']; ?>"
+                                                    data-marital="<?php echo $row['marital_status']; ?>" data-dependents="<?php echo $row['num_dependents']; ?>"
+                                                    data-e_name="<?php echo $row['emergency_name']; ?>" data-e_rel="<?php echo $row['emergency_relationship']; ?>"
+                                                    data-e_addr="<?php echo $row['emergency_address']; ?>" data-e_phone="<?php echo $row['emergency_phone']; ?>"
+                                                    data-gender="<?php echo $row['gender']; ?>" data-blood="<?php echo $row['blood_group']; ?>"
+                                                    data-edu='<?php echo htmlspecialchars($row['education_json'] ?: "[]", ENT_QUOTES); ?>' 
+                                                    data-emp_hist='<?php echo htmlspecialchars($row['employment_json'] ?: "[]", ENT_QUOTES); ?>'
+                                                    data-acc_name="<?php echo $row['account_name']; ?>" data-bank_br="<?php echo $row['bank_branch']; ?>"
+                                                    data-acc_num="<?php echo $row['account_number']; ?>" data-acc_ifsc="<?php echo $row['account_type_ifsc']; ?>"
+                                                    onclick="openEditEmployee(this)" title="Edit Employee">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteEmployee(<?php echo $pk; ?>)" class="btn btn-xs btn-danger" style="padding: 6px 10px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);" title="Delete Record">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
-                                <?php
+                            <?php
                                 }
                             } else {
-                                ?>
+                            ?>
                                 <tr>
-                                    <td colspan="12" style="text-align: center; padding: 20px; color: #999;">
-                                        <i class="fa fa-inbox"></i> No employees found.
+                                    <td colspan="7" style="text-align: center; padding: 40px; color: #94a3b8;">
+                                        <i class="fa fa-inbox" style="font-size: 24px; display: block; margin-bottom: 10px;"></i> No employees found in the directory.
                                     </td>
                                 </tr>
-                            <?php
-                            }
-                            ?>
+                            <?php } ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <!-- Popup Modal for Documents -->
@@ -585,12 +563,225 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- View Employee Modal -->
+<div class="modal fade" id="viewEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="viewEmployeeModalLabel">
+    <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1100px;">
+        <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 25px 70px rgba(0,0,0,0.3);">
+            <div class="profile-modal-body">
+                <!-- Sidebar Navigation -->
+                <div class="profile-sidebar">
+                    <div class="profile-sidebar-header">
+                        <img id="view_img" src="admin_images/default.png" class="view-image-large" style="width: 140px; height: 140px; border-radius: 20px; margin-bottom: 20px;" alt="Profile">
+                        <h4 id="view_name" style="font-weight: 800; color: #0f172a; margin: 0 0 5px 0;">Employee Name</h4>
+                        <p id="view_id_label" style="color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px;">ID: 001</p>
+                        <span id="view_gender_badge" class="label label-primary" style="background: #4f46e5; padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
+                        <div id="view_join_sidebar" style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 10px;">Joined: -</div>
+                    </div>
+                    
+                    <div class="profile-nav">
+                        <div class="profile-nav-item active" data-target="section_personal" onclick="switchProfileTab(this)">
+                            <i class="fa fa-user"></i> Personal Information
+                        </div>
+                        <div class="profile-nav-item" data-target="section_emergency" onclick="switchProfileTab(this)">
+                            <i class="fa fa-ambulance"></i> Emergency Contact
+                        </div>
+                        <div class="profile-nav-item" data-target="section_education" onclick="switchProfileTab(this)">
+                            <i class="fa fa-graduation-cap"></i> Educational Background
+                        </div>
+                        <div class="profile-nav-item" data-target="section_history" onclick="switchProfileTab(this)">
+                            <i class="fa fa-briefcase"></i> Employment History
+                        </div>
+                        <div class="profile-nav-item" data-target="section_bank" onclick="switchProfileTab(this)">
+                            <i class="fa fa-bank"></i> Bank Details
+                        </div>
+                        <div class="profile-nav-item" data-target="section_salary" onclick="switchProfileTab(this)">
+                            <i class="fa fa-money"></i> Professional & Salary
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: auto; padding: 20px 25px;">
+                        <button type="button" class="btn btn-default btn-block" data-dismiss="modal" style="border-radius: 8px; font-weight: 600; color: #64748b;">
+                            <i class="fa fa-times"></i> Close Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="profile-content">
+                    <!-- Personal Info Section -->
+                    <div id="section_personal" class="profile-section active">
+                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: #4f46e5;"></i> Personal Information</h3>
+                        <div class="profile-data-grid">
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Date of Birth</span>
+                                <span class="profile-data-value" id="view_dob">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Age</span>
+                                <span class="profile-data-value" id="view_age">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Marital Status</span>
+                                <span class="profile-data-value" id="view_marital">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Dependents</span>
+                                <span class="profile-data-value" id="view_dependents">0</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Phone Number</span>
+                                <span class="profile-data-value" id="view_phone">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Email Address</span>
+                                <span class="profile-data-value" id="view_email">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Blood Group</span>
+                                <span class="profile-data-value" id="view_blood">-</span>
+                            </div>
+                            <div class="profile-data-card" style="grid-column: span 2;">
+                                <span class="profile-data-label">Residential Address</span>
+                                <span class="profile-data-value" id="view_address">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact Section -->
+                    <div id="section_emergency" class="profile-section">
+                        <h3 class="profile-section-title"><i class="fa fa-ambulance" style="color: #ef4444;"></i> Emergency Contact</h3>
+                        <div class="profile-data-grid">
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Contact Person Name</span>
+                                <span class="profile-data-value" id="view_e_name">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Relationship</span>
+                                <span class="profile-data-value" id="view_e_rel">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Contact Phone</span>
+                                <span class="profile-data-value" id="view_e_phone">-</span>
+                            </div>
+                            <div class="profile-data-card" style="grid-column: span 2;">
+                                <span class="profile-data-label">Contact Address</span>
+                                <span class="profile-data-value" id="view_e_addr">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Education Section -->
+                    <div id="section_education" class="profile-section">
+                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: #4f46e5;"></i> Educational Background</h3>
+                        <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
+                            <table class="table table-hover" style="margin-bottom: 0;">
+                                <thead style="background: #f8fafc;">
+                                    <tr>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Degree / Course</th>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">University / Institute</th>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Year</th>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="view_edu_list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- History Section -->
+                    <div id="section_history" class="profile-section">
+                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: #4f46e5;"></i> Employment History</h3>
+                        <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
+                            <table class="table table-hover" style="margin-bottom: 0;">
+                                <thead style="background: #f8fafc;">
+                                    <tr>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Company Name</th>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Position</th>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Year</th>
+                                        <th style="padding: 15px; border: none; color: #64748b; font-size: 12px; text-transform: uppercase;">Reason for Leaving</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="view_hist_list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Bank Details Section -->
+                    <div id="section_bank" class="profile-section">
+                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: #4f46e5;"></i> Bank Details</h3>
+                        <div class="profile-data-grid">
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Account Holder Name</span>
+                                <span class="profile-data-value" id="view_acc_name">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Bank & Branch</span>
+                                <span class="profile-data-value" id="view_bank_br">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Account Number</span>
+                                <span class="profile-data-value" id="view_acc_num">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">IFSC Code / Type</span>
+                                <span class="profile-data-value" id="view_acc_ifsc">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Professional Section -->
+                    <div id="section_salary" class="profile-section">
+                        <h3 class="profile-section-title"><i class="fa fa-money" style="color: #059669;"></i> Professional & Salary Details</h3>
+                        <div class="profile-data-grid">
+                            <div class="profile-data-card" style="background: #ecfdf5; border-color: #d1fae5;">
+                                <span class="profile-data-label" style="color: #059669;">Net Monthly Salary</span>
+                                <span class="profile-data-value" id="view_salary" style="color: #047857; font-size: 20px;">₹ 0.00</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Joining Date</span>
+                                <span class="profile-data-value" id="view_join">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Basic Salary</span>
+                                <span class="profile-data-value" id="view_basic">0.00</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">HRA</span>
+                                <span class="profile-data-value" id="view_hra">0.00</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Allowance</span>
+                                <span class="profile-data-value" id="view_allowance">0.00</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Deductions</span>
+                                <span class="profile-data-value" id="view_deductions">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Image Viewer Modal -->
+<div class="modal fade" id="imageViewerModal" tabindex="-1" role="dialog" style="background: rgba(15, 23, 42, 0.9);">
+    <div class="modal-dialog" role="document" style="width: fit-content; max-width: 90vw; margin: 10vh auto;">
+        <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
+            <div class="modal-body text-center" style="padding: 0; position: relative;">
+                <button type="button" class="close" data-dismiss="modal" style="position: absolute; right: -40px; top: -10px; color: white; opacity: 1; font-size: 35px; text-shadow: 0 0 10px rgba(0,0,0,0.5);">&times;</button>
+                <img id="viewer_img" src="" class="view-image-round">
+                <h3 id="viewer_name" style="color: white; margin-top: 25px; font-weight: 700; font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Employee Name</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <script>
@@ -604,6 +795,32 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     const defaultPerfMonth = <?php echo (int)$currentMonth; ?>;
     const defaultPerfYear = <?php echo (int)$currentYear; ?>;
 
+    const formatDate = (dateStr) => {
+        if (!dateStr || dateStr === '0000-00-00') return '-';
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        // Handle yyyy-mm-dd (Standard DB format)
+        if (parts[0].length === 4) {
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+        // Handle dd-mm-yyyy or other
+        return dateStr;
+    };
+
+    function switchProfileTab(el) {
+        if (!el) return;
+        const target = el.getAttribute('data-target');
+        
+        // Update Nav
+        document.querySelectorAll('.profile-nav-item').forEach(item => item.classList.remove('active'));
+        el.classList.add('active');
+        
+        // Update Sections
+        document.querySelectorAll('.profile-section').forEach(sec => sec.classList.remove('active'));
+        const targetSec = document.getElementById(target);
+        if (targetSec) targetSec.classList.add('active');
+    }
+
     function openDocuments(empId) {
         empIdField.value = empId;
         popup.style.display = 'flex';
@@ -613,6 +830,97 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             .then(data => {
                 popupDocs.innerHTML = data || '<p style="text-align: center; color: #999;">No documents found.</p>';
             });
+    }
+
+    function openViewEmployee(btn, sectionId) {
+        const data = JSON.parse(btn.dataset.emp);
+        
+        // Profile Summary
+        document.getElementById('view_img').src = data.employee_image ? 'uploads/' + data.employee_image : 'admin_images/default.png';
+        document.getElementById('view_name').textContent = data.name || '-';
+        document.getElementById('view_id_label').textContent = 'ID: ' + data.id;
+        document.getElementById('view_gender_badge').textContent = data.gender || 'Other';
+        document.getElementById('view_phone').textContent = data.phone_number || '-';
+        document.getElementById('view_email').textContent = data.email || '-';
+        document.getElementById('view_blood').textContent = data.blood_group || '-';
+        document.getElementById('view_join_sidebar').innerHTML = '<i class="fa fa-calendar-check-o"></i> Joined: ' + formatDate(data.join_date);
+
+        // Personal Info
+        document.getElementById('view_dob').textContent = formatDate(data.dob);
+        document.getElementById('view_age').textContent = data.age || '-';
+        document.getElementById('view_marital').textContent = data.marital_status || '-';
+        document.getElementById('view_dependents').textContent = data.num_dependents || '0';
+        document.getElementById('view_address').textContent = data.address || '-';
+
+        // Emergency
+        document.getElementById('view_e_name').textContent = data.emergency_name || '-';
+        document.getElementById('view_e_rel').textContent = data.emergency_relationship || '-';
+        document.getElementById('view_e_phone').textContent = data.emergency_phone || '-';
+        document.getElementById('view_e_addr').textContent = data.emergency_address || '-';
+
+        // Education
+        const eduList = document.getElementById('view_edu_list');
+        eduList.innerHTML = '';
+        try {
+            const eduData = JSON.parse(data.education_json || '[]');
+            if (eduData.length === 0) {
+                eduList.innerHTML = '<tr><td colspan="4" class="text-center">No education records found.</td></tr>';
+            } else {
+                eduData.forEach(item => {
+                    eduList.innerHTML += `<tr>
+                        <td>${item.degree || '-'}</td>
+                        <td>${item.univ || '-'}</td>
+                        <td>${item.year || '-'}</td>
+                        <td>${item.grade || '-'}</td>
+                    </tr>`;
+                });
+            }
+        } catch(e) { eduList.innerHTML = '<tr><td colspan="4" class="text-center">Error parsing records.</td></tr>'; }
+
+        // History
+        const histList = document.getElementById('view_hist_list');
+        histList.innerHTML = '';
+        try {
+            const histData = JSON.parse(data.employment_json || '[]');
+            if (histData.length === 0) {
+                histList.innerHTML = '<tr><td colspan="4" class="text-center">No employment history found.</td></tr>';
+            } else {
+                histData.forEach(item => {
+                    histList.innerHTML += `<tr>
+                        <td>${item.company || '-'}</td>
+                        <td>${item.pos || '-'}</td>
+                        <td>${item.year || '-'}</td>
+                        <td>${item.reason || '-'}</td>
+                    </tr>`;
+                });
+            }
+        } catch(e) { histList.innerHTML = '<tr><td colspan="4" class="text-center">Error parsing records.</td></tr>'; }
+
+        // Bank
+        document.getElementById('view_acc_name').textContent = data.account_name || '-';
+        document.getElementById('view_bank_br').textContent = data.bank_branch || '-';
+        document.getElementById('view_acc_num').textContent = data.account_number || '-';
+        document.getElementById('view_acc_ifsc').textContent = data.account_type_ifsc || '-';
+
+        // Salary
+        document.getElementById('view_join').textContent = formatDate(data.join_date);
+        document.getElementById('view_salary').textContent = parseFloat(data.salary || 0).toFixed(2);
+        document.getElementById('view_basic').textContent = parseFloat(data.basic_salary || 0).toFixed(2);
+        document.getElementById('view_hra').textContent = parseFloat(data.hra || 0).toFixed(2);
+        document.getElementById('view_allowance').textContent = parseFloat(data.allowance || 0).toFixed(2);
+        document.getElementById('view_deductions').textContent = parseFloat(data.deductions || 0).toFixed(2);
+
+        // Handle Navigation (Switch to clicked category)
+        const tabToActivate = document.querySelector(`.profile-nav-item[data-target="${sectionId}"]`);
+        if (tabToActivate) {
+            switchProfileTab(tabToActivate);
+        } else {
+            // Default to personal if section doesn't match
+            switchProfileTab(document.querySelector('.profile-nav-item[data-target="section_personal"]'));
+        }
+
+        // Open Modal
+        $('#viewEmployeeModal').modal('show');
     }
 
     function closePopup() {
@@ -923,6 +1231,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
         $('#performanceHistoryModal').modal('show');
     }
+
 </script>
 
 <style>
@@ -1179,6 +1488,303 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         color: #fff;
         border-color: #16a34a;
     }
+
+    /* Comprehensive Form Styles */
+    .form-section-title {
+        background: #f8fafc;
+        padding: 8px 12px;
+        border-left: 4px solid #3b82f6;
+        margin: 20px 0 15px 0;
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-section-title:first-child {
+        margin-top: 0;
+    }
+
+    .modal-lg-custom {
+        width: 90%;
+        max-width: 1000px;
+    }
+
+    .grid-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .grid-col {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .grid-col label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #475569;
+        font-size: 13px;
+    }
+
+    .table-input {
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    .dynamic-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    .dynamic-table th {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        font-size: 12px;
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #e2e8f0;
+    }
+
+    .dynamic-table td {
+        padding: 5px;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* View Modal Specific Styles */
+    .view-info-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 8px;
+    }
+
+    .view-info-label {
+        font-weight: 700;
+        color: #64748b;
+        font-size: 11px;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .view-info-value {
+        color: #1e293b;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .view-image-large {
+        width: 120px;
+        height: 120px;
+        border-radius: 20px;
+        object-fit: cover;
+        object-position: center 10%; /* Ensures face focus in sidebar */
+        border: 3px solid #fff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+        transition: transform 0.3s;
+    }
+
+    .view-modal-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 15px 20px;
+    }
+    
+    .table-view-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s;
+    }
+    
+    .table-view-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .emp-table-img {
+        width: 45px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center 10%; /* Focus on the face (top portion) */
+        border: 2px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .emp-table-img:hover {
+        transform: scale(1.15) rotate(5deg);
+        border-color: #4f46e5;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+    }
+
+    /* Round Profile Modal & Preview Styles */
+    .view-image-round {
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center 10%; /* Ensures the face is centered in the circle */
+        border: 8px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        background: #f8fafc;
+        padding: 5px;
+    }
+
+    .preview-circle-container {
+        display: flex; 
+        align-items: center;
+        gap: 20px;
+        margin-top: 10px;
+        padding: 10px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px dashed #e2e8f0;
+    }
+
+    .image-preview-circle {
+        width: 70px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center 10%; /* Face-first preview */
+        border: 3px solid #fff;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        background: #eef2ff;
+    }
+
+    /* Professional Profile Modal Styles */
+    .profile-modal-body {
+        display: flex;
+        padding: 0 !important;
+        background: #f8fafc;
+        min-height: 500px;
+    }
+
+    .profile-sidebar {
+        width: 280px;
+        background: #ffffff;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        padding: 30px 0;
+    }
+
+    .profile-sidebar-header {
+        padding: 0 25px 25px 25px;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 15px;
+    }
+
+    .profile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .profile-nav-item {
+        padding: 12px 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-right: 3px solid transparent;
+    }
+
+    .profile-nav-item i {
+        width: 20px;
+        font-size: 16px;
+    }
+
+    .profile-nav-item:hover {
+        background: #f1f5f9;
+        color: #4f46e5;
+    }
+
+    .profile-nav-item.active {
+        background: #eef2ff;
+        color: #4f46e5;
+        border-right-color: #4f46e5;
+    }
+
+    .profile-content {
+        flex: 1;
+        padding: 40px;
+        background: #ffffff;
+        overflow-y: auto;
+    }
+
+    .profile-section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-data-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .profile-data-card {
+        background: #f8fafc;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .profile-data-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #94a3b8;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .profile-data-value {
+        font-size: 15px;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .profile-section {
+        display: none;
+    }
+
+    .profile-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
 
 
@@ -1194,49 +1800,54 @@ require_once __DIR__ . '/PHPMailer/src/SMTP.php';
 ?>
 
 <div class="modal fade" id="addEmployeeModal">
-    <div class="modal-dialog modal-lg" style="width: 650px;">
+    <div class="modal-dialog modal-lg modal-lg-custom">
         <div class="modal-content">
-
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><i class="fa fa-user-plus"></i> Add New Employee</h4>
             </div>
+            <form method="POST" id="add_employee_form" enctype="multipart/form-data">
+                <div class="modal-body" style="max-height: 80vh; overflow-y: auto; padding: 25px;">
+                    <!-- Personal Information -->
+                    <div class="form-section-title">Personal Information</div>
 
-            <div class="modal-body">
-
-                <form method="POST" class="form-horizontal">
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Employee Name *</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="name" class="form-control" required>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 3;">
+                            <label>Employee Image *</label>
+                            <div class="preview-circle-container">
+                                <img id="add_preview" src="admin_images/default.png" class="image-preview-circle">
+                                <div style="flex: 1;">
+                                    <input type="file" name="employee_image" class="form-control" accept="image/*" required 
+                                        onchange="handleImagePreview(this, 'add_preview')">
+                                    <small style="color: #64748b; margin-top: 5px; display: block;">Select a round profile photo</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Phone *</label>
-                        <div class="col-sm-9">
-                            <input type="tel" name="number" class="form-control" maxlength="10" required>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Full Name *</label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter Full Name" required>
+                        </div>
+                        <div class="grid-col">
+                            <label>Age (Auto-set)</label>
+                            <input type="number" name="age" id="add_age" class="form-control" readonly style="background-color: #f1f5f9; cursor: not-allowed; border: 1px solid #e2e8f0; color: #64748b;" placeholder="Calculated from DoB">
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Email *</label>
-                        <div class="col-sm-9">
-                            <input type="email" name="email" class="form-control" required>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 3;">
+                            <label>Address *</label>
+                            <input type="text" name="address" class="form-control" placeholder="House No, Street, City" required>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Address *</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="address" class="form-control" required>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Phone *</label>
+                            <input type="tel" name="number" class="form-control" maxlength="10" placeholder="10-digit mobile" required>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Blood Group *</label>
-                        <div class="col-sm-9">
+                        <div class="grid-col">
+                            <label>Blood Group *</label>
                             <select name="blood" class="form-control" required>
                                 <option value="">Select</option>
                                 <option>A+</option>
@@ -1249,11 +1860,35 @@ require_once __DIR__ . '/PHPMailer/src/SMTP.php';
                                 <option>AB-</option>
                             </select>
                         </div>
+                        <div class="grid-col">
+                            <label>DoB</label>
+                            <input type="date" id="add_dob" name="dob" class="form-control" onchange="autoCalculateAge(this, 'add_age')">
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Gender *</label>
-                        <div class="col-sm-9">
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Email *</label>
+                            <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
+                        </div>
+                        <div class="grid-col">
+                            <label>Work Experience</label>
+                            <input type="text" name="work_experience" class="form-control" placeholder="e.g. 2 Years">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Marital Status</label>
+                            <div style="display: flex; gap: 15px; align-items: center; height: 34px;">
+                                <label style="margin: 0; font-weight: normal;"><input type="radio" name="marital_status" value="Single"> Single</label>
+                                <label style="margin: 0; font-weight: normal;"><input type="radio" name="marital_status" value="Married"> Married</label>
+                            </div>
+                        </div>
+                        <div class="grid-col">
+                            <label>Number of Dependent(s)</label>
+                            <input type="number" name="num_dependents" class="form-control" value="0">
+                        </div>
+                        <div class="grid-col">
+                            <label>Gender *</label>
                             <select name="gender" class="form-control" required>
                                 <option value="">Select</option>
                                 <option>Male</option>
@@ -1263,98 +1898,195 @@ require_once __DIR__ . '/PHPMailer/src/SMTP.php';
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Join Date *</label>
-                        <div class="col-sm-9">
+                    <!-- Emergency Contact Details -->
+                    <div class="form-section-title">Emergency Contact Details</div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Full Name</label>
+                            <input type="text" name="emergency_name" class="form-control" placeholder="Contact Name">
+                        </div>
+                        <div class="grid-col">
+                            <label>Relationship</label>
+                            <input type="text" name="emergency_relationship" class="form-control" placeholder="e.g. Father, Spouse">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Address</label>
+                            <input type="text" name="emergency_address" class="form-control" placeholder="Contact Address">
+                        </div>
+                        <div class="grid-col">
+                            <label>Phone</label>
+                            <input type="tel" name="emergency_phone" class="form-control" maxlength="10" placeholder="Mobile Number">
+                        </div>
+                    </div>
+
+                    <!-- Educational Background -->
+                    <div class="form-section-title">Educational Background</div>
+                    <table class="dynamic-table" id="edu_table">
+                        <thead>
+                            <tr>
+                                <th>Degree / Course</th>
+                                <th>University / Institute</th>
+                                <th>Year of Graduate</th>
+                                <th>Grade</th>
+                                <th>City</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="table-input edu-degree"></td>
+                                <td><input type="text" class="table-input edu-univ"></td>
+                                <td><input type="text" class="table-input edu-year"></td>
+                                <td><input type="text" class="table-input edu-grade"></td>
+                                <td><input type="text" class="table-input edu-city"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="table-input edu-degree"></td>
+                                <td><input type="text" class="table-input edu-univ"></td>
+                                <td><input type="text" class="table-input edu-year"></td>
+                                <td><input type="text" class="table-input edu-grade"></td>
+                                <td><input type="text" class="table-input edu-city"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="education_json" id="education_json">
+
+                    <!-- Employment History -->
+                    <div class="form-section-title">Employment History</div>
+                    <table class="dynamic-table" id="emp_hist_table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Position</th>
+                                <th>Year</th>
+                                <th>Reason for Leaving</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="table-input hist-company"></td>
+                                <td><input type="text" class="table-input hist-pos"></td>
+                                <td><input type="text" class="table-input hist-year"></td>
+                                <td><input type="text" class="table-input hist-reason"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="table-input hist-company"></td>
+                                <td><input type="text" class="table-input hist-pos"></td>
+                                <td><input type="text" class="table-input hist-year"></td>
+                                <td><input type="text" class="table-input hist-reason"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="employment_json" id="employment_json">
+
+                    <!-- Bank Details -->
+                    <div class="form-section-title">Bank Details</div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Account Name</label>
+                            <input type="text" name="account_name" class="form-control" placeholder="As per Bank Record">
+                        </div>
+                        <div class="grid-col">
+                            <label>Bank & Branch</label>
+                            <input type="text" name="bank_branch" class="form-control" placeholder="Bank Name, Branch Name">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Account Number</label>
+                            <input type="text" name="account_number" class="form-control" placeholder="Bank Account Number">
+                        </div>
+                        <div class="grid-col">
+                            <label>Account Type & IFSC</label>
+                            <input type="text" name="account_type_ifsc" class="form-control" placeholder="e.g. Savings / SBIN0001234">
+                        </div>
+                    </div>
+
+                    <!-- Salary Structure -->
+                    <div class="form-section-title">Professional & Salary</div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Join Date *</label>
                             <input type="date" name="joinDate" class="form-control" max="<?php echo date('Y-m-d'); ?>" required>
                         </div>
-                    </div>
-
-                    <hr>
-                    <h4>Salary Structure</h4>
-                    <hr>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Basic Pay *</label>
-                        <div class="col-sm-9">
-                            <input type="number" id="basic_salary" name="basic_salary" class="form-control" required>
+                        <div class="grid-col">
+                            <label>Basic Pay *</label>
+                            <input type="number" id="add_basic_salary" name="basic_salary" class="form-control" required>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">HRA</label>
-                        <div class="col-sm-9">
-                            <input type="number" id="hra" name="hra" class="form-control">
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>HRA</label>
+                            <input type="number" id="add_hra" name="hra" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Allowance</label>
+                            <input type="number" id="add_allowance" name="allowance" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Deductions</label>
+                            <input type="number" id="add_deductions" name="deductions" class="form-control">
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Allowance</label>
-                        <div class="col-sm-9">
-                            <input type="number" id="allowance" name="allowance" class="form-control">
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 3;">
+                            <label>Total Salary (Auto Calculated)</label>
+                            <input type="text" id="add_salary" name="salary" class="form-control" readonly style="background: #f1f5f9; font-weight: 700;">
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Deductions</label>
-                        <div class="col-sm-9">
-                            <input type="number" id="deductions" name="deductions" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Total Salary</label>
-                        <div class="col-sm-9">
-                            <input type="text" id="salary" name="salary" class="form-control" readonly>
-                        </div>
-                    </div>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Cancel
-                </button>
-
-                <button type="submit" name="submit" class="btn btn-primary">
-                    <i class="fa fa-save"></i> Add Employee
-                </button>
-
-            </div>
-
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" name="submit" class="btn btn-primary" onclick="serializeTables()">
+                        <i class="fa fa-save"></i> Add Employee
+                    </button>
+                </div>
             </form>
-
         </div>
     </div>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-
-        function calculateTotal() {
-
-            let basic = parseFloat(document.getElementById('basic_salary')?.value) || 0;
-            let hra = parseFloat(document.getElementById('hra')?.value) || 0;
-            let allowance = parseFloat(document.getElementById('allowance')?.value) || 0;
-            let deduction = parseFloat(document.getElementById('deductions')?.value) || 0;
-
-            let total = basic + hra + allowance - deduction;
-
-            document.getElementById('salary').value = total.toFixed(2);
-
-        }
-
-        ['basic_salary', 'hra', 'allowance', 'deductions'].forEach(function(id) {
-
-            let el = document.getElementById(id);
-
-            if (el) {
-                el.addEventListener('input', calculateTotal);
-            }
-
+    function serializeTables() {
+        const edu = [];
+        document.querySelectorAll('#edu_table tbody tr').forEach(tr => {
+            const row = {
+                degree: tr.querySelector('.edu-degree').value,
+                univ: tr.querySelector('.edu-univ').value,
+                year: tr.querySelector('.edu-year').value,
+                grade: tr.querySelector('.edu-grade').value,
+                city: tr.querySelector('.edu-city').value
+            };
+            if (row.degree || row.univ) edu.push(row);
         });
+        document.getElementById('education_json').value = JSON.stringify(edu);
 
+        const hist = [];
+        document.querySelectorAll('#emp_hist_table tbody tr').forEach(tr => {
+            const row = {
+                company: tr.querySelector('.hist-company').value,
+                pos: tr.querySelector('.hist-pos').value,
+                year: tr.querySelector('.hist-year').value,
+                reason: tr.querySelector('.hist-reason').value
+            };
+            if (row.company || row.pos) hist.push(row);
+        });
+        document.getElementById('employment_json').value = JSON.stringify(hist);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        function calculateTotalAdd() {
+            let basic = parseFloat(document.getElementById('add_basic_salary')?.value) || 0;
+            let hra = parseFloat(document.getElementById('add_hra')?.value) || 0;
+            let allowance = parseFloat(document.getElementById('add_allowance')?.value) || 0;
+            let deduction = parseFloat(document.getElementById('add_deductions')?.value) || 0;
+            document.getElementById('add_salary').value = (basic + hra + allowance - deduction).toFixed(2);
+        }
+        ['add_basic_salary', 'add_hra', 'add_allowance', 'add_deductions'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', calculateTotalAdd);
+        });
     });
+
 </script>
 <?php
 
@@ -1366,6 +2098,7 @@ if (isset($_POST['submit'])) {
     $contact = preg_replace('/\D+/', '', $_POST['number']);
 
     if (strlen($contact) != 10) {
+
         echo "<script>alert('Phone must be 10 digits');</script>";
         exit();
     }
@@ -1381,14 +2114,49 @@ if (isset($_POST['submit'])) {
     $deductions = $_POST['deductions'] ?? 0;
     $salary = $_POST['salary'] ?? 0;
 
+    $age = mysqli_real_escape_string($con, $_POST['age'] ?? '');
+    $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
+    $work_exp = mysqli_real_escape_string($con, $_POST['work_experience'] ?? '');
+    $marital = mysqli_real_escape_string($con, $_POST['marital_status'] ?? '');
+    $dependents = mysqli_real_escape_string($con, $_POST['num_dependents'] ?? 0);
+
+    $e_name = mysqli_real_escape_string($con, $_POST['emergency_name'] ?? '');
+    $e_rel = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
+    $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address'] ?? '');
+    $e_phone = mysqli_real_escape_string($con, $_POST['emergency_phone'] ?? '');
+
+    $edu_json = mysqli_real_escape_string($con, $_POST['education_json'] ?? '[]');
+    $emp_json = mysqli_real_escape_string($con, $_POST['employment_json'] ?? '[]');
+
+    $acc_name = mysqli_real_escape_string($con, $_POST['account_name'] ?? '');
+    $bank_br = mysqli_real_escape_string($con, $_POST['bank_branch'] ?? '');
+    $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
+    $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
+
+    // Image Upload Logic
+    $employee_image = '';
+    if (isset($_FILES['employee_image']) && $_FILES['employee_image']['error'] == 0) {
+        $img_name = $_FILES['employee_image']['name'];
+        $tmp_name = $_FILES['employee_image']['tmp_name'];
+        $ext = pathinfo($img_name, PATHINFO_EXTENSION);
+        $new_img_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+        if (move_uploaded_file($tmp_name, "uploads/" . $new_img_name)) {
+            $employee_image = $new_img_name;
+        }
+    }
+
     // Generate random password
     $plainPassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
 
     // Save password directly (NO HASH)
-    $query = "INSERT INTO emp_list
-    (name,phone_number,address,email,blood_group,gender,join_date,basic_salary,hra,allowance,deductions,salary,password)
-    VALUES
-    ('$name','$contact','$address','$email','$blood','$gender','$joinDate','$basic','$hra','$allowance','$deductions','$salary','$plainPassword')";
+    $query = "INSERT INTO emp_list 
+    (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary, password, 
+    age, dob, work_experience, marital_status, num_dependents, emergency_name, emergency_relationship, emergency_address, emergency_phone, 
+    education_json, employment_json, account_name, bank_branch, account_number, account_type_ifsc, employee_image)
+    VALUES 
+    ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic', '$hra', '$allowance', '$deductions', '$salary', '$plainPassword', 
+    '$age', '$dob', '$work_exp', '$marital', '$dependents', '$e_name', '$e_rel', '$e_addr', '$e_phone', 
+    '$edu_json', '$emp_json', '$acc_name', '$bank_br', '$acc_num', '$acc_ifsc', '$employee_image')";
 
     $run = mysqli_query($con, $query);
 
@@ -1426,8 +2194,10 @@ if (isset($_POST['submit'])) {
         echo "<script>
         alert('Employee Added Successfully');
         window.location='index.php?emp_directory';
+
         </script>";
     } else {
+
 
         echo "<script>alert('Database Error');</script>";
     }
@@ -1452,165 +2222,481 @@ if (isset($_POST['update'])) {
     $deductions = mysqli_real_escape_string($con, $_POST['deductions']);
     $salary = mysqli_real_escape_string($con, $_POST['salary']);
 
-    mysqli_query($con, "UPDATE emp_list SET
+    $age = mysqli_real_escape_string($con, $_POST['age'] ?? '');
+    $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
+    $work_exp = mysqli_real_escape_string($con, $_POST['work_experience'] ?? '');
+    $marital = mysqli_real_escape_string($con, $_POST['marital_status'] ?? '');
+    $dependents = mysqli_real_escape_string($con, $_POST['num_dependents'] ?? 0);
 
-name='$name',
-phone_number='$phone',
-email='$email',
-address='$address',
-join_date='$joinDate',
-basic_salary='$basic',
-hra='$hra',
-allowance='$allowance',
-deductions='$deductions',
-salary='$salary'
+    $e_name = mysqli_real_escape_string($con, $_POST['emergency_name'] ?? '');
+    $e_rel = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
+    $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address'] ?? '');
+    $e_phone = mysqli_real_escape_string($con, $_POST['emergency_phone'] ?? '');
 
-WHERE id='$id'");
+    $edu_json = mysqli_real_escape_string($con, $_POST['education_json'] ?? '[]');
+    $emp_json = mysqli_real_escape_string($con, $_POST['employment_json'] ?? '[]');
+
+    $acc_name = mysqli_real_escape_string($con, $_POST['account_name'] ?? '');
+    $bank_br = mysqli_real_escape_string($con, $_POST['bank_branch'] ?? '');
+    $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
+    $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
+
+    // Image Upload (Update)
+    $img_update = "";
+    if (isset($_FILES['employee_image']) && $_FILES['employee_image']['error'] == 0) {
+        $img_name = $_FILES['employee_image']['name'];
+        $tmp_name = $_FILES['employee_image']['tmp_name'];
+        $ext = pathinfo($img_name, PATHINFO_EXTENSION);
+        $new_img_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+        if (move_uploaded_file($tmp_name, "uploads/" . $new_img_name)) {
+            $img_update = ", employee_image='$new_img_name'";
+        }
+    }
+
+    mysqli_query($con, "UPDATE emp_list SET 
+        name='$name',
+        phone_number='$phone',
+        email='$email',
+        address='$address',
+        join_date='$joinDate',
+        basic_salary='$basic',
+        hra='$hra',
+        allowance='$allowance',
+        deductions='$deductions',
+        salary='$salary',
+        age='$age',
+        dob='$dob',
+        work_experience='$work_exp',
+        marital_status='$marital',
+        num_dependents='$dependents',
+        emergency_name='$e_name',
+        emergency_relationship='$e_rel',
+        emergency_address='$e_addr',
+        emergency_phone='$e_phone',
+        education_json='$edu_json',
+        employment_json='$emp_json',
+        account_name='$acc_name',
+        bank_branch='$bank_br',
+        account_number='$acc_num',
+        account_type_ifsc='$acc_ifsc'
+        $img_update
+        WHERE id='$id'");
 
     echo "<script>
 alert('Employee Updated Successfully');
 window.location='index.php?emp_directory';
+
 </script>";
 }
 ?>
 <div class="modal fade" id="editEmployeeModal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-lg-custom">
         <div class="modal-content">
-
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Employee</h4>
             </div>
-
-            <div class="modal-body">
-
-                <form method="POST" class="form-horizontal">
-
+            <form method="POST" id="edit_employee_form" enctype="multipart/form-data">
+                <div class="modal-body" style="max-height: 80vh; overflow-y: auto; padding: 25px;">
                     <input type="hidden" name="id" id="edit_id">
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="name" id="edit_name" class="form-control">
+                    <!-- Personal Information -->
+                    <div class="form-section-title">Personal Information</div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 1;">
+                            <label>Profile Image</label>
+                            <div class="preview-circle-container" style="display:block; background: transparent; border: none; padding: 0;">
+                                <img id="edit_preview" src="admin_images/default.png" class="image-preview-circle" style="width: 100px; height: 100px;">
+                            </div>
+                        </div>
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Change Photo</label>
+                            <input type="file" name="employee_image" class="form-control" accept="image/*" 
+                                onchange="handleImagePreview(this, 'edit_preview')" style="margin-top: 10px;">
+                            <small class="text-muted" style="margin-top: 5px; display: block;">Select a round profile photo</small>
+                            
+                            <div class="grid-row" style="margin-top: 15px; grid-template-columns: 2fr 1fr; gap: 10px;">
+                                <div class="grid-col">
+                                    <label>Full Name *</label>
+                                    <input type="text" name="name" id="edit_name" class="form-control" required placeholder="Enter Full Name">
+                                </div>
+                                <div class="grid-col">
+                                    <label>Age (Auto-set)</label>
+                                    <input type="number" name="age" id="edit_age" class="form-control" readonly style="background-color: #f1f5f9; cursor: not-allowed; border: 1px solid #e2e8f0; color: #64748b;" placeholder="Age">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 3;">
+                            <label>Address *</label>
+                            <input type="text" name="address" id="edit_address" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Phone *</label>
+                            <input type="tel" name="number" id="edit_phone" class="form-control" maxlength="10" required>
+                        </div>
+                        <div class="grid-col">
+                            <label>Blood Group *</label>
+                            <select name="blood" id="edit_blood" class="form-control" required>
+                                <option value="">Select</option>
+                                <option>A+</option>
+                                <option>B+</option>
+                                <option>O+</option>
+                                <option>AB+</option>
+                                <option>A-</option>
+                                <option>B-</option>
+                                <option>O-</option>
+                                <option>AB-</option>
+                            </select>
+                        </div>
+                        <div class="grid-col">
+                            <label>DoB</label>
+                            <input type="date" name="dob" id="edit_dob" class="form-control" onchange="autoCalculateAge(this, 'edit_age')">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Email *</label>
+                            <input type="email" name="email" id="edit_email" class="form-control" required>
+                        </div>
+                        <div class="grid-col">
+                            <label>Work Experience</label>
+                            <input type="text" name="work_experience" id="edit_work_exp" class="form-control">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Marital Status</label>
+                            <div style="display: flex; gap: 15px; align-items: center; height: 34px;">
+                                <label style="margin: 0; font-weight: normal;"><input type="radio" name="marital_status" id="edit_marital_single" value="Single"> Single</label>
+                                <label style="margin: 0; font-weight: normal;"><input type="radio" name="marital_status" id="edit_marital_married" value="Married"> Married</label>
+                            </div>
+                        </div>
+                        <div class="grid-col">
+                            <label>Number of Dependent(s)</label>
+                            <input type="number" name="num_dependents" id="edit_dependents" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Gender *</label>
+                            <select name="gender" id="edit_gender" class="form-control" required>
+                                <option value="">Select</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Phone</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="number" id="edit_phone" class="form-control">
+                    <!-- Emergency Contact Details -->
+                    <div class="form-section-title">Emergency Contact Details</div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Full Name</label>
+                            <input type="text" name="emergency_name" id="edit_e_name" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Relationship</label>
+                            <input type="text" name="emergency_relationship" id="edit_e_rel" class="form-control">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 2;">
+                            <label>Address</label>
+                            <input type="text" name="emergency_address" id="edit_e_addr" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Phone</label>
+                            <input type="tel" name="emergency_phone" id="edit_e_phone" class="form-control" maxlength="10">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Email</label>
-                        <div class="col-sm-9">
-                            <input type="email" name="email" id="edit_email" class="form-control">
+                    <!-- Educational Background -->
+                    <div class="form-section-title">Educational Background</div>
+                    <table class="dynamic-table" id="edit_edu_table">
+                        <thead>
+                            <tr>
+                                <th>Degree / Course</th>
+                                <th>University / Institute</th>
+                                <th>Year of Graduate</th>
+                                <th>Grade</th>
+                                <th>City</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="table-input edu-degree"></td>
+                                <td><input type="text" class="table-input edu-univ"></td>
+                                <td><input type="text" class="table-input edu-year"></td>
+                                <td><input type="text" class="table-input edu-grade"></td>
+                                <td><input type="text" class="table-input edu-city"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="table-input edu-degree"></td>
+                                <td><input type="text" class="table-input edu-univ"></td>
+                                <td><input type="text" class="table-input edu-year"></td>
+                                <td><input type="text" class="table-input edu-grade"></td>
+                                <td><input type="text" class="table-input edu-city"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="education_json" id="edit_education_json">
+
+                    <!-- Employment History -->
+                    <div class="form-section-title">Employment History</div>
+                    <table class="dynamic-table" id="edit_emp_hist_table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Position</th>
+                                <th>Year</th>
+                                <th>Reason for Leaving</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="table-input hist-company"></td>
+                                <td><input type="text" class="table-input hist-pos"></td>
+                                <td><input type="text" class="table-input hist-year"></td>
+                                <td><input type="text" class="table-input hist-reason"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="table-input hist-company"></td>
+                                <td><input type="text" class="table-input hist-pos"></td>
+                                <td><input type="text" class="table-input hist-year"></td>
+                                <td><input type="text" class="table-input hist-reason"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="employment_json" id="edit_employment_json">
+
+                    <!-- Bank Details -->
+                    <div class="form-section-title">Bank Details</div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Account Name</label>
+                            <input type="text" name="account_name" id="edit_acc_name" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Bank & Branch</label>
+                            <input type="text" name="bank_branch" id="edit_bank_br" class="form-control">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Account Number</label>
+                            <input type="text" name="account_number" id="edit_acc_num" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Account Type & IFSC</label>
+                            <input type="text" name="account_type_ifsc" id="edit_acc_ifsc" class="form-control">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Address</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="address" id="edit_address" class="form-control">
+                    <!-- Salary Structure -->
+                    <div class="form-section-title">Professional & Salary</div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Join Date *</label>
+                            <input type="date" name="joinDate" id="edit_join" class="form-control" required>
+                        </div>
+                        <div class="grid-col">
+                            <label>Basic Pay *</label>
+                            <input type="number" id="edit_basic" name="basic_salary" class="form-control" required>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Join Date</label>
-                        <div class="col-sm-9">
-                            <input type="date" name="joinDate" id="edit_join" class="form-control">
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>HRA</label>
+                            <input type="number" id="edit_hra" name="hra" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Allowance</label>
+                            <input type="number" id="edit_allowance" name="allowance" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Deductions</label>
+                            <input type="number" id="edit_deductions" name="deductions" class="form-control">
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Basic Salary</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="basic_salary" id="edit_basic" class="form-control">
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 3;">
+                            <label>Total Salary (Auto Calculated)</label>
+                            <input type="text" id="edit_salary" name="salary" class="form-control" readonly style="background: #f1f5f9; font-weight: 700;">
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">HRA</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="hra" id="edit_hra" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Allowance</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="allowance" id="edit_allowance" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Deductions</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="deductions" id="edit_deductions" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Total Salary</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="salary" id="edit_salary" class="form-control" readonly>
-                        </div>
-                    </div>
-
-            </div>
-
-            <div class="modal-footer">
-                <button type="submit" name="update" class="btn btn-primary">
-                    <i class="fa fa-save"></i> Update
-                </button>
-
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Cancel
-                </button>
-            </div>
-
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="update" class="btn btn-primary" onclick="serializeEditTables()" style="padding: 10px 25px; font-weight: 700; border-radius: 8px;">
+                        <i class="fa fa-save"></i> Save Changes
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="padding: 10px 20px;">Cancel</button>
+                </div>
             </form>
-
         </div>
     </div>
 </div>
 <script>
+    function serializeEditTables() {
+        const edu = [];
+        document.querySelectorAll('#edit_edu_table tbody tr').forEach(tr => {
+            const row = {
+                degree: tr.querySelector('.edu-degree').value,
+                univ: tr.querySelector('.edu-univ').value,
+                year: tr.querySelector('.edu-year').value,
+                grade: tr.querySelector('.edu-grade').value,
+                city: tr.querySelector('.edu-city').value
+            };
+            if (row.degree || row.univ) edu.push(row);
+        });
+        document.getElementById('edit_education_json').value = JSON.stringify(edu);
+
+        const hist = [];
+        document.querySelectorAll('#edit_emp_hist_table tbody tr').forEach(tr => {
+            const row = {
+                company: tr.querySelector('.hist-company').value,
+                pos: tr.querySelector('.hist-pos').value,
+                year: tr.querySelector('.hist-year').value,
+                reason: tr.querySelector('.hist-reason').value
+            };
+            if (row.company || row.pos) hist.push(row);
+        });
+        document.getElementById('edit_employment_json').value = JSON.stringify(hist);
+    }
+
     function openEditEmployee(btn) {
+        const d = btn.dataset;
+        document.getElementById('edit_id').value = d.id;
+        document.getElementById('edit_name').value = d.name;
+        document.getElementById('edit_phone').value = d.phone;
+        document.getElementById('edit_email').value = d.email;
+        document.getElementById('edit_address').value = d.address;
+        document.getElementById('edit_join').value = d.join;
+        document.getElementById('edit_basic').value = d.basic;
+        document.getElementById('edit_hra').value = d.hra;
+        document.getElementById('edit_allowance').value = d.allowance;
+        document.getElementById('edit_deductions').value = d.deductions;
+        document.getElementById('edit_salary').value = d.salary;
+        document.getElementById('edit_preview').src = d.img || 'admin_images/default.png';
+        
+        // Populate fields
+        document.getElementById('edit_age').value = d.age || '';
+        document.getElementById('edit_dob').value = (d.dob && d.dob !== '0000-00-00') ? d.dob : '';
+        document.getElementById('edit_join').value = (d.join && d.join !== '0000-00-00') ? d.join : '';
+        document.getElementById('edit_work_exp').value = d.work_exp || '';
+        document.getElementById('edit_dependents').value = d.dependents || 0;
+        document.getElementById('edit_e_name').value = d.e_name || '';
+        document.getElementById('edit_e_rel').value = d.e_rel || '';
+        document.getElementById('edit_e_addr').value = d.e_addr || '';
+        document.getElementById('edit_e_phone').value = d.e_phone || '';
+        document.getElementById('edit_acc_name').value = d.acc_name || '';
+        document.getElementById('edit_bank_br').value = d.bank_br || '';
+        document.getElementById('edit_acc_num').value = d.acc_num || '';
+        document.getElementById('edit_acc_ifsc').value = d.acc_ifsc || '';
 
-        document.getElementById('edit_id').value = btn.dataset.id;
-        document.getElementById('edit_name').value = btn.dataset.name;
-        document.getElementById('edit_phone').value = btn.dataset.phone;
-        document.getElementById('edit_email').value = btn.dataset.email;
-        document.getElementById('edit_address').value = btn.dataset.address;
-        document.getElementById('edit_join').value = btn.dataset.join;
+        // Radio & Select
+        const mVal = (d.marital || '').trim();
+        if (mVal === 'Single') document.getElementById('edit_marital_single').checked = true;
+        else if (mVal === 'Married') document.getElementById('edit_marital_married').checked = true;
 
-        document.getElementById('edit_basic').value = btn.dataset.basic;
-        document.getElementById('edit_hra').value = btn.dataset.hra;
-        document.getElementById('edit_allowance').value = btn.dataset.allowance;
-        document.getElementById('edit_deductions').value = btn.dataset.deductions;
-        document.getElementById('edit_salary').value = btn.dataset.salary;
+        const gEl = document.getElementById('edit_gender');
+        if (gEl) gEl.value = (d.gender || '').trim();
 
-    }
+        const bEl = document.getElementById('edit_blood');
+        if (bEl) bEl.value = (d.blood || '').trim();
 
-    function calculateEditSalary() {
-
-        let basic = parseFloat(document.getElementById('edit_basic').value) || 0;
-        let hra = parseFloat(document.getElementById('edit_hra').value) || 0;
-        let allowance = parseFloat(document.getElementById('edit_allowance').value) || 0;
-        let deduction = parseFloat(document.getElementById('edit_deductions').value) || 0;
-
-        document.getElementById('edit_salary').value = (basic + hra + allowance - deduction).toFixed(2);
-
-    }
-
-    ['edit_basic', 'edit_hra', 'edit_allowance', 'edit_deductions'].forEach(function(id) {
-
-        let el = document.getElementById(id);
-
-        if (el) {
-            el.addEventListener('input', calculateEditSalary);
+        // Populate Tables
+        try {
+            const eduData = JSON.parse(d.edu || '[]');
+            const eduRows = document.querySelectorAll('#edit_edu_table tbody tr');
+            eduData.forEach((row, index) => {
+                if (eduRows[index]) {
+                    eduRows[index].querySelector('.edu-degree').value = row.degree || '';
+                    eduRows[index].querySelector('.edu-univ').value = row.univ || '';
+                    eduRows[index].querySelector('.edu-year').value = row.year || '';
+                    eduRows[index].querySelector('.edu-grade').value = row.grade || '';
+                    eduRows[index].querySelector('.edu-city').value = row.city || '';
+                }
+            });
+        } catch (e) {
+            console.error("Error parsing education JSON", e);
         }
 
+        try {
+            const histData = JSON.parse(d.emp_hist || '[]');
+            const histRows = document.querySelectorAll('#edit_emp_hist_table tbody tr');
+            histData.forEach((row, index) => {
+                if (histRows[index]) {
+                    histRows[index].querySelector('.hist-company').value = row.company || '';
+                    histRows[index].querySelector('.hist-pos').value = row.pos || '';
+                    histRows[index].querySelector('.hist-year').value = row.year || '';
+                    histRows[index].querySelector('.hist-reason').value = row.reason || '';
+                }
+            });
+        } catch (e) {
+            console.error("Error parsing employment history JSON", e);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        function calculateEditSalary() {
+            let basic = parseFloat(document.getElementById('edit_basic')?.value) || 0;
+            let hra = parseFloat(document.getElementById('edit_hra')?.value) || 0;
+            let allowance = parseFloat(document.getElementById('edit_allowance')?.value) || 0;
+            let deduction = parseFloat(document.getElementById('edit_deductions')?.value) || 0;
+            document.getElementById('edit_salary').value = (basic + hra + allowance - deduction).toFixed(2);
+        }
+        ['edit_basic', 'edit_hra', 'edit_allowance', 'edit_deductions'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', calculateEditSalary);
+        });
+
+        // Add auto-age listeners
+        document.getElementById('add_dob')?.addEventListener('change', function() { autoCalculateAge(this, 'add_age'); });
+        document.getElementById('add_dob')?.addEventListener('input', function() { autoCalculateAge(this, 'add_age'); });
+        document.getElementById('edit_dob')?.addEventListener('change', function() { autoCalculateAge(this, 'edit_age'); });
+        document.getElementById('edit_dob')?.addEventListener('input', function() { autoCalculateAge(this, 'edit_age'); });
     });
+
+    function viewImage(src, name) {
+        document.getElementById('viewer_img').src = src;
+        document.getElementById('viewer_name').textContent = name;
+        $('#imageViewerModal').modal('show');
+    }
+
+    function handleImagePreview(input, previewId) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(previewId).src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function autoCalculateAge(dobInput, ageInputId) {
+        if (!dobInput || !dobInput.value) return;
+        const dobValue = dobInput.value;
+        if (dobValue === '0000-00-00') return;
+
+        const birthDate = new Date(dobValue);
+        const today = new Date();
+        
+        if (isNaN(birthDate.getTime())) return;
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        const ageField = document.getElementById(ageInputId);
+        if (ageField) {
+            ageField.value = age > 0 ? age : 0;
+            // Force display update
+            ageField.setAttribute('value', age > 0 ? age : 0);
+        }
+    }
 </script>

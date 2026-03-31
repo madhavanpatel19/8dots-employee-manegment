@@ -19,17 +19,7 @@ $export_pdf = isset($_POST['export_pdf']) ? 1 : 0;
 
 // Handle report type auto-date calculation
 if ($report_type === 'daily' && !$single_date) {
-    $single_date = date('Y-m-d');
-}
-
-// Monthly report logic
-if ($report_type === 'monthly') {
-    $month_val = isset($_GET['month_val']) ? $_GET['month_val'] : (isset($_POST['month_val']) ? $_POST['month_val'] : date('Y-m'));
-    if ($month_val) {
-        $from_date = date('Y-m-01', strtotime($month_val . '-01'));
-        $to_date = date('Y-m-t', strtotime($month_val . '-01'));
-        $report_type = 'custom'; // Treat as custom range once dates are set
-    }
+    $single_date = date('d-m-y');
 }
 
 // Fetch all employees
@@ -120,11 +110,11 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
         $filename = 'Attendance_Report_' . $from_label . '.html';
         $period_text = 'Date: ' . htmlspecialchars($from_label);
         // include check-in and check-out times for daily reports
-        $table_headers = '<th>#</th><th>Emp ID</th><th>Name</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Perf %</th><th>Remarks</th><th>Created At</th>';
+        $table_headers = '<th>Employee ID</th><th>Employee Name</th><th>Check In</th><th>Check Out</th><th>Status</th><th>Performance</th><th>Remarks</th><th>Created At</th>';
     } else {
         $filename = 'Attendance_Report_' . $from_label . '_to_' . $to_label . '.html';
         $period_text = 'Period: <strong>' . htmlspecialchars($from_label) . ' to ' . htmlspecialchars($to_label) . '</strong>';
-        $table_headers = '<th>#</th><th>Emp ID</th><th>Name</th><th>Present</th><th>Absent</th><th>Leave</th><th>Total</th><th>Avg Perf</th><th>Created At</th>';
+        $table_headers = '<th>Employee ID</th><th>Employee Name</th><th>Present</th><th>Absent</th><th>Leave</th><th>Total Days</th><th>Created At</th>';
     }
 
     header('Content-Type: text/html; charset=utf-8');
@@ -226,7 +216,6 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             }
 
             echo '<tr>';
-            echo '<td>' . ($i + 1) . '</td>';
             echo '<td>' . $emp_id . '</td>';
             echo '<td>' . htmlspecialchars($emp['name']) . '</td>';
             echo '<td>' . htmlspecialchars($check_in) . '</td>';
@@ -236,7 +225,6 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
             echo '<td style="max-width: 250px; text-align: left;">' . $remarks . '</td>';
             echo '<td>' . $created_at . '</td>';
             echo '</tr>';
-            $i++;
         }
     } else {
         // Custom range report
@@ -272,27 +260,15 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                 }
             }
 
-            // Calculate average performance for this employee in range
-            $avg_perf = '-';
-            $avg_q = mysqli_query($con, "SELECT AVG(performance) as avg_p FROM attendance WHERE emp_id='$emp_id' AND attendance_date >= '$from_date' AND attendance_date <= '$to_date' AND performance IS NOT NULL");
-            if ($avg_q && $avg_res = mysqli_fetch_assoc($avg_q)) {
-                if ($avg_res['avg_p'] !== null) {
-                    $avg_perf = round($avg_res['avg_p'], 1) . '%';
-                }
-            }
-
             echo '<tr>';
-            echo '<td>' . ($i + 1) . '</td>';
             echo '<td>' . $emp_id . '</td>';
             echo '<td>' . htmlspecialchars($emp['name']) . '</td>';
             echo '<td class="status-present">' . $present . '</td>';
             echo '<td class="status-absent">' . $absent . '</td>';
             echo '<td class="status-leave">' . $leave . '</td>';
             echo '<td>' . $total_days . '</td>';
-            echo '<td>' . $avg_perf . '</td>';
             echo '<td>' . $created_at . '</td>';
             echo '</tr>';
-            $i++;
         }
     }
         echo '</tbody>';
@@ -380,7 +356,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
 
         .report-type-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
@@ -571,15 +547,8 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                             <div class="type-card" onclick="selectReportType('daily')">
                                 <input type="radio" name="quick_report" value="daily" class="quick-report-btn" id="daily-radio" <?php echo $report_type === 'daily' ? 'checked' : ''; ?>>
                                 <label for="daily-radio">
-                                    <i class="fa fa-calendar-check-o"></i>
-                                    <span>Daily Report</span>
-                                </label>
-                            </div>
-                            <div class="type-card" onclick="selectReportType('monthly')">
-                                <input type="radio" name="quick_report" value="monthly" class="quick-report-btn" id="monthly-radio" <?php echo $report_type === 'monthly' ? 'checked' : ''; ?>>
-                                <label for="monthly-radio">
                                     <i class="fa fa-calendar"></i>
-                                    <span>Monthly Report</span>
+                                    <span>Daily Report</span>
                                 </label>
                             </div>
                             <div class="type-card" onclick="selectReportType('custom')">
@@ -820,7 +789,6 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
                                                 <td style="text-align:center; color:#e74c3c;"><?php echo $total_absent; ?></td>
                                                 <td style="text-align:center; color:#f39c12;"><?php echo $total_leave; ?></td>
                                                 <td style="text-align:center;"><?php echo $total_present + $total_absent + $total_leave; ?></td>
-                                                <td colspan="2"></td>
                                             </tr>
                                         </tfoot>
                                     <?php endif; ?>
@@ -844,8 +812,6 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
         function selectReportType(type) {
             if (type === 'daily') {
                 $('#dailyDateModal').modal('show');
-            } else if (type === 'monthly') {
-                $('#monthlyDateModal').modal('show');
             } else if (type === 'custom') {
                 $('#customDateModal').modal('show');
             }
