@@ -192,7 +192,50 @@ function monthName($m)
 {
     return date('F', mktime(0, 0, 0, $m, 10));
 }
+// File Upload Function (Auto Remove PDF Password)
+function handleFileUpload($fileArray, $targetDir = "uploads/") {
 
+    if (isset($fileArray) && $fileArray['error'] == 0) {
+
+        $file_name = $fileArray['name'];
+        $tmp_name = $fileArray['tmp_name'];
+
+        $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+        $new_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+
+        $target_path = $targetDir . $new_name;
+
+        if (move_uploaded_file($tmp_name, $target_path)) {
+
+            // Only for PDF
+            if ($ext === "pdf") {
+
+                $qpdf = "C:/Program Files/qpdf/qpdf 12.3.2/bin/qpdf.exe";
+
+                $unlocked_file = $targetDir . "unlock_" . $new_name;
+
+                $command = "\"$qpdf\" --decrypt \"$target_path\" \"$unlocked_file\" 2>&1";
+
+                exec($command, $output, $return_var);
+
+                if ($return_var === 0 && file_exists($unlocked_file)) {
+
+                    unlink($target_path);
+                    rename($unlocked_file, $target_path);
+
+                } else {
+
+                    error_log("QPDF ERROR: " . implode("\n", $output));
+                }
+            }
+
+            return $new_name;
+        }
+    }
+
+    return '';
+}
 // Month/year options for the performance modal
 $monthLabels = array();
 for ($m = 1; $m <= 12; $m++) {
@@ -375,6 +418,9 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                                     data-emp_hist='<?php echo htmlspecialchars($row['employment_json'] ?: "[]", ENT_QUOTES); ?>'
                                                     data-acc_name="<?php echo $row['account_name']; ?>" data-bank_br="<?php echo $row['bank_branch']; ?>"
                                                     data-acc_num="<?php echo $row['account_number']; ?>" data-acc_ifsc="<?php echo $row['account_type_ifsc']; ?>"
+                                                    data-offer_latter="<?php echo $row['offer_latter']; ?>" data-nda="<?php echo $row['NDA']; ?>"
+                                                    data-aadhar="<?php echo $row['Aadhar_card']; ?>" data-pan="<?php echo $row['Pan_card']; ?>"
+                                                    data-photo="<?php echo $row['Passportsize_photo']; ?>" data-salary_slip="<?php echo $row['old_company_slary_slip']; ?>"
                                                     onclick="openEditEmployee(this)" title="Edit Employee">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
@@ -586,6 +632,9 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         <div class="profile-nav-item active" data-target="section_personal" onclick="switchProfileTab(this)">
                             <i class="fa fa-user"></i> Personal Information
                         </div>
+                        <div class="profile-nav-item" data-target="section_documents" onclick="switchProfileTab(this)">
+                            <i class="fa fa-file"></i> Documents
+                        </div>
                         <div class="profile-nav-item" data-target="section_emergency" onclick="switchProfileTab(this)">
                             <i class="fa fa-ambulance"></i> Emergency Contact
                         </div>
@@ -600,18 +649,21 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         </div>
                         <div class="profile-nav-item" data-target="section_salary" onclick="switchProfileTab(this)">
                             <i class="fa fa-money"></i> Professional & Salary
-                        </div>
+                        </div>      
                     </div>
                     
-                    <div style="margin-top: auto; padding: 20px 25px;">
+                    <!-- <div style="margin-top: auto; padding: 20px 25px;">
                         <button type="button" class="btn btn-default btn-block" data-dismiss="modal" style="border-radius: 8px; font-weight: 600; color: #64748b;">
                             <i class="fa fa-times"></i> Close Profile
                         </button>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Main Content Area -->
                 <div class="profile-content">
+                    <button type="button" class="close-profile-btn" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
                     <!-- Personal Info Section -->
                     <div id="section_personal" class="profile-section active">
                         <h3 class="profile-section-title"><i class="fa fa-user" style="color: #4f46e5;"></i> Personal Information</h3>
@@ -647,6 +699,19 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                             <div class="profile-data-card" style="grid-column: span 2;">
                                 <span class="profile-data-label">Residential Address</span>
                                 <span class="profile-data-value" id="view_address">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Documents Section -->
+                    <div id="section_documents" class="profile-section">
+                        <h3 class="profile-section-title"><i class="fa fa-file" style="color: #059669;"></i> Documents</h3>
+                        <div class="profile-data-grid">
+                            <div class="profile-data-card" style="grid-column: span 2;">
+                                <span class="profile-data-label">Uploaded Documents</span>
+                                <div id="view_documents" style="margin-top: 10px;">
+                                    <p style="text-align: center; color: #999;">No documents found.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -909,6 +974,19 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         document.getElementById('view_hra').textContent = parseFloat(data.hra || 0).toFixed(2);
         document.getElementById('view_allowance').textContent = parseFloat(data.allowance || 0).toFixed(2);
         document.getElementById('view_deductions').textContent = parseFloat(data.deductions || 0).toFixed(2);
+
+        // Fetch and show all documents (Specific + Extra)
+        const viewDocsList = document.getElementById('view_documents');
+        viewDocsList.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fa fa-spinner fa-spin"></i> Loading documents...</div>';
+        
+        fetch('fetch_all_documents.php?id=' + data.id)
+            .then(res => res.text())
+            .then(html => {
+                viewDocsList.innerHTML = html;
+            })
+            .catch(() => {
+                viewDocsList.innerHTML = '<p style="text-align:center; color:#ef4444;">Error loading documents.</p>';
+            });
 
         // Handle Navigation (Switch to clicked category)
         const tabToActivate = document.querySelector(`.profile-nav-item[data-target="${sectionId}"]`);
@@ -1785,6 +1863,35 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
+    .close-profile-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #f1f5f9;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 100;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+        /* .close-profile-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            transform: rotate(90deg);
+        } */
+
+    .profile-content {
+        position: relative;
+    }
 </style>
 
 
@@ -1810,7 +1917,6 @@ require_once __DIR__ . '/PHPMailer/src/SMTP.php';
                 <div class="modal-body" style="max-height: 80vh; overflow-y: auto; padding: 25px;">
                     <!-- Personal Information -->
                     <div class="form-section-title">Personal Information</div>
-
                     <div class="grid-row">
                         <div class="grid-col" style="grid-column: span 3;">
                             <label>Employee Image *</label>
@@ -1895,6 +2001,44 @@ require_once __DIR__ . '/PHPMailer/src/SMTP.php';
                                 <option>Female</option>
                                 <option>Other</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- Documents Section -->
+                    <div class="form-section-title">Documents</div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Offer Letter</label>
+                            <input type="file" name="offer_latter" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Aadhar Card</label>
+                            <input type="file" name="Aadhar_card" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>PAN Card</label>
+                            <input type="file" name="Pan_card" class="form-control">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>NDA</label>
+                            <input type="file" name="NDA" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Passport Size Photo</label>
+                            <input type="file" name="Passportsize_photo" class="form-control">
+                        </div>
+                        <div class="grid-col">
+                            <label>Old Company Salary Slip</label>
+                            <input type="file" name="old_company_slary_slip" class="form-control">
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col" style="grid-column: span 3;">
+                            <label>Additional Documents</label>
+                            <input type="file" name="documents[]" class="form-control" multiple>
+                            <small style="color: #64748b; margin-top: 5px; display: block;">Select multiple additional files (PDF, Images) if needed</small>
                         </div>
                     </div>
 
@@ -2128,12 +2272,16 @@ if (isset($_POST['submit'])) {
     $edu_json = mysqli_real_escape_string($con, $_POST['education_json'] ?? '[]');
     $emp_json = mysqli_real_escape_string($con, $_POST['employment_json'] ?? '[]');
 
-    $acc_name = mysqli_real_escape_string($con, $_POST['account_name'] ?? '');
-    $bank_br = mysqli_real_escape_string($con, $_POST['bank_branch'] ?? '');
     $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
     $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
 
-    // Image Upload Logic
+
+    $offer_letter = handleFileUpload($_FILES['offer_latter']);
+    $NDA = handleFileUpload($_FILES['NDA']);
+    $Aadhar_card = handleFileUpload($_FILES['Aadhar_card']);
+    $Pan_card = handleFileUpload($_FILES['Pan_card']);
+    $Passportsize_photo = handleFileUpload($_FILES['Passportsize_photo']);
+    $old_company_slary_slip = handleFileUpload($_FILES['old_company_slary_slip']);
     $employee_image = '';
     if (isset($_FILES['employee_image']) && $_FILES['employee_image']['error'] == 0) {
         $img_name = $_FILES['employee_image']['name'];
@@ -2152,15 +2300,29 @@ if (isset($_POST['submit'])) {
     $query = "INSERT INTO emp_list 
     (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary, password, 
     age, dob, work_experience, marital_status, num_dependents, emergency_name, emergency_relationship, emergency_address, emergency_phone, 
-    education_json, employment_json, account_name, bank_branch, account_number, account_type_ifsc, employee_image)
+    education_json, employment_json, account_name, bank_branch, account_number, account_type_ifsc, employee_image, offer_latter, NDA, Aadhar_card, Pan_card, Passportsize_photo, old_company_slary_slip)
     VALUES 
     ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic', '$hra', '$allowance', '$deductions', '$salary', '$plainPassword', 
     '$age', '$dob', '$work_exp', '$marital', '$dependents', '$e_name', '$e_rel', '$e_addr', '$e_phone', 
-    '$edu_json', '$emp_json', '$acc_name', '$bank_br', '$acc_num', '$acc_ifsc', '$employee_image')";
+    '$edu_json', '$emp_json', '$acc_name', '$bank_br', '$acc_num', '$acc_ifsc', '$employee_image', '$offer_letter', '$NDA', '$Aadhar_card', '$Pan_card', '$Passportsize_photo', '$old_company_slary_slip')";
 
     $run = mysqli_query($con, $query);
 
     if ($run) {
+        $emp_id = mysqli_insert_id($con);
+        // Handle additional multiple documents
+        if (!empty($_FILES['documents']['name'][0])) {
+            foreach ($_FILES['documents']['name'] as $key => $name) {
+                if ($_FILES['documents']['error'][$key] == 0) {
+                    $tmp_name = $_FILES['documents']['tmp_name'][$key];
+                    $ext = pathinfo($name, PATHINFO_EXTENSION);
+                    $new_name = time() . '_extra_' . rand(1000, 9999) . '.' . $ext;
+                    if (move_uploaded_file($tmp_name, "uploads/" . $new_name)) {
+                        mysqli_query($con, "INSERT INTO employee_documents (emp_id, file_name) VALUES ('$emp_id', '$new_name')");
+                    }
+                }
+            }
+        }
 
         $mail = new PHPMailer(true);
 
@@ -2216,6 +2378,13 @@ if (isset($_POST['update'])) {
     $address = mysqli_real_escape_string($con, $_POST['address']);
     $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
 
+    $offer_letter = mysqli_real_escape_string($con, $_POST['offer_letter']);
+    $NDA = mysqli_real_escape_string($con, $_POST['NDA']);
+    $Aadhar_card = mysqli_real_escape_string($con, $_POST['Aadhar_card']);
+    $Pan_card = mysqli_real_escape_string($con, $_POST['Pan_card']);
+    $passportsize_photo = mysqli_real_escape_string($con, $_POST['passportsize_photo']);
+    $old_company_salary_slip = mysqli_real_escape_string($con, $_POST['old_company_salary_slip']);
+
     $basic = mysqli_real_escape_string($con, $_POST['basic_salary']);
     $hra = mysqli_real_escape_string($con, $_POST['hra']);
     $allowance = mysqli_real_escape_string($con, $_POST['allowance']);
@@ -2236,19 +2405,40 @@ if (isset($_POST['update'])) {
     $edu_json = mysqli_real_escape_string($con, $_POST['education_json'] ?? '[]');
     $emp_json = mysqli_real_escape_string($con, $_POST['employment_json'] ?? '[]');
 
-    $acc_name = mysqli_real_escape_string($con, $_POST['account_name'] ?? '');
-    $bank_br = mysqli_real_escape_string($con, $_POST['bank_branch'] ?? '');
     $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
     $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
+
+    // Handle Specific Document Updates
+    $doc_updates = "";
+    $doc_fields = [
+        'offer_latter' => 'offer_latter', 
+        'NDA' => 'NDA', 
+        'Aadhar_card' => 'Aadhar_card', 
+        'Pan_card' => 'Pan_card', 
+        'passportsize_photo' => 'Passportsize_photo', 
+        'old_company_slary_slip' => 'old_company_slary_slip'
+    ];
+
+    foreach ($doc_fields as $post_key => $db_col) {
+        if (isset($_FILES[$post_key]) && $_FILES[$post_key]['error'] == 0) {
+            $new_file = handleFileUpload($_FILES[$post_key]);
+            if ($new_file) {
+                // Delete old file if exists
+                $old_file_res = mysqli_query($con, "SELECT $db_col FROM emp_list WHERE id='$id'");
+                $old_file_row = mysqli_fetch_assoc($old_file_res);
+                if (!empty($old_file_row[$db_col]) && file_exists("uploads/" . $old_file_row[$db_col])) {
+                    unlink("uploads/" . $old_file_row[$db_col]);
+                }
+                $doc_updates .= ", $db_col='$new_file'";
+            }
+        }
+    }
 
     // Image Upload (Update)
     $img_update = "";
     if (isset($_FILES['employee_image']) && $_FILES['employee_image']['error'] == 0) {
-        $img_name = $_FILES['employee_image']['name'];
-        $tmp_name = $_FILES['employee_image']['tmp_name'];
-        $ext = pathinfo($img_name, PATHINFO_EXTENSION);
-        $new_img_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
-        if (move_uploaded_file($tmp_name, "uploads/" . $new_img_name)) {
+        $new_img_name = handleFileUpload($_FILES['employee_image']);
+        if ($new_img_name) {
             $img_update = ", employee_image='$new_img_name'";
         }
     }
@@ -2279,6 +2469,7 @@ if (isset($_POST['update'])) {
         bank_branch='$bank_br',
         account_number='$acc_num',
         account_type_ifsc='$acc_ifsc'
+        $doc_updates
         $img_update
         WHERE id='$id'");
 
@@ -2387,6 +2578,43 @@ window.location='index.php?emp_directory';
                                 <option>Female</option>
                                 <option>Other</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- Documents Section -->
+                    <div class="form-section-title">Documents</div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Offer Letter</label>
+                            <input type="file" name="offer_latter" id="edit_offer_letter" class="form-control">
+                            <div id="view_edit_offer_letter" class="mt-2"></div>
+                        </div>
+                        <div class="grid-col">
+                            <label>NDA</label>
+                            <input type="file" name="NDA" id="edit_NDA" class="form-control">
+                            <div id="view_edit_NDA" class="mt-2"></div>
+                        </div>
+                        <div class="grid-col">
+                            <label>Aadhar Card</label>
+                            <input type="file" name="Aadhar_card" id="edit_Aadhar_card" class="form-control">
+                            <div id="view_edit_Aadhar_card" class="mt-2"></div>
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-col">
+                            <label>Pan Card</label>
+                            <input type="file" name="Pan_card" id="edit_Pan_card" class="form-control">
+                            <div id="view_edit_Pan_card" class="mt-2"></div>
+                        </div>
+                        <div class="grid-col">
+                            <label>Passport Size Photo</label>
+                            <input type="file" name="passportsize_photo" id="edit_passportsize_photo" class="form-control">
+                            <div id="view_edit_passportsize_photo" class="mt-2"></div>
+                        </div>
+                        <div class="grid-col">
+                            <label>Old Company Salary Slip</label>
+                            <input type="file" name="old_company_slary_slip" id="edit_old_company_salary_slip" class="form-control">
+                            <div id="view_edit_old_company_salary_slip" class="mt-2"></div>
                         </div>
                     </div>
 
@@ -2580,6 +2808,13 @@ window.location='index.php?emp_directory';
         document.getElementById('edit_deductions').value = d.deductions;
         document.getElementById('edit_salary').value = d.salary;
         document.getElementById('edit_preview').src = d.img || 'admin_images/default.png';
+
+        document.getElementById('edit_offer_letter').value = d.offer_letter || '';
+        document.getElementById('edit_NDA').value = d.NDA || '';
+        document.getElementById('edit_Aadhar_card').value = d.Aadhar_card || '';
+        document.getElementById('edit_Pan_card').value = d.Pan_card || '';
+        document.getElementById('edit_passportsize_photo').value = d.passportsize_photo || '';
+        document.getElementById('edit_old_company_salary_slip').value = d.old_company_salary_slip || '';
         
         // Populate fields
         document.getElementById('edit_age').value = d.age || '';
@@ -2595,6 +2830,31 @@ window.location='index.php?emp_directory';
         document.getElementById('edit_bank_br').value = d.bank_br || '';
         document.getElementById('edit_acc_num').value = d.acc_num || '';
         document.getElementById('edit_acc_ifsc').value = d.acc_ifsc || '';
+
+        // Documents handling in Edit Modal
+        const docs = [
+            { id: 'view_edit_offer_letter', file: d.offer_latter },
+            { id: 'view_edit_NDA', file: d.nda },
+            { id: 'view_edit_Aadhar_card', file: d.aadhar },
+            { id: 'view_edit_Pan_card', file: d.pan },
+            { id: 'view_edit_passportsize_photo', file: d.photo },
+            { id: 'view_edit_old_company_salary_slip', file: d.salary_slip }
+        ];
+
+        docs.forEach(doc => {
+            const container = document.getElementById(doc.id);
+            if (container) {
+                if (doc.file) {
+                    container.innerHTML = `<div style="display:flex; align-items:center; gap:10px; background:#f1f5f9; padding:5px 10px; border-radius:6px; margin-top:5px;">
+                        <i class="fa fa-file-text-o text-primary"></i>
+                        <span style="font-size:12px; color:#475569; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px;">${doc.file}</span>
+                        <a href="uploads/${doc.file}" target="_blank" class="btn btn-xs btn-default" style="margin-left:auto;"><i class="fa fa-eye"></i> View</a>
+                    </div>`;
+                } else {
+                    container.innerHTML = '';
+                }
+            }
+        });
 
         // Radio & Select
         const mVal = (d.marital || '').trim();
