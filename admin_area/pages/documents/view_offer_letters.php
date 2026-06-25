@@ -1,0 +1,453 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
+if (!isset($_SESSION['admin_email'])) {
+    echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
+    exit();
+}
+
+if (!isset($con)) {
+    include(__DIR__ . "/includes/db.php");
+}
+
+if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
+    $delete_id = isset($_POST['ajax_delete_offer'])
+        ? $_POST['ajax_delete_offer']
+        : $_GET['ajax_delete_offer'];
+
+    $delete_id = mysqli_real_escape_string($con, $delete_id);
+    $delete_query = "DELETE FROM offer_letters WHERE id='$delete_id'";
+    $deleted = mysqli_query($con, $delete_query);
+
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+    }
+
+    echo json_encode([
+        "status" => $deleted ? "success" : "error"
+    ]);
+    exit;
+}
+?>
+
+<div class="page-wrapper premium-ui-enabled">
+    <div class="page-header-premium">
+        <h1></h1>
+        <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newOfferModal" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #6366f1; border: none; color: #fff; cursor: pointer; transition: all 0.3s ease;">
+            <i class="fa fa-plus"></i> New Offer Letter
+        </button>
+    </div>
+
+    <style>
+        .premium-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .premium-notification.active {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            background: rgba(16, 185, 129, 0.9);
+        }
+
+        .notification-error {
+            background: rgba(239, 68, 68, 0.9);
+        }
+
+        .premium-confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .premium-confirm-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .premium-confirm-modal {
+            background: #fff;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .premium-confirm-overlay.active .premium-confirm-modal {
+            transform: scale(1);
+        }
+
+        .confirm-icon-box {
+            width: 60px;
+            height: 60px;
+            background: #fee2e2;
+            color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 20px auto;
+            animation: pulseDanger 2s infinite;
+        }
+
+        @keyframes pulseDanger {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .btn-icon-premium {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            transition: 0.3s;
+            cursor: pointer;
+            color: #64748b;
+            text-decoration: none !important;
+        }
+
+        .btn-icon-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Edit (Blue) */
+        .btn-icon-edit {
+            color: #0ea5e9 !important;
+            background: #f0f9ff !important;
+            border-color: #bae6fd !important;
+        }
+
+        .btn-icon-edit:hover {
+            background: #e0f2fe !important;
+            border-color: #7dd3fc !important;
+            color: #0284c7 !important;
+        }
+
+        /* View (Orange) */
+        .btn-icon-view {
+            color: #f59e0b !important;
+            background: #fffbeb !important;
+            border-color: #fde68a !important;
+        }
+
+        .btn-icon-view:hover {
+            background: #fef3c7 !important;
+            border-color: #fcd34d !important;
+            color: #d97706 !important;
+        }
+
+        /* Download (Purple) */
+        .btn-icon-download {
+            color: #8b5cf6 !important;
+            background: #f5f3ff !important;
+            border-color: #ede9fe !important;
+        }
+
+        .btn-icon-download:hover {
+            background: #ede9fe !important;
+            border-color: #ddd6fe !important;
+            color: #7c3aed !important;
+        }
+
+        /* Delete (Red) */
+        .btn-icon-delete {
+            color: #ef4444 !important;
+            background: #fef2f2 !important;
+            border-color: #fecaca !important;
+        }
+
+        .btn-icon-delete:hover {
+            background: #fee2e2 !important;
+            border-color: #fca5a5 !important;
+            color: #dc2626 !important;
+        }
+
+        .table-premium th,
+        .table-premium td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+    </style>
+
+    <div class="premium-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden;">
+        <div class="card-hdr" style="padding: 20px 24px; background:var(--p-bg-header);color:white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+            <i class="fa fa-list"></i>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Offer History</h3>
+        </div>
+        <div style="overflow-x: auto; padding: 0 10px 10px 10px;">
+            <table class="table-premium" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                <thead>
+                    <tr style="background: #fff;">
+                        <th style="padding: 15px; text-align: center; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">#</th>
+                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Candidate Name</th>
+                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Position</th>
+                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Start Date</th>
+                        <th style="padding: 15px; text-align: center; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $i = 0;
+                    $get_offers = "SELECT * FROM offer_letters ORDER BY id DESC";
+                    $run_offers = mysqli_query($con, $get_offers);
+
+                    if ($run_offers) {
+                        while ($row_offer = mysqli_fetch_array($run_offers)) {
+                            $id = $row_offer['id'];
+                            $name = $row_offer['name'];
+                            $email = $row_offer['email'];
+                            $position = $row_offer['position'];
+                            $start_date = date("d M Y", strtotime($row_offer['start_date']));
+                            $salary = $row_offer['salary'];
+                            $i++;
+                    ?>
+                            <tr data-offer-row="<?php echo $id; ?>" style="transition: background 0.2s;">
+                                <td style="padding: 15px; text-align: center; font-weight: 600; color: #94a3b8; border-bottom: 1px solid #f1f5f9;"><?php echo $i; ?></td>
+                                <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
+                                    <div style="font-weight: 700; color: #1e293b;"><?php echo htmlspecialchars($name); ?></div>
+                                    <div style="font-size: 12px; color: #64748b;"><?php echo htmlspecialchars($email); ?></div>
+                                </td>
+                                <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
+                                    <span class="badge" style="background: #e0e7ff; color: #4338ca; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+                                        <?php echo htmlspecialchars($position); ?>
+                                    </span>
+                                </td>
+                                <td style="padding: 15px; color: #475569; font-size: 14px; border-bottom: 1px solid #f1f5f9;">
+                                    <i class="fa fa-calendar-o" style="color: #94a3b8; margin-right: 6px;"></i> <?php echo $start_date; ?>
+                                </td>
+                                <td style="padding: 15px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+                                    <div style="display: flex; justify-content: center; gap: 8px;">
+                                        <a href="pages/documents/generate_offer.php?id=<?php echo $id; ?>&action=view" target="_blank" class="btn-icon-premium btn-icon-view" title="Print/View">
+                                            <i class="fa fa-list-alt"></i>
+                                        </a>
+                                        <a href="pages/documents/generate_offer.php?id=<?php echo $id; ?>&action=download" class="btn-icon-premium btn-icon-download" title="Download PDF">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                        <a href="index.php?edit_offer_letter=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
+                                            <i class="fa fa-trash-o"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php
+                        }
+                    }
+                    if ($i == 0) {
+                        echo "<tr><td colspan='5' style='padding: 40px; text-align: center; color: #94a3b8; font-style: italic;'>No offer letters found.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newOfferModal" tabindex="-1" role="dialog" aria-labelledby="newOfferModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none;">
+                <h4 class="modal-title" id="newOfferModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
+                    <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-file-text-o" style="font-size: 14px;"></i>
+                    </div>
+                    Generate New Offer Letter
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #1e293b; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
+                </h4>
+            </div>
+            <form action="pages/documents/generate_offer.php" method="post" target="_blank">
+                <div class="modal-body" style="padding: 30px; background: #fff;">
+                    <div class="row">
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Candidate Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Candidate Name" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Job Position</label>
+                            <input type="text" name="position" class="form-control" placeholder="Job Position" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="email@example.com" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Phone Number</label>
+                            <input type="tel" name="number" class="form-control" maxlength="10" placeholder="10-digit mobile" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Monthly Salary (INR)</label>
+                            <input type="number" name="salary" class="form-control" placeholder="Monthly Salary" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Start Date</label>
+                            <input type="date" name="start_date" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Notice Period</label>
+                            <input type="text" name="notice_period" class="form-control" placeholder="Notice Period" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 20px 20px; text-align: right;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; text-decoration: none;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; background: #DF2127; border: none; color: #fff; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.2);">
+                        <i class="fa fa-plus"></i> Generate Letter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="premium-confirm-overlay" id="deleteConfirmOverlay">
+    <div class="premium-confirm-modal">
+        <div class="confirm-icon-box">
+            <i class="fa fa-trash"></i>
+        </div>
+        <h3 style="margin: 0 0 10px 0; font-weight: 700; color: #0f172a;">Delete Offer Letter?</h3>
+        <p style="margin: 0 0 25px 0; font-size: 14px; color: #64748b;">This action will permanently remove this candidate record. This cannot be undone.</p>
+        <div style="display: flex; gap: 12px;">
+            <button class="confirm-btn-cancel" onclick="closeDeleteConfirm()" type="button" style="flex: 1; padding: 12px; border-radius: 12px; background: #f1f5f9; color: #64748b; border: none; font-weight: 700; cursor: pointer;">Cancel</button>
+            <button class="confirm-btn-delete" id="confirmDeleteBtn" type="button" style="flex: 1; padding: 12px; border-radius: 12px; background: #ef4444; color: #fff; border: none; font-weight: 700; cursor: pointer;">Delete Now</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPremiumAlert(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `premium-notification notification-${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        toast.innerHTML = `<i class="fa ${icon}"></i> <span>${message}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('active'), 10);
+        setTimeout(() => {
+            toast.classList.remove('active');
+            setTimeout(() => toast.remove(), 400);
+        }, 3500);
+    }
+
+    let currentDeleteId = null;
+    const deleteOverlay = document.getElementById('deleteConfirmOverlay');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    function showDeleteConfirm(id) {
+        currentDeleteId = id;
+        deleteOverlay.classList.add('active');
+    }
+
+    function closeDeleteConfirm() {
+        deleteOverlay.classList.remove('active');
+        currentDeleteId = null;
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.innerHTML = 'Delete Now';
+    }
+
+    deleteOverlay.addEventListener('click', function(e) {
+        if (e.target === deleteOverlay) {
+            closeDeleteConfirm();
+        }
+    });
+
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (!currentDeleteId) return;
+
+        confirmDeleteBtn.disabled = true;
+        confirmDeleteBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Deleting...';
+
+        fetch('view_offer_letters.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: `ajax_delete_offer=${encodeURIComponent(currentDeleteId)}`
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    const row = document.querySelector(`[data-offer-row="${currentDeleteId}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                    closeDeleteConfirm();
+                    showPremiumAlert('Offer Letter deleted successfully');
+                    return;
+                }
+
+                throw new Error('Delete failed');
+            })
+            .catch(() => {
+                showPremiumAlert('Error deleting offer letter', 'error');
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.innerHTML = 'Delete Now';
+            });
+    });
+
+    $(document).ready(function() {
+        $('form').on('submit', function() {
+            setTimeout(function() {
+                $('#newOfferModal').modal('hide');
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            }, 500);
+        });
+    });
+</script>

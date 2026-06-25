@@ -1,0 +1,315 @@
+
+    :root {
+      --bg: #f7f7f7;
+      --panel: #ffffff;
+      --ink: #222;
+      --muted: #6a6a6a;
+      --border: #d8d8d8;
+      --accent: #2f4f6f;   /* deep, classic blue */
+      --accent-ink: #ffffff;
+      --row-zebra: #fafafa;
+    }
+
+    /* Page */
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Calibri, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(180deg, #3b5f82, var(--accent));
+      color: var(--accent-ink);
+      padding: 20px 24px;
+    }
+    .title {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: .3px;
+      font-weight: 700;
+    }
+    .subtitle {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      opacity: .9;
+    }
+
+    /* Table container for responsive overflow */
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate; /* allow border-radius with overflow */
+      border-spacing: 0;
+      min-width: 920px; /* keep columns readable */
+    }
+
+    caption {
+      caption-side: bottom;
+      text-align: left;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 12px 16px 18px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #eef2f7;
+      color: #1f2a37;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: .6px;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: var(--row-zebra);
+    }
+
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      vertical-align: middle;
+    }
+
+    /* Column alignment tweaks */
+    .col-number { white-space: nowrap; }
+    .col-email { min-width: 220px; }
+    .col-join { white-space: nowrap; }
+    .col-salary { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+    /* Select + Input styling for a classic look */
+    select, input[type="date"] {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font: inherit;
+      color: inherit;
+      min-width: 110px;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    select:focus, input[type="date"]:focus {
+      outline: none;
+      border-color: #9db8d1;
+      box-shadow: 0 0 0 3px rgba(47,79,111,.15);
+    }
+
+    /* A subtle custom arrow for select */
+    .select-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .select-wrap::after {
+      content: "\25BE"; /* ▼ */
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Badges for gender (optional classic touch) */
+    .badge {
+      display: inline-block;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      background: #fff;
+    }
+
+    /* Footer */
+    .card-footer {
+      padding: 14px 16px 18px;
+      background: #fbfbfb;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Small screens */
+    @media (max-width: 640px) {
+      .title { font-size: 18px; }
+      .subtitle { font-size: 12px; }
+      td { padding: 12px 14px; }
+    }
+
+    /* Print (keeps classic black on white) */
+    @media print {
+      body { background: #fff; }
+      .wrap { margin: 0; }
+      .card { box-shadow: none; border-color: #bbb; }
+      .card-header { background: #eee; color: #000; }
+      thead th { background: #eee; }
+      .table-container { overflow: visible; }
+    }
+  
+    .card-header {
+      background: #2f4f6f;
+      padding: 20px 30px;
+      color: white;
+    }
+
+    .card-header h1 {
+      margin: 0;
+      font-size: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .add-link {
+      font-size: 14px;
+      color: white;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .add-link:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Popup styles */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 25px;
+      width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+      position: relative;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .popup-content h3 {
+      margin-top: 0;
+      color: #2f4f6f;
+      text-align: center;
+    }
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .doc-list {
+      margin-top: 15px;
+    }
+    .doc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f7f7f7;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+    }
+    .doc-item a {
+      color: #2f4f6f;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .delete-doc {
+      background: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .delete-doc:hover { background: #d32f2f; }
+    .upload-box {
+      margin-top: 15px;
+      background: #fff;
+      border: 1px dashed #999;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  
+    .action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 0 4px;
+  transition: background 0.2s ease;
+}
+
+.edit {
+  background-color: #4CAF50;
+  color: #fff;
+}
+.delete {
+  background-color: #f44336;
+  color: #fff;
+}
+.edit:hover { background-color: #45a049; }
+.delete:hover { background-color: #d32f2f; }
+
+.col-actions {
+  text-align: center;
+  white-space: nowrap;
+}

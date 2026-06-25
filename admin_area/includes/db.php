@@ -1,0 +1,11 @@
+<?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+date_default_timezone_set('Asia/Kolkata');
+$con = mysqli_connect("localhost", "root", "", "8dots", 3306);
+
+if (!$con) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+mysqli_query($con, "SET time_zone = '+05:30'");

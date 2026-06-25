@@ -1,0 +1,126 @@
+<?php
+if (!isset($_SESSION['admin_email'])) {
+    echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
+    exit;
+}
+?>
+
+<style>
+    .btn-icon-premium {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        width: 38px;
+        height: 38px;
+        transition: 0.3s;
+        cursor: pointer;
+        color: #64748b;
+        text-decoration: none !important;
+    }
+
+    .btn-icon-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Edit (Blue) */
+    .btn-icon-edit {
+        color: #0ea5e9 !important;
+        background: #f0f9ff !important;
+        border-color: #bae6fd !important;
+    }
+
+    .btn-icon-edit:hover {
+        background: #e0f2fe !important;
+        border-color: #7dd3fc !important;
+        color: #0284c7 !important;
+    }
+
+    /* Delete (Red) */
+    .btn-icon-delete {
+        color: #ef4444 !important;
+        background: #fef2f2 !important;
+        border-color: #fecaca !important;
+    }
+
+    .btn-icon-delete:hover {
+        background: #fee2e2 !important;
+        border-color: #fca5a5 !important;
+        color: #dc2626 !important;
+    }
+</style>
+
+<div class="page-wrapper premium-ui-enabled">
+    <div class="page-header-premium">
+        <h1></h1>
+        <a href="index.php?insert_user" class="btn-premium-add">
+            <i class="fa fa-user-plus"></i> Add new User
+        </a>
+    </div>
+
+    <div class="premium-card">
+        <div class="card-hdr">
+            <i class="fa fa-list"></i>
+            <h3>All Administrative Users</h3>
+        </div>
+        <div style="overflow-x: auto;">
+            <table class="table-premium">
+                <thead>
+                    <tr>
+                        <th>User Identity</th>
+                        <th>Email Contact</th>
+                        <th>Country</th>
+                        <th>Job Title</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $get_admin = "select * from admins";
+                    $run_admin = mysqli_query($con, $get_admin);
+                    while ($row_admin = mysqli_fetch_array($run_admin)) {
+                        $admin_id = $row_admin['admin_id'];
+                        $admin_name = $row_admin['admin_name'];
+                        $admin_email = $row_admin['admin_email'];
+                        $admin_image = $row_admin['admin_image'];
+                        $admin_country = $row_admin['admin_country'];
+                        $admin_job = $row_admin['admin_job'];
+                    ?>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="admin_images/<?php echo !empty($admin_image) ? $admin_image : 'default.png'; ?>" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                    <span style="font-weight: 700; color: var(--p-text); font-size: 15px;"><?php echo htmlspecialchars($admin_name); ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="color: var(--p-secondary); font-size: 13px;">
+                                    <i class="fa fa-envelope-o" style="margin-right: 5px;"></i> <?php echo htmlspecialchars($admin_email); ?>
+                                </div>
+                            </td>
+                            <td>
+                                <span style="font-weight: 600; color: #475569;"><i class="fa fa-globe" style="margin-right: 5px; color: #94a3b8;"></i> <?php echo htmlspecialchars($admin_country); ?></span>
+                            </td>
+                            <td>
+                                <span class="p-badge p-badge-primary"><?php echo htmlspecialchars($admin_job); ?></span>
+                            </td>
+                            <td>
+                                <div style="display: flex; justify-content: center; gap: 8px;">
+                                    <a href="index.php?edit_user=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit User">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a href="index.php?user_delete=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-delete" title="Delete User">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
