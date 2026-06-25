@@ -664,29 +664,24 @@ if ($print_all_mode) {
     if ($view_mode && $employee && $selected_month && !$is_before_joining_month): ?>
         <div id="slip" class="salary-slip card" style="margin-top:18px; padding:18px;">
 
-            <div style="margin-bottom:10px;">
-                <?php
-                // Build back URL:
-                // - if user requested return to dashboard, go there
-                // - if user requested return to view_all, go back to the listing for the same month
-                // - otherwise default to the selection/records page for this employee/month
-                if ($return_to === 'dashboard') {
-                    $back_url = 'index.php?dashboard';
-                } elseif ($return_to === 'view_all') {
-                    $back_url = 'index.php?salary_slip=1&view_all=1&month=' . urlencode($selected_month);
-                } else {
-                    $back_url = 'index.php?salary_slip=1&emp_id=' . (int)$selected_emp . '&month=' . urlencode($selected_month);
-                }
-                ?>
-                <a href="<?php echo $back_url; ?>" class="btn btn-default" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; text-decoration: none;"><i class="fa fa-arrow-left"></i> Back</a>
-                <button class="btn btn-warning" data-toggle="modal" data-target="#amountModal" style="margin-left:8px; padding: 10px 20px; border-radius: 8px; font-weight: 600; background: #f59e0b; border: none; color: #fff; box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);"><i class="fa fa-edit"></i> Change Amount
-                </button>
-            </div>
+            <?php
+            // Build back URL:
+            // - if user requested return to dashboard, go there
+            // - if user requested return to view_all, go back to the listing for the same month
+            // - otherwise default to the selection/records page for this employee/month
+            if ($return_to === 'dashboard') {
+                $back_url = 'index.php?dashboard';
+            } elseif ($return_to === 'view_all') {
+                $back_url = 'index.php?salary_slip=1&view_all=1&month=' . urlencode($selected_month);
+            } else {
+                $back_url = 'index.php?salary_slip=1&emp_id=' . (int)$selected_emp . '&month=' . urlencode($selected_month);
+            }
+            ?>
 
             <!-- HEADER -->
             <div class="slip-header">
                 <div class="company-left">
-                    <img src="images/Cadlete_logo Landscape.png"
+                    <img src="images/Cadlete_Black_logo_favicon.png"
                         alt="CADLETE DESIGNS Logo"
                         class="company-logo"
                         style="max-height: 80px;"
@@ -789,13 +784,19 @@ if ($print_all_mode) {
             </div>
 
             <!-- ACTION BUTTONS -->
-            <div class="slip-actions" style="text-align:right; margin-top:12px;">
-                <button id="printBtn" class="btn btn-default" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; background: #fff; border: 1.5px solid #cbd5e1; color: #475569; transition: all 0.3s ease;">
-                    <i class="fa fa-print"></i> Print
-                </button>
-                <button id="downloadBtn" class="btn btn-success" style="margin-left:8px; padding: 10px 20px; border-radius: 8px; font-weight: 600; background: #10b981; border: none; color: #fff; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4); transition: all 0.3s ease;">
-                    <i class="fa fa-download"></i> Save as PDF
-                </button>
+            <div class="slip-actions" style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; gap:8px;">
+                    <a href="<?php echo $back_url; ?>" class="btn-premium-cancel"><i class="fa fa-arrow-left"></i> Back</a>
+                    <button class="btn-premium-add" data-toggle="modal" data-target="#amountModal"><i class="fa fa-edit"></i> Change Amount</button>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button id="printBtn" class="btn-premium-cancel">
+                        <i class="fa fa-print"></i> Print
+                    </button>
+                    <button id="downloadBtn" class="btn-premium-add" style="background: #10b981 !important; color: #fff !important;">
+                        <i class="fa fa-download"></i> Save as PDF
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -823,13 +824,15 @@ if ($print_all_mode) {
                 <input type="hidden" name="emp_id" value="<?php echo (int)$selected_emp; ?>">
                 <input type="hidden" name="month" value="<?php echo htmlspecialchars($selected_month); ?>">
 
-                <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none;">
+                <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
                     <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
                         <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                             <i class="fa fa-edit" style="font-size: 14px;"></i>
                         </div>
                         Edit Salary Amounts
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #1e293b; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
                     </h4>
                 </div>
 
@@ -869,10 +872,8 @@ if ($print_all_mode) {
                 </div>
 
                 <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 20px 20px; text-align: right;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; text-decoration: none;">Cancel</button>
-                    <button type="submit" name="save_salary_amounts" class="btn btn-primary" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; background: #DF2127; border: none; color: #fff; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.2);">
-                        <i class="fa fa-save"></i> Save & Apply
-                    </button>
+                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" name="save_salary_amounts" class="btn-premium-add"><i class="fa fa-save"></i> Save & Apply</button>
                 </div>
 
             </form>

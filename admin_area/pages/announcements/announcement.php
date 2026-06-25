@@ -341,10 +341,10 @@ if (!isset($_SESSION['admin_email'])) {
                 grid-template-columns: 2.5fr 1fr 1fr 120px;
                 padding: 16px 24px;
                 background: #fff;
-                border-bottom: 1px solid #f1f5f9;
-                font-size: 11px;
+                border-bottom: 2px solid #f1f5f9;
+                font-size: 12px;
                 font-weight: 700;
-                color: #475569;
+                color: #64748b;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
             }
@@ -586,7 +586,11 @@ if (!isset($_SESSION['admin_email'])) {
         </style>
 
         <div class="announcement-list-container">
-            <div class="announcement-header-row" style="background:var(--p-bg-header);color:white">
+            <div class="card-hdr" style="padding: 20px 24px; background:var(--p-bg-header);color:white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                <i class="fa fa-bullhorn"></i>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Announcements</h3>
+            </div>
+            <div class="announcement-header-row">
                 <div style="padding-left: 64px;">Announcement</div>
                 <div style="text-align: center;">Published On</div>
                 <div style="text-align: center;">Status</div>
@@ -676,24 +680,38 @@ if (!isset($_SESSION['admin_email'])) {
                             </div>
                         </div>
                         <div class="announcement-actions" style="justify-content: center;">
-                            <button type="button" class="action-btn <?php echo $is_active == 1 ? 'active-state' : 'inactive-state'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
+                            <button type="button" class="btn-icon-premium" style="color: <?php echo $is_active == 1 ? '#10b981' : '#94a3b8'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
                                 <i class="fa <?php echo $is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
                             </button>
-                            <button type="button" class="action-btn" title="Edit" onclick='openEditModal(<?php echo json_encode([
-                                                                                                                "id" => $announcement_id,
-                                                                                                                "title" => $announcement_title,
-                                                                                                                "message" => $announcement_message,
-                                                                                                                "publish_date" => date("Y-m-d\TH:i", strtotime($announcement_date)),
-                                                                                                                "end_date" => !empty($row_announcements['end_date']) ? date("Y-m-d\TH:i", strtotime($row_announcements['end_date'])) : ""
-                                                                                                            ], JSON_HEX_APOS | JSON_HEX_QUOT); ?>)'>
+                            <?php
+                            $edit_data = json_encode([
+                                "id" => $announcement_id,
+                                "title" => $announcement_title,
+                                "message" => $announcement_message,
+                                "publish_date" => date("Y-m-d\TH:i", strtotime($announcement_date)),
+                                "end_date" => !empty($row_announcements['end_date']) ? date("Y-m-d\TH:i", strtotime($row_announcements['end_date'])) : ""
+                            ]);
+                            $safe_edit_data = htmlspecialchars($edit_data, ENT_QUOTES, 'UTF-8');
+                            ?>
+                            <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
                                 <i class="fa fa-pencil"></i>
                             </button>
-                            <button type="button" class="action-btn" title="Delete" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
-                                <i class="fa fa-trash-o" style="color: #ef4444;"></i>
+                            <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
+                                <i class="fa fa-trash-o"></i>
                             </button>
                         </div>
                     </div>
-                <?php } ?>
+                <?php }
+                if (mysqli_num_rows($run_announcements) == 0) {
+                    echo "<div style='display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;'>
+                            <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
+                                <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
+                            </div>
+                            <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No Announcements Found</div>
+                            <div style='font-size: 13px; color: #94a3b8;'>There are no announcements to display at this time.</div>
+                        </div>";
+                }
+                ?>
             </div>
 
             <?php if ($totalPages > 1): ?>
@@ -734,37 +752,42 @@ if (!isset($_SESSION['admin_email'])) {
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <form method="post" action="index.php?announcement">
-                    <div class="modal-header" style="background: #ffedeb; color: black; padding: 20px 25px; border: none; display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                        <h4 class="modal-title" style="margin: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <i class="fa fa-bullhorn" style="color: #333; margin-right: 10px;"></i> Add Announcement
+                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                        <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
+                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
+                            </div>
+                            Add Announcement
                         </h4>
-                        <button type="button" class="close" data-dismiss="modal" style="color: black; opacity: 0.7; font-size: 28px; outline: none; margin: 0; padding: 0; line-height: 1; position: static !important; display: block;">&times;</button>
                     </div>
 
                     <div class="modal-body" style="padding: 30px 25px; background: #fff;">
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="border-radius: 10px; height: 46px; border: 1.5px solid #e2e8f0; font-weight: 500; font-size: 14px;">
+                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" class="form-control" style="border-radius: 10px; height: 46px; border: 1.5px solid #e2e8f0; font-weight: 500; font-size: 14px;">
+                            <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" class="form-control" style="border-radius: 10px; height: 46px; border: 1.5px solid #e2e8f0; font-weight: 500; font-size: 14px;">
+                            <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="border-radius: 12px; border: 1.5px solid #e2e8f0; padding: 15px; font-size: 14px; font-weight: 500; resize: none;"></textarea>
+                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
                         </div>
                     </div>
 
                     <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 25px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
-                        <button type="button" class="btn btn-premium" data-dismiss="modal">
+                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit" name="submit_announcement" class="btn-premium-add">
@@ -781,37 +804,42 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <form method="post" action="index.php?announcement">
                     <input type="hidden" name="edit_id" id="edit_announcement_id">
-                    <div class="modal-header" style="background: #ffedeb; color: black; padding: 20px 25px; border: none; display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                        <h4 class="modal-title" style="margin: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <i class="fa fa-pencil" style="color: #333; margin-right: 10px;"></i> Edit Announcement
+                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                        <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
+                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
+                            </div>
+                            Edit Announcement
                         </h4>
-                        <button type="button" class="close" data-dismiss="modal" style="color: black; opacity: 0.7; font-size: 28px; outline: none; margin: 0; padding: 0; line-height: 1; position: static !important; display: block;">&times;</button>
                     </div>
 
                     <div class="modal-body" style="padding: 30px 25px; background: #fff;">
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="border-radius: 10px; height: 46px; border: 1.5px solid #e2e8f0; font-weight: 500; font-size: 14px;">
+                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="border-radius: 10px; height: 46px; border: 1.5px solid #e2e8f0; font-weight: 500; font-size: 14px;">
+                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="border-radius: 10px; height: 46px; border: 1.5px solid #e2e8f0; font-weight: 500; font-size: 14px;">
+                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="border-radius: 12px; border: 1.5px solid #e2e8f0; padding: 15px; font-size: 14px; font-weight: 500; resize: none;"></textarea>
+                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
                         </div>
                     </div>
 
                     <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 25px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
-                        <button type="button" class="btn btn-premium" data-dismiss="modal">
+                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit" name="update_announcement" class="btn-premium-add">

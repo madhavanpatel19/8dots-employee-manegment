@@ -71,10 +71,10 @@ if (!isset($_SESSION['admin_email'])) {
                 <thead>
                     <tr>
                         <th>User Identity</th>
-                        <th>Email Contact</th>
-                        <th>Country</th>
-                        <th>Job Title</th>
-                        <th>Actions</th>
+                        <th style="text-align: center;">Email Contact</th>
+                        <th style="text-align: center;">Country</th>
+                        <th style="text-align: center;">Job Title</th>
+                        <th style="text-align: center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,24 +90,24 @@ if (!isset($_SESSION['admin_email'])) {
                         $admin_job = $row_admin['admin_job'];
                     ?>
                         <tr>
-                            <td>
+                            <td style="text-align: center;">
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <img src="admin_images/<?php echo !empty($admin_image) ? $admin_image : 'default.png'; ?>" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                                     <span style="font-weight: 700; color: var(--p-text); font-size: 15px;"><?php echo htmlspecialchars($admin_name); ?></span>
                                 </div>
                             </td>
-                            <td>
+                            <td style="text-align: center;">
                                 <div style="color: var(--p-secondary); font-size: 13px;">
                                     <i class="fa fa-envelope-o" style="margin-right: 5px;"></i> <?php echo htmlspecialchars($admin_email); ?>
                                 </div>
                             </td>
-                            <td>
+                            <td style="text-align: center;">
                                 <span style="font-weight: 600; color: #475569;"><i class="fa fa-globe" style="margin-right: 5px; color: #94a3b8;"></i> <?php echo htmlspecialchars($admin_country); ?></span>
                             </td>
-                            <td>
+                            <td style="text-align: center;">
                                 <span class="p-badge p-badge-primary"><?php echo htmlspecialchars($admin_job); ?></span>
                             </td>
-                            <td>
+                            <td style="text-align: center;">
                                 <div style="display: flex; justify-content: center; gap: 8px;">
                                     <a href="index.php?edit_user=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit User">
                                         <i class="fa fa-pencil"></i>
@@ -118,7 +118,21 @@ if (!isset($_SESSION['admin_email'])) {
                                 </div>
                             </td>
                         </tr>
-                    <?php } ?>
+                    <?php }
+                    if (mysqli_num_rows($run_admin) == 0) {
+                        echo "<tr>
+                                <td colspan='5' style='padding: 0; border-bottom: none;'>
+                                    <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;'>
+                                        <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
+                                            <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
+                                        </div>
+                                        <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No Users Found</div>
+                                        <div style='font-size: 13px; color: #94a3b8;'>There are no users to display at this time.</div>
+                                    </div>
+                                </td>
+                              </tr>";
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>

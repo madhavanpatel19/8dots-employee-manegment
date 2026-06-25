@@ -253,7 +253,15 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                         <?php endwhile;
                     else: ?>
                         <tr>
-                            <td colspan="9" style="text-align: center; padding: 50px; color: #94a3b8;">No clients found.</td>
+                            <td colspan="9" style="padding: 0; border-bottom: none;">
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;">
+                                    <div style="width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                        <i class="fa fa-folder-open-o" style="font-size: 28px; color: #cbd5e1;"></i>
+                                    </div>
+                                    <div style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;">No Clients Found</div>
+                                    <div style="font-size: 13px; color: #94a3b8;">There are no clients to display at this time.</div>
+                                </div>
+                            </td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

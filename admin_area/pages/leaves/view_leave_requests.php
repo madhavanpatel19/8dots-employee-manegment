@@ -109,7 +109,7 @@ if ($run_stats) {
         <div class="modal-dialog" style="margin-top: 80px; max-width: 550px;">
             <div class="modal-content premium-modal-content" style="border: none; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
                 <div class="modal-header" style="background: #ffeaeb; color: #000; padding: 25px; border: none; position: relative;">
-                    <button type="button" class="close" data-dismiss="modal" style="color: #000000ff; opacity: 0.5;">&times;</button>
+                    <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="width: 45px; height: 45px; background:#df2127; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
                             <i class="fa fa-calendar-o"></i>

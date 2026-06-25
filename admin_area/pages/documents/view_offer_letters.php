@@ -285,7 +285,17 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                         }
                     }
                     if ($i == 0) {
-                        echo "<tr><td colspan='5' style='padding: 40px; text-align: center; color: #94a3b8; font-style: italic;'>No offer letters found.</td></tr>";
+                        echo "<tr>
+                                <td colspan='5' style='padding: 0; border-bottom: none;'>
+                                    <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;'>
+                                        <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
+                                            <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
+                                        </div>
+                                        <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No Offer Letters Found</div>
+                                        <div style='font-size: 13px; color: #94a3b8;'>There are no offer letters to display at this time.</div>
+                                    </div>
+                                </td>
+                              </tr>";
                     }
                     ?>
                 </tbody>
@@ -297,13 +307,15 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
 <div class="modal fade" id="newOfferModal" tabindex="-1" role="dialog" aria-labelledby="newOfferModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
                 <h4 class="modal-title" id="newOfferModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
                     <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-file-text-o" style="font-size: 14px;"></i>
                     </div>
                     Generate New Offer Letter
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #1e293b; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
                 </h4>
             </div>
             <form action="pages/documents/generate_offer.php" method="post" target="_blank">
@@ -346,8 +358,8 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 20px 20px; text-align: right;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; text-decoration: none;">Cancel</button>
-                    <button type="submit" class="btn btn-primary" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; background: #DF2127; border: none; color: #fff; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.2);">
+                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-premium-add">
                         <i class="fa fa-plus"></i> Generate Letter
                     </button>
                 </div>

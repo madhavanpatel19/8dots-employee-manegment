@@ -394,9 +394,11 @@ if ($res && mysqli_num_rows($res) > 0) {
                 } else {
                     ?>
                     <tr>
-                        <td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">
-                            <i class="fa fa-inbox" style="font-size:24px; display:block; margin-bottom:8px; opacity:0.4;"></i>
-                            No Recent Leads Found
+                        <td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">
+                            <div style="width: 60px; height: 60px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                                <i class="fa fa-inbox" style="font-size:24px; color: #cbd5e1;"></i>
+                            </div>
+                            <div style="font-size: 14px; font-weight: 700; color: #64748b;">No Recent Leads Found</div>
                         </td>
                     </tr>
                 <?php } ?>
@@ -516,7 +518,12 @@ if ($res && mysqli_num_rows($res) > 0) {
             <?php
                 }
             } else {
-                echo '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--text-muted);">No attendance records for today</td></tr>';
+                echo '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">
+                            <div style="width: 60px; height: 60px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                                <i class="fa fa-calendar-check-o" style="font-size:24px; color: #cbd5e1;"></i>
+                            </div>
+                            <div style="font-size: 14px; font-weight: 700; color: #64748b;">No attendance records for today</div>
+                        </td></tr>';
             }
             ?>
         </tbody>

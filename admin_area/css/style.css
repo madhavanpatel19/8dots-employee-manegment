@@ -984,6 +984,52 @@ body {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
 }
 
+.btn-premium-cancel {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    font-size: 14px !important;
+    border: none !important;
+}
+
+.btn-premium-cancel:hover {
+    background: #e2e8f0 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-modal-close {
+    background: #dd2127;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.btn-modal-close:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    transform: translateY(-50%) rotate(90deg);
+}
+
 /* Card Header */
 .premium-card .card-hdr {
     background: var(--p-bg-header);
@@ -1515,4 +1561,25 @@ body {
     background: #fee2e2 !important;
     border-color: #fca5a5 !important;
     color: #dc2626 !important;
+}
+
+/* Remove focus outlines on click globally */
+a:focus,
+a:active,
+a:focus-visible,
+button:focus,
+button:active,
+button:focus-visible,
+.dropdown-toggle:focus,
+.dropdown-toggle:active,
+.dropdown-menu li a:focus,
+.dropdown-menu li a:active,
+[data-toggle="dropdown"]:focus,
+[data-toggle="dropdown"]:active,
+div[data-toggle="dropdown"]:focus,
+div[data-toggle="dropdown"]:active {
+    outline: none !important;
+    box-shadow: none !important;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
 }

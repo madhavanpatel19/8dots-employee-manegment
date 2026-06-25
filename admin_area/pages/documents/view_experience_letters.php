@@ -286,7 +286,17 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
                         }
                     }
                     if ($i == 0) {
-                        echo "<tr><td colspan='5' style='padding: 40px; text-align: center; color: #94a3b8; font-style: italic;'>No experience letters found.</td></tr>";
+                        echo "<tr>
+                                <td colspan='5' style='padding: 0; border-bottom: none;'>
+                                    <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;'>
+                                        <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
+                                            <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
+                                        </div>
+                                        <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No Experience Letters Found</div>
+                                        <div style='font-size: 13px; color: #94a3b8;'>There are no experience letters to display at this time.</div>
+                                    </div>
+                                </td>
+                              </tr>";
                     }
                     ?>
                 </tbody>
@@ -298,7 +308,10 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
 <div class="modal fade" id="newExpModal" tabindex="-1" role="dialog" aria-labelledby="newExpModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
                 <h4 class="modal-title" id="newExpModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
                     <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-file-text-o" style="font-size: 14px;"></i>
@@ -341,8 +354,8 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
                     </div>
 
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end; margin-top: 20px;">
-                        <button type="button" data-dismiss="modal" style="background: #f1f5f9; color: #64748b; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; transition: all 0.3s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';">Cancel</button>
-                        <button type="submit" style="background: #DF2127; color: #fff; border: none; padding: 12px 35px; border-radius: 12px; font-size: 14px; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(223, 33, 39, 0.3)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-premium-add">
                             <i class="fa fa-file-pdf-o"></i> Generate Letter
                         </button>
                     </div>

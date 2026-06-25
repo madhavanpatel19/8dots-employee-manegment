@@ -433,7 +433,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                 <i class="fa fa-folder-open text-primary"></i>
                 <h3 id="doc-modal-title">Employee Documents</h3>
             </div>
-            <button class="doc-modal-close" onclick="closeDocModal()" aria-label="Close">
+            <button class="btn-modal-close" onclick="closeDocModal()" aria-label="Close">
                 <i class="fa fa-times"></i>
             </button>
         </div>
@@ -608,7 +608,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     <input type="hidden" name="save_performance" value="1">
                 </div>
                 <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
-                    <button type="button" class="btn" data-dismiss="modal" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 600; background: #ffffff; color: #475569; border: 1.5px solid #e2e8f0; transition: all 0.2s;">Cancel</button>
+                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-premium-add">
                         <i class="fa fa-check"></i> Save Performance
                     </button>
@@ -655,7 +655,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                 </div>
             </div>
             <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
-                <button type="button" class="btn" data-dismiss="modal" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 600; background: #ffffff; color: #475569; border: 1.5px solid #e2e8f0; transition: all 0.2s;">Close</button>
+                <button type="button" class="btn-premium-cancel" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1524,7 +1524,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
     .doc-modal-header {
         padding: 20px 25px;
-        background: #f8fafc;
+        background: #ffeaeb;
         border-bottom: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
@@ -1547,26 +1547,6 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         font-size: 18px;
         font-weight: 700;
         color: #0f172a;
-    }
-
-    .doc-modal-close {
-        background: #dd2127;
-        border: none;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .doc-modal-close:hover {
-        background: #e2e8f0;
-        color: #0f172a;
-        transform: rotate(90deg);
     }
 
     .doc-modal-body {
@@ -2293,11 +2273,11 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    /* .close-profile-btn:hover {
-            background: #e2e8f0;
-            color: #0f172a;
-            transform: rotate(90deg);
-        } */
+    .close-profile-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: rotate(90deg);
+    }
 
     .profile-content {
         position: relative;
