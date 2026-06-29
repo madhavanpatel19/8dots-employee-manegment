@@ -429,13 +429,13 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 <div class="doc-modal-overlay" id="docModalOverlay" aria-hidden="true" onclick="handleOverlayClick(event)">
     <div class="doc-modal-container" role="dialog" aria-modal="true" aria-labelledby="doc-modal-title">
         <div class="doc-modal-header">
+            <button class="btn-modal-close" onclick="closeDocModal()" aria-label="Close">
+                <i class="fa fa-times"></i>
+            </button>
             <div class="doc-modal-title-group">
                 <i class="fa fa-folder-open text-primary"></i>
                 <h3 id="doc-modal-title">Employee Documents</h3>
             </div>
-            <button class="btn-modal-close" onclick="closeDocModal()" aria-label="Close">
-                <i class="fa fa-times"></i>
-            </button>
         </div>
 
         <div class="doc-modal-body">
@@ -1523,6 +1523,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     .doc-modal-header {
+        position: relative;
         padding: 20px 25px;
         background: #ffeaeb;
         border-bottom: 1px solid #e2e8f0;

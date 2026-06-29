@@ -42,12 +42,36 @@ if (!function_exists('handleFileUpload')) {
 }
 
 if (isset($_POST['submit'])) {
+    echo '
+    <div id="php_server_loader" style="width: 100%; min-height: 80vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
+        <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #DF2127; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <h3 style="margin-top: 20px; color: #1e293b;">Saving Employee...</h3>
+        <p style="color: #64748b; margin-top: 5px;">Please wait while we upload documents and send the login email.</p>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    </div>
+    ';
+    @ob_flush();
+    @flush();
+
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $contact = preg_replace('/\D+/', '', $_POST['number']);
 
     if (strlen($contact) != 10) {
-        echo "<script>alert('Phone must be 10 digits');</script>";
+        echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
+        echo "<script>
+            if(document.getElementById('php_server_loader')) document.getElementById('php_server_loader').style.display = 'none';
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Phone must be 10 digits!',
+                    confirmButtonColor: '#DF2127'
+                }).then((result) => {
+                    window.history.back();
+                });
+            });
+        </script></body></html>";
         exit();
     }
 
@@ -140,7 +164,12 @@ if (isset($_POST['submit'])) {
         }
 
 ?>
-        <link rel="stylesheet" href="../../css/success_notification.css">
+        <link rel="stylesheet" href="css/success_notification.css">
+        <style>
+            #php_server_loader {
+                display: none !important;
+            }
+        </style>
         <div class="success-modal-overlay" id="successModal">
             <div class="success-modal-content">
                 <div class="success-icon-wrapper">
@@ -172,7 +201,22 @@ if (isset($_POST['submit'])) {
 <?php
         exit();
     } else {
-        echo "<script>alert('Database Error: " . mysqli_error($con) . "');</script>";
+        $dbError = addslashes(mysqli_error($con));
+        echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
+        echo "<script>
+            if(document.getElementById('php_server_loader')) document.getElementById('php_server_loader').style.display = 'none';
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Database Error',
+                    text: '{$dbError}',
+                    confirmButtonColor: '#DF2127'
+                }).then((result) => {
+                    window.history.back();
+                });
+            });
+        </script></body></html>";
+        exit();
     }
 }
 ?>
@@ -638,6 +682,7 @@ if (isset($_POST['submit'])) {
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function handleImagePreview(input, previewId) {
         if (input.files && input.files[0]) {
@@ -719,6 +764,18 @@ if (isset($_POST['submit'])) {
 
     document.getElementById('add_employee_form')?.addEventListener('submit', function() {
         serializeTables();
+
+        // Ensure SweetAlert is loaded, or fallback to native if not available
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Saving Employee...',
+                text: 'Please wait while we upload documents and send the login email.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
     });
 
     document.getElementById('add_dob').addEventListener('change', function() {

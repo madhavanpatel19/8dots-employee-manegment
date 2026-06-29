@@ -51,13 +51,36 @@ if (!function_exists('handleFileUpload')) {
 
 // Update employee data
 if (isset($_POST['update'])) {
+    echo '
+    <div id="php_server_loader" style="width: 100%; min-height: 80vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
+        <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #DF2127; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <h3 style="margin-top: 20px; color: #1e293b;">Updating Profile...</h3>
+        <p style="color: #64748b; margin-top: 5px;">Please wait while we save the changes and upload new documents.</p>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    </div>
+    ';
+    @ob_flush();
+    @flush();
     $id = mysqli_real_escape_string($con, $_POST['id']);
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $contact = preg_replace('/\D+/', '', $_POST['number']);
 
     if (strlen($contact) != 10) {
-        echo "<script>alert('Contact must be 10 digits'); window.history.back();</script>";
+        echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
+        echo "<script>
+            if(document.getElementById('php_server_loader')) document.getElementById('php_server_loader').style.display = 'none';
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Contact must be 10 digits!',
+                    confirmButtonColor: '#DF2127'
+                }).then((result) => {
+                    window.history.back();
+                });
+            });
+        </script></body></html>";
         exit;
     }
 
@@ -140,9 +163,36 @@ if (isset($_POST['update'])) {
                 }
             }
         }
-        echo "<script>alert('Profile Updated Successfully'); window.location.href = 'index.php?emp_directory';</script>";
+        echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
+        echo "<script>
+            if(document.getElementById('php_server_loader')) document.getElementById('php_server_loader').style.display = 'none';
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Profile Updated Successfully',
+                    confirmButtonColor: '#10b981'
+                }).then(() => {
+                    window.location.href = 'index.php?emp_directory';
+                });
+            });
+        </script></body></html>";
     } else {
-        echo "<script>alert('Error updating: " . mysqli_error($con) . "');</script>";
+        $dbError = addslashes(mysqli_error($con));
+        echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
+        echo "<script>
+            if(document.getElementById('php_server_loader')) document.getElementById('php_server_loader').style.display = 'none';
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error updating',
+                    text: '{$dbError}',
+                    confirmButtonColor: '#DF2127'
+                }).then(() => {
+                    window.history.back();
+                });
+            });
+        </script></body></html>";
     }
 }
 ?>
@@ -652,6 +702,7 @@ if (isset($_POST['update'])) {
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function handleImagePreview(input, previewId) {
         if (input.files && input.files[0]) {
@@ -733,6 +784,18 @@ if (isset($_POST['update'])) {
 
     document.getElementById('edit_employee_form')?.addEventListener('submit', function() {
         serializeTables();
+
+        // Ensure SweetAlert is loaded, or fallback to native if not available
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Updating Profile...',
+                text: 'Please wait while we save the changes and upload new documents.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
     });
 
     document.getElementById('edit_dob').addEventListener('change', function() {
