@@ -828,7 +828,7 @@ $run_leads = mysqli_query($con, $get_leads);
                     if (typeof Swal !== 'undefined') {
                         Swal.fire('Error', response.message, 'error');
                     } else {
-                        alert("Error: " + response.message);
+                        Swal.fire('Notification', "Error: " + response.message, 'error');
                     }
                 }
             },
@@ -837,7 +837,7 @@ $run_leads = mysqli_query($con, $get_leads);
                 if (typeof Swal !== 'undefined') {
                     Swal.fire('Error', 'Connection error.', 'error');
                 } else {
-                    alert("Connection error.");
+                    Swal.fire('Notification', "Connection error.", 'error');
                 }
             }
         });

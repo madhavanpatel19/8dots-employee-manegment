@@ -3,11 +3,19 @@
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
             <form method="POST">
-                <div class="modal-header" style="background: var(--p-bg-header); color: #fff; padding: 20px; border-bottom: none;">
-                    <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.8;">&times;</button>
-                    <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 10px;">
-                        <i class="fa fa-history"></i> Add Follow-up for <span id="modalClientName"></span>
-                    </h4>
+                <div class="modal-header" style="background: #ffeaeb; color: #1e293b; padding: 25px 30px 20px 30px; border-bottom: 1px solid #f1f5f9; position: relative;">
+                    <button type="button" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 25px; top: 25px; background: #dd2127; color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; font-size: 14px;">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="background: #dd2127; color: white; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fa fa-history" style="font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; color: #0f172a;">Add Follow-up</h4>
+                            <p style="margin: 4px 0 0 0; font-size: 14px; color: #94a3b8; font-weight: 500;">Record interaction for <span id="modalClientName" style="color: #64748b; font-weight: 700;"></span></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-body" style="padding: 25px; background: #fff;">
                     <input type="hidden" name="lead_id" id="modalLeadId">
@@ -56,7 +64,7 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: right;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="height: 45px; border-radius: 12px; padding: 0 20px;">Cancel</button>
+                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
                     <button type="submit" name="add_quick_followup" class="btn-premium-add">
                         <i class="fa fa-save"></i> Save Follow-up
                     </button>

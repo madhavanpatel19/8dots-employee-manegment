@@ -27,7 +27,7 @@ if (!isset($con)) {
                     <label style="font-weight: 700; color: #475569; font-size: 12px; margin-bottom: 8px; display: block;">Section Name</label>
                     <input type="text" id="new-section-name" class="p-input-premium" placeholder="e.g. Mechanical Engineering" required style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-weight: 500; font-size: 14px;">
                 </div>
-                <button type="submit" style="background: #df2127; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 14px;">
+                <button type="submit" class="btn-premium-add">
                     Create Section
                 </button>
             </form>

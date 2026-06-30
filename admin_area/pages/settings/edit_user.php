@@ -76,7 +76,7 @@ if (isset($_POST['update'])) {
     $update_admin = "UPDATE admins SET admin_name='$name_esc', admin_email='$email_esc', admin_pass='$pass_esc', admin_image='$img_esc', admin_contact='$contact_esc', admin_country='$country_esc', admin_job='$job_esc', admin_about='$about_esc', permissions='$perm_esc', is_super_admin='$is_super' WHERE admin_id='$admin_id'";
     $run_admin = mysqli_query($con, $update_admin);
     if ($run_admin) {
-        echo "<script>alert('User Updated Successfully'); window.location='index.php?view_users';</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'User Updated Successfully', icon: 'success'}).then(() => { window.location.href='index.php?view_users'; });</script>";
         exit;
     }
 }

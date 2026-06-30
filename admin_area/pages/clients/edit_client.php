@@ -660,7 +660,7 @@ endif; ?>
                     try {
                         data = typeof response === 'object' ? response : JSON.parse(response.trim());
                     } catch (e) {
-                        alert("Server response error: " + response);
+                        Swal.fire('Notification', "Server response error: " + response, 'error');
                         return;
                     }
                     if (data.status == "success") {
@@ -701,13 +701,13 @@ endif; ?>
                             $('body').removeClass('modal-open');
                             $('body').css('padding-right', '');
                         } else {
-                            alert("Error: " + data.message);
+                            Swal.fire('Notification', "Error: " + data.message, 'error');
                         }
                     }
                 },
                 error: function(xhr, status, error) {
                     submitBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Save Industry');
-                    alert("Connection Error. Details: " + xhr.responseText);
+                    Swal.fire('Notification', "Connection Error. Details: " + xhr.responseText, 'error');
                 }
             });
         });
@@ -726,11 +726,11 @@ endif; ?>
                     if (data.status === "success") {
                         $(element).closest('div').remove();
                     } else {
-                        alert('Error: ' + data.message);
+                        Swal.fire('Notification', 'Error: ' + data.message, 'error');
                     }
                 },
                 error: function() {
-                    alert('Connection Error: Failed to connect to the server.');
+                    Swal.fire('Notification', 'Connection Error: Failed to connect to the server.', 'error');
                 }
             });
         }

@@ -64,7 +64,7 @@ if (!isset($_SESSION['admin_email'])) {
         $insert_cat = "insert into categories (cat_title,cat_top,cat_image) values ('$cat_title','$cat_top','$cat_image')";
         $run_cat = mysqli_query($con, $insert_cat);
         if ($run_cat) {
-            echo "<script> alert('New Category Has Been Inserted')</script>";
+            echo "<script> Swal.fire('Notification', 'New Category Has Been Inserted', 'info')</script>";
             echo "<script> window.open('../../index.php?view_cats','_self') </script>";
         }
     }

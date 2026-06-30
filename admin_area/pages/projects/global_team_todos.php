@@ -42,7 +42,7 @@ if ($run_projs) {
                 <i class="fa fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;"></i>
                 <input type="text" id="task-search" placeholder="Search tasks..." style="width: 250px; padding: 10px 15px 10px 38px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #334155; font-weight: 500; outline: none; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
             </div> -->
-            <button class="btn btn-primary" onclick="showGlobalAddTask()" style="background: #dc2626; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: #fff; box-shadow: 0 2px 4px rgba(220,38,38,0.2);">
+            <button class="btn-premium-add" onclick="showGlobalAddTask()">
                 <i class="fa fa-plus"></i> Add Task
             </button>
         </div>
@@ -89,8 +89,8 @@ if ($run_projs) {
                                 <option value="Medium" selected>Medium Priority</option>
                                 <option value="High">High Priority</option>
                             </select>
-                            <button class="save-task-btn" onclick="saveInlineTask(<?php echo $emp_id; ?>)">Add</button>
-                            <button class="cancel-task-btn" onclick="hideInlineAddTask(<?php echo $emp_id; ?>)">Cancel</button>
+                            <button class="btn-premium-add" onclick="saveInlineTask(<?php echo $emp_id; ?>)">Add</button>
+                            <button class="btn-premium-cancel" onclick="hideInlineAddTask(<?php echo $emp_id; ?>)">Cancel</button>
                         </div>
                     </div>
 
@@ -109,7 +109,7 @@ if ($run_projs) {
 <div class="modal fade" id="globalAddTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document" style="max-width: 540px;">
         <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.18);">
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: linear-gradient(135deg, #fff 0%, #fef9f9 100%); border-radius: 14px 14px 0 0;">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: linear-gradient(135deg, #fff 0%, #fef9f9 100%); border-radius: 14px 14px 0 0; position: relative;">
                 <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
                     <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
@@ -118,10 +118,10 @@ if ($run_projs) {
                         <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Add New Task</h5>
                         <p style="margin: 0; font-size: 12px; color: #94a3b8; font-weight: 500;">Assign a task to an employee</p>
                     </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-left: auto; outline: none; opacity: 0.6; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
-                        <span aria-hidden="true" style="font-size: 22px; color: #64748b;">&times;</span>
-                    </button>
                 </div>
+                <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
             </div>
             <div class="modal-body" style="padding: 24px;">
                 <div class="form-group" style="margin-bottom: 16px;">
@@ -172,8 +172,8 @@ if ($run_projs) {
                 </div>
             </div>
             <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 16px 24px; background: #f8fafc; border-radius: 0 0 14px 14px; gap: 10px;">
-                <button type="button" class="btn premium-btn-cancel" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn premium-btn-save" onclick="saveGlobalTask()">
+                <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-premium-add" onclick="saveGlobalTask()">
                     <i class="fa fa-check" style="margin-right: 6px;"></i> Save Task
                 </button>
             </div>

@@ -1064,7 +1064,7 @@ function fmtHMS($secs)
                     if (r.status === 'success') location.reload();
                     else {
                         $btn.prop('disabled', false).html(resetHtml);
-                        alert(r.message);
+                        Swal.fire('Notification', r.message, 'info');
                     }
                 }
             });
@@ -1101,11 +1101,11 @@ function fmtHMS($secs)
         $(document).on('click', '#confirmCheckOut', function() {
             var wd = $('#workDetails').val().trim();
             if (!wd) {
-                alert('Please provide work details.');
+                Swal.fire('Notification', 'Please provide work details.', 'info');
                 return;
             }
             if (!$('#modalCheckInTime').val() || !$('#modalCheckOutTime').val()) {
-                alert('Check-in and check-out times required.');
+                Swal.fire('Notification', 'Check-in and check-out times required.', 'info');
                 return;
             }
             var $btn = $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
@@ -1131,7 +1131,7 @@ function fmtHMS($secs)
                     else {
                         $btn.prop('disabled', false).html('<i class="fa fa-paper-plane"></i> Submit Worksheet & Check Out');
                         $('#btnCancelCheckOut').prop('disabled', false);
-                        alert(r.message);
+                        Swal.fire('Notification', r.message, 'info');
                     }
                 }
             });
@@ -1178,7 +1178,7 @@ function fmtHMS($secs)
                 }
             },
             error: function() {
-                alert('Network error while completing task.');
+                Swal.fire('Notification', 'Network error while completing task.', 'error');
                 $chk.removeClass('done');
                 $txt.removeClass('done-txt');
             }

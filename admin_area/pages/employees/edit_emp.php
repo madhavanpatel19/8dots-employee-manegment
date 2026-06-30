@@ -16,7 +16,7 @@ if (isset($_GET['edit_emp'])) {
 }
 
 if (!$employee) {
-    echo "<script>alert('Employee not found'); window.location='index.php?emp_directory';</script>";
+    echo "<script>Swal.fire({title: 'Notification', text: 'Employee not found', icon: 'info'}).then(() => { window.location.href='index.php?emp_directory'; });</script>";
     exit;
 }
 

@@ -162,7 +162,7 @@ if (!isset($_SESSION['admin_email'])) {
         $run_admin = mysqli_query($con, $update_admin);
         
         if ($run_admin) {
-            echo "<script>alert('Your profile has been updated successfully. Please login again to see changes.')</script>";
+            echo "<script>Swal.fire({title: 'Notification', text: 'Your profile has been updated successfully. Please login again to see changes.', icon: 'success'});</script>";
             echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
             session_destroy();
         }

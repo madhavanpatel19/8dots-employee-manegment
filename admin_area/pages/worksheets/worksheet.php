@@ -287,7 +287,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                             var dateVal = new Date(field.value);
                             var day = dateVal.getDay();
                             if (day === 0 || day === 6) {
-                                alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                Swal.fire('Notification', "Selected date is a " + (day === 0 ? "Sunday" : "Saturday", 'info') + ", which is already a holiday. Please select a working day.");
                                 field.value = "";
                                 valid = false;
                             }
@@ -307,7 +307,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                             var dateVal = new Date(this.value);
                             var day = dateVal.getDay();
                             if (day === 0 || day === 6) {
-                                alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                Swal.fire('Notification', "Selected date is a " + (day === 0 ? "Sunday" : "Saturday", 'info') + ", which is already a holiday. Please select a working day.");
                                 this.value = "";
                             }
                         }

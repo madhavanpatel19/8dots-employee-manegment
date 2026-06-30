@@ -286,7 +286,9 @@ $run_projects = mysqli_query($con, $get_projects);
     <div class="modal-dialog modal-lg" style="margin-top: 80px; max-width: 700px;">
         <div class="modal-content premium-modal-content" style="border: none; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
             <div class="modal-header" style="background: #FFEAEB; color: #000; padding: 30px; border: none; position: relative;">
-                <button type="button" class="close" data-dismiss="modal" style="color: #000; opacity: 0.8; position: absolute; right: 25px; top: 25px;">&times;</button>
+                <button type="button" class="btn-modal-close" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                </button>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="width: 50px; height: 50px; background: #dd2127; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;">
@@ -342,8 +344,8 @@ $run_projects = mysqli_query($con, $get_projects);
                             </div>
                         </div>
                         <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-                            <button type="button" class="btn btn-xs" onclick="toggleAddResourceForm()" style="font-weight: 700; color: #64748b; background: transparent; border: none;">Discard</button>
-                            <button type="submit" class="btn btn-sm" style="background: #DF2127; color: #fff; border-radius: 8px; padding: 8px 20px; font-weight: 700;">Save Document</button>
+                            <button type="button" class="btn-premium-cancel" onclick="toggleAddResourceForm()">Discard</button>
+                            <button type="submit" class="btn-premium-add">Save Document</button>
                         </div>
                     </form>
 
@@ -365,8 +367,8 @@ $run_projects = mysqli_query($con, $get_projects);
                             </div>
                         </div>
                         <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-                            <button type="button" class="btn btn-xs" onclick="toggleAddResourceForm()" style="font-weight: 700; color: #64748b; background: transparent; border: none;">Discard</button>
-                            <button type="submit" class="btn btn-sm" style="background: #DF2127; color: #fff; border-radius: 8px; padding: 8px 20px; font-weight: 700;">Save Link</button>
+                            <button type="button" class="btn-premium-cancel" onclick="toggleAddResourceForm()">Discard</button>
+                            <button type="submit" class="btn-premium-add">Save Link</button>
                         </div>
                     </form>
                 </div>

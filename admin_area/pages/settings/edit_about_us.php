@@ -78,7 +78,7 @@ if (!isset($_SESSION['admin_email'])) {
     $update_about_us = "update about_us set about_heading='$about_heading',about_short_desc='$about_short_desc',about_desc='$about_desc'";
     $run_about_us = mysqli_query($con, $update_about_us);
     if ($run_about_us) {
-      echo "<script>alert('About Us Page Has Been Updated')</script>";
+      echo "<script>Swal.fire({title: 'Notification', text: 'About Us Page Has Been Updated', icon: 'info'});</script>";
       echo "<script>window.open('../../index.php?dashboard','_self')</script>";
     }
   }

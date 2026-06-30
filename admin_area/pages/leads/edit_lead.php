@@ -4,6 +4,22 @@ if (!isset($_SESSION['admin_email'])) {
     exit;
 }
 
+global $con;
+
+$edit_id = null;
+$c_name = '';
+$c_phone = '';
+$c_email = '';
+$c_company = '';
+$c_project = '';
+$c_desc = '';
+$c_remark = '';
+$c_budget = '';
+$c_currency = 'INR';
+$c_status = '';
+$c_followup = '';
+$c_source = [];
+
 if (isset($_GET['edit_lead'])) {
     $edit_id = mysqli_real_escape_string($con, $_GET['edit_lead']);
     $get_lead = "SELECT * FROM leads WHERE id = '$edit_id'";
@@ -11,7 +27,7 @@ if (isset($_GET['edit_lead'])) {
     $row_lead = mysqli_fetch_array($run_lead);
 
     if (!$row_lead) {
-        echo "<script>alert('Lead not found!'); window.open('../../index.php?leads','_self');</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Lead not found!', icon: 'error'}).then(() => { window.open('../../index.php?leads','_self'); });</script>";
         exit;
     }
 
@@ -30,17 +46,17 @@ if (isset($_GET['edit_lead'])) {
 }
 
 if (isset($_POST['update_lead'])) {
-    $client_name = mysqli_real_escape_string($con, $_POST['client_name']);
-    $phone = mysqli_real_escape_string($con, $_POST['phone']);
-    $email = mysqli_real_escape_string($con, $_POST['email']);
-    $company_name = mysqli_real_escape_string($con, $_POST['company_name']);
-    $project_name = mysqli_real_escape_string($con, $_POST['project_name']);
-    $description = mysqli_real_escape_string($con, $_POST['description']);
-    $remark = mysqli_real_escape_string($con, $_POST['remark']);
-    $budget = mysqli_real_escape_string($con, $_POST['budget']);
-    $currency = mysqli_real_escape_string($con, $_POST['currency']);
-    $status = mysqli_real_escape_string($con, $_POST['status']);
-    $followup_date = mysqli_real_escape_string($con, $_POST['followup_date']);
+    $client_name = isset($_POST['client_name']) ? mysqli_real_escape_string($con, $_POST['client_name']) : '';
+    $phone = isset($_POST['phone']) ? mysqli_real_escape_string($con, $_POST['phone']) : '';
+    $email = isset($_POST['email']) ? mysqli_real_escape_string($con, $_POST['email']) : '';
+    $company_name = isset($_POST['company_name']) ? mysqli_real_escape_string($con, $_POST['company_name']) : '';
+    $project_name = isset($_POST['project_name']) ? mysqli_real_escape_string($con, $_POST['project_name']) : '';
+    $description = isset($_POST['description']) ? mysqli_real_escape_string($con, $_POST['description']) : '';
+    $remark = isset($_POST['remark']) ? mysqli_real_escape_string($con, $_POST['remark']) : '';
+    $budget = isset($_POST['budget']) ? mysqli_real_escape_string($con, $_POST['budget']) : '';
+    $currency = isset($_POST['currency']) ? mysqli_real_escape_string($con, $_POST['currency']) : '';
+    $status = isset($_POST['status']) ? mysqli_real_escape_string($con, $_POST['status']) : '';
+    $followup_date = isset($_POST['followup_date']) ? mysqli_real_escape_string($con, $_POST['followup_date']) : '';
 
     $lead_sources = isset($_POST['lead_source']) ? $_POST['lead_source'] : [];
     $lead_source_str = implode(', ', $lead_sources);
@@ -146,9 +162,10 @@ if (isset($_POST['update_lead'])) {
                                         name="phone"
                                         class="p-input-premium"
                                         required
+                                        value="<?php echo $c_phone; ?>"
                                         placeholder="Mobile Number"
+                                        minlength="10"
                                         maxlength="10"
-                                        pattern="[0-9]{10}"
                                         oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                         style="padding-left: 35px;">
                                 </div>
@@ -275,7 +292,7 @@ if (isset($_POST['update_lead'])) {
                 </div>
 
                 <div style="margin-top: 50px; text-align: right; border-top: 1.5px solid #f1f5f9; padding-top: 30px;">
-                    <a href="index.php?leads" class="btn btn-default" style="height: 48px; border-radius: 12px; padding: 12px 30px; font-weight: 600; margin-right: 10px;">Cancel</a>
+                    <a href="index.php?leads" class="btn-premium-cancel" style="height: 48px; border-radius: 12px; padding: 12px 30px; font-weight: 600; margin-right: 10px;">Cancel</a>
                     <button type="submit" name="update_lead" class="btn-premium-add" style="padding: 14px 45px !important; font-size: 15px !important; border: none;">
                         <i class="fa fa-save"></i> Update Lead Information
                     </button>
@@ -290,6 +307,7 @@ if (isset($_POST['update_lead'])) {
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
             <div class="modal-header" style="background: #1e293b; color: #fff; padding: 20px 25px; border: none;">
+
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
                     <div style="background: rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
@@ -299,14 +317,14 @@ if (isset($_POST['update_lead'])) {
                 </h4>
             </div>
             <div class="modal-body" style="padding: 30px; background: #fff;">
-                <form id="add-source-form-main">
+                <form id="add-source-form-main" onsubmit="event.preventDefault();">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Source Name</label>
                         <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-dismiss="modal" style="background: #f1f5f9; color: #64748b; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; transition: all 0.3s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';">Cancel</button>
-                        <button type="submit" style="background: #10b981; color: #fff; border: none; padding: 12px 35px; border-radius: 12px; font-size: 14px; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-premium-add">
                             <i class="fa fa-save"></i> Save Source
                         </button>
                     </div>
@@ -372,12 +390,12 @@ if (isset($_POST['update_lead'])) {
                         $('#new_source_name').val('');
                         showPremiumAlert("Source added and selected!");
                     } else {
-                        alert("Error: " + data.message);
+                        Swal.fire('Notification', "Error: " + data.message, 'error');
                     }
                 },
                 error: function() {
                     submitBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Save Source');
-                    alert("Connection Error.");
+                    Swal.fire('Notification', "Connection Error.", 'error');
                 }
             });
         });

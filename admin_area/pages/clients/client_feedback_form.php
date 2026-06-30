@@ -49,11 +49,11 @@ if(isset($_POST['submit'])){
     }
 
     if($result){
-        echo "<script>alert('Feedback Submitted Successfully')</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Feedback Submitted Successfully', icon: 'success'});</script>";
         echo "<script>window.open('client_feedback_form.php','_self')</script>";
     } else {
         $error = mysqli_error($con);
-        echo "<script>alert('Error: " . $error . "')</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Error: " . $error . "', icon: 'error'});</script>";
     }
 }
 ?>

@@ -508,7 +508,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             $('#modalDownloadBtn').click(function() {
                 var element = document.getElementById('slip-content');
                 if (!element) {
-                    alert("Slip content not loaded yet!");
+                    Swal.fire('Notification', "Slip content not loaded yet!", 'info');
                     return;
                 }
 

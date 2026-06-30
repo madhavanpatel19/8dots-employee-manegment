@@ -32,9 +32,9 @@ if (isset($_POST['upload'])) {
       }
     }
 
-    echo "<script>alert('$uploaded file(s) uploaded successfully!');window.location.href='emp_directory.php';</script>";
+    echo "<script>Swal.fire({title: 'Notification', text: '$uploaded file(s) uploaded successfully!', icon: 'success'}).then(() => { window.location.href='emp_directory.php'; });</script>";
   } else {
-    echo "<script>alert('Please select at least one file.');</script>";
+    echo "<script>Swal.fire({title: 'Notification', text: 'Please select at least one file.', icon: 'info'});</script>";
   }
 }
 ?>

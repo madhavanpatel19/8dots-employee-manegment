@@ -252,9 +252,9 @@ if (!isset($_SESSION['emp_id'])) {
         $update_query = "UPDATE emp_list SET name = '$new_name', phone_number = '$new_phone', address = '$new_address' $update_image WHERE id = '$emp_id'";
         if (mysqli_query($con, $update_query)) {
             $_SESSION['emp_name'] = $new_name; // Sync session
-            echo "<script>alert('Profile updated successfully!'); window.location.href='index.php?emp_profile';</script>";
+            echo "<script>Swal.fire({title: 'Notification', text: 'Profile updated successfully!', icon: 'success'}).then(() => { window.location.href='index.php?emp_profile'; });</script>";
         } else {
-            echo "<script>alert('Error updating profile: " . mysqli_error($con) . "');</script>";
+            echo "<script>Swal.fire({title: 'Notification', text: 'Error updating profile: " . mysqli_error($con) . "', icon: 'error'});</script>";
         }
     }
     ?>

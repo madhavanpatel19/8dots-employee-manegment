@@ -146,7 +146,7 @@ if (isset($_POST['reset_password'])) {
                 unset($_SESSION['reset_email']);
                 unset($_SESSION['reset_step']);
 
-                echo "<script>alert('Password Reset Successful! Please login with your new password.'); window.location.href='emp-login.php';</script>";
+                echo "<script>Swal.fire({title: 'Notification', text: 'Password Reset Successful! Please login with your new password.', icon: 'success'}).then(() => { window.location.href='emp-login.php'; });</script>";
                 exit();
             }
         } else {

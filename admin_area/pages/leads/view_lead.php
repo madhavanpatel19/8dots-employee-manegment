@@ -4,6 +4,8 @@ if (!isset($_SESSION['admin_email'])) {
     exit;
 }
 
+global $con;
+
 $currency_symbols = [
     'INR' => '₹',
     'USD' => '$',
@@ -11,6 +13,10 @@ $currency_symbols = [
     'GBP' => '£',
     'AED' => 'د.إ'
 ];
+
+$view_id = null;
+$row_lead = [];
+$run_followups = null;
 
 if (isset($_GET['view_lead'])) {
     $view_id = mysqli_real_escape_string($con, $_GET['view_lead']);

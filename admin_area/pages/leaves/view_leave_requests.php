@@ -444,7 +444,7 @@ if ($run_stats) {
                                             <a href="index.php?view_leave_requests&approve=<?php echo $id; ?>" class="btn-icon-premium btn-icon-approve" title="Approve">
                                                 <i class="fa fa-check"></i>
                                             </a>
-                                            <a href="index.php?view_leave_requests&reject=<?php echo $id; ?>" class="btn-icon-premium btn-icon-reject" title="Reject" onclick="return confirm('Reject this request?')">
+                                            <a href="javascript:void(0)" class="btn-icon-premium btn-icon-reject" title="Reject" onclick="confirmReject('index.php?view_leave_requests&reject=<?php echo $id; ?>')">
                                                 <i class="fa fa-times"></i>
                                             </a>
                                         </div>
@@ -506,7 +506,7 @@ if ($run_stats) {
         const count = $('#new_leave_count').val().trim();
 
         if (!name || !count) {
-            alert("Please fill all fields");
+            Swal.fire('Notification', "Please fill all fields", 'info');
             return;
         }
 
@@ -525,7 +525,7 @@ if ($run_stats) {
                         $('#new_leave_count').val('');
                         loadLeaveTypes();
                     } else {
-                        alert(res.message || "Error adding leave type");
+                        Swal.fire("Error", res.message || "Error adding leave type", "error");
                     }
                 } catch (e) {
                     console.error("Response parse error:", e);
@@ -536,25 +536,51 @@ if ($run_stats) {
     }
 
     window.deleteLeaveType = function(id) {
-        if (!confirm("Are you sure you want to delete this leave type?")) return;
-
-        $.ajax({
-            url: 'ajax/leaves/ajax_delete_leave_type.php',
-            method: 'POST',
-            data: {
-                id: id
-            },
-            success: function(response) {
-                try {
-                    const res = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (res.success) {
-                        loadLeaveTypes();
-                    } else {
-                        alert(res.message || "Error deleting leave type");
+        Swal.fire({
+            title: 'Delete Leave Type?',
+            text: "Are you sure you want to delete this leave type?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'ajax/leaves/ajax_delete_leave_type.php',
+                    method: 'POST',
+                    data: {
+                        id: id
+                    },
+                    success: function(response) {
+                        try {
+                            const res = typeof response === 'string' ? JSON.parse(response) : response;
+                            if (res.success) {
+                                loadLeaveTypes();
+                            } else {
+                                Swal.fire("Error", res.message || "Error deleting leave type", "error");
+                            }
+                        } catch (e) {
+                            loadLeaveTypes();
+                        }
                     }
-                } catch (e) {
-                    loadLeaveTypes();
-                }
+                });
+            }
+        });
+    }
+
+    window.confirmReject = function(url) {
+        Swal.fire({
+            title: 'Reject Request?',
+            text: 'Are you sure you want to reject this request?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'Yes, reject it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
             }
         });
     }

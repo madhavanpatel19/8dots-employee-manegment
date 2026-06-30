@@ -69,7 +69,7 @@ if (!isset($_SESSION['admin_email'])) {
         $update_contact_us = "update contact_us set contact_email='$contact_email',contact_heading='$contact_heading',contact_desc='$contact_desc'";
         $run_contact_us = mysqli_query($con, $update_contact_us);
         if ($run_contact_us) {
-            echo "<script>alert('Contact Us Page Has Been Updated')</script>";
+            echo "<script>Swal.fire({title: 'Notification', text: 'Contact Us Page Has Been Updated', icon: 'info'});</script>";
             echo "<script>window.open('../../index.php?dashboard','_self')</script>";
         }
     }

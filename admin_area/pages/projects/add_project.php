@@ -1421,7 +1421,7 @@ $run_emps = mysqli_query($con, $get_emps);
                 $(this).closest('tr').remove();
                 calculateTotalCost();
             } else {
-                alert('You must have at least one phase.');
+                Swal.fire('Notification', 'You must have at least one phase.', 'info');
             }
         });
 
@@ -1488,17 +1488,19 @@ $run_emps = mysqli_query($con, $get_emps);
 <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="addSourceModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #ffeaeb; color: black; padding: 20px 25px; border: none;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
                     <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Source
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: black; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
                 </h4>
             </div>
             <div class="modal-body" style="padding: 30px; background: #fff;">
-                <form id="add-source-form-main">
+                <form id="add-source-form-main" onsubmit="event.preventDefault();">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Source Name</label>
                         <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
@@ -1537,7 +1539,7 @@ $run_emps = mysqli_query($con, $get_emps);
                     try {
                         data = typeof response === 'object' ? response : JSON.parse(response.trim());
                     } catch (e) {
-                        alert("Server response error: " + response);
+                        Swal.fire('Notification', "Server response error: " + response, 'error');
                         return;
                     }
                     if (data.status == "success") {
@@ -1582,13 +1584,13 @@ $run_emps = mysqli_query($con, $get_emps);
                             $('body').removeClass('modal-open');
                             $('body').css('padding-right', '');
                         } else {
-                            alert("Error: " + data.message);
+                            Swal.fire('Notification', "Error: " + data.message, 'error');
                         }
                     }
                 },
                 error: function(xhr, status, error) {
                     submitBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Save Source');
-                    alert("Connection Error. Details: " + xhr.responseText);
+                    Swal.fire('Notification', "Connection Error. Details: " + xhr.responseText, 'error');
                 }
             });
         });
@@ -1618,6 +1620,11 @@ $run_emps = mysqli_query($con, $get_emps);
                     success: function(data) {
                         if (data.status === "success") {
                             $(element).closest('div').remove();
+                            if (typeof showPremiumAlert === "function") {
+                                showPremiumAlert("Source deleted successfully!");
+                            } else {
+                                Swal.fire('Deleted!', 'Source deleted successfully.', 'success');
+                            }
                         } else {
                             Swal.fire('Error', data.message, 'error');
                         }
@@ -1628,5 +1635,56 @@ $run_emps = mysqli_query($con, $get_emps);
                 });
             }
         });
+    }
+
+    function showPremiumAlert(message) {
+        let container = document.getElementById('toast-container-custom');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container-custom';
+            container.style.position = 'fixed';
+            container.style.bottom = '20px';
+            container.style.right = '20px';
+            container.style.zIndex = '999999';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.style.background = '#1e293b';
+        toast.style.color = '#fff';
+        toast.style.padding = '16px 24px';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1)';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '12px';
+        toast.style.fontSize = '14px';
+        toast.style.fontWeight = '600';
+        toast.style.transform = 'translateY(100px) scale(0.9)';
+        toast.style.opacity = '0';
+        toast.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+        toast.innerHTML = `
+        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fa fa-check" style="font-size: 12px;"></i>
+        </div>
+        ${message}
+    `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.transform = 'translateY(0) scale(1)';
+            toast.style.opacity = '1';
+        }, 10);
+
+        setTimeout(() => {
+            toast.style.transform = 'translateY(20px) scale(0.9)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
     }
 </script>

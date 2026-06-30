@@ -15,7 +15,7 @@ if (isset($_GET['edit_offer_letter'])) {
     $row_edit = mysqli_fetch_array($run_edit);
 
     if (!$row_edit) {
-        echo "<script>alert('Offer letter not found.'); window.open('../../index.php?view_offer_letters','_self');</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Offer letter not found.', icon: 'error'}).then(() => { window.open('../../index.php?view_offer_letters','_self'); });</script>";
         exit();
     }
 
@@ -52,10 +52,10 @@ if (isset($_POST['update_offer'])) {
     $run_update = mysqli_query($con, $update_query);
 
     if ($run_update) {
-        echo "<script>alert('Offer Letter has been updated successfully')</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Offer Letter has been updated successfully', icon: 'success'});</script>";
         echo "<script>window.open('../../index.php?view_offer_letters','_self')</script>";
     } else {
-        echo "<script>alert('Error: Could not update offer letter.')</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Error: Could not update offer letter.', icon: 'error'});</script>";
     }
 }
 ?>

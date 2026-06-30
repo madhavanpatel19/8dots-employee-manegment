@@ -851,12 +851,12 @@ if (isset($_POST['submit_project'])) {
         WHERE id = $project_id";
 
     if (mysqli_query($con, $update_project)) {
-        
+
         // Re-insert Phases
         if (isset($_POST['phase_name']) && is_array($_POST['phase_name'])) {
             // Delete old phases
             mysqli_query($con, "DELETE FROM project_budget_phases WHERE project_id = $project_id");
-            
+
             foreach ($_POST['phase_name'] as $key => $p_name) {
                 $p_name_esc = mysqli_real_escape_string($con, $p_name);
                 $p_desc_esc = mysqli_real_escape_string($con, $_POST['phase_desc'][$key]);
@@ -1185,48 +1185,48 @@ $run_emps = mysqli_query($con, $get_emps);
                                 if (mysqli_num_rows($run_phases) > 0) {
                                     while ($p = mysqli_fetch_assoc($run_phases)) {
                                 ?>
-                                <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
-                                    <td style="padding: 15px 20px;">
-                                        <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="<?php echo htmlspecialchars($p['phase_name']); ?>" required>
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" value="<?php echo htmlspecialchars($p['description']); ?>" placeholder="Enter description">
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <input type="date" name="phase_date[]" class="p-input-premium" value="<?php echo $p['expected_date']; ?>" style="height: 42px; border-radius: 6px; width: 100%;">
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" value="<?php echo $p['cost']; ?>" placeholder="0.00" min="0" step="0.01">
-                                    </td>
-                                    <td style="padding: 15px 20px; text-align: center;">
-                                        <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php 
+                                        <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
+                                            <td style="padding: 15px 20px;">
+                                                <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="<?php echo htmlspecialchars($p['phase_name']); ?>" required>
+                                            </td>
+                                            <td style="padding: 15px 20px;">
+                                                <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" value="<?php echo htmlspecialchars($p['description']); ?>" placeholder="Enter description">
+                                            </td>
+                                            <td style="padding: 15px 20px;">
+                                                <input type="date" name="phase_date[]" class="p-input-premium" value="<?php echo $p['expected_date']; ?>" style="height: 42px; border-radius: 6px; width: 100%;">
+                                            </td>
+                                            <td style="padding: 15px 20px;">
+                                                <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" value="<?php echo $p['cost']; ?>" placeholder="0.00" min="0" step="0.01">
+                                            </td>
+                                            <td style="padding: 15px 20px; text-align: center;">
+                                                <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php
                                     }
-                                } else { 
-                                ?>
-                                <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
-                                    <td style="padding: 15px 20px;">
-                                        <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="Phase 1" required>
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter description">
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <input type="date" name="phase_date[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;">
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" placeholder="0.00" min="0" step="0.01">
-                                    </td>
-                                    <td style="padding: 15px 20px; text-align: center;">
-                                        <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                } else {
+                                    ?>
+                                    <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
+                                        <td style="padding: 15px 20px;">
+                                            <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="Phase 1" required>
+                                        </td>
+                                        <td style="padding: 15px 20px;">
+                                            <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter description">
+                                        </td>
+                                        <td style="padding: 15px 20px;">
+                                            <input type="date" name="phase_date[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;">
+                                        </td>
+                                        <td style="padding: 15px 20px;">
+                                            <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" placeholder="0.00" min="0" step="0.01">
+                                        </td>
+                                        <td style="padding: 15px 20px; text-align: center;">
+                                            <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -1286,24 +1286,24 @@ $run_emps = mysqli_query($con, $get_emps);
                                 if ($has_docs) {
                                     while ($doc = mysqli_fetch_assoc($run_docs)) {
                                 ?>
-                                <tr style="border-top: 1px solid #e2e8f0;">
-                                    <td style="padding: 15px 20px;">
-                                        <input type="text" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%; background:#f1f5f9; color:#64748b;" value="<?php echo htmlspecialchars($doc['document_name']); ?>" readonly>
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <span style="font-size: 13px; color: #64748b;"><i class="fa fa-file-text-o"></i> <?php echo htmlspecialchars($doc['file_path']); ?> (Existing)</span>
-                                    </td>
-                                    <td style="padding: 15px 20px; text-align: center;">
-                                        <!-- Actions for existing docs could be added here later -->
-                                    </td>
-                                </tr>
-                                <?php 
+                                        <tr style="border-top: 1px solid #e2e8f0;">
+                                            <td style="padding: 15px 20px;">
+                                                <input type="text" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%; background:#f1f5f9; color:#64748b;" value="<?php echo htmlspecialchars($doc['document_name']); ?>" readonly>
+                                            </td>
+                                            <td style="padding: 15px 20px;">
+                                                <span style="font-size: 13px; color: #64748b;"><i class="fa fa-file-text-o"></i> <?php echo htmlspecialchars($doc['file_path']); ?> (Existing)</span>
+                                            </td>
+                                            <td style="padding: 15px 20px; text-align: center;">
+                                                <!-- Actions for existing docs could be added here later -->
+                                            </td>
+                                        </tr>
+                                    <?php
                                     }
-                                } else { 
-                                ?>
-                                <tr style="border-top: 1px solid #e2e8f0;" id="no_docs_msg_row">
-                                    <td colspan="3" style="padding: 20px; text-align: center; color: #94a3b8; font-size: 13px;" id="no_docs_msg">No documents added yet. Click "+ Add Document" to add one.</td>
-                                </tr>
+                                } else {
+                                    ?>
+                                    <tr style="border-top: 1px solid #e2e8f0;" id="no_docs_msg_row">
+                                        <td colspan="3" style="padding: 20px; text-align: center; color: #94a3b8; font-size: 13px;" id="no_docs_msg">No documents added yet. Click "+ Add Document" to add one.</td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -1350,26 +1350,26 @@ $run_emps = mysqli_query($con, $get_emps);
                                     if (mysqli_num_rows($run_links) > 0) {
                                         while ($link = mysqli_fetch_assoc($run_links)) {
                                     ?>
-                                    <tr class="link-row" style="border-top: 1px solid #e2e8f0;">
-                                        <td style="padding: 15px 20px;">
-                                            <input type="text" name="link_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="e.g., Figma Design, GitHub Repo" value="<?php echo htmlspecialchars($link['link_name']); ?>" required>
-                                        </td>
-                                        <td style="padding: 15px 20px;">
-                                            <input type="url" name="link_url[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="https://" value="<?php echo htmlspecialchars($link['link_url']); ?>" required>
-                                        </td>
-                                        <td style="padding: 15px 20px; text-align: center;">
-                                            <button type="button" class="btn btn-light text-danger delete-link-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                            <tr class="link-row" style="border-top: 1px solid #e2e8f0;">
+                                                <td style="padding: 15px 20px;">
+                                                    <input type="text" name="link_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="e.g., Figma Design, GitHub Repo" value="<?php echo htmlspecialchars($link['link_name']); ?>" required>
+                                                </td>
+                                                <td style="padding: 15px 20px;">
+                                                    <input type="url" name="link_url[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="https://" value="<?php echo htmlspecialchars($link['link_url']); ?>" required>
+                                                </td>
+                                                <td style="padding: 15px 20px; text-align: center;">
+                                                    <button type="button" class="btn btn-light text-danger delete-link-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php
                                         }
                                     } else {
-                                    ?>
-                                    <tr style="border-top: 1px solid #e2e8f0;" id="no_links_msg_row">
-                                        <td colspan="3" style="padding: 20px; text-align: center; color: #94a3b8; font-size: 13px;" id="no_links_msg">No links added yet. Click "+ Add Link" to add one.</td>
-                                    </tr>
+                                        ?>
+                                        <tr style="border-top: 1px solid #e2e8f0;" id="no_links_msg_row">
+                                            <td colspan="3" style="padding: 20px; text-align: center; color: #94a3b8; font-size: 13px;" id="no_links_msg">No links added yet. Click "+ Add Link" to add one.</td>
+                                        </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
@@ -1557,7 +1557,7 @@ $run_emps = mysqli_query($con, $get_emps);
                 $(this).closest('tr').remove();
                 calculateTotalCost();
             } else {
-                alert('You must have at least one phase.');
+                Swal.fire('Notification', 'You must have at least one phase.', 'info');
             }
         });
 
@@ -1624,24 +1624,26 @@ $run_emps = mysqli_query($con, $get_emps);
 <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="addSourceModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #1e293b; color: #fff; padding: 20px 25px; border: none;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Source
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
                 </h4>
             </div>
             <div class="modal-body" style="padding: 30px; background: #fff;">
-                <form id="add-source-form-main">
+                <form id="add-source-form-main" onsubmit="event.preventDefault();">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Source Name</label>
                         <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-dismiss="modal" style="background: #f1f5f9; color: #64748b; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; transition: all 0.3s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';">Cancel</button>
-                        <button type="submit" style="background: #10b981; color: #fff; border: none; padding: 12px 35px; border-radius: 12px; font-size: 14px; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                        <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
+                        <button type="submit" class="btn-premium-add">
                             <i class="fa fa-save"></i> Save Source
                         </button>
                     </div>
@@ -1671,7 +1673,7 @@ $run_emps = mysqli_query($con, $get_emps);
                     try {
                         data = typeof response === 'object' ? response : JSON.parse(response.trim());
                     } catch (e) {
-                        alert("Server response error: " + response);
+                        Swal.fire('Notification', "Server response error: " + response, 'error');
                         return;
                     }
                     if (data.status == "success") {
@@ -1716,13 +1718,13 @@ $run_emps = mysqli_query($con, $get_emps);
                             $('body').removeClass('modal-open');
                             $('body').css('padding-right', '');
                         } else {
-                            alert("Error: " + data.message);
+                            Swal.fire('Notification', "Error: " + data.message, 'error');
                         }
                     }
                 },
                 error: function(xhr, status, error) {
                     submitBtn.prop('disabled', false).html('<i class="fa fa-save"></i> Save Source');
-                    alert("Connection Error. Details: " + xhr.responseText);
+                    Swal.fire('Notification', "Connection Error. Details: " + xhr.responseText, 'error');
                 }
             });
         });
@@ -1737,18 +1739,22 @@ $run_emps = mysqli_query($con, $get_emps);
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#64748b',
             confirmButtonText: 'Yes, delete it!',
-            customClass: { popup: 'premium-card swal2-premium' }
+            customClass: {
+                popup: 'premium-card swal2-premium'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
                     url: "ajax/misc/ajax_delete_source.php",
                     method: "POST",
-                    data: { source_id: sourceId },
+                    data: {
+                        source_id: sourceId
+                    },
                     dataType: "json",
                     success: function(data) {
                         if (data.status === "success") {
                             $(element).closest('div').remove();
-                            if(typeof showPremiumAlert === "function") {
+                            if (typeof showPremiumAlert === "function") {
                                 showPremiumAlert("Source deleted successfully!");
                             } else {
                                 Swal.fire('Deleted!', 'Source deleted successfully.', 'success');
@@ -1763,5 +1769,56 @@ $run_emps = mysqli_query($con, $get_emps);
                 });
             }
         });
+    }
+
+    function showPremiumAlert(message) {
+        let container = document.getElementById('toast-container-custom');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container-custom';
+            container.style.position = 'fixed';
+            container.style.bottom = '20px';
+            container.style.right = '20px';
+            container.style.zIndex = '999999';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.style.background = '#1e293b';
+        toast.style.color = '#fff';
+        toast.style.padding = '16px 24px';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1)';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '12px';
+        toast.style.fontSize = '14px';
+        toast.style.fontWeight = '600';
+        toast.style.transform = 'translateY(100px) scale(0.9)';
+        toast.style.opacity = '0';
+        toast.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+        toast.innerHTML = `
+        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="fa fa-check" style="font-size: 12px;"></i>
+        </div>
+        ${message}
+    `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.transform = 'translateY(0) scale(1)';
+            toast.style.opacity = '1';
+        }, 10);
+
+        setTimeout(() => {
+            toast.style.transform = 'translateY(20px) scale(0.9)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 400);
+        }, 4000);
     }
 </script>

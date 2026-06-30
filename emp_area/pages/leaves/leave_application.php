@@ -304,7 +304,7 @@ $result = mysqli_query($con, $query);
                                         var date = new Date(field.value);
                                         var day = date.getDay(); // 0 is Sun, 6 is Sat
                                         if (day === 0 || day === 6) {
-                                            alert("Selected date is a " + (day === 0 ? "Sunday" : "Saturday") + ", which is already a holiday. Please select a working day.");
+                                            Swal.fire('Notification', "Selected date is a " + (day === 0 ? "Sunday" : "Saturday", 'info') + ", which is already a holiday. Please select a working day.");
                                             field.value = ""; // Reset the field
                                             valid = false;
                                         }

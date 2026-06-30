@@ -1348,7 +1348,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             document.getElementById('perf_core').value = avgPerf;
             updatePerformanceTotal();
         } else {
-            alert('No average daily performance data available for this month.');
+            Swal.fire('Notification', 'No average daily performance data available for this month.', 'info');
         }
     }
 
@@ -1380,7 +1380,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         const total = parseFloat(totalText);
         if (total > 100) {
             e.preventDefault();
-            alert('Total cannot exceed 100.');
+            Swal.fire('Notification', 'Total cannot exceed 100.', 'info');
         }
     });
 

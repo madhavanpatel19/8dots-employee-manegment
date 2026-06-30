@@ -102,8 +102,8 @@
 }
 
 .btn-success-go {
-    background: #0f172a;
-    color: #fff;
+    background: #dd2127;
+    color: #fff !important;
     padding: 12px 24px;
     border-radius: 12px;
     font-weight: 600;
@@ -116,9 +116,11 @@
 }
 
 .btn-success-go:hover {
-    background: #1e293b;
+    background: #c01d22;
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    color: #fff !important;
+    text-decoration: none !important;
 }
 
 .success-timer-bar {

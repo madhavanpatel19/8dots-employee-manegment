@@ -21,7 +21,7 @@ if (isset($_GET['edit_experience_letter'])) {
     $row_exp = mysqli_fetch_array($run_exp);
 
     if (!$row_exp) {
-        echo "<script>alert('Experience letter not found.'); window.open('../../index.php?view_experience_letters','_self');</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Experience letter not found.', icon: 'error'}).then(() => { window.open('../../index.php?view_experience_letters','_self'); });</script>";
         exit();
     }
 

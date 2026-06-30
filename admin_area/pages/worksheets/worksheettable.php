@@ -258,7 +258,9 @@ $result = mysqli_query($con, $sql);
     <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden;">
             <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
-                <button type="button" class="close" data-dismiss="modal" style="color: black; opacity: 0.5; position: absolute; right: 25px; top: 25px; font-size: 24px;">&times;</button>
+                <button type="button" class="btn-modal-close" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                </button>
                 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 40px;">
                     <div style="display: flex; align-items: center; gap: 18px;">
                         <div style="width: 48px; height: 48px; background: #dd2127; color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 16px rgba(185, 81, 81, 0.3);">

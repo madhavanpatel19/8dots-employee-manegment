@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
 
     $run_admin = mysqli_query($con, $insert_admin);
     if ($run_admin) {
-        echo "<script>alert('User Created Successfully'); window.location='index.php?view_users';</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'User Created Successfully', icon: 'success'}).then(() => { window.location.href='index.php?view_users'; });</script>";
     }
 }
 ?>

@@ -19,7 +19,7 @@ if (!$project) {
     exit();
 }
 
-$assigned_employees = array_filter(explode(',', $project['assigned_employees']), function($id) {
+$assigned_employees = array_filter(explode(',', $project['assigned_employees']), function ($id) {
     return !empty(trim($id));
 });
 
@@ -56,53 +56,53 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                 $get_emp = mysqli_query($con, "SELECT * FROM emp_list WHERE id = $emp_id");
                 $emp = mysqli_fetch_assoc($get_emp);
                 if (!$emp) continue;
-                
+
                 $emp_name = htmlspecialchars($emp['name']);
                 $emp_job = htmlspecialchars($emp['job_title'] ?? 'Employee');
                 $emp_img = !empty($emp['employee_image']) ? 'uploads/' . htmlspecialchars($emp['employee_image']) : null;
         ?>
-            <div class="todo-column" data-emp-id="<?php echo $emp_id; ?>">
-                <div class="todo-col-header">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <?php if ($emp_img && file_exists('../../' . $emp_img)) { ?>
-                            <img src="<?php echo $emp_img; ?>" class="emp-avatar">
-                        <?php } else { ?>
-                            <div class="emp-avatar-fallback"><?php echo strtoupper(substr($emp_name, 0, 1)); ?></div>
-                        <?php } ?>
-                        <div>
-                            <div class="emp-name"><?php echo $emp_name; ?></div>
-                            <div class="emp-role"><?php echo $emp_job; ?></div>
+                <div class="todo-column" data-emp-id="<?php echo $emp_id; ?>">
+                    <div class="todo-col-header">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <?php if ($emp_img && file_exists('../../' . $emp_img)) { ?>
+                                <img src="<?php echo $emp_img; ?>" class="emp-avatar">
+                            <?php } else { ?>
+                                <div class="emp-avatar-fallback"><?php echo strtoupper(substr($emp_name, 0, 1)); ?></div>
+                            <?php } ?>
+                            <div>
+                                <div class="emp-name"><?php echo $emp_name; ?></div>
+                                <div class="emp-role"><?php echo $emp_job; ?></div>
+                            </div>
+                        </div>
+                        <button class="icon-btn"><i class="fa fa-ellipsis-v"></i></button>
+                    </div>
+
+                    <div class="add-task-trigger" onclick="showAddTask(<?php echo $emp_id; ?>)">
+                        <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
+                        <span>Add a task</span>
+                    </div>
+
+                    <div class="add-task-form" id="add-form-<?php echo $emp_id; ?>" style="display: none;">
+                        <input type="text" class="task-input" id="task-input-<?php echo $emp_id; ?>" placeholder="What needs to be done?">
+                        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                            <input type="date" class="task-date-input" id="task-date-<?php echo $emp_id; ?>">
+                            <select class="task-priority-input" id="task-priority-<?php echo $emp_id; ?>">
+                                <option value="Low">Low Priority</option>
+                                <option value="Medium" selected>Medium Priority</option>
+                                <option value="High">High Priority</option>
+                            </select>
+                            <button class="btn-premium-add" onclick="saveTask(<?php echo $emp_id; ?>)">Add</button>
+                            <button class="btn-premium-cancel" onclick="hideAddTask(<?php echo $emp_id; ?>)">Cancel</button>
                         </div>
                     </div>
-                    <button class="icon-btn"><i class="fa fa-ellipsis-v"></i></button>
-                </div>
 
-                <div class="add-task-trigger" onclick="showAddTask(<?php echo $emp_id; ?>)">
-                    <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
-                    <span>Add a task</span>
-                </div>
-                
-                <div class="add-task-form" id="add-form-<?php echo $emp_id; ?>" style="display: none;">
-                    <input type="text" class="task-input" id="task-input-<?php echo $emp_id; ?>" placeholder="What needs to be done?">
-                    <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
-                        <input type="date" class="task-date-input" id="task-date-<?php echo $emp_id; ?>">
-                        <select class="task-priority-input" id="task-priority-<?php echo $emp_id; ?>">
-                            <option value="Low">Low Priority</option>
-                            <option value="Medium" selected>Medium Priority</option>
-                            <option value="High">High Priority</option>
-                        </select>
-                        <button class="save-task-btn" onclick="saveTask(<?php echo $emp_id; ?>)">Add</button>
-                        <button class="cancel-task-btn" onclick="hideAddTask(<?php echo $emp_id; ?>)">Cancel</button>
+                    <div class="task-list" id="task-list-<?php echo $emp_id; ?>">
+                        <div style="text-align: center; padding: 20px;"><i class="fa fa-spinner fa-spin" style="color: #cbd5e1;"></i></div>
                     </div>
                 </div>
-
-                <div class="task-list" id="task-list-<?php echo $emp_id; ?>">
-                    <div style="text-align: center; padding: 20px;"><i class="fa fa-spinner fa-spin" style="color: #cbd5e1;"></i></div>
-                </div>
-            </div>
-        <?php 
+        <?php
             }
-        } 
+        }
         ?>
     </div>
 </div>
@@ -194,11 +194,11 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .add-task-trigger:hover {
-        color: #3b82f6;
+        color: #dc2626;
     }
 
     .add-task-trigger:hover i {
-        color: #3b82f6 !important;
+        color: #dc2626 !important;
     }
 
     .add-task-form {
@@ -221,11 +221,12 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-input:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
     }
 
-    .task-date-input, .task-priority-input {
+    .task-date-input,
+    .task-priority-input {
         border: 1px solid #cbd5e1;
         border-radius: 6px;
         padding: 6px 10px;
@@ -235,27 +236,6 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         outline: none;
     }
 
-    .save-task-btn {
-        background: #3b82f6;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 6px 16px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .cancel-task-btn {
-        background: #fff;
-        color: #64748b;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        padding: 6px 16px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-    }
 
     .task-item {
         display: flex;
@@ -284,7 +264,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-checkbox:hover {
-        border-color: #3b82f6;
+        border-color: #dc2626;
     }
 
     .task-checkbox i {
@@ -294,8 +274,8 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-item.completed .task-checkbox {
-        background: #3b82f6;
-        border-color: #3b82f6;
+        background: #dc2626;
+        border-color: #dc2626;
     }
 
     .task-item.completed .task-checkbox i {
@@ -333,10 +313,18 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     .priority-flag {
         font-size: 12px;
     }
-    .priority-High { color: #ef4444; }
-    .priority-Medium { color: #f59e0b; }
-    .priority-Low { color: #22c55e; }
 
+    .priority-High {
+        color: #ef4444;
+    }
+
+    .priority-Medium {
+        color: #f59e0b;
+    }
+
+    .priority-Low {
+        color: #22c55e;
+    }
 </style>
 
 <script>
@@ -378,7 +366,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         $.ajax({
             url: 'ajax/projects/ajax_get_team_todos.php',
             method: 'POST',
-            data: { project_id: projectId, emp_id: empId },
+            data: {
+                project_id: projectId,
+                emp_id: empId
+            },
             success: function(res) {
                 if (res.success) {
                     renderTasks(empId, res.tasks);
@@ -390,7 +381,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     function renderTasks(empId, tasks) {
         const list = $(`#task-list-${empId}`);
         list.empty();
-        
+
         if (tasks.length === 0) {
             list.html('<div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 15px 0;">No tasks yet</div>');
             return;
@@ -399,15 +390,18 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         tasks.forEach(task => {
             const isCompleted = task.status == 1;
             const itemClass = isCompleted ? 'task-item completed' : 'task-item';
-            
+
             let dateBadge = '';
             if (task.due_date) {
                 const due = new Date(task.due_date);
                 const today = new Date();
                 const tomorrow = new Date();
                 tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                let dateStr = due.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+                let dateStr = due.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short'
+                });
                 if (due.toDateString() === today.toDateString()) {
                     dateStr = 'Today';
                 } else if (due.toDateString() === tomorrow.toDateString()) {
@@ -475,7 +469,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         $.ajax({
             url: 'ajax/projects/ajax_toggle_team_todo.php',
             method: 'POST',
-            data: { task_id: taskId, status: newStatus },
+            data: {
+                task_id: taskId,
+                status: newStatus
+            },
             success: function(res) {
                 if (res.success) {
                     loadTasks(empId);
@@ -497,7 +494,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                 $.ajax({
                     url: 'ajax/projects/ajax_delete_team_todo.php',
                     method: 'POST',
-                    data: { task_id: taskId },
+                    data: {
+                        task_id: taskId
+                    },
                     success: function(res) {
                         if (res.success) {
                             loadTasks(empId);
@@ -510,10 +509,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
     function escapeHtml(unsafe) {
         return unsafe
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 </script>

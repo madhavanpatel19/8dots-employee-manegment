@@ -317,7 +317,6 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
                         <i class="fa fa-file-text-o" style="font-size: 14px;"></i>
                     </div>
                     Generate Experience & Relieving Letter
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: black; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
                 </h4>
             </div>
             <form action="pages/documents/generate_experience.php" method="post" target="_blank">

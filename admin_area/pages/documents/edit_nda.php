@@ -13,7 +13,7 @@ if (isset($_GET['edit_nda'])) {
     $row_edit = mysqli_fetch_array($run_edit);
 
     if (!$row_edit) {
-        echo "<script>alert('NDA record not found.'); window.open('../../index.php?view_nda','_self');</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'NDA record not found.', icon: 'error'}).then(() => { window.open('../../index.php?view_nda','_self'); });</script>";
         exit();
     }
 
@@ -44,10 +44,10 @@ if (isset($_POST['update_nda'])) {
     $run_update = mysqli_query($con, $update_query);
 
     if ($run_update) {
-        echo "<script>alert('NDA has been updated successfully')</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'NDA has been updated successfully', icon: 'success'});</script>";
         echo "<script>window.open('../../index.php?view_nda','_self')</script>";
     } else {
-        echo "<script>alert('Error: Could not update NDA.')</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Error: Could not update NDA.', icon: 'error'});</script>";
     }
 }
 ?>

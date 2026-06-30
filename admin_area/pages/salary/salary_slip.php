@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_salary_amounts']
     if ($join_r && !empty($join_r['join_date']) && $join_r['join_date'] !== '0000-00-00') {
         $join_month_save = date('Y-m', strtotime($join_r['join_date']));
         if ($month_save < $join_month_save) {
-            echo "<script>alert('Cannot save salary before employee joining month.'); window.location.href='index.php?salary_slip=1&emp_id=$emp_id_save&month=" . urlencode($join_month_save) . "';</script>";
+            echo "<script>Swal.fire('Notification', 'Cannot save salary before employee joining month.', 'info'); window.location.href='index.php?salary_slip=1&emp_id=$emp_id_save&month=" . urlencode($join_month_save) . "';</script>";
             exit();
         }
     }
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_salary_amounts']
 
     mysqli_query($con, $history_q);
 
-    echo "<script>alert('Salary amounts updated successfully for $month_save!');</script>";
+    echo "<script>Swal.fire({title: 'Notification', text: 'Salary amounts updated successfully for $month_save!', icon: 'success'});</script>";
     // Refresh to show updated values
     echo "<script>window.location.href='index.php?salary_slip=1&emp_id=$emp_id_save&month=" . urlencode($month_save) . "&view=1';</script>";
     exit();
