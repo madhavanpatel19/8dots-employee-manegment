@@ -108,20 +108,19 @@ $result = mysqli_query($con, $query);
         <?php endif; ?>
 
         <div class="premium-ui-enabled">
-            <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 15px;">
-                <h1></h1>
+            <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; padding: 0 0 15px 0; margin-top: -5px;">
+                <h1 style="margin: 0;"></h1>
                 <button class="btn-premium-add" data-toggle="modal" data-target="#applyLeaveModal">
                     <i class="fa fa-plus"></i> Apply Leave
                 </button>
             </div>
 
-
-
             <!-- Horizontal Scrollable Stats -->
             <div class="stats-scroll-wrapper" style="margin-bottom: 30px; position: relative;">
-                <div style="display: flex; gap: 15px; overflow-x: auto; padding: 5px 5px 20px 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none;">
+                <div class="stats-scroll-container" style="display: flex; gap: 15px; overflow-x: auto; padding: 5px 5px 15px 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none;">
                     <style>
-                        .stats-scroll-wrapper div::-webkit-scrollbar {
+                        /* Hide scrollbar for a clean look but keep scrolling functional */
+                        .stats-scroll-container::-webkit-scrollbar {
                             display: none;
                         }
                     </style>
@@ -234,11 +233,18 @@ $result = mysqli_query($con, $query);
                     <div class="modal fade" id="applyLeaveModal" tabindex="-1" role="dialog" aria-labelledby="applyLeaveModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                                <div class="modal-header" style="background: #ffEAEB; color:black; padding: 20px 25px;">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="applyLeaveModalLabel" style="font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 15px;">
-                                        <i class="fa fa-calendar-plus-o"></i> Apply for New Leave
-                                    </h4>
+                                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                                    <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
+                                        <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Apply for New Leave</h5>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                                        <i class="fa fa-times"></i>
+                                    </button>
                                 </div>
                                 <div class="modal-body" style="padding: 25px;">
                                     <form class="form-horizontal" method="POST" onsubmit="return validateLeaveForm();">
@@ -276,8 +282,8 @@ $result = mysqli_query($con, $query);
                                         </div>
                                         <div class="form-group" style="margin-top: 30px; margin-bottom: 0;">
                                             <div class="col-md-12" style="display: flex; gap: 10px; justify-content: flex-end;">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal" style="border-radius: 10px; padding: 10px 20px; font-weight: 600;">Cancel</button>
-                                                <button type="submit" name="apply_leave" class="btn-premium-add" style="border: none;">
+                                                <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                                                <button type="submit" name="apply_leave" class="btn-premium-add">
                                                     <i class="fa fa-paper-plane"></i> Submit Application
                                                 </button>
                                             </div>

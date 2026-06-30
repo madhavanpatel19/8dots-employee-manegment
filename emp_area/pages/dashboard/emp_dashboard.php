@@ -648,6 +648,7 @@ function fmtHMS($secs)
         justify-content: space-between;
         flex: 1;
         position: relative;
+        min-height: 140px;
     }
 
     .bar-col {
@@ -1033,7 +1034,8 @@ function fmtHMS($secs)
                 var todayEl = $('#todayBarVal');
                 if (todayEl.length) {
                     todayEl.text(t);
-                    var pct = (cur / att.maxWeek) * 95;
+                    var currentMax = Math.max(att.maxWeek, cur);
+                    var pct = (cur / currentMax) * 95;
                     var barH = Math.max(4, pct);
                     $('#todayBarFill').css('height', barH + 'px');
                 }

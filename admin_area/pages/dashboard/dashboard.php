@@ -449,8 +449,8 @@ if ($res && mysqli_num_rows($res) > 0) {
                         if ($diff > 0) $total_secs = $diff;
                     }
 
-                    // Currently working = present + no check-out yet (or is_working is 1)
-                    $currently_working = ($status === 'present' && ($is_working_val == 1 || (empty($att_row['check_out_time']) && !empty($att_row['check_in_time']))));
+                    // Currently working = present + is_working is 1
+                    $currently_working = ($status === 'present' && $is_working_val == 1);
                     $dot_color = $currently_working ? '#10b981' : '#ef4444';
                     $total_work_txt = '00h 00m';
                     if ($total_secs > 0) {
@@ -506,11 +506,11 @@ if ($res && mysqli_num_rows($res) > 0) {
                         <td style="vertical-align: middle; text-align: center;"><span class="check-in" style="color: var(--green); font-weight: 600;"><?php echo $check_in; ?></span></td>
                         <td style="vertical-align: middle; text-align: center;"><span class="check-out" style="color: <?php echo $check_out == '-' ? 'var(--text-muted)' : 'var(--red)'; ?>; font-weight: <?php echo $check_out == '-' ? '400' : '600'; ?>"><?php echo $check_out; ?></span></td>
                         <td style="vertical-align: middle; text-align: center;">
-                            <div style="display:flex; align-items:center; justify-content: center; gap:7px;">
+                            <div class="duration-cell" data-emp-id="<?php echo $att_row['emp_id']; ?>" data-is-working="<?php echo $currently_working ? 1 : 0; ?>" data-total-secs="<?php echo $total_secs; ?>" data-last-resume="<?php echo !empty($att_row['last_resume_time']) ? date('Y-m-d\TH:i:s', strtotime($att_row['last_resume_time'])) : (!empty($att_row['check_in_time']) ? date('Y-m-d\TH:i:s', strtotime($att_row['check_in_time'])) : ''); ?>" style="display:flex; align-items:center; justify-content: center; gap:7px;">
                                 <?php if ($currently_working): ?>
                                     <span class="live-dot" title="Currently Working"></span>
                                 <?php endif; ?>
-                                <span class="total-work"><?php echo $total_work_txt; ?></span>
+                                <span class="total-work duration-text"><?php echo $total_work_txt; ?></span>
                             </div>
                         </td>
                         <td style="vertical-align: middle; text-align: center;"><span class="status-badge" style="background: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600;"><?php echo $badge_text; ?></span></td>
@@ -585,27 +585,26 @@ if ($res && mysqli_num_rows($res) > 0) {
                             $cell.attr('data-last-resume', info.last_resume);
 
                             // Update Live Indicator
-                            var hasIndicator = $cell.find('.live-indicator-wrapper').length > 0;
+                            var hasIndicator = $cell.find('.live-dot').length > 0;
                             if (info.is_working == 1 && !hasIndicator) {
-                                $cell.append('<span class="live-indicator-wrapper" title="Currently Working"><span class="live-indicator-circle"></span></span>');
+                                $cell.prepend('<span class="live-dot" title="Currently Working"></span>');
                             } else if (info.is_working == 0 && hasIndicator) {
-                                $cell.find('.live-indicator-wrapper').remove();
+                                $cell.find('.live-dot').remove();
                             }
 
                             // Update Status Badge if needed
                             var $row = $cell.closest('tr');
-                            var $statusBadge = $row.find('.status-pill');
+                            var $statusBadge = $row.find('.status-badge');
                             if (info.status) {
                                 var statusUpper = info.status.charAt(0).toUpperCase() + info.status.slice(1);
                                 if ($statusBadge.text() != statusUpper) {
                                     $statusBadge.text(statusUpper);
-                                    $statusBadge.attr('class', 'status-pill status-' + info.status);
                                 }
-                            }
 
-                            // If not working, update duration text immediately
-                            if (info.is_working == 0) {
-                                $cell.find('.duration-text').text(formatDuration(info.total_secs));
+                                // If not working, update duration text immediately
+                                if (info.is_working == 0) {
+                                    $cell.find('.duration-text').text(formatDuration(info.total_secs));
+                                }
                             }
                         }
                     });

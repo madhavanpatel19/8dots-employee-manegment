@@ -587,6 +587,11 @@ if ($run_stats) {
 </script>
 
 <style>
+    /* Ensure SweetAlert pops up over any Bootstrap Modal */
+    .swal2-container {
+        z-index: 99999 !important;
+    }
+
     .spinner-premium {
         width: 30px;
         height: 30px;
