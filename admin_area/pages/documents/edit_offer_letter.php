@@ -117,10 +117,8 @@ if (isset($_POST['update_offer'])) {
                 </div>
 
                 <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
-                    <a href="index.php?view_offer_letters" class="btn btn-default" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff; text-decoration: none;">Cancel</a>
-                    <button type="submit" name="update_offer" style="padding: 12px 30px; border-radius: 8px; font-weight: 600; background: #DF2127; color: #fff; border: none; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.3); display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='none';">
-                        <i class="fa fa-save"></i> Save Changes
-                    </button>
+                    <a href="index.php?view_offer_letters" class="btn-premium-cancel">Cancel</a>
+                    <button type="submit" name="update_offer" class="btn-premium-add">Save Changes</button>
                 </div>
             </div>
         </div>

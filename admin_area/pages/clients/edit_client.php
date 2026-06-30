@@ -586,7 +586,7 @@ endif; ?>
             </div>
 
             <div class="actions-footer">
-                <a href="index.php?client_directory" class="btn-cancel">Cancel</a>
+                <a href="index.php?client_directory" class="btn-premium-cancel">Cancel</a>
                 <button type="submit" name="update_client" class="btn-premium-add">
                     <i class="fa fa-save"></i> Save Changes
                 </button>

@@ -4,7 +4,9 @@ if (!isset($_SESSION['admin_email'])) {
     exit();
 }
 
-if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
 
 if (isset($_GET['edit_nda'])) {
     $edit_id = mysqli_real_escape_string($con, $_GET['edit_nda']);
@@ -67,7 +69,7 @@ if (isset($_POST['update_nda'])) {
 
             <div style="padding: 30px;">
                 <input type="hidden" name="id" value="<?php echo $id; ?>">
-                
+
                 <div class="row">
                     <div class="col-md-6" style="margin-bottom: 20px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Party Name</label>
@@ -98,10 +100,8 @@ if (isset($_POST['update_nda'])) {
                 </div>
 
                 <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
-                    <a href="index.php?view_nda" class="btn btn-default" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff; text-decoration: none;">Cancel</a>
-                    <button type="submit" name="update_nda" style="padding: 12px 30px; border-radius: 8px; font-weight: 600; background: #DF2127; color: #fff; border: none; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.3); display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='none';">
-                        <i class="fa fa-save"></i> Save Changes
-                    </button>
+                    <a href="index.php?view_nda" class="btn-premium-cancel">Cancel</a>
+                    <button type="submit" name="update_nda" class="btn-premium-add">Save Changes</button>
                 </div>
             </div>
         </div>

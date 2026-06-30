@@ -386,10 +386,13 @@ $run_projects = mysqli_query($con, $get_projects);
 <div id="projectBudgetModal" class="modal fade" role="dialog" style="z-index: 99999;">
     <div class="modal-dialog modal-lg" style="max-width: 1050px; overflow-y:auto; margin-top: 50px;">
         <div class="modal-content premium-modal-content" style="border: none; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-            <div class="modal-header" style="background: #FFEAEB; border: none; padding: 20px 30px; display: flex; overflow: hidden;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close" style="z-index: 10;">
+                    <i class="fa fa-times"></i>
+                </button>
                 <div style="display: flex; align-items: center; gap: 15px; position: relative; z-index: 1;">
-                    <div style="width: 46px; height: 46px; background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-money" style="color: #4ade80; font-size: 22px;"></i>
+                    <div style="width: 46px; height: 46px; background: #dd2127; border: 1px solid rgba(223, 33, 39, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-money" style="color: white; font-size: 22px;"></i>
                     </div>
                     <div>
                         <h4 class="modal-title" style="font-weight: 900; font-size: 20px; color: #000000; margin: 0; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Project Budget Control</h4>
@@ -397,7 +400,6 @@ $run_projects = mysqli_query($con, $get_projects);
                     </div>
                     <input type="hidden" id="budget_currency">
                 </div>
-                <button type="button" class="close" data-dismiss="modal" style="color: #000000; position:absolute; right: 30px;opacity: 0.6; font-size: 28px; transition: 0.3s; margin: 0; padding: 0;">&times;</button>
             </div>
 
             <div class="modal-body" style="padding: 0; background: #fff;">
@@ -487,13 +489,15 @@ $run_projects = mysqli_query($con, $get_projects);
 <div class="modal fade" id="phaseEditModal" tabindex="-1" aria-hidden="true" style="z-index: 100005;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-            <div class="modal-header" style="background: #FFEAEB; border-bottom: 1px solid #e2e8f0; border-radius: 20px 20px 0 0; padding: 20px 30px;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
                 <h5 class="modal-title" id="phaseModalTitle" style="font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 32px; height: 32px; background: #e0e7ff; color: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 32px; height: 32px; background: #dd2127; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-list-ol"></i>
                     </div>
                     <span>Add Payment Phase</span>
-                    <button type="button" class="close" data-dismiss="modal" style="color: #64748b; position: absolute; right: 20px; opacity: 0.8; font-size: 24px; transition: 0.3s; margin: 0; padding: 0;">&times;</button>
                 </h5>
             </div>
             <div class="modal-body" style="padding: 30px;">
@@ -553,7 +557,7 @@ $run_projects = mysqli_query($con, $get_projects);
                 </form>
             </div>
             <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 20px 30px; background: #fff; border-radius: 0 0 20px 20px;">
-                <button type="button" data-dismiss="modal" style="background: #fff; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; padding: 10px 20px; font-weight: 700; font-size: 13px; transition: 0.3s;">Cancel</button>
+                <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
                 <button type="button" onclick="savePhaseEdit()" class="btn-premium-add">Save Phase</button>
             </div>
         </div>
