@@ -242,13 +242,20 @@ body {
 .forgot-link {
   font-size: 13px;
   color: var(--primary-color);
-  text-decoration: none;
+  text-decoration: none !important;
   font-weight: 600;
   transition: color 0.2s;
+  outline: none !important;
+  border: none !important;
 }
 
-.forgot-link:hover {
+.forgot-link:hover,
+.forgot-link:focus,
+.forgot-link:active {
   color: var(--primary-hover);
+  text-decoration: none !important;
+  outline: none !important;
+  border: none !important;
 }
 
 .btn-login {

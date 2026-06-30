@@ -5,7 +5,9 @@
 // Moved from: admin_area/pages/auth/emp-login.php
 // Paths updated to be relative from emp_area/pages/auth.
 // =============================================================
-if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
 
 $login_status = "";
 if (isset($_POST['login'])) {
@@ -20,7 +22,9 @@ if (isset($_POST['login'])) {
         if (isset($user['status']) && $user['status'] === 'Inactive') {
             $login_status = "inactive";
         } else {
-            if (session_status() == PHP_SESSION_NONE) { session_start(); }
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['emp_id'] = $user['id'];
             $_SESSION['emp_name'] = $user['name'];
@@ -43,6 +47,8 @@ if (isset($_POST['login'])) {
     <link rel="stylesheet" href="../../../admin_area/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../admin_area/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../admin_area/css/login.css">
+    <link rel="shortcut icon" href="../../../admin_area/images/Cadlete_Black_logo_favicon.png" type="image/png">
+
     <style>
         .premium-notification {
             position: fixed;

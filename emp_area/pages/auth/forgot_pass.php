@@ -150,8 +150,7 @@ if (isset($_POST['reset_password'])) {
                 unset($_SESSION['reset_email']);
                 unset($_SESSION['reset_step']);
 
-                echo "<script>Swal.fire({title: 'Notification', text: 'Password Reset Successful! Please login with your new password.', icon: 'success'}).then(() => { window.location.href='emp-login.php'; });</script>";
-                exit();
+                $reset_success = true;
             }
         } else {
             $error = "Invalid OTP code. Please check your email and try again.";
@@ -227,7 +226,7 @@ if (isset($_POST['reset_password'])) {
                     </button>
 
                     <div style="text-align:center;">
-                        <a href="emp-login.php" class="forgot-link"><i class="fa fa-arrow-left"></i> Back to Login</a>
+                        <a href="login.php" class="forgot-link"><i class="fa fa-arrow-left"></i> Back to Login</a>
                     </div>
                 </form>
             <?php } else { ?>
@@ -273,12 +272,29 @@ if (isset($_POST['reset_password'])) {
                     </div>
 
                     <div style="text-align:center; margin-top:15px;">
-                        <a href="emp-login.php" class="forgot-link"><i class="fa fa-arrow-left"></i> Back to Login</a>
+                        <a href="login.php" class="forgot-link"><i class="fa fa-arrow-left"></i> Back to Login</a>
                     </div>
                 </form>
             <?php } ?>
         </div>
     </div>
+
+    <!-- Load SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <?php if (isset($reset_success) && $reset_success): ?>
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: 'Password Reset Successful! Redirecting to login...',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = 'login.php';
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

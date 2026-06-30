@@ -1,6 +1,10 @@
 ﻿<?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); }
-if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -10,6 +14,8 @@ if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../css/login.css">
+    <link rel="shortcut icon" href="../../images/Cadlete_Black_logo_favicon.png" type="image/png">
+
     <style>
         .premium-notification {
             position: fixed;
