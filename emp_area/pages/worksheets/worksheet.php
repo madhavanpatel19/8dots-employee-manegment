@@ -45,14 +45,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $remarks        = mysqli_real_escape_string($con, $_POST['task']);
         }
 
-        $check = mysqli_query($con, "SELECT id FROM attendance WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'");
+        $check = mysqli_query($con, "SELECT id, work_photos FROM attendance WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'");
         if (mysqli_num_rows($check) > 0) {
-            $update = "UPDATE attendance SET check_in_time='$check_in_time', check_out_time='$check_out_time', remarks='$remarks' WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'";
+            $row_att = mysqli_fetch_assoc($check);
+            $existing_photos = !empty($row_att['work_photos']) ? json_decode($row_att['work_photos'], true) : [];
+            if (!is_array($existing_photos)) $existing_photos = [];
+
+            $uploaded_photos = $existing_photos;
+            if (isset($_FILES['work_photos'])) {
+                $upload_dir = __DIR__ . '/../../../admin_area/uploads/';
+                foreach ($_FILES['work_photos']['name'] as $key => $name) {
+                    if ($_FILES['work_photos']['error'][$key] == 0) {
+                        $tmp_name = $_FILES['work_photos']['tmp_name'][$key];
+                        $ext = pathinfo($name, PATHINFO_EXTENSION);
+                        $new_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+                        if (move_uploaded_file($tmp_name, $upload_dir . $new_name)) {
+                            $uploaded_photos[] = 'uploads/' . $new_name;
+                        }
+                    }
+                }
+            }
+            $photos_json = empty($uploaded_photos) ? '' : json_encode($uploaded_photos);
+
+            $update = "UPDATE attendance SET check_in_time='$check_in_time', check_out_time='$check_out_time', remarks='$remarks', work_photos='$photos_json' WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'";
             if (mysqli_query($con, $update)) {
                 $successMessage = "Worksheet updated successfully!";
             }
         } else {
-            $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks) VALUES ('$emp_id', '$attendance_date', '$check_in_time', '$check_out_time', 'present', '$remarks')";
+            $uploaded_photos = [];
+            if (isset($_FILES['work_photos'])) {
+                $upload_dir = __DIR__ . '/../../../admin_area/uploads/';
+                foreach ($_FILES['work_photos']['name'] as $key => $name) {
+                    if ($_FILES['work_photos']['error'][$key] == 0) {
+                        $tmp_name = $_FILES['work_photos']['tmp_name'][$key];
+                        $ext = pathinfo($name, PATHINFO_EXTENSION);
+                        $new_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+                        if (move_uploaded_file($tmp_name, $upload_dir . $new_name)) {
+                            $uploaded_photos[] = 'uploads/' . $new_name;
+                        }
+                    }
+                }
+            }
+            $photos_json = empty($uploaded_photos) ? '' : json_encode($uploaded_photos);
+
+            $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks, work_photos) VALUES ('$emp_id', '$attendance_date', '$check_in_time', '$check_out_time', 'present', '$remarks', '$photos_json')";
             if (mysqli_query($con, $insert)) {
                 $successMessage = "Worksheet submitted successfully!";
             }
@@ -91,6 +127,41 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
             .page-header {
                 border-bottom: 1px solid #eee;
                 margin-bottom: 20px;
+            }
+
+            .work-photo-item {
+                width: 45px;
+                height: 45px;
+                border-radius: 8px;
+                overflow: hidden;
+                position: relative;
+                cursor: pointer;
+                border: 1px solid #e2e8f0;
+            }
+
+            .work-photo-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .work-photo-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: 0.3s ease;
+                color: #fff;
+            }
+
+            .work-photo-item:hover .work-photo-overlay {
+                opacity: 1;
             }
         </style>
     </head>
@@ -165,9 +236,14 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                                 <td style="text-align: center; color: #64748b; font-size: 13px;"><?php echo $row['check_out_time'] ?: '--:--'; ?></td>
                                                 <td style="text-align: center; color: #dd2127; font-weight: 700;">
                                                     <?php
-                                                    if ($row['total_duration_secs'] > 0) {
-                                                        $h = floor($row['total_duration_secs'] / 3600);
-                                                        $m = floor(($row['total_duration_secs'] % 3600) / 60);
+                                                    $active_secs = $row['total_duration_secs'];
+                                                    if ($row['attendance_date'] == date('Y-m-d') && $row['is_working'] && !empty($row['last_resume_time'])) {
+                                                        $active_secs += time() - strtotime($row['last_resume_time']);
+                                                    }
+
+                                                    if ($active_secs > 0) {
+                                                        $h = floor($active_secs / 3600);
+                                                        $m = floor(($active_secs % 3600) / 60);
                                                         echo "{$h}h {$m}m";
                                                     } else {
                                                         echo "-";
@@ -222,14 +298,21 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
             <div class="modal fade" id="addWorksheetModal" tabindex="-1" role="dialog" aria-labelledby="addWorksheetModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                        <div class="modal-header" style="background: #ffeaeb; color: black; padding: 20px 25px;">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="addWorksheetModalLabel" style="font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 15px;">
-                                <i class="fa fa-plus-circle"></i> Add New Worksheet
-                            </h4>
+                        <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:#ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                            <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
+                                <div style="width: 36px; height: 36px; background: #dd2127; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-pencil-square-o" style="color: #fff; font-size: 14px;"></i>
+                                </div>
+                                <div>
+                                    <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Add New Worksheet</h5>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
                         </div>
                         <div class="modal-body" style="padding: 25px;">
-                            <form class="form-horizontal" method="POST" onsubmit="return validateWorksheetForm();">
+                            <form class="form-horizontal" method="POST" enctype="multipart/form-data" onsubmit="return validateWorksheetForm();">
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" style="text-align: left; color: #64748b; font-weight: 600;">Date</label>
                                     <div class="col-md-8">
@@ -254,6 +337,21 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                     <label class="col-md-4 control-label" style="text-align: left; color: #64748b; font-weight: 600;">Work Details <span class="text-danger">*</span></label>
                                     <div class="col-md-8">
                                         <textarea name="task" class="p-input-premium" style="height: 120px; resize: none;" placeholder="What did you accomplish today?" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos</label>
+                                    <div class="col-md-8">
+                                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                                            <?php for ($id = 1; $id <= 4; $id++): ?>
+                                                <div id="box_<?php echo $id; ?>" onclick="document.getElementById('work_photo_<?php echo $id; ?>').click()"
+                                                    style="width:70px;height:70px;border:2px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;background:#f8fafc;">
+                                                    <i class="fa fa-plus" style="color:#94a3b8;font-size:18px;"></i>
+                                                    <input type="file" name="work_photos[]" id="work_photo_<?php echo $id; ?>" style="display:none;" accept="image/*" onchange="previewWorkPhoto(this,<?php echo $id; ?>)">
+                                                    <img id="preview_<?php echo $id; ?>" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+                                                </div>
+                                            <?php endfor; ?>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-top: 30px; margin-bottom: 0;">
@@ -296,6 +394,18 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                     }
                 });
                 return valid;
+            }
+
+            function previewWorkPhoto(input, id) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('preview_' + id).src = e.target.result;
+                        document.getElementById('preview_' + id).style.display = 'block';
+                        document.getElementById('box_' + id).querySelector('.fa-plus').style.display = 'none';
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
             }
 
             document.addEventListener('DOMContentLoaded', function() {

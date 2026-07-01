@@ -67,7 +67,8 @@ if (!isset($_SESSION['emp_id'])) {
                                 'emp_profile' => '<i class="fa fa-user"></i> My Profile',
                                 'leave_application' => '<i class="fa fa-paper-plane-o"></i> Leave Application',
                                 'emp_salary_slip' => '<i class="fa fa-money"></i> Salary Slip',
-                                'view_announcement' => '<i class="fa fa-bullhorn"></i> Announcements'
+                                'view_announcement' => '<i class="fa fa-bullhorn"></i> Announcements',
+                                'announcements' => '<i class="fa fa-bullhorn"></i> Announcements'
                             ];
                             if (array_key_exists($first_key, $title_map)) {
                                 $page_title = $title_map[$first_key];
@@ -184,6 +185,8 @@ if (!isset($_SESSION['emp_id'])) {
                         include("pages/salary/emp_salary_slip.php");
                     } elseif (isset($_GET['view_announcement'])) {
                         include("pages/announcements/view_announcement.php");
+                    } elseif (isset($_GET['announcements'])) {
+                        include("pages/announcements/announcements.php");
                     } else {
                         include("pages/dashboard/emp_dashboard.php");
                     }

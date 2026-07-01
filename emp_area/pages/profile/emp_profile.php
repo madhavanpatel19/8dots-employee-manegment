@@ -168,12 +168,20 @@ if (!isset($_SESSION['emp_id'])) {
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                <div class="modal-header" style="background: #ffeaeb; color: black; padding: 20px 25px;">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: black; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="editProfileModalLabel" style="font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 15px;">
-                        <i class="fa fa-user-circle"></i> Edit My Profile
-                    </h4>
+                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                    <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
+                        <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Edit My Profile</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
                 </div>
+
                 <div class="modal-body" style="padding: 25px;">
                     <form class="form-horizontal" method="POST" enctype="multipart/form-data">
                         <div style="text-align: center; margin-bottom: 25px;">
@@ -207,7 +215,7 @@ if (!isset($_SESSION['emp_id'])) {
 
                         <div class="form-group" style="margin-top: 30px; margin-bottom: 0;">
                             <div class="col-md-12" style="display: flex; gap: 10px; justify-content: flex-end;">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" style="border-radius: 12px; padding: 10px 20px; font-weight: 600;">Cancel</button>
+                                <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
                                 <button type="submit" name="update_profile" class="btn-premium-add">
                                     <i class="fa fa-save"></i> Save Changes
                                 </button>

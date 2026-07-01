@@ -2,8 +2,6 @@
 // =============================================================
 // emp_area/pages/announcements/view_announcement.php
 // Employee announcement detail view – partial included by index.php
-// Moved from: admin_area/pages/announcements/view_announcement.php
-// Path updated: redirect now points to emp_area login.
 // =============================================================
 if (!isset($_SESSION['emp_id'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
@@ -14,16 +12,12 @@ if (!isset($_SESSION['emp_id'])) {
 
         $get_ann = "SELECT * FROM announcements WHERE id='$ann_id'";
         $run_ann = mysqli_query($con, $get_ann);
-
-        $row_ann = null;
-        if ($run_ann) {
-            $row_ann = mysqli_fetch_array($run_ann);
-        }
+        $row_ann = ($run_ann) ? mysqli_fetch_array($run_ann) : null;
 
         if ($row_ann) {
             $title   = $row_ann['title'];
             $message = $row_ann['message'];
-            $date    = $row_ann['created_at'];
+            $date    = $row_ann['publish_date'] ?? $row_ann['created_at'];
 
             // Mark as read
             $check_read = "SELECT * FROM announcement_read WHERE announcement_id='$ann_id' AND emp_id='$emp_id'";
@@ -34,40 +28,36 @@ if (!isset($_SESSION['emp_id'])) {
             }
 ?>
 
-<div class="row">
-    <div class="col-lg-12">
-        <ol class="breadcrumb">
-            <li class="active">
-                <i class="fa fa-dashboard"></i> Dashboard / Announcement Details
-            </li>
-        </ol>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="fa fa-bullhorn fa-fw"></i> <?php echo htmlspecialchars($title); ?>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <p class="text-muted"><i class="fa fa-calendar"></i> Posted on: <?php echo $date; ?></p>
-                <hr>
-                <div style="font-size: 16px; line-height: 1.6; white-space: pre-wrap;">
-                    <?php echo htmlspecialchars($message); ?>
+            <div class="premium-ui-enabled">
+                <div class="page-header-premium" style="margin-bottom: 25px; border-bottom: none; display: flex; align-items: center; justify-content: space-between;">
+                    <h1></h1>
+                    <a href="index.php?announcements" class="btn-premium-cancel">
+                        <i class="fa fa-arrow-left"></i> Back to Announcements
+                    </a>
                 </div>
-                <hr>
-                <a href="index.php?dashboard" class="btn btn-default">Back to Dashboard</a>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="premium-card" style="padding: 30px;">
+                            <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 20px;">
+                                <h2 style="margin: 0; font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">
+                                    <?php echo htmlspecialchars($title); ?>
+                                </h2>
+                                <div style="color: #64748b; font-size: 14px; font-weight: 600;">
+                                    <i class="fa fa-clock-o"></i> Posted on: <?php echo date('d M Y, h:i A', strtotime($date)); ?>
+                                </div>
+                            </div>
+                            <div style="font-size: 16px; line-height: 1.8; color: #334155; white-space: pre-wrap; font-family: 'Inter', sans-serif;">
+                                <?php echo htmlspecialchars($message); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
 
 <?php
         } else {
-            echo "<div class='alert alert-danger'>Announcement not found.</div>";
+            echo "<div class='premium-ui-enabled'><div class='premium-card' style='padding:40px;text-align:center;color:#ef4444;font-weight:600;'><i class='fa fa-exclamation-triangle' style='font-size:40px;margin-bottom:15px;display:block;'></i> Announcement not found.</div></div>";
         }
     }
 }

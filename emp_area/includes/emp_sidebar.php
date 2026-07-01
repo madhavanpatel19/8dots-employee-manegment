@@ -103,6 +103,9 @@ if (!isset($_SESSION['emp_id'])) {
                 <li class="<?php if (isset($_GET['worksheet'])) { echo "active"; } ?>">
                     <a href="index.php?worksheet"><i class="fa fa-table"></i> Worksheet</a>
                 </li>
+                <li class="<?php if (isset($_GET['view_announcement']) || isset($_GET['announcements'])) { echo "active"; } ?>">
+                    <a href="index.php?announcements"><i class="fa fa-bullhorn"></i> Announcements</a>
+                </li>
             </ul>
 
             <h3 class="menu-heading">HR</h3>
