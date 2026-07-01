@@ -1399,12 +1399,8 @@ $run_emps = mysqli_query($con, $get_emps);
                     <?php endif; ?>
 
                     <div style="margin-top: 40px; display: flex; justify-content: flex-end; gap: 15px;">
-                        <a href="index.php?projects" class="btn btn-default" style="padding: 12px 25px; border-radius: 8px; font-weight: 600; color: #475569; border: 1px solid #cbd5e1; background: #fff;">
-                            Cancel
-                        </a>
-                        <button type="submit" name="submit_project" class="btn-premium-add" style="padding: 12px 30px; border-radius: 8px; font-weight: 600; background: #DF2127; border: none; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);">
-                            Update Project
-                        </button>
+                        <a href="index.php?projects" class="btn-premium-cancel">Cancel</a>
+                        <button type="submit" name="submit_project" class="btn-premium-add">Update Project</button>
                     </div>
                 </div>
             </div>

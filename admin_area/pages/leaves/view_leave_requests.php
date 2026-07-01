@@ -31,10 +31,16 @@ if (isset($_GET['approve']) || isset($_GET['reject'])) {
             foreach ($period as $date) {
                 $current_date = $date->format('Y-m-d');
                 // Check if record exists
-                $check = mysqli_query($con, "SELECT id FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
+                $check = mysqli_query($con, "SELECT id, check_in_time FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
                 if (mysqli_num_rows($check) > 0) {
+                    $existing_att = mysqli_fetch_assoc($check);
+                    // If employee has already checked in on this day, they are on duty — do NOT override with leave
+                    if (!empty($existing_att['check_in_time'])) {
+                        continue; // Skip: employee is/was present on this day
+                    }
                     mysqli_query($con, "UPDATE attendance SET status = 'leave', remarks = 'Leave: $reason' WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
                 } else {
+                    // Only insert a leave record for future dates or dates with no activity
                     mysqli_query($con, "INSERT INTO attendance (emp_id, attendance_date, status, remarks) VALUES ('$emp_id', '$current_date', 'leave', 'Leave: $reason')");
                 }
             }
@@ -402,8 +408,35 @@ if ($run_stats) {
 
                             $from_date = new DateTime($row['leave_from']);
                             $to_date = new DateTime($row['leave_to']);
-                            $duration_days = $from_date->diff($to_date)->days + 1;
-                            $duration_str = $duration_days . ' Day' . ($duration_days > 1 ? 's' : '');
+                            $requested_days = $from_date->diff($to_date)->days + 1;
+
+                            // For approved leaves: count only actual leave days from attendance
+                            // (days where employee was present/checked-in are excluded)
+                            if ($status === 'approved') {
+                                $emp_id_for_leave = $row['emp_id'];
+                                $from_esc = mysqli_real_escape_string($con, $row['leave_from']);
+                                $to_esc   = mysqli_real_escape_string($con, $row['leave_to']);
+                                $actual_q = mysqli_query(
+                                    $con,
+                                    "SELECT COUNT(*) AS cnt FROM attendance
+                                     WHERE emp_id = '$emp_id_for_leave'
+                                       AND attendance_date BETWEEN '$from_esc' AND '$to_esc'
+                                       AND status = 'leave'"
+                                );
+                                $actual_row  = mysqli_fetch_assoc($actual_q);
+                                $actual_days = (int)$actual_row['cnt'];
+                                $attended    = $requested_days - $actual_days;
+                                if ($attended > 0) {
+                                    // Some days within the leave period were worked
+                                    $duration_str = $actual_days . ' Day' . ($actual_days !== 1 ? 's' : '')
+                                        . ' <span style="font-size:10px;color:#10b981;font-weight:700;" title="Employee worked on ' . $attended . ' day(s) within this leave period">('
+                                        . $attended . ' attended)</span>';
+                                } else {
+                                    $duration_str = $actual_days . ' Day' . ($actual_days !== 1 ? 's' : '');
+                                }
+                            } else {
+                                $duration_str = $requested_days . ' Day' . ($requested_days > 1 ? 's' : '');
+                            }
 
                             $emp_img = !empty($row['employee_image']) ? "uploads/" . $row['employee_image'] : "../admin_images/default.png";
                             $emp_id_formatted = "EMP" . str_pad($row['emp_list_id'], 3, "0", STR_PAD_LEFT);

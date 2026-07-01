@@ -135,9 +135,17 @@ $result = mysqli_query($con, $query);
                         $total_allowed = mysqli_fetch_assoc($total_allowed_q)['total'] ?: 0;
                     }
 
-                    $total_used_q = mysqli_query($con, "SELECT SUM(DATEDIFF(leave_to, leave_from) + 1) as used FROM leave_applications WHERE emp_id = '$emp_id' AND status = 'approved'");
-                    if ($total_used_q) {
-                        $total_used = mysqli_fetch_assoc($total_used_q)['used'] ?: 0;
+                    // Count actual leave days from attendance (not raw date range),
+                    // so days the employee worked within a leave period are not deducted.
+                    $apps_q = mysqli_query($con, "SELECT leave_from, leave_to FROM leave_applications WHERE emp_id = '$emp_id' AND status = 'approved'");
+                    $total_used = 0;
+                    if ($apps_q) {
+                        while ($app = mysqli_fetch_assoc($apps_q)) {
+                            $f = mysqli_real_escape_string($con, $app['leave_from']);
+                            $t = mysqli_real_escape_string($con, $app['leave_to']);
+                            $cnt_q = mysqli_query($con, "SELECT COUNT(*) AS cnt FROM attendance WHERE emp_id = '$emp_id' AND attendance_date BETWEEN '$f' AND '$t' AND status = 'leave'");
+                            if ($cnt_q) $total_used += (int)mysqli_fetch_assoc($cnt_q)['cnt'];
+                        }
                     }
                     $total_remaining = $total_allowed - $total_used;
                     ?>
@@ -171,11 +179,16 @@ $result = mysqli_query($con, $query);
                             $icon = $icons[$c_idx % count($icons)];
                             $c_idx++;
 
+                            // Count actual leave days from attendance for this leave type
                             $used = 0;
-                            $used_q = mysqli_query($con, "SELECT SUM(DATEDIFF(leave_to, leave_from) + 1) as total_used FROM leave_applications WHERE emp_id = '$emp_id' AND leave_type_id = '$lt_id' AND status = 'approved'");
-                            if ($used_q) {
-                                $used_row = mysqli_fetch_assoc($used_q);
-                                $used = $used_row['total_used'] ?: 0;
+                            $type_apps_q = mysqli_query($con, "SELECT leave_from, leave_to FROM leave_applications WHERE emp_id = '$emp_id' AND leave_type_id = '$lt_id' AND status = 'approved'");
+                            if ($type_apps_q) {
+                                while ($tapp = mysqli_fetch_assoc($type_apps_q)) {
+                                    $tf = mysqli_real_escape_string($con, $tapp['leave_from']);
+                                    $tt = mysqli_real_escape_string($con, $tapp['leave_to']);
+                                    $tcnt_q = mysqli_query($con, "SELECT COUNT(*) AS cnt FROM attendance WHERE emp_id = '$emp_id' AND attendance_date BETWEEN '$tf' AND '$tt' AND status = 'leave'");
+                                    if ($tcnt_q) $used += (int)mysqli_fetch_assoc($tcnt_q)['cnt'];
+                                }
                             }
                             $total = $lt['num_of_leave'];
                             $remaining = $total - $used;

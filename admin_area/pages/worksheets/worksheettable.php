@@ -920,10 +920,31 @@ $result = mysqli_query($con, $sql);
                 }
 
                 // ── Summary header bar ──────────────────────────────────────────────
-                var statusColor = d.is_live ? '#10b981' : (!d.check_out_time ? '#f59e0b' : '#64748b');
-                var statusLabel = d.is_live ? '<span class="log-live-dot" style="margin-right:5px;"></span>Active' : (!d.check_out_time ? '⏸ Paused' : '✓ Completed');
+                // Determine correct status color & label based on record status
+                var isLeave = (d.status === 'leave');
+                var isAbsent = (d.status === 'absent');
+                var statusColor, statusLabel;
+                if (isLeave) {
+                    statusColor = '#2563eb';
+                    statusLabel = '📋 On Leave';
+                } else if (isAbsent) {
+                    statusColor = '#ef4444';
+                    statusLabel = '✗ Absent';
+                } else if (d.is_live) {
+                    statusColor = '#10b981';
+                    statusLabel = '<span class="log-live-dot" style="margin-right:5px;"></span>Active';
+                } else if (!d.check_out_time) {
+                    statusColor = '#f59e0b';
+                    statusLabel = '⏸ Paused';
+                } else {
+                    statusColor = '#64748b';
+                    statusLabel = '✓ Completed';
+                }
                 var cinDisplay = d.check_in_time || '--';
-                var coutDisplay = d.check_out_time || 'Still working';
+                // Show 'Still working' only if employee actually has a check-in but no checkout yet
+                var coutDisplay = d.check_out_time ? d.check_out_time :
+                    (d.check_in_time && !isLeave && !isAbsent) ? 'Still working' :
+                    '--';
 
                 var summaryBar = `
                     <div class="seg-summary-bar">
