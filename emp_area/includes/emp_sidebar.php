@@ -97,32 +97,54 @@ if (!isset($_SESSION['emp_id'])) {
         <div class="sidebar-menu">
             <h3 class="menu-heading">WORKSPACE</h3>
             <ul>
-                <li class="<?php if (isset($_GET['dashboard'])) { echo "active"; } ?>">
+                <li class="<?php if (isset($_GET['dashboard'])) {
+                                echo "active";
+                            } ?>">
                     <a href="index.php?dashboard"><i class="fa fa-th-large"></i> Dashboard</a>
                 </li>
-                <li class="<?php if (isset($_GET['worksheet'])) { echo "active"; } ?>">
-                    <a href="index.php?worksheet"><i class="fa fa-table"></i> Worksheet</a>
+                <li class="<?php if (isset($_GET['projects'])) {
+                                echo "active";
+                            } ?>">
+                    <a href="index.php?projects"><i class="fa fa-sitemap"></i> Projects</a>
                 </li>
-                <li class="<?php if (isset($_GET['view_announcement']) || isset($_GET['announcements'])) { echo "active"; } ?>">
-                    <a href="index.php?announcements"><i class="fa fa-bullhorn"></i> Announcements</a>
+                <li class="<?php if (isset($_GET['worksheet'])) {
+                                echo "active";
+                            } ?>">
+                    <a href="index.php?worksheet"><i class="fa fa-file-text-o"></i> Worksheet</a>
+                </li>
+                <li class="<?php if (isset($_GET['todo'])) {
+                                echo "active";
+                            } ?>">
+                    <a href="index.php?todo"><i class="fa fa-tasks"></i> To-do</a>
+                </li>
+                <li class="<?php if (isset($_GET['quick_links'])) {
+                                echo "active";
+                            } ?>">
+                    <a href="index.php?quick_links"><i class="fa fa-link"></i> Quick Links</a>
                 </li>
             </ul>
 
             <h3 class="menu-heading">HR</h3>
             <ul>
-                <li class="<?php if (isset($_GET['leave_application'])) { echo "active"; } ?>">
+                <li class="<?php if (isset($_GET['leave_application'])) {
+                                echo "active";
+                            } ?>">
                     <a href="index.php?leave_application"><i class="fa fa-paper-plane"></i> Leave Application</a>
                 </li>
-                <li class="<?php if (isset($_GET['emp_salary_slip'])) { echo "active"; } ?>">
+                <li class="<?php if (isset($_GET['emp_salary_slip'])) {
+                                echo "active";
+                            } ?>">
                     <a href="index.php?emp_salary_slip"><i class="fa fa-money"></i> Salary Slip</a>
+                </li>
+                <li class="<?php if (isset($_GET['view_announcement']) || isset($_GET['announcements'])) {
+                                echo "active";
+                            } ?>">
+                    <a href="index.php?announcements"><i class="fa fa-bullhorn"></i> Announcements</a>
                 </li>
             </ul>
 
             <h3 class="menu-heading">SETTINGS</h3>
             <ul>
-                <li class="<?php if (isset($_GET['emp_profile'])) { echo "active"; } ?>">
-                    <a href="index.php?emp_profile"><i class="fa fa-user"></i> My Profile</a>
-                </li>
                 <li>
                     <a href="pages/auth/logout.php"><i class="fa fa-power-off"></i> Log Out</a>
                 </li>
