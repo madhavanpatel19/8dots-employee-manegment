@@ -137,6 +137,7 @@ $result = mysqli_query($con, $sql);
             <table class="table-premium">
                 <thead>
                     <tr>
+                        <th style="width: 50px; text-align: center;"></th>
                         <th style="width: 60px; text-align: center;">#</th>
                         <th>Employee</th>
                         <th>Date & Time</th>
@@ -156,8 +157,12 @@ $result = mysqli_query($con, $sql);
                             elseif ($st == 'leave') $badge_class = 'p-badge-primary';
 
                             $img = !empty($row['employee_image']) ? 'uploads/' . $row['employee_image'] : '../admin_area/admin_images/default.png';
+                            $att_id = $row['id'];
                         ?>
-                            <tr>
+                            <tr class="ws-emp-row" data-att-id="<?php echo $att_id; ?>" style="cursor:pointer; transition: background 0.2s;">
+                                <td style="text-align: center; color: #94a3b8; font-size: 12px; width:50px;">
+                                    <i class="fa fa-chevron-right log-expand-icon" style="transition: transform 0.3s;"></i>
+                                </td>
                                 <td style="text-align: center; color: var(--p-secondary); font-weight: 700;"><?php echo $i++; ?></td>
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -205,6 +210,17 @@ $result = mysqli_query($con, $sql);
                                     </div>
                                 </td>
                                 <td style="font-size: 11px; color: var(--p-secondary);"><?php echo date('d-m-Y H:i', strtotime($row['created_at'])); ?></td>
+                            </tr>
+                            <!-- Log Detail Row -->
+                            <tr class="log-detail-row" id="log-row-<?php echo $att_id; ?>" style="display: none;">
+                                <td colspan="8" style="padding: 0 !important; border-top: none;">
+                                    <div class="log-detail-panel" id="log-panel-<?php echo $att_id; ?>">
+                                        <div class="log-panel-loading" id="log-loading-<?php echo $att_id; ?>">
+                                            <i class="fa fa-spinner fa-spin"></i> Loading session details...
+                                        </div>
+                                        <div class="log-panel-content" id="log-content-<?php echo $att_id; ?>" style="display:none;"></div>
+                                    </div>
+                                </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
@@ -623,6 +639,186 @@ $result = mysqli_query($con, $sql);
     }
 </style>
 
+<style>
+    /* ── Log detail panel styles ── */
+    .ws-emp-row:hover {
+        background: #fef9ff !important;
+    }
+
+    .ws-emp-row.row-open {
+        background: #fff5f5 !important;
+    }
+
+    .ws-emp-row.row-open .log-expand-icon {
+        transform: rotate(90deg);
+        color: #dd2127;
+    }
+
+    .log-detail-row td {
+        background: #fafbff;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .log-detail-panel {
+        padding: 20px 24px 24px;
+        animation: logSlideDown 0.3s ease-out;
+    }
+
+    @keyframes logSlideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .log-panel-loading {
+        text-align: center;
+        padding: 30px;
+        color: #94a3b8;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .log-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 0;
+    }
+
+    .log-info-card {
+        background: #fff;
+        border: 1.5px solid #f1f5f9;
+        border-radius: 14px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        transition: box-shadow 0.2s;
+    }
+
+    .log-info-card:hover {
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .log-info-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .lic-red {
+        background: #ffe4e6;
+        color: #e11d48;
+    }
+
+    .lic-blue {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .lic-green {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .lic-purple {
+        background: #ede9fe;
+        color: #7c3aed;
+    }
+
+    .lic-amber {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .log-info-body h6 {
+        margin: 0 0 2px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #94a3b8;
+    }
+
+    .log-info-body p {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        word-break: break-all;
+    }
+
+    .log-live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #dcfce7;
+        color: #16a34a;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 20px;
+        letter-spacing: 0.05em;
+        margin-left: 6px;
+        text-transform: uppercase;
+        vertical-align: middle;
+    }
+
+    .log-live-dot {
+        width: 7px;
+        height: 7px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: livePulse 1.2s infinite;
+        display: inline-block;
+    }
+
+    @keyframes livePulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.6);
+            opacity: 0.5;
+        }
+    }
+
+    .log-section-title {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .log-section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #f1f5f9;
+    }
+</style>
+
 <script>
     window.filter = function() {
         const section = document.getElementById('filter-section');
@@ -678,7 +874,341 @@ $result = mysqli_query($con, $sql);
             }
         });
     }
+
+    // ── Expandable Log Row Handler ─────────────────────────────────────────
+    var logLoaded = {};
+
+    $(document).on('click', '.ws-emp-row', function(e) {
+        if ($(e.target).closest('a, button, .work-photo-item-mini').length) return;
+
+        var $row = $(this);
+        var attId = $row.data('att-id');
+        var $detail = $('#log-row-' + attId);
+        var $content = $('#log-content-' + attId);
+        var $loading = $('#log-loading-' + attId);
+
+        if ($detail.is(':visible')) {
+            $detail.hide();
+            $row.removeClass('row-open');
+            return;
+        }
+
+        // Close any other open rows
+        $('.log-detail-row:visible').hide();
+        $('.ws-emp-row.row-open').removeClass('row-open');
+
+        $row.addClass('row-open');
+        $detail.show();
+
+        if (logLoaded[attId]) return;
+
+        $loading.show();
+        $content.hide();
+
+        $.ajax({
+            url: 'ajax/worksheet/ajax_get_emp_log.php',
+            method: 'GET',
+            data: {
+                att_id: attId
+            },
+            dataType: 'json',
+            success: function(d) {
+                $loading.hide();
+                if (!d.success) {
+                    $content.html('<div style="color:#ef4444;font-weight:600;padding:20px;"><i class="fa fa-exclamation-triangle"></i> ' + (d.message || 'Failed to load') + '</div>').show();
+                    return;
+                }
+
+                // ── Summary header bar ──────────────────────────────────────────────
+                var statusColor = d.is_live ? '#10b981' : (!d.check_out_time ? '#f59e0b' : '#64748b');
+                var statusLabel = d.is_live ? '<span class="log-live-dot" style="margin-right:5px;"></span>Active' : (!d.check_out_time ? '⏸ Paused' : '✓ Completed');
+                var cinDisplay = d.check_in_time || '--';
+                var coutDisplay = d.check_out_time || 'Still working';
+
+                var summaryBar = `
+                    <div class="seg-summary-bar">
+                        <div class="seg-summary-item">
+                            <span class="seg-sum-label">Total Duration</span>
+                            <span class="seg-sum-val" id="live-dur-${attId}" style="color:#e11d48;">${d.duration_fmt}</span>
+                        </div>
+                        <div class="seg-summary-item">
+                            <span class="seg-sum-label">Check In</span>
+                            <span class="seg-sum-val">${cinDisplay}</span>
+                        </div>
+                        <div class="seg-summary-item">
+                            <span class="seg-sum-label">Check Out</span>
+                            <span class="seg-sum-val">${coutDisplay}</span>
+                        </div>
+                        <div class="seg-summary-item">
+                            <span class="seg-sum-label">Status</span>
+                            <span class="seg-sum-val" style="color:${statusColor};">${statusLabel}</span>
+                        </div>
+                        <div class="seg-summary-item">
+                            <span class="seg-sum-label">Segments</span>
+                            <span class="seg-sum-val">${d.segments ? d.segments.length : 0}</span>
+                        </div>
+                    </div>`;
+
+                // ── Segment table ───────────────────────────────────────────────────
+                var segHtml = '';
+                if (d.segments && d.segments.length > 0) {
+                    var rowsHtml = '';
+                    d.segments.forEach(function(seg, idx) {
+                        var isLiveSeg = seg.end_action === 'live';
+                        var endLabel = isLiveSeg ? '<span class="log-live-badge"><span class="log-live-dot"></span>Running</span>' : seg.end_time;
+                        var actionIcon = seg.end_action === 'pause' ? '<i class="fa fa-pause" style="color:#f59e0b;"></i> Paused' :
+                            seg.end_action === 'check_out' ? '<i class="fa fa-sign-out" style="color:#64748b;"></i> Checked Out' :
+                            '<span class="log-live-badge"><span class="log-live-dot"></span>Live</span>';
+                        var durId = isLiveSeg ? 'live-seg-dur-' + attId : '';
+                        rowsHtml += `
+                            <tr class="seg-row">
+                                <td class="seg-num">${seg.seg_num}</td>
+                                <td>
+                                    <span class="seg-time-badge seg-start">
+                                        <i class="fa fa-play"></i> ${seg.start_time}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="seg-time-badge ${isLiveSeg ? 'seg-live' : 'seg-end'}">
+                                        ${isLiveSeg ? '<i class="fa fa-circle" style="animation:livePulse 1.2s infinite;"></i>' : '<i class="fa fa-stop"></i>'} ${endLabel}
+                                    </span>
+                                </td>
+                                <td class="seg-dur ${isLiveSeg ? 'seg-dur-live' : ''}" id="${durId}">
+                                    ${isLiveSeg ? '<span class="log-live-badge"><span class="log-live-dot"></span></span> ' : ''}${seg.duration}
+                                </td>
+                                <td class="seg-action">${actionIcon}</td>
+                                <td class="seg-ip">
+                                    <div class="seg-ip-row">
+                                        <i class="fa fa-sign-in" style="color:#10b981;font-size:10px;"></i>
+                                        <span>${seg.start_ip !== '-' ? seg.start_ip : '<span style=\'color:#94a3b8\'>—</span>'}</span>
+                                    </div>
+                                    ${seg.end_action !== 'live' ? `<div class="seg-ip-row" style="margin-top:3px;">
+                                        <i class="fa fa-${seg.end_action === 'pause' ? 'pause' : 'sign-out'}" style="color:#f59e0b;font-size:10px;"></i>
+                                        <span>${seg.end_ip !== '-' ? seg.end_ip : '<span style=\'color:#94a3b8\'>—</span>'}</span>
+                                    </div>` : ''}
+                                </td>
+                                <td class="seg-loc">
+                                    <div class="seg-ip-row">
+                                        <i class="fa fa-map-marker" style="color:#10b981;font-size:10px;"></i>
+                                        <span>${seg.start_loc !== '-' ? seg.start_loc : '<span style=\'color:#94a3b8\'>—</span>'}</span>
+                                    </div>
+                                    ${seg.end_action !== 'live' ? `<div class="seg-ip-row" style="margin-top:3px;">
+                                        <i class="fa fa-map-marker" style="color:#f59e0b;font-size:10px;"></i>
+                                        <span>${seg.end_loc !== '-' ? seg.end_loc : '<span style=\'color:#94a3b8\'>—</span>'}</span>
+                                    </div>` : ''}
+                                </td>
+                            </tr>`;
+                    });
+
+                    segHtml = `
+                        <div class="log-section-title" style="margin-top:16px;"><i class="fa fa-list-ul"></i> Working Segments</div>
+                        <div class="seg-table-wrap">
+                            <table class="seg-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Duration</th>
+                                        <th>Event</th>
+                                        <th><i class="fa fa-globe"></i> IP Address</th>
+                                        <th><i class="fa fa-map-marker"></i> Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rowsHtml}</tbody>
+                            </table>
+                        </div>`;
+                } else {
+                    segHtml = `<div style="text-align:center;padding:20px 0;color:#94a3b8;font-size:13px;font-weight:600;">
+                        <i class="fa fa-info-circle" style="margin-right:6px;"></i>
+                        No detailed log yet. Logs are recorded from the next check-in onwards.
+                    </div>`;
+                }
+
+                $content.html(summaryBar + segHtml).show();
+                logLoaded[attId] = true;
+
+                // ── Live counters ─────────────────────────────────────────────────
+                if (d.is_live) {
+                    var totalSecs = parseInt(d.duration_secs);
+                    var lastSeg = d.segments && d.segments.length > 0 ? d.segments[d.segments.length - 1] : null;
+                    var segSecs = lastSeg && lastSeg.end_action === 'live' ? parseInt(lastSeg.duration_secs) : 0;
+
+                    setInterval(function() {
+                        totalSecs++;
+                        segSecs++;
+
+                        function fmt(s) {
+                            var h = Math.floor(s / 3600),
+                                m = Math.floor((s % 3600) / 60),
+                                sc = s % 60;
+                            return String(h).padStart(2, '0') + 'h ' + String(m).padStart(2, '0') + 'm ' + String(sc).padStart(2, '0') + 's';
+                        }
+                        $('#live-dur-' + attId).text(fmt(totalSecs));
+                        $('#live-seg-dur-' + attId).html('<span class="log-live-badge"><span class="log-live-dot"></span></span> ' + fmt(segSecs));
+                    }, 1000);
+                }
+            },
+            error: function() {
+                $loading.hide();
+                $content.html('<div style="color:#ef4444;font-weight:600;padding:20px;"><i class="fa fa-wifi"></i> Could not load log data.</div>').show();
+            }
+        });
+    });
 </script>
+
+<style>
+    /* ── Summary bar ── */
+    .seg-summary-bar {
+        display: flex;
+        gap: 0;
+        background: #fff;
+        border: 1.5px solid #f1f5f9;
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .seg-summary-item {
+        flex: 1;
+        padding: 14px 18px;
+        border-right: 1px solid #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .seg-summary-item:last-child {
+        border-right: none;
+    }
+
+    .seg-sum-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #94a3b8;
+    }
+
+    .seg-sum-val {
+        font-size: 15px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    /* ── Segment table ── */
+    .seg-table-wrap {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1.5px solid #f1f5f9;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .seg-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .seg-table thead tr {
+        background: #f8fafc;
+    }
+
+    .seg-table th {
+        padding: 11px 14px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #64748b;
+        border-bottom: 1.5px solid #f1f5f9;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .seg-row {
+        border-bottom: 1px solid #f8fafc;
+        transition: background 0.15s;
+    }
+
+    .seg-row:last-child {
+        border-bottom: none;
+    }
+
+    .seg-row:hover {
+        background: #fafbff;
+    }
+
+    .seg-row td {
+        padding: 12px 14px;
+        vertical-align: middle !important;
+    }
+
+    .seg-num {
+        width: 36px;
+        text-align: center;
+        font-weight: 800;
+        color: #cbd5e1;
+        font-size: 12px;
+    }
+
+    .seg-time-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 4px 10px;
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    .seg-start {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .seg-end {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .seg-live {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .seg-dur {
+        font-weight: 800;
+        color: #1e293b;
+        white-space: nowrap;
+    }
+
+    .seg-dur-live {
+        color: #e11d48;
+    }
+
+    .seg-action {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .seg-ip,
+    .seg-loc {
+        font-size: 11px;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    .seg-ip-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+</style>
 
 <style>
     @keyframes slideDown {
