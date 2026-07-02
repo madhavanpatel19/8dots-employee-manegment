@@ -1135,6 +1135,12 @@ function fmtHMS($secs)
                         $('#btnCancelCheckOut').prop('disabled', false);
                         Swal.fire('Notification', r.message, 'info');
                     }
+                },
+                error: function(xhr, status, error) {
+                    $btn.prop('disabled', false).html('<i class="fa fa-paper-plane"></i> Submit Worksheet & Check Out');
+                    $('#btnCancelCheckOut').prop('disabled', false);
+                    Swal.fire('Error', 'An unexpected error occurred. This is likely due to the uploaded images being too large.', 'error');
+                    console.error("AJAX Error: ", status, error, xhr.responseText);
                 }
             });
         });

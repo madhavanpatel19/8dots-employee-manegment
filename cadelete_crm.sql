@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2026 at 09:56 AM
+-- Generation Time: Jul 02, 2026 at 12:05 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -68,7 +68,7 @@ CREATE TABLE `admins` (
 
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_pass`, `admin_image`, `admin_contact`, `admin_country`, `admin_job`, `admin_about`, `is_super_admin`, `permissions`) VALUES
 (1, 'admin', 'admin@gmail.com', '123', 'IMG-20251208-WA0027.jpg', '987654321', 'india', 'CEO', ' hello ', 1, NULL),
-(4, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'hr', '', 1, '');
+(4, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'hr', '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -257,16 +257,18 @@ CREATE TABLE `client_projects` (
   `deadline` date DEFAULT NULL,
   `project_desc` text DEFAULT NULL,
   `project_image` varchar(255) DEFAULT NULL,
-  `assigned_employees` text DEFAULT NULL
+  `assigned_employees` text DEFAULT NULL,
+  `assigned_users` text DEFAULT NULL,
+  `assigned_admins` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `client_projects`
 --
 
-INSERT INTO `client_projects` (`id`, `client_id`, `project_name`, `project_date`, `budget`, `currency`, `status`, `source`, `created_at`, `deadline`, `project_desc`, `project_image`, `assigned_employees`) VALUES
-(38, 45, 'crroco123', '2026-06-30', 10000.00, 'INR', 'Active', '', '2026-06-30 04:44:17', '2026-06-30', '23423', '1782794657_2646.jpg', '23,27,28,25'),
-(39, 45, 'crroco123123', '2026-06-25', 120000.00, 'INR', 'Pending', 'family , SEO', '2026-06-30 05:34:42', '2026-06-24', '322', '1782797682_9838.jpeg', '27,28');
+INSERT INTO `client_projects` (`id`, `client_id`, `project_name`, `project_date`, `budget`, `currency`, `status`, `source`, `created_at`, `deadline`, `project_desc`, `project_image`, `assigned_employees`, `assigned_users`, `assigned_admins`) VALUES
+(38, 45, 'crroco123', '2026-06-30', 10000.00, 'INR', 'Active', '', '2026-06-30 04:44:17', '2026-06-30', '23423', '1782794657_2646.jpg', '27,28,23,25', '', '1,4'),
+(39, 45, 'crroco123123', '2026-06-25', 120000.00, 'INR', 'Pending', 'family ', '2026-06-30 05:34:42', '2026-06-24', '322', '1782797682_9838.jpeg', '27,28', '', '1');
 
 -- --------------------------------------------------------
 
@@ -698,9 +700,9 @@ CREATE TABLE `project_budget_phases` (
 --
 
 INSERT INTO `project_budget_phases` (`id`, `project_id`, `phase_name`, `description`, `expected_date`, `cost`, `received_amount`, `received_date`, `remark`, `created_at`) VALUES
-(52, 39, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-06-30 05:34:42'),
-(53, 38, 'Phase 1', 'teset1', '2026-06-30', 5000.00, 0.00, NULL, NULL, '2026-07-01 06:40:24'),
-(54, 38, 'Phase 2', 'test2 ', '2026-07-04', 5000.00, 0.00, NULL, NULL, '2026-07-01 06:40:24');
+(56, 38, 'Phase 1', 'teset1', '2026-06-30', 5000.00, 0.00, NULL, NULL, '2026-07-02 09:56:58'),
+(57, 38, 'Phase 2', 'test2 ', '2026-07-04', 5000.00, 0.00, NULL, NULL, '2026-07-02 09:56:58'),
+(58, 39, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-07-02 09:57:29');
 
 -- --------------------------------------------------------
 
@@ -735,9 +737,9 @@ CREATE TABLE `project_links` (
 --
 
 INSERT INTO `project_links` (`id`, `project_id`, `link_name`, `link_url`, `created_at`) VALUES
-(19, 38, 'website', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-07-01 06:40:24'),
-(20, 38, 'ddd', 'https://web.whatsapp.com/', '2026-07-01 06:40:24'),
-(21, 38, 'efjkw', 'http://localhost/8DOTS/admin_area/index.php', '2026-07-01 06:40:24');
+(22, 38, 'website', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-07-02 09:56:58'),
+(23, 38, 'ddd', 'https://web.whatsapp.com/', '2026-07-02 09:56:58'),
+(24, 38, 'efjkw', 'http://localhost/8DOTS/admin_area/index.php', '2026-07-02 09:56:58');
 
 -- --------------------------------------------------------
 
@@ -1134,7 +1136,7 @@ ALTER TABLE `offer_letters`
 -- AUTO_INCREMENT for table `project_budget_phases`
 --
 ALTER TABLE `project_budget_phases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `project_documents`
@@ -1146,7 +1148,7 @@ ALTER TABLE `project_documents`
 -- AUTO_INCREMENT for table `project_links`
 --
 ALTER TABLE `project_links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `project_team_todos`

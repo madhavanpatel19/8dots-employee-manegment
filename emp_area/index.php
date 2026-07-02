@@ -33,6 +33,7 @@ if (!isset($_SESSION['emp_id'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="../admin_area/js/jquery.min.js"></script>
         <script src="../admin_area/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             /* Smooth transitions for dashboard panels */
             .panel {

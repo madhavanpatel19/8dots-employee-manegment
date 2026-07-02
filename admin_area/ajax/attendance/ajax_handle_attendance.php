@@ -18,25 +18,48 @@ $current_time = date('H:i:s');
 $now_dt       = date('Y-m-d H:i:s');
 $formatted_time = date('h:i A', strtotime($current_time));
 
+if (empty($_POST) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    echo json_encode(['status' => 'error', 'message' => 'Uploaded files are too large. Please reduce the size of your photos.']);
+    exit();
+}
+
 // ── Ensure ip_address / location columns exist ────────────────
-@mysqli_query($con, "ALTER TABLE attendance ADD COLUMN ip_address VARCHAR(50) DEFAULT NULL");
-@mysqli_query($con, "ALTER TABLE attendance ADD COLUMN location VARCHAR(255) DEFAULT NULL");
+try {
+    @mysqli_query($con, "ALTER TABLE attendance ADD COLUMN ip_address VARCHAR(50) DEFAULT NULL");
+} catch (Exception $e) {
+}
+try {
+    @mysqli_query($con, "ALTER TABLE attendance ADD COLUMN location VARCHAR(255) DEFAULT NULL");
+} catch (Exception $e) {
+}
+try {
+    @mysqli_query($con, "ALTER TABLE attendance ADD COLUMN remarks TEXT DEFAULT NULL");
+} catch (Exception $e) {
+}
+try {
+    @mysqli_query($con, "ALTER TABLE attendance ADD COLUMN work_photos TEXT DEFAULT NULL");
+} catch (Exception $e) {
+}
 
 // ── Ensure attendance_logs table exists ───────────────────────
-@mysqli_query($con, "CREATE TABLE IF NOT EXISTS attendance_logs (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    att_id      INT NOT NULL,
-    emp_id      INT NOT NULL,
-    action      VARCHAR(20) NOT NULL,
-    action_time DATETIME NOT NULL,
-    ip_address  VARCHAR(50) DEFAULT NULL,
-    location    VARCHAR(255) DEFAULT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX (att_id)
-)");
+try {
+    @mysqli_query($con, "CREATE TABLE IF NOT EXISTS attendance_logs (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        att_id      INT NOT NULL,
+        emp_id      INT NOT NULL,
+        action      VARCHAR(20) NOT NULL,
+        action_time DATETIME NOT NULL,
+        ip_address  VARCHAR(50) DEFAULT NULL,
+        location    VARCHAR(255) DEFAULT NULL,
+        created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX (att_id)
+    )");
+} catch (Exception $e) {
+}
 
 // ── Helper: get real visitor IP ───────────────────────────────
-function getVisitorIP() {
+function getVisitorIP()
+{
     $keys = ['HTTP_CF_CONNECTING_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
     foreach ($keys as $k) {
         if (!empty($_SERVER[$k])) {
@@ -48,7 +71,8 @@ function getVisitorIP() {
 }
 
 // ── Helper: geolocate IP (free, no API key) ───────────────────
-function geolocateIP($ip) {
+function geolocateIP($ip)
+{
     if (in_array($ip, ['127.0.0.1', '::1']) || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
         return 'Local Network';
     }
@@ -66,7 +90,8 @@ function geolocateIP($ip) {
 }
 
 // ── Helper: insert action into attendance_logs ────────────────
-function logAttendanceAction($con, $att_id, $emp_id, $action, $action_time, $ip, $location) {
+function logAttendanceAction($con, $att_id, $emp_id, $action, $action_time, $ip, $location)
+{
     $safe_ip  = mysqli_real_escape_string($con, $ip);
     $safe_loc = mysqli_real_escape_string($con, $location);
     $safe_dt  = mysqli_real_escape_string($con, $action_time);
@@ -120,9 +145,9 @@ if ($action == 'check_in') {
         }
     }
 
-// ═══════════════════════════════════════════════════════════════
-//  PAUSE
-// ═══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════
+    //  PAUSE
+    // ═══════════════════════════════════════════════════════════════
 } elseif ($action == 'pause') {
     $check_q   = "SELECT * FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$today' AND is_working = 1";
     $check_res = mysqli_query($con, $check_q);
@@ -149,9 +174,9 @@ if ($action == 'check_in') {
         echo json_encode(['status' => 'error', 'message' => 'Not currently working.']);
     }
 
-// ═══════════════════════════════════════════════════════════════
-//  RESUME
-// ═══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════
+    //  RESUME
+    // ═══════════════════════════════════════════════════════════════
 } elseif ($action == 'resume') {
     $check_q   = "SELECT * FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$today' AND is_working = 0 AND check_in_time IS NOT NULL AND check_out_time IS NULL";
     $check_res = mysqli_query($con, $check_q);
@@ -175,9 +200,9 @@ if ($action == 'check_in') {
         echo json_encode(['status' => 'error', 'message' => 'Cannot resume. Check if you are already checked out.']);
     }
 
-// ═══════════════════════════════════════════════════════════════
-//  CHECK OUT
-// ═══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════
+    //  CHECK OUT
+    // ═══════════════════════════════════════════════════════════════
 } elseif ($action == 'check_out') {
     $check_q   = "SELECT * FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$today'";
     $check_res = mysqli_query($con, $check_q);
@@ -201,7 +226,7 @@ if ($action == 'check_in') {
         if (isset($_FILES['work_photos'])) {
             $files      = $_FILES['work_photos'];
             $upload_dir = '../../work_photos/';
-            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            if (!is_dir($upload_dir)) @mkdir($upload_dir, 0777, true);
             for ($i = 0; $i < count($files['name']); $i++) {
                 if ($files['error'][$i] == 0) {
                     $tmp_name = $files['tmp_name'][$i];
@@ -261,4 +286,6 @@ if ($action == 'check_in') {
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Record not found.']);
     }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid action or request too large (files exceeded limit).']);
 }

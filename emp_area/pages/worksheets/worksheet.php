@@ -269,7 +269,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                                 </td>
                                                 <td class="p-cell-wrap">
                                                     <div style="font-size: 13px; line-height: 1.6;">
-                                                        <?php echo nl2br(htmlspecialchars($row['remarks'])); ?>
+                                                        <?php echo nl2br(htmlspecialchars($row['remarks'] ?? '')); ?>
 
                                                         <?php
                                                         if (!empty($row['work_photos'])) {
