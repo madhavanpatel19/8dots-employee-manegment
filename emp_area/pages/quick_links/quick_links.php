@@ -31,15 +31,9 @@ if (!empty($allowed_categories)) {
 ?>
 
 <div class="premium-ui-enabled">
-    <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 15px;">
-        <h1 style="font-size: 24px; font-weight: 800; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 12px;">
-            <i class="fa fa-link" style="color: #df2127;"></i> Company Links & Resources
-        </h1>
-    </div>
-
     <!-- Level 1: Section Browser -->
     <div id="emp-section-browser-view">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px;">
+        <div style="display: flex; justify-content:flex-end; align-items: center; margin-bottom: 30px; gap: 20px;">
             <div style="position: relative; width: 350px;">
                 <i class="fa fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
                 <input type="text" id="emp-section-search-input" placeholder="Search sections..." style="width: 100%; padding: 12px 15px 12px 45px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 22, 2026 at 01:26 PM
+-- Generation Time: Jul 02, 2026 at 09:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `8dots`
+-- Database: `cadelete_crm`
 --
 
 -- --------------------------------------------------------
@@ -67,8 +67,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_pass`, `admin_image`, `admin_contact`, `admin_country`, `admin_job`, `admin_about`, `is_super_admin`, `permissions`) VALUES
-(1, 'admin', 'admin@gmail.com', '123', 'the-batman-2022-robert-pattinson-bruce-wayne-batman-logo-dark-hd-wallpaper-preview.jpg', '987654321', 'india', 'CEO', ' hello ', 1, NULL),
-(2, 'Test Name', 'admin@ave.com', '123', 'admin.jpg', '077885221', 'Morocco', 'Front-End Developer', ' Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical ', 0, 'employee_insert,employee_update,employee_delete,employee_view');
+(1, 'admin', 'admin@gmail.com', '123', 'IMG-20251208-WA0027.jpg', '987654321', 'india', 'CEO', ' hello ', 1, NULL),
+(4, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'hr', '', 1, '');
 
 -- --------------------------------------------------------
 
@@ -91,12 +91,7 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`id`, `title`, `message`, `publish_date`, `end_date`, `is_active`, `created_at`) VALUES
-(23, 'jh', 'gsehtf', '2026-06-16 15:35:00', NULL, 0, '2026-06-16 10:02:47'),
-(24, 'jalsa karo', 'moje moj', '2026-06-16 15:53:00', '2026-06-16 16:02:00', 0, '2026-06-16 10:21:57'),
-(25, 'use slack', 'bvgyfu', '2026-06-16 16:20:00', NULL, 0, '2026-06-16 10:51:17'),
-(26, 'use slack', 'cd', '2026-06-17 09:39:44', NULL, 0, '2026-06-17 04:09:44'),
-(27, 'ee', 'rvfva', '2026-06-17 09:39:49', NULL, 0, '2026-06-17 04:09:49'),
-(28, 'vvae', 'sdv', '2026-06-17 09:39:55', NULL, 0, '2026-06-17 04:09:55');
+(32, 'jh', 'demo', '2026-06-30 15:33:00', NULL, 0, '2026-06-30 10:04:06');
 
 -- --------------------------------------------------------
 
@@ -115,7 +110,7 @@ CREATE TABLE `announcement_read` (
 --
 
 INSERT INTO `announcement_read` (`id`, `announcement_id`, `emp_id`) VALUES
-(3, 12, 14);
+(6, 32, 23);
 
 -- --------------------------------------------------------
 
@@ -136,28 +131,51 @@ CREATE TABLE `attendance` (
   `total_duration_secs` int(11) DEFAULT 0,
   `last_resume_time` datetime DEFAULT NULL,
   `is_working` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ip_address` varchar(50) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `attendance`
 --
 
-INSERT INTO `attendance` (`id`, `emp_id`, `attendance_date`, `check_in_time`, `check_out_time`, `status`, `remarks`, `work_photos`, `performance`, `total_duration_secs`, `last_resume_time`, `is_working`, `created_at`) VALUES
-(102, 14, '2026-04-22', '10:58:00', NULL, 'present', 'dce ververvr', NULL, NULL, 17001, '2026-04-22 15:42:48', 1, '2026-04-22 05:28:13'),
-(103, 11, '2026-04-22', '15:45:41', NULL, 'present', NULL, NULL, NULL, 4893, '2026-04-22 17:09:10', 0, '2026-04-22 10:15:41'),
-(104, 14, '2026-04-27', '10:19:00', '12:55:00', 'present', 'demo', NULL, NULL, 8637, '2026-04-27 12:49:53', 0, '2026-04-27 04:49:39'),
-(105, 14, '2026-05-15', NULL, NULL, 'leave', 'Leave: demo', NULL, NULL, 0, NULL, 0, '2026-05-14 05:12:55'),
-(106, 14, '2026-05-16', NULL, NULL, 'leave', 'Leave: demo', NULL, NULL, 0, NULL, 0, '2026-05-14 05:12:55'),
-(107, 14, '2026-05-17', NULL, NULL, 'leave', 'Leave: demo', NULL, NULL, 0, NULL, 0, '2026-05-14 05:12:55'),
-(108, 14, '2026-05-18', NULL, NULL, 'leave', 'Leave: demo', NULL, NULL, 0, NULL, 0, '2026-05-14 05:12:55'),
-(109, 14, '2026-05-19', NULL, NULL, 'leave', 'Leave: demo', NULL, NULL, 0, NULL, 0, '2026-05-14 05:12:55'),
-(110, 14, '2026-05-29', '15:08:00', '18:41:00', 'present', 'demo', '', NULL, 10486, '2026-05-29 16:31:29', 0, '2026-05-29 09:38:32'),
-(111, 14, '2026-06-01', NULL, NULL, 'leave', 'Leave: demo', NULL, NULL, 0, NULL, 0, '2026-05-29 09:50:31'),
-(112, 14, '2026-06-02', '12:54:00', '15:10:00', 'present', 'demo', '', NULL, 8203, '2026-06-02 12:54:31', 0, '2026-06-02 07:24:31'),
-(113, 14, '2026-06-04', '09:46:30', NULL, 'present', NULL, NULL, NULL, 2181, '2026-06-04 09:46:30', 0, '2026-06-04 04:16:30'),
-(114, 14, '2026-06-19', '10:20:00', '10:22:00', 'present', '3e', '[\"work_photos\\/14_2026-06-19_1781844752_0.png\",\"work_photos\\/14_2026-06-19_1781844752_1.png\",\"work_photos\\/14_2026-06-19_1781844752_2.png\"]', NULL, 135, '2026-06-19 10:20:48', 0, '2026-06-19 04:50:48'),
-(115, 14, '2026-06-22', '11:05:00', '11:05:00', 'present', 'dew', '', NULL, 19, '2026-06-22 11:05:19', 0, '2026-06-22 05:35:19');
+INSERT INTO `attendance` (`id`, `emp_id`, `attendance_date`, `check_in_time`, `check_out_time`, `status`, `remarks`, `work_photos`, `performance`, `total_duration_secs`, `last_resume_time`, `is_working`, `created_at`, `ip_address`, `location`) VALUES
+(121, 23, '2026-06-30', '09:22:47', '19:00:00', 'present', NULL, NULL, NULL, 533, '2026-06-30 17:02:40', 1, '2026-06-30 05:52:47', NULL, NULL),
+(123, 23, '2026-07-01', '08:13:00', NULL, 'present', 'fix bugs', '', NULL, 17963, '2026-07-01 15:15:00', 1, '2026-07-01 04:43:08', NULL, NULL),
+(124, 23, '2026-07-02', '10:11:00', NULL, 'present', NULL, NULL, NULL, 11050, '2026-07-02 13:16:00', 1, '2026-07-01 07:26:04', '::1', 'Local Network');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attendance_logs`
+--
+
+CREATE TABLE `attendance_logs` (
+  `id` int(11) NOT NULL,
+  `att_id` int(11) NOT NULL,
+  `emp_id` int(11) NOT NULL,
+  `action` varchar(20) NOT NULL,
+  `action_time` datetime NOT NULL,
+  `ip_address` varchar(50) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `attendance_logs`
+--
+
+INSERT INTO `attendance_logs` (`id`, `att_id`, `emp_id`, `action`, `action_time`, `ip_address`, `location`, `created_at`) VALUES
+(1, 123, 23, 'pause', '2026-07-01 11:42:28', '::1', 'Local Network', '2026-07-01 06:12:28'),
+(2, 123, 23, 'resume', '2026-07-01 11:42:53', '::1', 'Local Network', '2026-07-01 06:12:53'),
+(3, 123, 23, 'pause', '2026-07-01 11:43:16', '::1', 'Local Network', '2026-07-01 06:13:16'),
+(4, 123, 23, 'resume', '2026-07-01 11:43:19', '::1', 'Local Network', '2026-07-01 06:13:19'),
+(5, 123, 23, 'check_out', '2026-07-01 15:13:00', '::1', 'Local Network', '2026-07-01 09:43:58'),
+(6, 123, 23, 'resume', '2026-07-01 15:15:00', '::1', 'Local Network', '2026-07-01 09:45:00'),
+(7, 124, 23, 'check_in', '2026-07-02 10:11:35', '::1', 'Local Network', '2026-07-02 04:41:35'),
+(8, 124, 23, 'pause', '2026-07-02 13:15:45', '::1', 'Local Network', '2026-07-02 07:45:45'),
+(9, 124, 23, 'resume', '2026-07-02 13:16:00', '::1', 'Local Network', '2026-07-02 07:46:00');
 
 -- --------------------------------------------------------
 
@@ -197,11 +215,8 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`id`, `image`, `name`, `mobile`, `email`, `country`, `company_name`, `website`, `created_at`, `status`, `industry`) VALUES
-(12, '1781675352_4210.jpg', 'Patel Madhavan', '987654321', 'madhavanpatel19@gmail.com', 'India', '', '', '2026-04-21 07:41:00', 'Active', NULL),
-(13, '1781675265_5859.jpeg', 'rajveer', '2304549592', 'madhavanpatel19@gmail.com', 'India', '8dots', 'https://8dots.in', '2026-05-04 07:34:34', 'Active', NULL),
-(18, '1781674467_8193.jpeg', 'Patel Madhavan', '1234567890', 'madhavanpatel19@gmail.com', 'uk', '8DOTS', 'https://8dots.in', '2026-06-17 05:34:27', 'Active', NULL),
-(20, '1781675373_6517.jpeg', 'dayro', '1234567890', 'madhavanpatel19@gmail.com', 'India', '8dots', 'https://8dots.in', '2026-06-17 05:49:33', 'Active', ''),
-(21, '1781679124_8962.jpeg', 'dayro112', '1234567890', 'madhavanpatel19@gmail.com', 'India', '8dots', 'https://8dots.in', '2026-06-17 06:52:04', 'Active', '8dots, cedlete123');
+(45, '1782794422_4067.png', 'Patel Madhavan', '1234353222', 'madhavanpatel19@gmail.com', 'India', '8dots123', 'https://www.figma.com/design/41kQ1s4X3LY1HcwtY4c3hQ/CADLETE-CRM?node-id=68-3&t=qmv7Uj5y2jjlng3R-0', '2026-06-30 04:40:22', 'Active', '8dots'),
+(46, '1782794563_2264.jpeg', 'rajveer', '9876543211', 'madhavanpatel19@gmail.com', 'India', '8dots', 'https://8dots.in', '2026-06-30 04:42:43', 'Active', '8dots, 8dots1');
 
 -- --------------------------------------------------------
 
@@ -220,8 +235,8 @@ CREATE TABLE `client_industries` (
 --
 
 INSERT INTO `client_industries` (`id`, `industry_name`, `created_at`) VALUES
-(2, '8dots', '2026-06-17 06:54:41'),
-(4, 'cedlete123', '2026-06-17 07:02:01');
+(5, '8dots', '2026-06-24 10:39:22'),
+(8, '8dots1', '2026-06-24 10:42:02');
 
 -- --------------------------------------------------------
 
@@ -250,20 +265,8 @@ CREATE TABLE `client_projects` (
 --
 
 INSERT INTO `client_projects` (`id`, `client_id`, `project_name`, `project_date`, `budget`, `currency`, `status`, `source`, `created_at`, `deadline`, `project_desc`, `project_image`, `assigned_employees`) VALUES
-(20, 13, 'crroco123', '2026-05-14', 12000.00, 'GBP', 'Active', NULL, '2026-05-04 07:35:16', NULL, NULL, NULL, NULL),
-(22, 13, 'demo', '2026-06-10', 12121212.00, 'INR', 'Pending', NULL, '2026-06-10 07:19:28', '2026-06-11', '123', '', '20'),
-(23, 12, 'crroco123', '2026-06-05', 1203000.00, 'INR', 'Pending', NULL, '2026-06-10 09:39:49', '2026-06-12', 'der', '', '11,20,14,19'),
-(24, 12, 'harikrushana agro chemicals', '2026-06-01', 4000000.00, 'INR', 'Pending', NULL, '2026-06-11 05:27:00', '2026-06-30', 'harikurshna agro cemicals web site', '', '11,20,14,19'),
-(25, 13, 'helmet lock', '2026-12-31', 0.00, 'INR', 'Active', '', '2026-06-11 05:34:03', '2026-12-31', 'dqf', '', '11,20,14'),
-(26, 12, 'test 1', '2026-12-31', 50000.00, 'INR', 'Active', '', '2026-06-11 10:40:01', '2026-12-31', 'ffimf', '1781759380_9500.png', '14,19'),
-(27, 13, 'packaging Box', '2026-06-12', 10000.00, 'USD', 'Active', NULL, '2026-06-11 12:03:06', '2026-06-17', 'fqadaacaa', '1781179386_6571.jpg', '11,20,14,19'),
-(28, 13, 'dmeo', '2026-12-31', 99999.00, 'INR', 'Active', NULL, '2026-06-11 12:26:49', '2026-12-31', 'fejfeo', '1781180809_3626.png', '20,14,19'),
-(29, 13, '23sdkfhkshd', '2026-12-31', 24590024.00, 'INR', 'Active', NULL, '2026-06-11 12:38:03', '2026-12-31', '\r\nvfv', '1781181483_3088.jfif', '11,20,14,19'),
-(31, 13, 'crroco123', '2026-12-31', 603.00, 'INR', 'Active', NULL, '2026-06-11 13:01:55', '2026-12-31', 'ewev', '', '11,20,14,19'),
-(32, 13, 'crroco123567', '2026-12-31', 12300012.00, 'INR', 'Pending', 'ahmedabad', '2026-06-11 14:03:11', '2026-12-31', 'fjefweh', '1781759363_5622.png', '11,20,19'),
-(33, 13, 'crroco123', '2026-12-31', 0.00, 'INR', 'Completed', 'ahmedabad, BNI, botad, Civil, Electrical', '2026-06-12 04:49:25', '2026-12-31', 'fdfr', '', '11,20,14,19'),
-(34, 13, 'Demo Project', '2026-06-13', 5000.00, 'USD', 'Pending', '8dots, CD Innov', '2026-06-12 11:56:20', '2026-07-02', 'MAIN project', '1781265380_6704.png', '11,20,14,19'),
-(37, 21, 'crroco', '2026-06-19', 343.00, 'INR', 'Active', '8dots', '2026-06-18 05:10:59', '2026-06-19', '4r434ger', '1781759459_1486.jpg', '20');
+(38, 45, 'crroco123', '2026-06-30', 10000.00, 'INR', 'Active', '', '2026-06-30 04:44:17', '2026-06-30', '23423', '1782794657_2646.jpg', '23,27,28,25'),
+(39, 45, 'crroco123123', '2026-06-25', 120000.00, 'INR', 'Pending', 'family , SEO', '2026-06-30 05:34:42', '2026-06-24', '322', '1782797682_9838.jpeg', '27,28');
 
 -- --------------------------------------------------------
 
@@ -283,24 +286,7 @@ CREATE TABLE `client_project_remarks` (
 --
 
 INSERT INTO `client_project_remarks` (`id`, `project_id`, `remark`, `created_at`) VALUES
-(70, 20, 'demo ', '2026-05-04 07:35:16'),
-(71, 20, 'System: Project details updated (Name: crroco123, Budget: 12000, Status: Active)', '2026-05-28 09:45:26'),
-(72, 20, 'System: Project status updated to Completed', '2026-05-29 09:38:08'),
-(75, 20, 'System: Project status updated to Active', '2026-06-01 07:19:35'),
-(76, 20, 'System: Project status updated to Completed', '2026-06-02 04:45:43'),
-(77, 20, 'System: Project status updated to Active', '2026-06-02 04:45:44'),
-(78, 20, 'System: Project status updated to Pending', '2026-06-02 04:45:46'),
-(80, 20, 'System: Project status updated to Active', '2026-06-02 09:47:29'),
-(83, 24, 'System: Project status updated to Pending', '2026-06-11 05:32:31'),
-(84, 25, 'System: Project status updated to Pending', '2026-06-11 05:56:56'),
-(85, 25, 'System: Project status updated to Active', '2026-06-11 07:12:12'),
-(86, 33, 'System: Project status updated to Pending', '2026-06-12 04:50:14'),
-(87, 33, 'System: Project status updated to Completed', '2026-06-12 04:50:25'),
-(88, 32, 'System: Project status updated to Pending', '2026-06-12 11:54:13'),
-(89, 26, 'System: Project status updated to Completed', '2026-06-17 04:44:55'),
-(90, 26, 'System: Project status updated to Active', '2026-06-17 04:46:09'),
-(91, 25, 'System: Project status updated to Pending', '2026-06-22 06:26:46'),
-(92, 25, 'System: Project status updated to Active', '2026-06-22 06:26:47');
+(96, 38, 'ewef', '2026-06-30 05:33:21');
 
 -- --------------------------------------------------------
 
@@ -314,26 +300,41 @@ CREATE TABLE `company_links` (
   `link_url` text NOT NULL,
   `category` varchar(255) DEFAULT 'General',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `is_pinned` tinyint(1) DEFAULT 0
+  `is_pinned` tinyint(1) DEFAULT 0,
+  `uploaded_by_type` enum('admin','employee') DEFAULT 'admin',
+  `uploaded_by_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `company_links`
 --
 
-INSERT INTO `company_links` (`id`, `link_name`, `link_url`, `category`, `created_at`, `is_pinned`) VALUES
-(7, 'figma', 'https://web.whatsapp.com/', 'General', '2026-05-14 10:12:38', 0),
-(8, 'figma', 'https://web.whatsapp.com/', '123', '2026-05-14 10:12:57', 0),
-(14, 'Test Link', 'http://localhost/8DOTS/admin_area/index.php', 'abc', '2026-06-15 10:29:37', 0),
-(18, 'vkfvnk', 'https://chatgpt.com/c/6a2fd810-ce98-83ee-ae23-c8c72a491147', 'Section', '2026-06-15 11:08:08', 0),
-(21, 'efjkw', 'uploads/company_links/1781523948_Tax Invoice – crroco123.pdf', 'qw', '2026-06-15 11:45:48', 0),
-(22, 'cd', 'uploads/company_links/1781523957_Vinay Prabhu Invoice_DMC 78.pdf', 'qw', '2026-06-15 11:45:58', 0),
-(23, '124', 'file:///C:/Users/Madhavan/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/262DC2B5AD011BAB12793922FAC5FE9B99DE30E1/transfers/2026-24/Tax%20Invoice%20%E2%80%93%20crroco123.pdf', '123', '2026-06-15 12:00:27', 1),
-(24, 'demo 22412313', 'uploads/company_links/1781588291_WhatsApp Image 2026-06-14 at 2.39.45 PM.jpeg', '123', '2026-06-16 05:38:11', 0),
-(25, 'cd', 'uploads/company_links/1781591184_WhatsApp Image 2026-06-14 at 2.39.45 PM.jpeg', '123', '2026-06-16 06:26:24', 0),
-(26, 'ddd', 'uploads/company_links/1781591191_WhatsApp Image 2026-06-14 at 2.39.45 PM.jpeg', '123', '2026-06-16 06:26:31', 0),
-(27, '124', 'uploads/company_links/1781591201_WhatsApp Image 2026-06-14 at 2.39.45 PM.jpeg', '123', '2026-06-16 06:26:41', 0),
-(28, 'wqcwe', 'uploads/company_links/1781591217_WhatsApp Image 2026-06-14 at 2.39.45 PM.jpeg', '123', '2026-06-16 06:26:57', 0);
+INSERT INTO `company_links` (`id`, `link_name`, `link_url`, `category`, `created_at`, `is_pinned`, `uploaded_by_type`, `uploaded_by_id`) VALUES
+(31, 'cd', 'https://chatgpt.com/c/6a2fd810-ce98-83ee-ae23-c8c72a491147', 'demo', '2026-07-02 06:08:09', 0, 'admin', NULL),
+(32, 'figma12', 'uploads/company_links/1782977363_Gemini_Generated_Image_9toiw09toiw09toi.png', 'dem', '2026-07-02 07:29:23', 0, 'admin', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `company_links_assignments`
+--
+
+CREATE TABLE `company_links_assignments` (
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `emp_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `company_links_assignments`
+--
+
+INSERT INTO `company_links_assignments` (`id`, `category`, `emp_id`, `created_at`) VALUES
+(12, 'demo', 23, '2026-07-02 07:09:21'),
+(13, 'dem', 27, '2026-07-02 07:40:16'),
+(14, 'dem', 28, '2026-07-02 07:40:16'),
+(15, 'dem', 25, '2026-07-02 07:40:16');
 
 -- --------------------------------------------------------
 
@@ -360,14 +361,6 @@ CREATE TABLE `customer_feedback` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `customer_feedback`
---
-
-INSERT INTO `customer_feedback` (`id`, `customer_name`, `contact_number`, `email`, `service_month`, `service_quality`, `service_on_time`, `professionalism`, `overall_satisfaction`, `liked`, `improvement`, `comments`, `rating`, `recommend`, `is_read`, `created_at`) VALUES
-(1, 'Patel Madhavan', 'dfsv', 'madhavanpatel19@gmail.com', '2026-03', 'Excellent', 'Yes', 'Very Satisfied', 'Very Satisfied', 'fh fy', 'jhm', 'mu7', 4, 'Yes', 1, '2026-04-09 05:42:17'),
-(2, 'Patel Madhavan', '0987654321', 'madhavanpatel19@gmail.com', '2026-03', 'Good', 'Yes', 'Satisfied', 'Very Satisfied', 'hu', 'ny5', 'menrl', 2, 'Yes', 1, '2026-04-09 05:45:45');
-
 -- --------------------------------------------------------
 
 --
@@ -380,15 +373,6 @@ CREATE TABLE `employee_documents` (
   `file_name` varchar(255) NOT NULL,
   `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `employee_documents`
---
-
-INSERT INTO `employee_documents` (`id`, `emp_id`, `file_name`, `uploaded_at`) VALUES
-(14, 19, '1776404391_extra_3890.pdf', '2026-04-17 05:39:51'),
-(15, 11, '1781864082_Banner.jpg', '2026-06-19 10:14:42'),
-(16, 14, '1781864510_ChatGPT Image Jun 18, 2026, 01_10_58 PM.png', '2026-06-19 10:21:50');
 
 -- --------------------------------------------------------
 
@@ -447,10 +431,10 @@ CREATE TABLE `emp_list` (
 --
 
 INSERT INTO `emp_list` (`id`, `name`, `phone_number`, `address`, `email`, `password`, `blood_group`, `gender`, `join_date`, `salary`, `basic_salary`, `hra`, `allowance`, `deductions`, `documents`, `age`, `dob`, `work_experience`, `marital_status`, `num_dependents`, `emergency_name`, `emergency_relationship`, `emergency_address`, `emergency_phone`, `education_json`, `employment_json`, `account_name`, `bank_branch`, `account_number`, `account_type_ifsc`, `employee_image`, `offer_latter`, `NDA`, `Aadhar_card`, `Pan_card`, `Passportsize_photo`, `old_company_slary_slip`, `otp`, `otp_expire`, `last_birthday_wish_year`, `department`, `designation`, `status`) VALUES
-(11, 'meet', 2147483647, '503, Drive In Rd', 'madhi@gmail.com', '123', 'A+', 'Male', '2025-02-25', 15000, 15000.00, 0.00, 0.00, 0.00, NULL, 0, '2026-06-03', '', '', 0, '', '', '', '', '[]', '[]', '', '', '', '', '1781865363_1509.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
-(14, 'Patel Madhavan123', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'AB+', 'Male', '2026-04-15', 12000, 12000.00, 0.00, 0.00, 0.00, NULL, 0, '2026-04-15', '', '', 0, 'Patel Madhavan', 'fataer', 'Gota', '1231232112', '[{\"degree\":\"123\",\"univ\":\"123\",\"year\":\"123\",\"grade\":\"123\",\"city\":\"12312\"},{\"degree\":\"3\",\"univ\":\"2312\",\"year\":\"123\",\"grade\":\"123\",\"city\":\"23\"}]', '[{\"company\":\"2\",\"pos\":\"12\",\"year\":\"12\",\"reason\":\"12\"}]', '123', 'btad', '87654321', 'SBIN2345', '1781865520_8101.png', '', '', '', '', '', '', '480469', '2026-06-04 10:34:21', 2026, 'Not Assigned', 'Not Assigned', 'Active'),
-(19, 'rajveer', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-04-16', 15000, 15000.00, 0.00, 0.00, 0.00, NULL, 25, '2000-04-18', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '1776404391_2429.jpg', '', '', '', '', '', '', '480469', '2026-06-04 10:34:21', NULL, 'Not Assigned', 'Not Assigned', 'Active'),
-(20, 'panth ', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'O+', 'Male', '2026-04-16', 10000, 10000.00, 0.00, 0.00, 0.00, NULL, 5, '2020-12-31', '', '', 0, '', '', '', '', '[]', '[]', '', '', '', '', '1776404776_3937.jpeg', '', '', '', '', '', '', '480469', '2026-06-04 10:34:21', NULL, 'Not Assigned', 'Not Assigned', 'Active');
+(23, 'Patel Madhavan1', 1234566779, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 20000, 20000.00, 0.00, 0.00, 0.00, NULL, 26, '2000-06-09', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '1782882504_4083.jpeg', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
+(25, 'ram', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 0, 15000.00, 0.00, 0.00, 0.00, NULL, 0, '2009-06-29', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
+(27, 'Patel Madhavan', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 120001, 120001.00, 0.00, 0.00, 0.00, NULL, 0, '2026-06-30', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
+(28, 'Patel Madhavan', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'B+', 'Male', '2026-06-29', 15000, 15000.00, 0.00, 0.00, 0.00, NULL, 15, '2010-06-30', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active');
 
 -- --------------------------------------------------------
 
@@ -472,15 +456,6 @@ CREATE TABLE `emp_performance` (
   `total` int(11) DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `emp_performance`
---
-
-INSERT INTO `emp_performance` (`id`, `emp_id`, `perf_year`, `perf_month`, `absent`, `late`, `task_sheet`, `performance_score`, `dressing_behaviour`, `rnd`, `total`, `updated_at`) VALUES
-(10, 11, 2025, 11, 10, 10, 0, 35, 10, 13, 78, '2025-11-28 07:20:21'),
-(30, 11, 2025, 12, 10, 10, 1, 1, 1, 1, 24, '2025-12-01 06:47:40'),
-(38, 14, 2026, 6, 10, 10, 1, 0, 2, 12, 35, '2026-06-19 11:23:55');
 
 -- --------------------------------------------------------
 
@@ -525,8 +500,7 @@ CREATE TABLE `experience_letters` (
 --
 
 INSERT INTO `experience_letters` (`id`, `name`, `email`, `number`, `designation`, `join_date`, `relieve_date`, `created_at`) VALUES
-(2, 'Madhavan', 'madhavanpatel19@gmail.com', '9876543210', 'hr ', '2026-05-15', '2026-05-19', '2026-05-20 05:26:06'),
-(3, 'Patel Madhavan', 'madhavanpatel19@gmail.com', '987654321234342', 'demi', '2026-07-03', '2026-06-16', '2026-06-18 10:50:33');
+(4, 'Patel Madhavan', 'madhavanpatel19@gmail.com', '9876543212', 'hr ', '2026-06-23', '2026-06-29', '2026-06-30 06:53:14');
 
 -- --------------------------------------------------------
 
@@ -556,10 +530,7 @@ CREATE TABLE `leads` (
 --
 
 INSERT INTO `leads` (`id`, `client_name`, `phone`, `email`, `company_name`, `project_name`, `description`, `budget`, `currency`, `remark`, `lead_source`, `status`, `followup_date`, `created_at`) VALUES
-(1, 'madhavan ', '0987654321`', 'madhavanpatel19@gmail.com', '8dots', NULL, 'hfjrfjernvfkn nrkfernk  3rke kk34  k3rnrekfa;vknrkaek k', '123000', 'INR', 'demo', 'Civil', 'expired', '2026-06-16', '2026-04-27 09:49:27'),
-(2, 'madhavan ', '+91 9876543210', 'madhavanpatel19@gmail.com', '8dots123', NULL, 'ecommerce ', '121222', 'INR', 'demo', 'BNI', 'future', '2026-04-27', '2026-04-27 09:59:15'),
-(6, 'Patel Madhavan', '9198765412', 'madhavanpatel19@gmail.com', '8dots', 'crroco123', 'avc', '123000', 'INR', 'AFD', 'ahmedabad, BNI, botad, Civil', 'active', '2026-06-15', '2026-05-04 05:31:35'),
-(7, 'kamal', '7778882276', 'kokok@yopmail.com', '8DOTS', '23sdkfhkshd', 'this is demi', '234', 'INR', 'sdfhsdf', 'BNI', 'expired', '2026-06-15', '2026-05-04 05:52:55');
+(8, 'Patel Madhavan', '0987654321', 'madhavanpatel19@gmail.com', '8dots DEMO', 'crroco', '', '123000', 'INR', '', 'qwewe', 'active', '2026-06-30', '2026-06-30 06:08:57');
 
 -- --------------------------------------------------------
 
@@ -582,20 +553,7 @@ CREATE TABLE `lead_followups` (
 --
 
 INSERT INTO `lead_followups` (`id`, `lead_id`, `followup_date`, `followup_method`, `followup_type`, `remark`, `created_at`) VALUES
-(1, 1, '2026-04-27', 'Email', 'Urgent', 'udeaa', '2026-04-27 09:50:30'),
-(2, 1, '2026-04-27', 'Phone', 'General Remark', 'wgver', '2026-04-27 09:57:54'),
-(5, 6, '2026-05-04', 'Phone', 'After 2 Days', 'acfc', '2026-05-04 05:39:38'),
-(6, 6, '2026-05-04', 'WhatsApp', 'Urgent', 'abcd', '2026-05-04 05:42:06'),
-(7, 6, '2026-05-04', 'Phone', 'General Remark', 'qwds', '2026-05-04 05:42:18'),
-(8, 6, '2026-05-04', 'Meeting', '1 Month Before', '234dc', '2026-05-04 05:44:35'),
-(9, 6, '2026-05-04', 'Email', 'Urgent', 'sdav', '2026-05-04 05:48:55'),
-(10, 7, '2026-05-04', 'Email', 'General Remark', 'kjhfjkshdfksdfh', '2026-05-04 05:53:40'),
-(11, 1, '2026-06-15', 'Phone', 'After 2 Days', 'adawdadadadawd', '2026-06-15 05:49:27'),
-(12, 7, '2026-06-15', 'Phone', 'Next Week', 'adadadadada', '2026-06-15 05:49:51'),
-(13, 6, '2026-06-15', 'Phone', 'After 2 Days', 'uvho', '2026-06-15 06:31:21'),
-(14, 7, '2026-06-15', 'Phone', 'Urgent', 'dfawe', '2026-06-15 06:36:31'),
-(15, 6, '2026-06-15', 'Phone', '1 Month Before', 'efvf', '2026-06-15 06:38:25'),
-(17, 6, '2026-06-15', 'Phone', 'After 2 Days', 'fmlv', '2026-06-15 06:40:25');
+(18, 8, '2026-06-30', 'Phone', 'General Remark', '', '2026-06-30 06:26:52');
 
 -- --------------------------------------------------------
 
@@ -614,18 +572,10 @@ CREATE TABLE `lead_sources` (
 --
 
 INSERT INTO `lead_sources` (`id`, `source_name`, `created_at`) VALUES
-(1, 'Mechanical', '2026-04-27 10:18:58'),
-(3, 'Turnkey', '2026-04-27 10:18:58'),
-(4, 'Electrical', '2026-04-27 10:18:58'),
-(5, 'Civil', '2026-04-27 10:18:58'),
-(6, 'ahmedabad', '2026-04-27 10:19:16'),
-(7, 'botad', '2026-04-27 10:26:56'),
-(8, 'iot', '2026-04-27 12:45:08'),
-(9, 'family ', '2026-05-04 05:31:01'),
-(10, '8dots', '2026-06-12 04:53:57'),
-(12, 'smitbhai', '2026-06-12 04:54:34'),
-(13, 'madhavan ', '2026-06-12 04:56:29'),
-(14, 'sec', '2026-06-12 04:58:59');
+(30, 'family ', '2026-06-30 05:24:35'),
+(32, 'qwewe', '2026-06-30 06:03:21'),
+(34, 'bro', '2026-06-30 10:48:32'),
+(35, 'hr', '2026-07-01 05:25:43');
 
 -- --------------------------------------------------------
 
@@ -649,8 +599,7 @@ CREATE TABLE `leave_applications` (
 --
 
 INSERT INTO `leave_applications` (`id`, `emp_id`, `leave_type_id`, `leave_from`, `leave_to`, `reason`, `status`, `created_at`) VALUES
-(3, 14, 1, '2026-05-15', '2026-05-19', 'demo', 'approved', '2026-05-14 05:11:48'),
-(4, 14, 1, '2026-06-01', '2026-06-01', 'demo', 'approved', '2026-05-29 09:49:04');
+(7, 23, 4, '2026-07-01', '2026-07-02', 'demo', 'approved', '2026-06-30 12:16:55');
 
 -- --------------------------------------------------------
 
@@ -670,7 +619,11 @@ CREATE TABLE `leave_types` (
 --
 
 INSERT INTO `leave_types` (`id`, `leave_name`, `num_of_leave`, `created_at`) VALUES
-(1, 'sick leave', 12, '2026-05-14 05:09:03');
+(4, 'demo', 10, '2026-06-30 12:16:29'),
+(5, 'den1', 10, '2026-06-30 12:20:16'),
+(6, 'demo', 12, '2026-06-30 12:20:24'),
+(7, 'abc', 23, '2026-06-30 12:20:32'),
+(8, 'dfks', 12, '2026-06-30 12:20:36');
 
 -- --------------------------------------------------------
 
@@ -695,7 +648,7 @@ CREATE TABLE `nda_forms` (
 --
 
 INSERT INTO `nda_forms` (`id`, `name`, `number`, `email`, `position`, `salary`, `start_date`, `notice_period`, `created_at`) VALUES
-(2, 'Patel Madhavan', '9876543212', 'madhavanpatel19@gmail.com', 'web devlpor', NULL, '2026-06-25', NULL, '2026-06-18 11:34:04');
+(3, 'Patel Madhavan', '987654321', 'madhavanpatel19@gmail.com', 'hr', NULL, '2026-07-01', NULL, '2026-06-30 06:52:42');
 
 -- --------------------------------------------------------
 
@@ -719,8 +672,7 @@ CREATE TABLE `offer_letters` (
 --
 
 INSERT INTO `offer_letters` (`id`, `name`, `number`, `email`, `position`, `start_date`, `notice_period`, `salary`) VALUES
-(6, 'Patel Madhavan', 987654321, 'madhavanpatel19@gmail.com', 'hr', '2026-04-21', '30days', 10000.00),
-(7, 'Patel Madhavan', 2147483647, 'madhavanpatel19@gmail.com', 'web devlpor', '2026-06-18', '45 day', 14996.00);
+(8, 'Patel Madhavan', 2147483647, 'madhavanpatel19@gmail.com', 'web devlpor', '2026-07-02', '90 days', 12000.00);
 
 -- --------------------------------------------------------
 
@@ -746,29 +698,9 @@ CREATE TABLE `project_budget_phases` (
 --
 
 INSERT INTO `project_budget_phases` (`id`, `project_id`, `phase_name`, `description`, `expected_date`, `cost`, `received_amount`, `received_date`, `remark`, `created_at`) VALUES
-(2, 21, 'Project Execution', 'Initial budget allocation', NULL, 12300012.00, 0.00, NULL, '', '2026-06-10 06:47:32'),
-(3, 22, 'demo', 'Initial budget allocation', NULL, 12121212.00, 10000.00, '2026-06-10', '', '2026-06-10 07:21:08'),
-(8, 24, 'Project Execution', 'Initial budget allocation', NULL, 2000000.00, 0.00, NULL, '', '2026-06-11 08:56:55'),
-(9, 24, 'dwqd', 'efwf', NULL, 2000000.00, 12330.00, '2026-12-31', 'vd', '2026-06-11 08:56:55'),
-(10, 27, 'Project Execution', 'Initial budget allocation', NULL, 5000.00, 0.00, NULL, '', '2026-06-11 12:04:59'),
-(11, 27, 'Phase 1', 'pay via remitly', NULL, 5000.00, 1000.00, '2026-06-12', 'Net Banking', '2026-06-11 12:04:59'),
-(13, 29, 'phasa 1', 'dmeo', NULL, 12300012.00, 10000.00, '2026-06-11', 'Debit Card', '2026-06-11 12:46:31'),
-(14, 29, 'phase2', 'ewfewe', NULL, 12290012.00, 10000.00, '2026-06-11', 'Cash', '2026-06-11 12:46:31'),
-(20, 31, 'Phase 1', 'demi', NULL, 101.00, 90.00, '2026-06-11', 'PhonePe', '2026-06-11 13:06:26'),
-(21, 31, 'Phase 2', 'demi', NULL, 200.00, 0.00, NULL, '', '2026-06-11 13:06:26'),
-(22, 31, 'Phase 3', 'demi', NULL, 101.00, 0.00, NULL, '', '2026-06-11 13:06:26'),
-(23, 31, 'Phase 4', 'demide', NULL, 100.00, 90.00, '2026-06-11', 'Cash', '2026-06-11 13:06:26'),
-(24, 31, 'Phase 5', '123', NULL, 101.00, 0.00, NULL, '', '2026-06-11 13:06:26'),
-(27, 33, 'Phase 1', '123', NULL, 0.00, 1200.00, '2026-12-31', 'PhonePe', '2026-06-12 04:50:00'),
-(34, 35, 'Phase 1', 'demi', '2026-12-31', 12.00, 0.00, NULL, NULL, '2026-06-12 12:10:17'),
-(35, 36, 'Phase 1', '', NULL, 12.00, 0.00, NULL, NULL, '2026-06-12 12:12:46'),
-(40, 34, 'Phase 1', 'system', NULL, 2000.00, 0.00, NULL, NULL, '2026-06-12 13:03:43'),
-(41, 34, 'Phase 2', 'engineering', NULL, 2000.00, 0.00, NULL, NULL, '2026-06-12 13:03:43'),
-(42, 34, 'Phase 3', 'data', NULL, 1000.00, 0.00, NULL, NULL, '2026-06-12 13:03:43'),
-(44, 25, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-06-17 09:49:16'),
-(45, 32, 'Phase 1', '', '2026-12-31', 100.00, 0.00, NULL, NULL, '2026-06-18 05:09:23'),
-(46, 26, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-06-18 05:09:40'),
-(49, 37, 'Phase 1', 'demi', NULL, 343.00, 12131.00, NULL, '', '2026-06-22 06:58:57');
+(52, 39, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-06-30 05:34:42'),
+(53, 38, 'Phase 1', 'teset1', '2026-06-30', 5000.00, 0.00, NULL, NULL, '2026-07-01 06:40:24'),
+(54, 38, 'Phase 2', 'test2 ', '2026-07-04', 5000.00, 0.00, NULL, NULL, '2026-07-01 06:40:24');
 
 -- --------------------------------------------------------
 
@@ -783,16 +715,6 @@ CREATE TABLE `project_documents` (
   `file_path` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `project_documents`
---
-
-INSERT INTO `project_documents` (`id`, `project_id`, `document_name`, `file_path`, `created_at`) VALUES
-(1, 20, 'demo', 'project_docs/project_20_1778752820_6a059d34cbf1f.jpeg', '2026-05-14 10:00:20'),
-(2, 21, 'demo', '1781067498_5242.jpg', '2026-06-10 04:58:18'),
-(3, 34, 'Project Proposal', '1781265380_9598.png', '2026-06-12 11:56:20'),
-(5, 37, 'demo', '1782111356_6156.jpg', '2026-06-22 06:55:56');
 
 -- --------------------------------------------------------
 
@@ -813,12 +735,9 @@ CREATE TABLE `project_links` (
 --
 
 INSERT INTO `project_links` (`id`, `project_id`, `link_name`, `link_url`, `created_at`) VALUES
-(1, 21, 'demo', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-06-10 04:58:18'),
-(8, 34, 'website', 'file:///C:/Users/LENOVO/Desktop/index-expandable.html', '2026-06-12 13:03:43'),
-(9, 34, 'efjkw', 'file:///C:/Users/Madhavan/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/262DC2B5AD011BAB12793922FAC5FE9B99DE30E1/transfers/2026-24/Tax%20Invoice%20%E2%80%93%20crroco123.pdf', '2026-06-12 13:03:43'),
-(10, 34, 'cd', 'https://chatgpt.com/c/6a2beba9-2fb8-83e8-9338-02d1777c1ff9', '2026-06-12 13:03:43'),
-(11, 36, 'nkjn', 'https://cadletedesigns.com/', '2026-06-12 13:09:28'),
-(13, 37, 'website', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-06-22 06:55:56');
+(19, 38, 'website', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-07-01 06:40:24'),
+(20, 38, 'ddd', 'https://web.whatsapp.com/', '2026-07-01 06:40:24'),
+(21, 38, 'efjkw', 'http://localhost/8DOTS/admin_area/index.php', '2026-07-01 06:40:24');
 
 -- --------------------------------------------------------
 
@@ -842,17 +761,15 @@ CREATE TABLE `project_team_todos` (
 --
 
 INSERT INTO `project_team_todos` (`id`, `project_id`, `emp_id`, `task_name`, `due_date`, `priority`, `status`, `created_at`) VALUES
-(19, 36, 20, 'demo', '2026-06-20', 'High', 1, '2026-06-17 12:50:57'),
-(20, 34, 11, 'demo', NULL, 'Medium', 1, '2026-06-17 12:52:08'),
-(21, 34, 11, 'demo1', NULL, 'Medium', 1, '2026-06-17 12:52:19'),
-(22, 34, 11, 'sdcme', '2026-06-18', 'Medium', 1, '2026-06-17 12:52:34'),
-(23, 28, 11, 'edew', '2026-06-18', 'Medium', 1, '2026-06-18 04:47:15'),
-(24, 0, 14, 'weg', '2026-06-18', 'Low', 1, '2026-06-18 06:52:47'),
-(25, 0, 14, 'wevsd', '2026-06-18', 'Medium', 1, '2026-06-18 06:52:52'),
-(26, 0, 14, 'fvd', '2026-06-19', 'Medium', 1, '2026-06-18 06:53:09'),
-(27, 0, 19, 'dew', '2026-06-26', 'Low', 1, '2026-06-18 06:55:57'),
-(28, 0, 19, 'efw', '2026-06-18', 'High', 1, '2026-06-18 06:57:11'),
-(29, 0, 11, 'de', '2026-06-22', 'High', 1, '2026-06-22 06:59:31');
+(40, 0, 22, 'efjefke', '2026-06-24', 'Medium', 1, '2026-06-24 11:27:10'),
+(41, 0, 22, 'dfjoef', '2026-06-24', 'Medium', 1, '2026-06-24 11:27:15'),
+(42, 0, 22, 'wdkdkv', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:38'),
+(43, 0, 22, 'dkvfdvvkf', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:42'),
+(44, 0, 22, 'fkvaekver', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:59'),
+(45, 0, 23, 'wew', '2026-06-30', 'Medium', 1, '2026-06-30 04:23:11'),
+(46, 0, 23, 'faga', '2026-07-01', 'High', 1, '2026-07-01 11:25:37'),
+(47, 38, 23, 'ewfawf', NULL, 'Medium', 1, '2026-07-01 11:45:06'),
+(48, 38, 23, 'afafrrde', NULL, 'Medium', 1, '2026-07-01 11:45:10');
 
 -- --------------------------------------------------------
 
@@ -900,6 +817,13 @@ ALTER TABLE `attendance`
   ADD UNIQUE KEY `emp_date` (`emp_id`,`attendance_date`);
 
 --
+-- Indexes for table `attendance_logs`
+--
+ALTER TABLE `attendance_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `att_id` (`att_id`);
+
+--
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
@@ -936,6 +860,13 @@ ALTER TABLE `client_project_remarks`
 --
 ALTER TABLE `company_links`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `company_links_assignments`
+--
+ALTER TABLE `company_links_assignments`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `cat_emp` (`category`,`emp_id`);
 
 --
 -- Indexes for table `customer_feedback`
@@ -1053,25 +984,31 @@ ALTER TABLE `project_team_todos`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `admin_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `admin_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `announcement_read`
 --
 ALTER TABLE `announcement_read`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+
+--
+-- AUTO_INCREMENT for table `attendance_logs`
+--
+ALTER TABLE `attendance_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1083,31 +1020,37 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `client_industries`
 --
 ALTER TABLE `client_industries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `client_projects`
 --
 ALTER TABLE `client_projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `client_project_remarks`
 --
 ALTER TABLE `client_project_remarks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `company_links`
 --
 ALTER TABLE `company_links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `company_links_assignments`
+--
+ALTER TABLE `company_links_assignments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `customer_feedback`
@@ -1125,7 +1068,7 @@ ALTER TABLE `employee_documents`
 -- AUTO_INCREMENT for table `emp_list`
 --
 ALTER TABLE `emp_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `emp_performance`
@@ -1143,73 +1086,73 @@ ALTER TABLE `emp_salary_history`
 -- AUTO_INCREMENT for table `experience_letters`
 --
 ALTER TABLE `experience_letters`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `leads`
 --
 ALTER TABLE `leads`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `lead_followups`
 --
 ALTER TABLE `lead_followups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `lead_sources`
 --
 ALTER TABLE `lead_sources`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `leave_applications`
 --
 ALTER TABLE `leave_applications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `leave_types`
 --
 ALTER TABLE `leave_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `nda_forms`
 --
 ALTER TABLE `nda_forms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `offer_letters`
 --
 ALTER TABLE `offer_letters`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `project_budget_phases`
 --
 ALTER TABLE `project_budget_phases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `project_documents`
 --
 ALTER TABLE `project_documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `project_links`
 --
 ALTER TABLE `project_links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `project_team_todos`
 --
 ALTER TABLE `project_team_todos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Constraints for dumped tables
