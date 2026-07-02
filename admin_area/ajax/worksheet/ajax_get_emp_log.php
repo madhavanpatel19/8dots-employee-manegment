@@ -62,7 +62,8 @@ if ($is_today && $row['is_working'] == 1 && !empty($row['last_resume_time'])) {
 }
 
 // Format helper
-function fmtDur($secs) {
+function fmtDur($secs)
+{
     $h = floor($secs / 3600);
     $m = floor(($secs % 3600) / 60);
     $s = $secs % 60;
@@ -125,16 +126,31 @@ if ($current_start && $is_live) {
     ];
 }
 
+// Check if there's a check_out event in the logs to use as a fallback
+$last_log_checkout = null;
+foreach ($events as $ev) {
+    if ($ev['action'] == 'check_out') {
+        $last_log_checkout = $ev['action_time'];
+    }
+}
+
+$final_check_out_time = null;
+if (!empty($row['check_out_time']) && $row['check_out_time'] != '00:00:00') {
+    $final_check_out_time = date('h:i A', strtotime($row['check_out_time']));
+} elseif ($last_log_checkout) {
+    $final_check_out_time = date('h:i A', strtotime($last_log_checkout));
+}
+
 echo json_encode([
     'success'         => true,
     'emp_name'        => $row['emp_name'],
     'attendance_date' => $row['attendance_date'],
-    'check_in_time'   => $row['check_in_time']  ? date('h:i A', strtotime($row['check_in_time']))  : null,
-    'check_out_time'  => $row['check_out_time'] ? date('h:i A', strtotime($row['check_out_time'])) : null,
+    'check_in_time'   => (!empty($row['check_in_time']) && $row['check_in_time'] != '00:00:00') ? date('h:i A', strtotime($row['check_in_time']))  : null,
+    'check_out_time'  => $final_check_out_time,
     'duration_secs'   => $duration_secs,
     'duration_fmt'    => $duration_fmt,
-    'is_working'      => (bool)$row['is_working'],
-    'is_live'         => $is_live,
+    'is_working'      => $last_log_checkout ? false : (bool)$row['is_working'],
+    'is_live'         => $last_log_checkout ? false : $is_live,
     'status'          => $row['status'],
     'ip_address'      => $row['ip_address'] ?? null,
     'location'        => $row['location'] ?? null,

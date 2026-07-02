@@ -96,7 +96,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$history_query  = "SELECT * FROM attendance WHERE emp_id = '$emp_id' ORDER BY attendance_date DESC LIMIT 10";
+$history_query  = "SELECT a.*, 
+                   (SELECT action_time FROM attendance_logs WHERE att_id = a.id AND action = 'check_out' ORDER BY action_time DESC LIMIT 1) as log_checkout 
+                   FROM attendance a 
+                   WHERE a.emp_id = '$emp_id' 
+                   ORDER BY a.attendance_date DESC LIMIT 10";
 $history_result = mysqli_query($con, $history_query);
 
 $today_date  = date('Y-m-d');
@@ -233,7 +237,15 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                                 <td style="text-align: center; font-weight: 700; color: #64748b;"><?php echo $i++; ?></td>
                                                 <td style="font-weight: 600; color: #1e293b; text-align: center;"><?php echo date('d M Y', strtotime($row['attendance_date'])); ?></td>
                                                 <td style="text-align: center; color: #64748b; font-size: 13px;"><?php echo $row['check_in_time'] ?: '--:--'; ?></td>
-                                                <td style="text-align: center; color: #64748b; font-size: 13px;"><?php echo $row['check_out_time'] ?: '--:--'; ?></td>
+                                                <td style="text-align: center; color: #64748b; font-size: 13px;">
+                                                    <?php
+                                                    $display_out = $row['check_out_time'];
+                                                    if ((empty($display_out) || $display_out == '00:00:00') && !empty($row['log_checkout'])) {
+                                                        $display_out = date('H:i:s', strtotime($row['log_checkout']));
+                                                    }
+                                                    echo $display_out ?: '--:--';
+                                                    ?>
+                                                </td>
                                                 <td style="text-align: center; color: #dd2127; font-weight: 700;">
                                                     <?php
                                                     $active_secs = $row['total_duration_secs'];

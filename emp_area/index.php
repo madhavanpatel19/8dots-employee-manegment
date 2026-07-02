@@ -172,9 +172,17 @@ if (!isset($_SESSION['emp_id'])) {
                     <?php
                     if (isset($_GET['dashboard'])) {
                         include("pages/dashboard/emp_dashboard.php");
+                    } elseif (isset($_GET['projects'])) {
+                        include("pages/projects/projects.php");
                     } elseif (isset($_GET['worksheet'])) {
                         $_GET['partial'] = true;
                         include("pages/worksheets/worksheet.php");
+                    } elseif (isset($_GET['todo'])) {
+                        $_GET['partial'] = true;
+                        include("pages/todo/todo.php");
+                    } elseif (isset($_GET['quick_links'])) {
+                        $_GET['partial'] = true;
+                        include("pages/quick_links/quick_links.php");
                     } elseif (isset($_GET['emp_profile'])) {
                         include("pages/profile/emp_profile.php");
                     } elseif (isset($_GET['leave_application'])) {

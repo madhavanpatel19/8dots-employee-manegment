@@ -13,8 +13,6 @@ if (!isset($_SESSION['admin_email'])) {
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if ($action == 'add') {
-    file_put_contents(__DIR__ . '/debug_log.txt', date('Y-m-d H:i:s') . " POST: " . json_encode($_POST) . " FILES: " . json_encode($_FILES) . "\n", FILE_APPEND);
-
     $link_name = isset($_POST['link_name']) ? mysqli_real_escape_string($con, $_POST['link_name']) : '';
     $category = isset($_POST['category']) ? mysqli_real_escape_string($con, $_POST['category']) : '';
     $resource_type = isset($_POST['resource_type']) ? $_POST['resource_type'] : 'link';
@@ -77,17 +75,31 @@ if ($action == 'add') {
         exit;
     }
 
-    $insert = "INSERT INTO company_links (link_name, link_url, category) VALUES ('$link_name', '$link_url', '$category')";
+    $admin_id = $_SESSION['admin_email']; // using email as ID for admin
+
+    $insert = "INSERT INTO company_links (link_name, link_url, category, uploaded_by_type, uploaded_by_id) VALUES ('$link_name', '$link_url', '$category', 'admin', NULL)";
     if (mysqli_query($con, $insert)) {
         echo json_encode(['status' => 'success', 'message' => 'Resource deployed successfully']);
     } else {
         echo json_encode(['status' => 'error', 'message' => mysqli_error($con)]);
     }
 } elseif ($action == 'fetch') {
-    $query = "SELECT * FROM company_links ORDER BY category ASC, created_at DESC";
+    $query = "SELECT c.*, 
+              e.name as emp_name, 
+              e.employee_image as emp_photo 
+              FROM company_links c 
+              LEFT JOIN emp_list e ON c.uploaded_by_id = e.id 
+              ORDER BY c.category ASC, c.created_at DESC";
     $run = mysqli_query($con, $query);
     $data = [];
     while ($row = mysqli_fetch_assoc($run)) {
+        if ($row['uploaded_by_type'] == 'employee' && !empty($row['emp_name'])) {
+            $row['uploader_name'] = $row['emp_name'];
+            $row['uploader_photo'] = $row['emp_photo'];
+        } else {
+            $row['uploader_name'] = 'Admin';
+            $row['uploader_photo'] = ''; // Will fall back to default
+        }
         $data[] = $row;
     }
     echo json_encode($data);
@@ -118,7 +130,7 @@ if ($action == 'add') {
 } elseif ($action == 'rename_category') {
     $old_category = mysqli_real_escape_string($con, $_POST['old_category']);
     $new_category = mysqli_real_escape_string($con, $_POST['new_category']);
-    
+
     if (empty($old_category) || empty($new_category)) {
         echo json_encode(['status' => 'error', 'message' => 'Invalid category names']);
         exit;
@@ -129,5 +141,37 @@ if ($action == 'add') {
         echo json_encode(['status' => 'success', 'message' => 'Category renamed successfully']);
     } else {
         echo json_encode(['status' => 'error', 'message' => mysqli_error($con)]);
+    }
+} elseif ($action == 'get_assignments') {
+    $category = mysqli_real_escape_string($con, $_GET['category']);
+    $query = "SELECT emp_id FROM company_links_assignments WHERE category='$category'";
+    $run = mysqli_query($con, $query);
+    $data = [];
+    while ($row = mysqli_fetch_assoc($run)) {
+        $data[] = $row['emp_id'];
+    }
+    echo json_encode($data);
+} elseif ($action == 'save_assignments') {
+    $category = mysqli_real_escape_string($con, $_POST['category']);
+    $emp_ids = isset($_POST['emp_ids']) && is_array($_POST['emp_ids']) ? $_POST['emp_ids'] : [];
+
+    // First delete existing assignments for this category
+    mysqli_query($con, "DELETE FROM company_links_assignments WHERE category='$category'");
+
+    // Then insert new ones
+    if (!empty($emp_ids)) {
+        $values = [];
+        foreach ($emp_ids as $eid) {
+            $e_safe = mysqli_real_escape_string($con, $eid);
+            $values[] = "('$category', '$e_safe')";
+        }
+        $insert = "INSERT INTO company_links_assignments (category, emp_id) VALUES " . implode(',', $values);
+        if (mysqli_query($con, $insert)) {
+            echo json_encode(['status' => 'success', 'message' => 'Assignments updated']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => mysqli_error($con)]);
+        }
+    } else {
+        echo json_encode(['status' => 'success', 'message' => 'Assignments cleared']);
     }
 }

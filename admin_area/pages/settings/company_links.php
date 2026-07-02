@@ -4,7 +4,73 @@ if (!isset($con)) {
         include(__DIR__ . '/../../includes/db.php');
     }
 }
+
+// Fetch all employees for assignment
+$empList = [];
+$empQ = mysqli_query($con, "SELECT id, name, employee_image FROM emp_list ORDER BY name ASC");
+while ($erow = mysqli_fetch_assoc($empQ)) {
+    $empList[] = $erow;
+}
 ?>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        min-height: 48px !important;
+        background-color: #fff !important;
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        transition: all 0.3s ease;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #DF2127 !important;
+        box-shadow: 0 0 0 4px rgba(223, 33, 39, 0.1) !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #ffeaeb !important;
+        border: 1px solid #ffc9cb !important;
+        border-radius: 6px !important;
+        color: #df2127 !important;
+        padding: 4px 8px 4px 24px !important;
+        margin-top: 6px !important;
+        position: relative !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: #df2127 !important;
+        border-right: 1px solid rgba(223, 33, 39, 0.2) !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 6px !important;
+        margin: 0 !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+        background-color: rgba(223, 33, 39, 0.1) !important;
+        color: #b91c1c !important;
+    }
+
+    .select2-search--inline .select2-search__field {
+        margin-top: 8px !important;
+        font-family: inherit !important;
+        color: #334155 !important;
+    }
+</style>
 
 <div class="page-wrapper premium-ui-enabled" style="background: #fafbfc; min-height: 100vh; padding: 30px 40px;">
 
@@ -12,7 +78,10 @@ if (!isset($con)) {
     <div id="section-browser-view">
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px;">
-            <div> </div>
+            <div style="position: relative; width: 350px;">
+                <i class="fa fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                <input type="text" id="section-search-input" placeholder="Search sections..." style="width: 100%; padding: 12px 15px 12px 45px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            </div>
             <button type="button" id="btn-add-section" class="btn-premium-add">
                 <i class="fa fa-plus"></i> New Section
             </button>
@@ -22,14 +91,29 @@ if (!isset($con)) {
 
         <!-- Inline Section Add Form -->
         <div id="inline-section-form" style="display: none; background: #fff; padding: 20px 25px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 25px;">
-            <form id="add-section-form-direct" style="display: flex; gap: 15px; align-items: flex-end;">
-                <div style="flex-grow: 1;">
+            <form id="add-section-form-direct" style="display: flex; gap: 15px; align-items: flex-start;">
+                <div style="flex: 1;">
                     <label style="font-weight: 700; color: #475569; font-size: 12px; margin-bottom: 8px; display: block;">Section Name</label>
-                    <input type="text" id="new-section-name" class="p-input-premium" placeholder="e.g. Mechanical Engineering" required style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-weight: 500; font-size: 14px;">
+                    <input type="text" id="new-section-name" class="p-input-premium" placeholder="e.g. Mechanical Engineering" required style="width: 100%; height: 48px; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-weight: 500; font-size: 14px; box-sizing: border-box;">
                 </div>
-                <button type="submit" class="btn-premium-add">
-                    Create Section
-                </button>
+                <div style="flex: 2;">
+                    <label style="font-weight: 700; color: #475569; font-size: 12px; margin-bottom: 8px; display: block;">Assign Access to Employees</label>
+                    <select id="new-section-employees" class="form-control" multiple style="width: 100%;">
+                        <option value="all">Add All Employees</option>
+                        <?php foreach ($empList as $e):
+                            $emp_img = !empty($e['employee_image']) ? 'uploads/' . $e['employee_image'] : 'admin_images/default.png';
+                        ?>
+                            <option value="<?php echo $e['id']; ?>" data-image="<?php echo $emp_img; ?>">
+                                <?php echo htmlspecialchars($e['name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div style="margin-top: 23px;">
+                    <button type="submit" class="btn-premium-add" style="height: 48px; display: flex; align-items: center; justify-content: center; padding: 0 25px;">
+                        Create Section
+                    </button>
+                </div>
             </form>
         </div>
 
@@ -126,8 +210,8 @@ if (!isset($con)) {
                     </div>
                 </div>
                 <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 12px;">
-                    <button type="button" class="btn-cancel-add" style="background: transparent; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; font-weight: 600; padding: 8px 16px; cursor: pointer; font-size: 13px;">Cancel</button>
-                    <button type="submit" style="background: #df2127; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">Save Link</button>
+                    <button type="button" class="btn-premium-cancel">Cancel</button>
+                    <button type="submit" class="btn-premium-add">Save Link</button>
                 </div>
             </form>
         </div>
@@ -148,8 +232,8 @@ if (!isset($con)) {
                     </div>
                 </div>
                 <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 12px;">
-                    <button type="button" class="btn-cancel-add" style="background: transparent; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; font-weight: 600; padding: 8px 16px; cursor: pointer; font-size: 13px;">Cancel</button>
-                    <button type="submit" style="background: #df2127; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">Upload File</button>
+                    <button type="button" class="btn-premium-cancel">Cancel</button>
+                    <button type="submit" class="btn-premium-add">Upload File</button>
                 </div>
             </form>
         </div>
@@ -205,6 +289,49 @@ if (!isset($con)) {
 
     </div>
 
+</div>
+
+<!-- Employee Assignment Modal -->
+<div id="assignEmployeesModal" class="modal fade" tabindex="-1" role="dialog" style="z-index: 99999;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-users" style="color: #fff; font-size: 14px;"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Assign Access to <span id="assign-section-name" style="color: #df2127;"></span></h5>
+                    </div>
+                </div>
+                <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding: 25px; background: #fff;">
+                <p style="margin-top: 0; margin-bottom: 20px; font-size: 14px; color: #64748b;">Select which employees can view this section in their Quick Links area. If no employees are selected, this section will be hidden from everyone.</p>
+                <form id="assign-employees-form">
+                    <input type="hidden" name="category" id="assign-category-input">
+                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px;">
+                        <?php foreach ($empList as $e):
+                            $img = !empty($e['employee_image']) ? 'uploads/' . $e['employee_image'] : 'admin_images/default.png';
+                        ?>
+                            <label style="display: flex; align-items: center; gap: 15px; padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; margin: 0;">
+                                <input type="checkbox" name="emp_ids[]" value="<?php echo $e['id']; ?>" class="emp-checkbox" style="width: 18px; height: 18px; accent-color: #df2127;">
+                                <img src="<?php echo htmlspecialchars($img); ?>" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                <span style="font-weight: 600; color: #1e293b; font-size: 14px;"><?php echo htmlspecialchars($e['name']); ?></span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
+                        <button type="submit" class="btn-premium-add" id="btn-save-assignments">Save Assignments</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -445,9 +572,14 @@ if (!isset($con)) {
                                 </p>
                             </div>
                         </div>
-                        <button style="background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 16px;">
-                            <i class="fa fa-ellipsis-h"></i>
-                        </button>
+                        <div style="position: relative;" class="folder-menu-container">
+                            <button class="btn-folder-menu" style="background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 16px;">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <div class="folder-dropdown" style="display: none; position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-top: 5px; z-index: 100; min-width: 180px; overflow: hidden;">
+                                <div class="btn-assign-folder" data-category="${cat}" style="padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; transition: 0.2s;"><i class="fa fa-users" style="margin-right: 8px; color: #df2127;"></i> Assign Access</div>
+                            </div>
+                        </div>
                     </div>
                     <div style="border-top: 1px solid #f1f5f9; padding-top: 15px; display: flex; align-items: center; color: #64748b; font-size: 12px;">
                         <i class="fa fa-calendar-o" style="margin-right: 6px;"></i> Updated ${updatedAgoText}
@@ -501,8 +633,8 @@ if (!isset($con)) {
                     </td>
                     <td style="padding: 15px 20px; vertical-align: middle;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <img src="${currentUserAvatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
-                            <span style="color: #475569; font-size: 14px;">${currentUserName}</span>
+                            <img src="${item.uploader_photo ? 'uploads/' + item.uploader_photo : currentUserAvatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                            <span style="color: #475569; font-size: 14px;">${item.uploader_name || 'Admin'}</span>
                         </div>
                     </td>
                     <td style="padding: 15px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 14px;">${updatedOn}</td>
@@ -588,8 +720,8 @@ if (!isset($con)) {
                     <td style="padding: 12px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 13px; font-weight: 500;">${typeInfo.type}</td>
                     <td style="padding: 12px 20px; vertical-align: middle;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <img src="${currentUserAvatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
-                            <span style="color: #475569; font-size: 13px; font-weight: 500;">${currentUserName}</span>
+                            <img src="${item.uploader_photo ? 'uploads/' + item.uploader_photo : currentUserAvatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                            <span style="color: #475569; font-size: 13px; font-weight: 500;">${item.uploader_name || 'Admin'}</span>
                         </div>
                     </td>
                     <td style="padding: 12px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 13px;">${dateOn}</td>
@@ -647,8 +779,8 @@ if (!isset($con)) {
                     </td>
                     <td style="padding: 12px 20px; vertical-align: middle;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <img src="${currentUserAvatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
-                            <span style="color: #475569; font-size: 13px; font-weight: 500;">${currentUserName}</span>
+                            <img src="${item.uploader_photo ? 'uploads/' + item.uploader_photo : currentUserAvatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                            <span style="color: #475569; font-size: 13px; font-weight: 500;">${item.uploader_name || 'Admin'}</span>
                         </div>
                     </td>
                     <td style="padding: 12px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 13px;">${dateOn}</td>
@@ -765,14 +897,81 @@ if (!isset($con)) {
             $('#inline-section-form').slideToggle(200);
         });
 
+        $('#section-search-input').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            if (searchTerm === '') {
+                $('.folder-card').show();
+            } else {
+                $('.folder-card').each(function() {
+                    const catName = $(this).data('category').toLowerCase();
+                    if (catName.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+        });
+
+        function formatEmployee(opt) {
+            if (!opt.id) return opt.text;
+            if (opt.id === 'all') {
+                return $('<span><i class="fa fa-users" style="margin-right: 8px; color: #df2127;"></i>' + opt.text + '</span>');
+            }
+            var img = $(opt.element).data('image');
+            if (!img) return opt.text;
+            return $('<span><img src="' + img + '" style="width:20px;height:20px;border-radius:50%;margin-right:8px;object-fit:cover;" />' + opt.text + '</span>');
+        }
+
+        $('#new-section-employees').select2({
+            placeholder: "Select employees...",
+            allowClear: true,
+            templateResult: formatEmployee,
+            templateSelection: formatEmployee
+        });
+
+        $('#new-section-employees').on('select2:select', function(e) {
+            var data = e.params.data;
+            if (data.id === 'all') {
+                var allVals = [];
+                $(this).find('option').each(function() {
+                    if ($(this).val() !== 'all' && $(this).val() !== '') {
+                        allVals.push($(this).val());
+                    }
+                });
+                $(this).val(allVals).trigger('change');
+            }
+        });
+
         $('#add-section-form-direct').submit(function(e) {
             e.preventDefault();
             const name = $('#new-section-name').val().trim();
             if (name) {
-                $('#inline-section-form').slideUp(200);
-                $('#hub-search-input').val('');
-                openResourceHub(name);
-                $('#new-section-name').val('');
+                const checkedEmps = $('#new-section-employees').val() || [];
+
+                const formData = new FormData();
+                formData.append('category', name);
+                checkedEmps.forEach(id => formData.append('emp_ids[]', id));
+
+                const submitBtn = $(this).find('button[type="submit"]');
+                const orig = submitBtn.text();
+                submitBtn.text('Creating...').prop('disabled', true);
+
+                $.ajax({
+                    url: 'ajax/misc/ajax_company_links.php?action=save_assignments',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function() {
+                        $('#inline-section-form').slideUp(200);
+                        $('#hub-search-input').val('');
+                        openResourceHub(name);
+                        $('#new-section-name').val('');
+                        $('#new-section-employees').val(null).trigger('change');
+                        submitBtn.text(orig).prop('disabled', false);
+                    }
+                });
             }
         });
 
@@ -797,6 +996,76 @@ if (!isset($con)) {
             } else {
                 $('#inline-add-document-form').slideDown(200);
             }
+        });
+
+        // Folder dropdown
+        $(document).on('click', '.btn-folder-menu', function(e) {
+            e.stopPropagation();
+            $('.folder-dropdown').hide();
+            $(this).next('.folder-dropdown').show();
+        });
+
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.folder-menu-container').length) {
+                $('.folder-dropdown').hide();
+            }
+        });
+
+        $(document).on('click', '.btn-assign-folder', function(e) {
+            e.stopPropagation();
+            $('.folder-dropdown').hide();
+            const cat = $(this).data('category');
+            $('#assign-section-name').text(cat);
+            $('#assign-category-input').val(cat);
+
+            // Uncheck all
+            $('.emp-checkbox').prop('checked', false);
+
+            // Fetch assignments
+            $.ajax({
+                url: 'ajax/misc/ajax_company_links.php?action=get_assignments',
+                method: 'GET',
+                data: {
+                    category: cat
+                },
+                success: function(res) {
+                    try {
+                        const data = JSON.parse(res);
+                        data.forEach(empId => {
+                            $(`.emp-checkbox[value="${empId}"]`).prop('checked', true);
+                        });
+                        $('#assignEmployeesModal').modal('show');
+                    } catch (e) {}
+                }
+            });
+        });
+
+        $('#assign-employees-form').submit(function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const btn = $('#btn-save-assignments');
+            const orig = btn.text();
+            btn.text('Saving...').prop('disabled', true);
+
+            $.ajax({
+                url: 'ajax/misc/ajax_company_links.php?action=save_assignments',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    try {
+                        const data = JSON.parse(res);
+                        if (data.status === 'success') {
+                            $('#assignEmployeesModal').modal('hide');
+                            Swal.fire('Success', 'Access updated!', 'success');
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    } catch (e) {}
+                    btn.text(orig).prop('disabled', false);
+                }
+            });
         });
 
         $('.btn-cancel-add').click(function() {

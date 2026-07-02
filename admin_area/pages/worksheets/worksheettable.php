@@ -50,7 +50,8 @@ if ($countResult) {
 }
 $totalPages = ceil($totalRecords / $limit);
 
-$sql = "SELECT a.*, e.name AS emp_name, e.employee_image 
+$sql = "SELECT a.*, e.name AS emp_name, e.employee_image,
+        (SELECT action_time FROM attendance_logs WHERE att_id = a.id AND action = 'check_out' ORDER BY action_time DESC LIMIT 1) as log_checkout 
         FROM attendance a 
         LEFT JOIN emp_list e ON a.emp_id = e.id 
         $whereSql
@@ -173,7 +174,13 @@ $result = mysqli_query($con, $sql);
                                 <td>
                                     <div style="font-weight: 600; color: var(--p-text);"><?php echo date('d M Y', strtotime($row['attendance_date'])); ?></div>
                                     <div style="font-size: 11px; color: var(--p-secondary);">
-                                        <i class="fa fa-clock-o"></i> <?php echo $row['check_in_time'] ?: '--:--'; ?> - <?php echo $row['check_out_time'] ?: '--:--'; ?>
+                                        <?php
+                                        $display_out = $row['check_out_time'];
+                                        if ((empty($display_out) || $display_out == '00:00:00') && !empty($row['log_checkout'])) {
+                                            $display_out = date('H:i:s', strtotime($row['log_checkout']));
+                                        }
+                                        ?>
+                                        <i class="fa fa-clock-o"></i> <?php echo (!empty($row['check_in_time']) && $row['check_in_time'] != '00:00:00') ? $row['check_in_time'] : '--:--'; ?> - <?php echo (!empty($display_out) && $display_out != '00:00:00') ? $display_out : '--:--'; ?>
                                     </div>
                                 </td>
                                 <td style="text-align: center; vertical-align: middle;">
