@@ -166,8 +166,11 @@ if (isset($_POST['submit'])) {
                     $categories = [
                         'Employee Management' => ['employee_insert', 'employee_update', 'employee_delete', 'employee_view'],
                         'Attendance & Leaves' => ['attendance_view', 'attendance_edit', 'leave_view', 'worksheet_view'],
-                        'Finance & Salary' => ['salary_view'],
-                        'User & System' => ['user_insert', 'user_update', 'user_view', 'announcement_view']
+                        'Finance & Salary'    => ['salary_view'],
+                        'User & System'       => ['user_insert', 'user_update', 'user_view', 'announcement_view'],
+                        'Projects'            => ['project_view', 'project_insert', 'project_update', 'project_delete'],
+                        'Clients'             => ['client_view', 'client_insert', 'client_update', 'client_delete'],
+                        'Leads'               => ['lead_view', 'lead_insert', 'lead_update', 'lead_delete'],
                     ];
 
                     foreach ($categories as $catName => $perms):

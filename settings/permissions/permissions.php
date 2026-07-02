@@ -28,7 +28,19 @@ if (!function_exists('getAllPermissions')) {
             'user_view',
             'worksheet_view',
             'leave_view',
-            'announcement_view'
+            'announcement_view',
+            'project_view',
+            'project_insert',
+            'project_update',
+            'project_delete',
+            'client_view',
+            'client_insert',
+            'client_update',
+            'client_delete',
+            'lead_view',
+            'lead_insert',
+            'lead_update',
+            'lead_delete',
         ];
     }
 }
@@ -43,7 +55,10 @@ if (!function_exists('getUsedAdminPermissions')) {
             'attendance_view', 'attendance_edit',
             'salary_view',
             'user_insert', 'user_update', 'user_view',
-            'worksheet_view', 'leave_view', 'announcement_view'
+            'worksheet_view', 'leave_view', 'announcement_view',
+            'project_view', 'project_insert', 'project_update', 'project_delete',
+            'client_view', 'client_insert', 'client_update', 'client_delete',
+            'lead_view', 'lead_insert', 'lead_update', 'lead_delete',
         ];
     }
 }
@@ -53,7 +68,34 @@ if (!function_exists('getUsedAdminPermissions')) {
  */
 if (!function_exists('getPermissionLabel')) {
     function getPermissionLabel($permissionKey) {
-        return ucwords(str_replace(['_', 'table'], [' ', ''], $permissionKey));
+        $labels = [
+            'employee_insert'    => 'Add Employee',
+            'employee_update'    => 'Edit Employee',
+            'employee_delete'    => 'Delete Employee',
+            'employee_view'      => 'View Employees',
+            'attendance_view'    => 'View Attendance',
+            'attendance_edit'    => 'Edit Attendance',
+            'salary_view'        => 'View Salary Slips',
+            'user_insert'        => 'Add Admin User',
+            'user_update'        => 'Edit Admin User',
+            'user_view'          => 'View Admin Users',
+            'worksheet_view'     => 'View Worksheets',
+            'leave_view'         => 'View Leave Requests',
+            'announcement_view'  => 'View Announcements',
+            'project_view'       => 'View Projects',
+            'project_insert'     => 'Add Project',
+            'project_update'     => 'Edit Project',
+            'project_delete'     => 'Delete Project',
+            'client_view'        => 'View Clients',
+            'client_insert'      => 'Add Client',
+            'client_update'      => 'Edit Client',
+            'client_delete'      => 'Delete Client',
+            'lead_view'          => 'View Leads',
+            'lead_insert'        => 'Add Lead',
+            'lead_update'        => 'Edit Lead',
+            'lead_delete'        => 'Delete Lead',
+        ];
+        return isset($labels[$permissionKey]) ? $labels[$permissionKey] : ucwords(str_replace('_', ' ', $permissionKey));
     }
 }
 

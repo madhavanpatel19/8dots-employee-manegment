@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin permission helper for admin_area.
  * - Super admin (is_super_admin=1): full access to all pages.
@@ -36,16 +37,19 @@ if (!isset($_SESSION['_admin_super']) || !isset($_SESSION['_admin_perms'])) {
     }
 }
 
-function isSuperAdmin() {
+function isSuperAdmin()
+{
     return !empty($_SESSION['_admin_super']);
 }
 
-function getCurrentAdminPermissions() {
+function getCurrentAdminPermissions()
+{
     return isset($_SESSION['_admin_perms']) ? (array)$_SESSION['_admin_perms'] : [];
 }
 
 // Map new permission names to legacy names (for backward compatibility)
-function _adminPermissionAliases($permission) {
+function _adminPermissionAliases($permission)
+{
     $map = [
         'employee_insert' => ['add_employee'],
         'employee_update' => ['edit_employee'],
@@ -59,6 +63,10 @@ function _adminPermissionAliases($permission) {
         'leave_view'      => ['show_leave'],
         'worksheet_view'  => ['show_worksheet'],
         'announcement_view' => ['show_announcement'],
+        'project_view'      => ['show_project'],
+        'project_insert'    => ['add_project'],
+        'project_update'    => ['edit_project'],
+        'project_delete'    => ['delete_project'],
         'client_view'       => ['show_client'],
         'client_insert'     => ['add_client'],
         'client_update'     => ['edit_client'],
@@ -76,7 +84,8 @@ function _adminPermissionAliases($permission) {
     return $perms;
 }
 
-function canAdminAccess($permission) {
+function canAdminAccess($permission)
+{
     if (isSuperAdmin()) {
         return true;
     }
@@ -89,7 +98,8 @@ function canAdminAccess($permission) {
     return false;
 }
 
-function requireAdminPermission($permission, $attendanceDate = null) {
+function requireAdminPermission($permission, $attendanceDate = null)
+{
     // Special case: allow editing today's attendance for all admins
     if ($permission === 'attendance_edit' && $attendanceDate !== null) {
         $today = date('Y-m-d');

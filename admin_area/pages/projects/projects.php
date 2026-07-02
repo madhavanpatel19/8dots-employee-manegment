@@ -5,6 +5,24 @@ if (!isset($con)) {
     }
 }
 
+// Always read admin status fresh from DB (bypass session cache)
+$current_admin_id_proj = 0;
+$is_super_admin_proj = false;
+if (isset($_SESSION['admin_email'])) {
+    $email_esc = mysqli_real_escape_string($con, $_SESSION['admin_email']);
+    $r = mysqli_query($con, "SELECT admin_id, is_super_admin FROM admins WHERE admin_email='$email_esc' LIMIT 1");
+    if ($r && $row_a = mysqli_fetch_assoc($r)) {
+        $current_admin_id_proj = (int)$row_a['admin_id'];
+        $is_super_admin_proj   = !empty($row_a['is_super_admin']);
+    }
+}
+
+// If NOT super admin, restrict to projects where this admin is assigned
+$admin_project_filter = '';
+if (!$is_super_admin_proj && $current_admin_id_proj > 0) {
+    $admin_project_filter = " AND (FIND_IN_SET('$current_admin_id_proj', REPLACE(assigned_admins, ' ', '')) > 0) ";
+}
+
 // Fetch all active clients for the dropdown
 $get_clients = "SELECT * FROM clients ORDER BY name ASC";
 $run_clients = mysqli_query($con, $get_clients);
@@ -13,11 +31,11 @@ $run_clients = mysqli_query($con, $get_clients);
 $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, $_GET['status']) : '';
 
 
-// Count projects for Cards
-$total_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects"));
-$active_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Active'"));
-$pending_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Pending'"));
-$completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Completed'"));
+// Count projects for Cards (scoped to visible projects)
+$total_projects   = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE 1=1 $admin_project_filter"));
+$active_projects  = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Active' $admin_project_filter"));
+$pending_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Pending' $admin_project_filter"));
+$completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Completed' $admin_project_filter"));
 $employees = mysqli_fetch_assoc(mysqli_query($con, "SELECT assigned_employees from client_projects "));
 
 /* ==============================
@@ -28,7 +46,7 @@ $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']
 $offset = ($page - 1) * $limit;
 $start_from = $offset;
 
-$where_clause = " WHERE 1=1 ";
+$where_clause = " WHERE 1=1 $admin_project_filter ";
 if ($status_filter) $where_clause .= " AND status='$status_filter' ";
 
 

@@ -811,13 +811,19 @@ if (isset($_POST['submit_project'])) {
     $assigned_employees = isset($_POST['assigned_employees']) ? implode(',', $_POST['assigned_employees']) : '';
     $assigned_employees = mysqli_real_escape_string($con, $assigned_employees);
 
+    $assigned_users = isset($_POST['assigned_users']) ? implode(',', $_POST['assigned_users']) : '';
+    $assigned_users = mysqli_real_escape_string($con, $assigned_users);
+
+    $assigned_admins = isset($_POST['assigned_admins']) ? implode(',', $_POST['assigned_admins']) : '';
+    $assigned_admins = mysqli_real_escape_string($con, $assigned_admins);
+
     $project_image = handleProjectImageUpload($_FILES['project_image']);
 
     $source = isset($_POST['project_source']) ? implode(', ', $_POST['project_source']) : '';
     $source = mysqli_real_escape_string($con, $source);
 
-    $insert_project = "INSERT INTO client_projects (client_id, project_name, project_date, deadline, status, project_desc, project_image, assigned_employees, currency, budget, source) 
-                       VALUES ('$client_id', '$project_name', '$start_date', '$deadline', '$status', '$project_desc', '$project_image', '$assigned_employees', '$currency', '$budget', '$source')";
+    $insert_project = "INSERT INTO client_projects (client_id, project_name, project_date, deadline, status, project_desc, project_image, assigned_employees, assigned_users, assigned_admins, currency, budget, source) 
+                       VALUES ('$client_id', '$project_name', '$start_date', '$deadline', '$status', '$project_desc', '$project_image', '$assigned_employees', '$assigned_users', '$assigned_admins', '$currency', '$budget', '$source')";
 
     if (mysqli_query($con, $insert_project)) {
         $project_id = mysqli_insert_id($con);
@@ -908,11 +914,32 @@ if ($success): ?>
 endif; ?>
 
 <?php
+if (!isset($con)) {
+    if (!isset($con)) {
+        include(__DIR__ . '/../../includes/db.php');
+    }
+}
+
+$current_admin_id = 0;
+if (isset($_SESSION['admin_email'])) {
+    $admin_email = mysqli_real_escape_string($con, $_SESSION['admin_email']);
+    $get_curr_admin = mysqli_query($con, "SELECT admin_id FROM admins WHERE admin_email = '$admin_email' LIMIT 1");
+    if ($row_curr = mysqli_fetch_assoc($get_curr_admin)) {
+        $current_admin_id = $row_curr['admin_id'];
+    }
+}
+
 $get_clients = "SELECT id, name, image FROM clients ORDER BY name ASC";
 $run_clients = mysqli_query($con, $get_clients);
 
 $get_emps = "SELECT id, employee_image, name FROM emp_list ORDER BY name ASC";
 $run_emps = mysqli_query($con, $get_emps);
+
+$get_users = "SELECT id, employee_image, name FROM emp_list ORDER BY name ASC";
+$run_users = mysqli_query($con, $get_users);
+
+$get_admins = "SELECT admin_id, admin_image, admin_name FROM admins ORDER BY admin_name ASC";
+$run_admins = mysqli_query($con, $get_admins);
 ?>
 
 <div class="page-wrapper premium-ui-enabled">
@@ -1035,18 +1062,16 @@ $run_emps = mysqli_query($con, $get_emps);
 
                 <div class="row" style="margin-top: 10px;">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <!-- Assign Employees -->
+                        <div class="form-group" style="margin-bottom: 20px;">
                             <label class="premium-label" style="font-size:14px; color:#334155;">
                                 Assign Employees <span style="color:#ef4444;">*</span>
                             </label>
-
                             <select id="employeeSelect" name="assigned_employees[]" multiple required>
                                 <?php while ($emp = mysqli_fetch_assoc($run_emps)) {
                                     $emp_img = !empty($emp['employee_image']) ? 'uploads/' . $emp['employee_image'] : 'admin_images/default.png';
                                 ?>
-                                    <option
-                                        value="<?php echo $emp['id']; ?>"
-                                        data-image="<?php echo $emp_img; ?>">
+                                    <option value="<?php echo $emp['id']; ?>" data-image="<?php echo $emp_img; ?>">
                                         <?php echo htmlspecialchars($emp['name']); ?>
                                     </option>
                                 <?php } ?>
@@ -1055,7 +1080,28 @@ $run_emps = mysqli_query($con, $get_emps);
                                 Select one or more employees for this project.
                             </small>
                         </div>
+
+                        <!-- Assign Admin -->
+                        <div class="form-group">
+                            <label class="premium-label" style="font-size:14px; color:#334155;">
+                                Assign Admin
+                            </label>
+                            <select id="adminSelect" name="assigned_admins[]" multiple>
+                                <?php while ($adm = mysqli_fetch_assoc($run_admins)) {
+                                    $adm_img = !empty($adm['admin_image']) ? 'admin_images/' . $adm['admin_image'] : 'admin_images/default.png';
+                                    $selected = ($adm['admin_id'] == $current_admin_id) ? 'selected' : '';
+                                ?>
+                                    <option value="<?php echo $adm['admin_id']; ?>" data-image="<?php echo $adm_img; ?>" <?php echo $selected; ?>>
+                                        <?php echo htmlspecialchars($adm['admin_name']); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                            <small style="color:#64748b; font-size:12px; margin-top:4px; display:block;">
+                                Select admins to assign to this project.
+                            </small>
+                        </div>
                     </div>
+
                     <div class="col-md-6">
                         <div class="form-group">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
@@ -1346,6 +1392,22 @@ $run_emps = mysqli_query($con, $get_emps);
 
         $('#employeeSelect').select2({
             placeholder: 'Select employees...',
+            allowClear: true,
+            closeOnSelect: false,
+            templateResult: formatWithImage,
+            templateSelection: formatSelectionWithImage
+        });
+
+        $('#userSelect').select2({
+            placeholder: 'Select users...',
+            allowClear: true,
+            closeOnSelect: false,
+            templateResult: formatWithImage,
+            templateSelection: formatSelectionWithImage
+        });
+
+        $('#adminSelect').select2({
+            placeholder: 'Select admins...',
             allowClear: true,
             closeOnSelect: false,
             templateResult: formatWithImage,

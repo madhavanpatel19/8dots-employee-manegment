@@ -21,6 +21,8 @@ if (!isset($_SESSION['admin_email'])) {
     $admin_job = $row_admin['admin_job'];
     $admin_contact = $row_admin['admin_contact'];
     $admin_about = $row_admin['admin_about'];
+    $admin_is_super = !empty($row_admin['is_super_admin']);
+    $admin_role_label = $admin_is_super ? 'Super Admin' : (!empty($row_admin['admin_job']) ? htmlspecialchars($row_admin['admin_job']) : 'Admin');
     include("includes/admin_permissions.php");
     // $get_products = "select * from products";
     // $run_products = mysqli_query($con, $get_products);
@@ -167,7 +169,7 @@ if (!isset($_SESSION['admin_email'])) {
                                 </div>
                                 <div class="profile-info">
                                     <span class="profile-name"><?php echo $header_display_name; ?></span>
-                                    <span class="profile-role">Super Admin</span>
+                                    <span class="profile-role"><?php echo $admin_role_label; ?></span>
                                 </div>
                                 <i class="fa fa-angle-down"></i>
                             </div>

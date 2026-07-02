@@ -1,12 +1,33 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
+}
+
+// Always read admin status fresh from DB (bypass session cache)
+$current_admin_id_proj = 0;
+$is_super_admin_proj = false;
+if (isset($_SESSION['admin_email'])) {
+    $email_esc = mysqli_real_escape_string($con, $_SESSION['admin_email']);
+    $r = mysqli_query($con, "SELECT admin_id, is_super_admin FROM admins WHERE admin_email='$email_esc' LIMIT 1");
+    if ($r && $row_a = mysqli_fetch_assoc($r)) {
+        $current_admin_id_proj = (int)$row_a['admin_id'];
+        $is_super_admin_proj   = !empty($row_a['is_super_admin']);
+    }
+}
+
+// If NOT super admin, restrict to projects assigned to this admin
+$admin_project_filter = '';
+if (!$is_super_admin_proj && $current_admin_id_proj > 0) {
+    $admin_project_filter = " AND (FIND_IN_SET('$current_admin_id_proj', REPLACE(cp.assigned_admins, ' ', '')) > 0) ";
 }
 
 $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, $_GET['status']) : '';
 $source_filter = isset($_GET['source']) ? mysqli_real_escape_string($con, $_GET['source']) : '';
 
-$where_clause = " WHERE 1=1 ";
+$where_clause = " WHERE 1=1 $admin_project_filter ";
 if ($status_filter !== "") {
     $where_clause .= " AND cp.status='$status_filter' ";
 }
@@ -20,6 +41,7 @@ $offset = ($page - 1) * $limit;
 
 $get_projects = "SELECT cp.*, c.name as client_name, c.image FROM client_projects cp JOIN clients c ON cp.client_id = c.id $where_clause ORDER BY cp.id DESC LIMIT $offset, $limit";
 $run_projects = mysqli_query($con, $get_projects);
+
 
 if (!$run_projects) {
     die('<div class="alert alert-danger" style="margin: 20px; border-radius: 12px; border: none; background: #fee2e2; color: #991b1b; font-weight: 600;">
