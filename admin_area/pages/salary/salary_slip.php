@@ -404,11 +404,11 @@ if ($print_all_mode) {
                     <div class="slip-top-decor"></div>
                     <div class="slip-header">
                         <div class="company-left">
-                            <img src="images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
+                            <img src="../admin_area/images/cadlete_Black_logo_favicon.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                             <div class="company-center">
                                 <h3 class="company-name">CADLETE DESIGNS</h3>
-                                <div class="company-address">516, Shivam Trade Centre (STC), Near One World West, Ahmedabad, Gujarat 380058</div>
-                                <div class="company-meta-small">Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: 8dotsinfo@gmail.com</div>
+                                <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
+                                <div class="company-meta-small">Phone: +91 95865 45430 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
                             </div>
                         </div>
                         <div class="slip-meta">
@@ -689,10 +689,10 @@ if ($print_all_mode) {
                     <div class="company-center">
                         <h3 class="company-name">CADLETE DESIGNS</h3>
                         <div class="company-address">
-                            516, Shivam Trade Centre (STC), Near One World West, Ahmedabad, Gujarat 380058
+                            A-106, Sun South Street, Ahmedabad
                         </div>
                         <div class="company-meta-small">
-                            Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: 8dotsinfo@gmail.com
+                            Phone: +91 95865 45430 &nbsp;|&nbsp; Email: info@cadletedesigns.com
                         </div>
                     </div>
                 </div>

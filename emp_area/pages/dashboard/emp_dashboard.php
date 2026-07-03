@@ -41,7 +41,7 @@ $tasks_res = mysqli_query(
      FROM project_team_todos t
      LEFT JOIN client_projects cp ON cp.id = t.project_id
      WHERE t.emp_id = '$emp_id' AND t.status = 0
-     ORDER BY t.created_at DESC LIMIT 5"
+     ORDER BY CASE WHEN t.priority = 'High' THEN 1 WHEN t.priority = 'Medium' THEN 2 ELSE 3 END ASC, t.created_at DESC LIMIT 5"
 );
 $tasks = [];
 $pending_task_count = 0;
@@ -1110,6 +1110,15 @@ function fmtHMS($secs)
                 Swal.fire('Notification', 'Check-in and check-out times required.', 'info');
                 return;
             }
+            var hasPhoto = false;
+            for (var i = 1; i <= 4; i++) {
+                var fi = document.getElementById('work_photo_' + i);
+                if (fi && fi.files && fi.files.length > 0) hasPhoto = true;
+            }
+            if (!hasPhoto) {
+                Swal.fire('Notification', 'Please upload at least 1 work photo.', 'info');
+                return;
+            }
             var $btn = $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
             $('#btnCancelCheckOut').prop('disabled', true);
             var fd = new FormData();
@@ -1237,7 +1246,7 @@ function fmtHMS($secs)
                         <div class="col-md-8"><textarea id="workDetails" class="form-control" style="height:90px;border-radius:10px;border:1px solid #e2e8f0;resize:none;" placeholder="What did you accomplish today?" required></textarea></div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos</label>
+                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <div style="display:flex;gap:10px;flex-wrap:wrap;">
                                 <?php for ($id = 1; $id <= 4; $id++): ?>

@@ -19,7 +19,7 @@ if (!isset($_SESSION['emp_id'])) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php?dashboard">8dots (Employee)</a>
+            <a class="navbar-brand" href="index.php?dashboard">Cadlete Designs (Employee)</a>
         </div>
         <ul class="nav navbar-right top-nav">
             <?php
@@ -143,12 +143,12 @@ if (!isset($_SESSION['emp_id'])) {
                 </li>
             </ul>
 
-            <h3 class="menu-heading">SETTINGS</h3>
+            <!-- <h3 class="menu-heading">SETTINGS</h3>
             <ul>
                 <li>
                     <a href="pages/auth/logout.php"><i class="fa fa-power-off"></i> Log Out</a>
                 </li>
-            </ul>
+            </ul> -->
         </div>
 
         <script>

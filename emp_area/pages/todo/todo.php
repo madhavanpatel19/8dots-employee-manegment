@@ -22,7 +22,7 @@ $query = "SELECT t.*, p.project_name, c.name as client_name
           LEFT JOIN clients c ON p.client_id = c.id
           WHERE t.emp_id = $emp_id 
           AND (t.status = 0 OR (t.status = 1 AND DATE(COALESCE(t.due_date, t.created_at)) = '$filter_date'))
-          ORDER BY t.status ASC, t.due_date ASC, t.id DESC";
+          ORDER BY t.status ASC, CASE WHEN t.priority = 'High' THEN 1 WHEN t.priority = 'Medium' THEN 2 ELSE 3 END ASC, t.due_date ASC, t.id DESC";
 $result = mysqli_query($con, $query);
 
 ?>

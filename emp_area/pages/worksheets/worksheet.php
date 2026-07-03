@@ -352,7 +352,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos</label>
+                                    <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos <span class="text-danger">*</span></label>
                                     <div class="col-md-8">
                                         <div style="display:flex;gap:10px;flex-wrap:wrap;">
                                             <?php for ($id = 1; $id <= 4; $id++): ?>
@@ -405,6 +405,17 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                         field.parentElement.classList.remove('has-error');
                     }
                 });
+
+                var hasPhoto = false;
+                for (var i = 1; i <= 4; i++) {
+                    var fi = document.getElementById('work_photo_' + i);
+                    if (fi && fi.files && fi.files.length > 0) hasPhoto = true;
+                }
+                if (!hasPhoto) {
+                    Swal.fire('Notification', 'Please upload at least 1 work photo.', 'info');
+                    return false;
+                }
+
                 return valid;
             }
 

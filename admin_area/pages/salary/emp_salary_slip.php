@@ -1,6 +1,8 @@
 ﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
-    if (session_status() == PHP_SESSION_NONE) { session_start(); }
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
 }
 
 if (!isset($con) || !$con) {
@@ -158,11 +160,11 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
         <div class="slip-top-decor"></div>
         <div class="slip-header">
             <div class="company-left">
-                <img src="other_images/company-logo.png" alt="Logo" class="company-logo" onerror="this.style.display='none'">
+                <img src="../admin_area/images/cadlete_Black_logo_favicon.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                 <div class="company-center">
-                    <h3 class="company-name">8Dots</h3>
-                    <div class="company-address">516, Shivam Trade Centre (STC), Near One World West, Ahmedabad, Gujarat 380058</div>
-                    <div class="company-meta-small">Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: 8dotsinfo@gmail.com</div>
+                    <h3 class="company-name">Cadlete Design</h3>
+                    <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
+                    <div class="company-meta-small">Phone: +91 95865 45430 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
                 </div>
             </div>
             <div class="slip-meta">
@@ -253,6 +255,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
 <link href="../../css/salary-slip.css" rel="stylesheet">
 <style>
     @media print {
+
         /* Hide common dashboard elements */
         #wrapper #sidebar-wrapper,
         #wrapper .emp-sidebar,
@@ -280,8 +283,8 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
         }
 
         /* Ensure all parents of the modal body are visible */
-        #wrapper, 
-        #page-wrapper, 
+        #wrapper,
+        #page-wrapper,
         .container-fluid,
         .premium-ui-enabled,
         #salarySlipModal,
@@ -352,15 +355,15 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                         <tbody>
                             <?php
                             // Show last 12 months, but not before join date
-                            $join_month = ($employee && !empty($employee['join_date']) && $employee['join_date'] !== '0000-00-00') 
-                                        ? date('Y-m', strtotime($employee['join_date'])) 
-                                        : '1970-01';
+                            $join_month = ($employee && !empty($employee['join_date']) && $employee['join_date'] !== '0000-00-00')
+                                ? date('Y-m', strtotime($employee['join_date']))
+                                : '1970-01';
 
                             $idx = 1;
                             for ($i = 0; $i < 12; $i++) {
                                 $ts = strtotime("-{$i} month");
                                 $m_val = date('Y-m', $ts);
-                                
+
                                 // Stop if we go before join date
                                 if ($m_val < $join_month) break;
 
@@ -371,22 +374,22 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                                 // Fetch history for this row to show correct amount in table
                                 $row_q = mysqli_query($con, "SELECT net_pay FROM emp_salary_history WHERE emp_id = '" . (int)$emp_id . "' AND month = '$m_val'");
                                 $row_data = mysqli_fetch_assoc($row_q);
-                                
+
                                 if ($row_data && $row_data['net_pay'] !== null) {
                                     $row_salary = (float)$row_data['net_pay'];
                                 } else {
                                     // Calculate default row salary if no history using profile fields
                                     $row_base = ($employee && $employee['basic_salary'] !== null && $employee['basic_salary'] > 0) ? (float)$employee['basic_salary'] : (($base_salary <= 0) ? 30000.00 : $base_salary);
-                                    
+
                                     $row_hra = ($employee && $employee['hra'] !== null) ? (float)$employee['hra'] : round($row_base * 0.20, 2);
-                                        $row_pf = 0.00;
+                                    $row_pf = 0.00;
                                     $row_tax = 0.00;
                                     $row_allow = ($employee && $employee['allowance'] !== null) ? (float)$employee['allowance'] : 0.00;
                                     $row_ded = ($employee && $employee['deductions'] !== null) ? (float)$employee['deductions'] : 0.00;
-                                    
+
                                     $row_salary = ($row_base + $row_hra + $row_allow) - ($row_pf + $row_tax + $row_ded);
                                 }
-                                
+
                                 // Logic: Disable view for current month until end of month (e.g., after 25th)
                                 // unless a specific history record exists (admin manually saved it)
                                 $can_view = true;
@@ -510,21 +513,32 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                 });
 
             });
-            
+
             // Direct PDF Download Logic
             $('#modalDownloadBtn').click(function() {
                 var element = document.getElementById('slip-content');
-                if(!element) {
+                if (!element) {
                     Swal.fire('Notification', "Slip content not loaded yet!", 'info');
                     return;
                 }
 
                 var opt = {
-                    margin:       [10, 10],
-                    filename:     'Salary_Slip_<?php echo str_replace(" ", "_", $emp_name); ?>_' + currentMonthLabel.replace(/, /g, '_') + '.pdf',
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    margin: [10, 10],
+                    filename: 'Salary_Slip_<?php echo str_replace(" ", "_", $emp_name); ?>_' + currentMonthLabel.replace(/, /g, '_') + '.pdf',
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait'
+                    }
                 };
 
                 // Show loading state on button
@@ -535,7 +549,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                 html2pdf().set(opt).from(element).save().then(function() {
                     $btn.html(originalHtml).prop('disabled', false);
                 });
-              });
+            });
 
         });
     </script>
