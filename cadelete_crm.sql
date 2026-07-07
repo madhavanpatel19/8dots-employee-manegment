@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2026 at 12:05 PM
+-- Generation Time: Jul 06, 2026 at 09:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -68,7 +68,7 @@ CREATE TABLE `admins` (
 
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_pass`, `admin_image`, `admin_contact`, `admin_country`, `admin_job`, `admin_about`, `is_super_admin`, `permissions`) VALUES
 (1, 'admin', 'admin@gmail.com', '123', 'IMG-20251208-WA0027.jpg', '987654321', 'india', 'CEO', ' hello ', 1, NULL),
-(4, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'hr', '', 0, '');
+(6, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'manager', '', 0, 'dashboard_view,employee_view,employee_insert,employee_update,employee_delete,attendance_view,attendance_insert,leave_view,worksheet_view,salary_view');
 
 -- --------------------------------------------------------
 
@@ -143,7 +143,11 @@ CREATE TABLE `attendance` (
 INSERT INTO `attendance` (`id`, `emp_id`, `attendance_date`, `check_in_time`, `check_out_time`, `status`, `remarks`, `work_photos`, `performance`, `total_duration_secs`, `last_resume_time`, `is_working`, `created_at`, `ip_address`, `location`) VALUES
 (121, 23, '2026-06-30', '09:22:47', '19:00:00', 'present', NULL, NULL, NULL, 533, '2026-06-30 17:02:40', 1, '2026-06-30 05:52:47', NULL, NULL),
 (123, 23, '2026-07-01', '08:13:00', NULL, 'present', 'fix bugs', '', NULL, 17963, '2026-07-01 15:15:00', 1, '2026-07-01 04:43:08', NULL, NULL),
-(124, 23, '2026-07-02', '10:11:00', NULL, 'present', NULL, NULL, NULL, 11050, '2026-07-02 13:16:00', 1, '2026-07-01 07:26:04', '::1', 'Local Network');
+(124, 23, '2026-07-02', '10:11:00', '17:24:00', 'present', 'test', '[\"work_photos\\/23_2026-07-02_1782993302_0.png\",\"work_photos\\/23_2026-07-02_1782993302_1.jpg\"]', NULL, 25930, '2026-07-02 13:16:00', 0, '2026-07-01 07:26:04', '::1', 'Local Network'),
+(125, 27, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(126, 28, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(127, 23, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(128, 25, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -175,7 +179,8 @@ INSERT INTO `attendance_logs` (`id`, `att_id`, `emp_id`, `action`, `action_time`
 (6, 123, 23, 'resume', '2026-07-01 15:15:00', '::1', 'Local Network', '2026-07-01 09:45:00'),
 (7, 124, 23, 'check_in', '2026-07-02 10:11:35', '::1', 'Local Network', '2026-07-02 04:41:35'),
 (8, 124, 23, 'pause', '2026-07-02 13:15:45', '::1', 'Local Network', '2026-07-02 07:45:45'),
-(9, 124, 23, 'resume', '2026-07-02 13:16:00', '::1', 'Local Network', '2026-07-02 07:46:00');
+(9, 124, 23, 'resume', '2026-07-02 13:16:00', '::1', 'Local Network', '2026-07-02 07:46:00'),
+(10, 124, 23, 'check_out', '2026-07-02 17:24:00', '::1', 'Local Network', '2026-07-02 11:55:02');
 
 -- --------------------------------------------------------
 
@@ -313,7 +318,7 @@ CREATE TABLE `company_links` (
 
 INSERT INTO `company_links` (`id`, `link_name`, `link_url`, `category`, `created_at`, `is_pinned`, `uploaded_by_type`, `uploaded_by_id`) VALUES
 (31, 'cd', 'https://chatgpt.com/c/6a2fd810-ce98-83ee-ae23-c8c72a491147', 'demo', '2026-07-02 06:08:09', 0, 'admin', NULL),
-(32, 'figma12', 'uploads/company_links/1782977363_Gemini_Generated_Image_9toiw09toiw09toi.png', 'dem', '2026-07-02 07:29:23', 0, 'admin', NULL);
+(32, 'figma12', 'uploads/company_links/1782977363_Gemini_Generated_Image_9toiw09toiw09toi.png', 'dem', '2026-07-02 07:29:23', 1, 'admin', NULL);
 
 -- --------------------------------------------------------
 
@@ -601,7 +606,8 @@ CREATE TABLE `leave_applications` (
 --
 
 INSERT INTO `leave_applications` (`id`, `emp_id`, `leave_type_id`, `leave_from`, `leave_to`, `reason`, `status`, `created_at`) VALUES
-(7, 23, 4, '2026-07-01', '2026-07-02', 'demo', 'approved', '2026-06-30 12:16:55');
+(7, 23, 4, '2026-07-01', '2026-07-02', 'demo', 'approved', '2026-06-30 12:16:55'),
+(8, 23, 4, '2026-07-09', '2026-07-15', 'efe', 'pending', '2026-07-06 06:20:57');
 
 -- --------------------------------------------------------
 
@@ -771,7 +777,11 @@ INSERT INTO `project_team_todos` (`id`, `project_id`, `emp_id`, `task_name`, `du
 (45, 0, 23, 'wew', '2026-06-30', 'Medium', 1, '2026-06-30 04:23:11'),
 (46, 0, 23, 'faga', '2026-07-01', 'High', 1, '2026-07-01 11:25:37'),
 (47, 38, 23, 'ewfawf', NULL, 'Medium', 1, '2026-07-01 11:45:06'),
-(48, 38, 23, 'afafrrde', NULL, 'Medium', 1, '2026-07-01 11:45:10');
+(48, 38, 23, 'afafrrde', NULL, 'Medium', 1, '2026-07-01 11:45:10'),
+(49, 0, 23, 'wefef', '2026-07-02', 'Low', 0, '2026-07-02 11:30:30'),
+(50, 0, 23, 'ewfeae', '2026-07-02', 'Medium', 0, '2026-07-02 11:30:34'),
+(51, 0, 23, 'efadvdfvd', '2026-07-02', 'High', 0, '2026-07-02 11:30:38'),
+(52, 0, 23, 'frefer', '2026-07-02', 'Low', 0, '2026-07-02 11:30:44');
 
 -- --------------------------------------------------------
 
@@ -986,7 +996,7 @@ ALTER TABLE `project_team_todos`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `admin_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `admin_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `announcements`
@@ -1004,13 +1014,13 @@ ALTER TABLE `announcement_read`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 
 --
 -- AUTO_INCREMENT for table `attendance_logs`
 --
 ALTER TABLE `attendance_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1112,7 +1122,7 @@ ALTER TABLE `lead_sources`
 -- AUTO_INCREMENT for table `leave_applications`
 --
 ALTER TABLE `leave_applications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `leave_types`
@@ -1154,7 +1164,7 @@ ALTER TABLE `project_links`
 -- AUTO_INCREMENT for table `project_team_todos`
 --
 ALTER TABLE `project_team_todos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Constraints for dumped tables
