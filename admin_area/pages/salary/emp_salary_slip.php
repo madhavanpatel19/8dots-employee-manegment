@@ -204,7 +204,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                     <tr>
                         <td>House Rent Allowance (HRA)</td>
                         <td class="amt"><?php echo format_money_with_symbol($hra, $currency_symbol); ?></td>
-                        <td>Tax Deduction</td>
+                        <td>Leave Without Pay</td>
                         <td class="amt"><?php echo format_money_with_symbol($tax, $currency_symbol); ?></td>
                     </tr>
                     <tr>
@@ -413,7 +413,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                                         <?php if ($can_view): ?>
                                             <span class="p-badge p-badge-success" style="display: inline-flex; justify-content: center; min-width: 80px;">PAID</span>
                                         <?php else: ?>
-                                            <span class="p-badge p-badge-primary" style="display: inline-flex; justify-content: center; min-width: 80px; background: rgba(79, 70, 229, 0.05); color: #94a3b8;">LOCKED</span>
+                                            <span class="p-badge p-badge-primary" style="display: inline-flex; justify-content: center; min-width: 80px;">LOCKED</span>
                                         <?php endif; ?>
                                     </td>
                                     <td style="text-align: center;">

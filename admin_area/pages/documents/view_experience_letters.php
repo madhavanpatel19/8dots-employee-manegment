@@ -259,7 +259,7 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
                                     <div style="font-size: 12px; color: #64748b;"><?php echo htmlspecialchars($email); ?></div>
                                 </td>
                                 <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
-                                    <span class="badge" style="background: #e0e7ff; color: #4338ca; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+                                    <span class="badge" style="background: #ffeaeb; color: #dd2127; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
                                         <?php echo htmlspecialchars($designation); ?>
                                     </span>
                                 </td>

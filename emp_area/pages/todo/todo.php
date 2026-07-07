@@ -36,6 +36,9 @@ $result = mysqli_query($con, $query);
                     <label style="font-size: 13px; font-weight: 700; color: #64748b; margin: 0;">Completed On:</label>
                     <input type="date" value="<?php echo htmlspecialchars($filter_date); ?>" onchange="window.location.href='index.php?todo&date=' + this.value" style="padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #334155; font-weight: 600; outline: none; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
                 </div>
+                <button data-toggle="modal" data-target="#addTodoModal" class="btn-premium-add">
+                    <i class="fa fa-plus"></i> Add Task
+                </button>
             </div>
         </div>
         <div class="col-lg-12">
@@ -123,3 +126,84 @@ $result = mysqli_query($con, $query);
         </div>
     </div>
 </div>
+
+<!-- Add Todo Modal -->
+<div id="addTodoModal" class="modal fade" tabindex="-1" role="dialog" style="z-index: 99999;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-tasks" style="color: #fff; font-size: 14px;"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Add Personal Task</h5>
+                    </div>
+                </div>
+                <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close" style="background:transparent; border:none; color:#64748b; font-size:20px; cursor:pointer;">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding: 25px; background: #fff;">
+                <form id="add-todo-form">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Task Name <span style="color:#df2127;">*</span></label>
+                        <input type="text" name="task_name" required style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-size: 14px;" placeholder="What do you need to do?">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Due Date</label>
+                        <input type="date" name="due_date" style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-size: 14px;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Priority</label>
+                        <select name="priority" style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; background:#fff;">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" data-dismiss="modal" style="background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; font-weight: 600; padding: 10px 20px; cursor: pointer; font-size: 13px;">Cancel</button>
+                        <button type="submit" id="btn-save-todo" style="background: #df2127; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">Save Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#add-todo-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const submitBtn = $('#btn-save-todo');
+            submitBtn.prop('disabled', true).text('Saving...');
+
+            $.ajax({
+                url: 'ajax_add_todo.php',
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    try {
+                        const data = JSON.parse(response);
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                            submitBtn.prop('disabled', false).text('Save Task');
+                        }
+                    } catch (err) {
+                        alert('Server Error occurred.');
+                        submitBtn.prop('disabled', false).text('Save Task');
+                    }
+                },
+                error: function() {
+                    alert('Network error occurred.');
+                    submitBtn.prop('disabled', false).text('Save Task');
+                }
+            });
+        });
+    });
+</script>

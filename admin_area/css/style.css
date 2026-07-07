@@ -1253,8 +1253,8 @@ body {
 }
 
 .p-badge-primary {
-    background: rgba(79, 70, 229, 0.1);
-    color: var(--p-primary);
+    background: rgba(79, 70, 229, 0.05);
+    color: #dd2127 !important;
 }
 
 .p-badge-success {

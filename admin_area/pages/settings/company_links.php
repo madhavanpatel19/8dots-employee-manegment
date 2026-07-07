@@ -628,7 +628,7 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                 <tr class="table-row-hover">
                     <td style="padding: 15px 20px; vertical-align: middle;">
                         <div style="display: flex; align-items: center; justify-content: flex-start; gap: 12px;">
-                            <div style="width: 32px; height: 32px; border-radius: 6px; background: ${typeInfo.bg}; color: ${typeInfo.color}; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <div style="width: 32px; height: 32px; border-radius: 6px; background: #dd2127; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px;">
                                 <i class="fa ${typeInfo.icon}"></i>
                             </div>
                             <span style="color: #0f172a; font-weight: 500; font-size: 14px;">${item.link_name}</span>
@@ -636,7 +636,7 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                     </td>
                     <td style="padding: 15px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 14px;">${typeInfo.type}</td>
                     <td style="padding: 15px 20px; text-align: center; vertical-align: middle;">
-                        <span style="color: #3b82f6; cursor: pointer; font-size: 14px;" onclick="openResourceHub('${item.category}')">${item.category}</span>
+                        <span style="color: #dd2127; cursor: pointer; font-size: 14px;" onclick="openResourceHub('${item.category}')">${item.category}</span>
                     </td>
                     <td style="padding: 15px 20px; vertical-align: middle;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">

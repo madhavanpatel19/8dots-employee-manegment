@@ -450,7 +450,7 @@ if ($print_all_mode) {
                                 <tr>
                                     <td>House Rent Allowance (HRA)</td>
                                     <td class="amt"><?php echo format_money_with_symbol($hra_local, $currency_symbol); ?></td>
-                                    <td>Tax Deduction</td>
+                                    <td>Leave Without Pay</td>
                                     <td class="amt"><?php echo format_money_with_symbol($tax_local, $currency_symbol); ?></td>
                                 </tr>
                                 <tr>
@@ -745,7 +745,7 @@ if ($print_all_mode) {
                         <tr>
                             <td>House Rent Allowance (HRA)</td>
                             <td class="amt"><?php echo format_money_with_symbol($hra, $currency_symbol); ?></td>
-                            <td>Tax Deduction</td>
+                            <td>Leave Without Pay</td>
                             <td class="amt"><?php echo format_money_with_symbol($tax, $currency_symbol); ?></td>
                         </tr>
                         <tr>
@@ -862,7 +862,7 @@ if ($print_all_mode) {
                                 <input type="number" step="0.01" name="pf" value="<?php echo $pf; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                             <div class="col-md-6" style="margin-bottom: 20px;">
-                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Tax Deduction (₹)</label>
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Leave Without Pay (₹)</label>
                                 <input type="number" step="0.01" name="tax" value="<?php echo $tax; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                         </div>

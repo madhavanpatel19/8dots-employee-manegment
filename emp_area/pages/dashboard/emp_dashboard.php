@@ -128,6 +128,38 @@ function fmtHMS($secs)
     $s = $secs % 60;
     return str_pad($h, 2, '0', STR_PAD_LEFT) . ":" . str_pad($m, 2, '0', STR_PAD_LEFT) . ":" . str_pad($s, 2, '0', STR_PAD_LEFT);
 }
+
+// ── Pinned Quick Links ───────────────────────────────────────
+$allowed_categories = [];
+$cat_q = mysqli_query($con, "SELECT category FROM company_links_assignments WHERE emp_id = '$emp_id'");
+if ($cat_q) {
+    while ($row = mysqli_fetch_assoc($cat_q)) {
+        $allowed_categories[] = "'" . mysqli_real_escape_string($con, $row['category']) . "'";
+    }
+}
+$pinned_links = [];
+if (!empty($allowed_categories)) {
+    $cat_list = implode(',', $allowed_categories);
+    $q_pinned = "SELECT * FROM company_links WHERE category IN ($cat_list) AND is_pinned = 1 ORDER BY created_at DESC LIMIT 5";
+    $run_pinned = mysqli_query($con, $q_pinned);
+    if ($run_pinned) {
+        while ($r = mysqli_fetch_assoc($run_pinned)) {
+            $pinned_links[] = $r;
+        }
+    }
+}
+
+function getResourceTypePhp($url)
+{
+    $path = parse_url($url, PHP_URL_PATH);
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    if (in_array($ext, ['pdf'])) return ['type' => 'PDF', 'icon' => 'fa-file-pdf-o', 'color' => '#ef4444', 'bg' => '#fef2f2'];
+    if (in_array($ext, ['xlsx', 'xls', 'csv'])) return ['type' => 'Excel', 'icon' => 'fa-file-excel-o', 'color' => '#10b981', 'bg' => '#ecfdf5'];
+    if (in_array($ext, ['docx', 'doc'])) return ['type' => 'Word', 'icon' => 'fa-file-word-o', 'color' => '#3b82f6', 'bg' => '#eff6ff'];
+    if (in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'svg'])) return ['type' => 'Image', 'icon' => 'fa-file-image-o', 'color' => '#8b5cf6', 'bg' => '#f5f3ff'];
+    if (in_array($ext, ['zip', 'rar'])) return ['type' => 'Archive', 'icon' => 'fa-file-archive-o', 'color' => '#f59e0b', 'bg' => '#fffbeb'];
+    return ['type' => 'Link', 'icon' => 'fa-link', 'color' => '#3b82f6', 'bg' => '#eff6ff'];
+}
 ?>
 <style>
     /* ═══════════════════════════════════════════════════════
@@ -204,8 +236,8 @@ function fmtHMS($secs)
     }
 
     .dc-icon.blue {
-        background: #dbeafe;
-        color: #2563eb;
+        background: #ffeaeb;
+        color: #dd2127;
     }
 
     .dc-icon.green {
@@ -898,43 +930,57 @@ function fmtHMS($secs)
             </div>
         </div>
 
-        <!-- Quick Links -->
+        <!-- Quick Links (Pinned) -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-th" style="color:#e11d48;"></i> Quick Links</h3>
+                <h3><i class="fa fa-thumb-tack" style="color:#e11d48;"></i> Pinned Links</h3>
+                <a href="index.php?quick_links">View All</a>
             </div>
-            <div class="ql-grid">
-                <a href="#taskSec" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-tasks"></i></div>My Tasks
-                </a>
-                <a href="index.php?worksheet" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-file-text-o"></i></div>Worksheet
-                </a>
-                <a href="#projSec" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-briefcase"></i></div>Projects
-                </a>
-                <a href="index.php?worksheet" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-calendar-check-o"></i></div>Attendance
-                </a>
-                <a href="index.php?leave_application" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-paper-plane-o"></i></div>Leave App
-                </a>
-                <a href="index.php?emp_salary_slip" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-money"></i></div>Salary Slip
-                </a>
-                <a href="index.php?emp_profile" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-user"></i></div>My Profile
-                </a>
-                <a href="index.php?worksheet" class="ql-item">
-                    <div class="ql-ic"><i class="fa fa-clock-o"></i></div>Time Log
-                </a>
-            </div>
+            <?php if (empty($pinned_links)): ?>
+                <div class="empty-s"><i class="fa fa-thumb-tack"></i>No pinned links available.</div>
+            <?php else: ?>
+                <div style="max-height: 220px; overflow-y: auto; padding-right: 5px;" class="custom-scrollbar">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tbody>
+                            <?php foreach ($pinned_links as $plink):
+                                $typeInfo = getResourceTypePhp($plink['link_url']);
+                                $url = $plink['link_url'];
+                                if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://') && !str_starts_with($url, 'uploads/')) {
+                                    $url = 'http://' . $url;
+                                }
+                                if (str_starts_with($url, 'uploads/')) {
+                                    $url = '../admin_area/' . $url;
+                                }
+                            ?>
+                                <tr style="border-bottom: 1px solid #f3f4f6;">
+                                    <td style="padding: 10px 0;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 42px; height: 42px; border-radius: 10px; background: <?php echo $typeInfo['bg']; ?>; color: <?php echo $typeInfo['color']; ?>; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">
+                                                <i class="fa <?php echo $typeInfo['icon']; ?>"></i>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <h4 style="margin: 0; font-size: 13px; font-weight: 700; color: #1f2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo htmlspecialchars($plink['link_name']); ?></h4>
+                                                <small style="font-size: 11px; color: #9ca3af;"><?php echo htmlspecialchars($plink['category']); ?></small>
+                                            </div>
+                                            <div style="flex-shrink: 0;">
+                                                <a href="<?php echo htmlspecialchars($url); ?>" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: #f0f9ff; border: 1px solid #e0f2fe; color: #0284c7; text-decoration: none;" title="Open">
+                                                    <i class="fa <?php echo $typeInfo['type'] === 'Link' ? 'fa-external-link' : 'fa-download'; ?>"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
 
         <!-- My Projects -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="projSec">
-                <h3><i class="fa fa-briefcase" style="color:#2563eb;"></i> My Projects</h3>
+                <h3><i class="fa fa-briefcase" style="color:#dd2127;"></i> My Projects</h3>
                 <a href="#">View All</a>
             </div>
             <?php if (empty($projects)): ?>

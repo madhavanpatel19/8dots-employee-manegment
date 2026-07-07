@@ -407,6 +407,10 @@ if (!empty($allowed_categories)) {
                 if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('uploads/')) url = 'http://' + url;
                 if (url.startsWith('uploads/')) url = '../admin_area/' + url;
 
+                const pinBg = (item.is_pinned == 1 || item.is_pinned == '1') ? '#fefce8' : '#f1f5f9';
+                const pinBorder = (item.is_pinned == 1 || item.is_pinned == '1') ? '#fef9c3' : '#e2e8f0';
+                const pinColor = (item.is_pinned == 1 || item.is_pinned == '1') ? '#eab308' : '#64748b';
+
                 filesHtml += `
                         <tr class="table-row-hover">
                             <td style="padding: 12px 20px; vertical-align: middle;">
@@ -420,9 +424,14 @@ if (!empty($allowed_categories)) {
                             <td style="padding: 12px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 13px; font-weight: 500;">${typeInfo.type}</td>
                             <td style="padding: 12px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 13px;">${dateOn}</td>
                             <td style="padding: 12px 20px; text-align: center; vertical-align: middle;">
-                                <a href="${url}" target="_blank" class="btn-icon-premium" style="background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="Download">
-                                    <i class="fa fa-download"></i>
-                                </a>
+                                <div style="display: flex; justify-content: center; gap: 8px;">
+                                    <button class="btn-icon-premium btn-pin-resource" data-id="${item.id}" data-pinned="${item.is_pinned}" style="background: ${pinBg}; border-color: ${pinBorder}; color: ${pinColor};" title="${item.is_pinned == 1 || item.is_pinned == '1' ? 'Unpin' : 'Pin'}">
+                                        <i class="fa fa-thumb-tack"></i>
+                                    </button>
+                                    <a href="${url}" target="_blank" class="btn-icon-premium" style="background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="Download">
+                                        <i class="fa fa-download"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         `;
@@ -440,6 +449,10 @@ if (!empty($allowed_categories)) {
                 let url = item.link_url;
                 if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'http://' + url;
 
+                const pinBg = (item.is_pinned == 1 || item.is_pinned == '1') ? '#fefce8' : '#f1f5f9';
+                const pinBorder = (item.is_pinned == 1 || item.is_pinned == '1') ? '#fef9c3' : '#e2e8f0';
+                const pinColor = (item.is_pinned == 1 || item.is_pinned == '1') ? '#eab308' : '#64748b';
+
                 linksHtml += `
                         <tr class="table-row-hover">
                             <td style="padding: 12px 20px; vertical-align: middle;">
@@ -455,9 +468,14 @@ if (!empty($allowed_categories)) {
                             </td>
                             <td style="padding: 12px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 13px;">${dateOn}</td>
                             <td style="padding: 12px 20px; text-align: center; vertical-align: middle;">
-                                <a href="${url}" target="_blank" class="btn-icon-premium" style="background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="Visit">
-                                    <i class="fa fa-external-link"></i>
-                                </a>
+                                <div style="display: flex; justify-content: center; gap: 8px;">
+                                    <button class="btn-icon-premium btn-pin-resource" data-id="${item.id}" data-pinned="${item.is_pinned}" style="background: ${pinBg}; border-color: ${pinBorder}; color: ${pinColor};" title="${item.is_pinned == 1 || item.is_pinned == '1' ? 'Unpin' : 'Pin'}">
+                                        <i class="fa fa-thumb-tack"></i>
+                                    </button>
+                                    <a href="${url}" target="_blank" class="btn-icon-premium" style="background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="Visit">
+                                        <i class="fa fa-external-link"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         `;
@@ -575,6 +593,42 @@ if (!empty($allowed_categories)) {
                     }
                 });
             }
+        });
+
+        // Handle Pin/Unpin
+        $(document).on('click', '.btn-pin-resource', function() {
+            const btn = $(this);
+            const id = btn.data('id');
+            const currentPinned = btn.data('pinned');
+            const newPinned = (currentPinned == 1 || currentPinned == '1') ? 0 : 1;
+
+            $.ajax({
+                url: 'ajax_toggle_pin.php',
+                method: 'POST',
+                data: { id: id, is_pinned: newPinned },
+                success: function(response) {
+                    try {
+                        const data = JSON.parse(response);
+                        if (data.status === 'success') {
+                            // Update local data
+                            const item = allResources.find(r => r.id == id);
+                            if (item) {
+                                item.is_pinned = newPinned;
+                            }
+                            
+                            // Re-render current hub
+                            const currentCat = $('#hub-section-title').text().trim();
+                            if (currentCat && currentCat !== 'Section') {
+                                openResourceHub(currentCat);
+                            }
+                        } else {
+                            alert('Failed to pin resource: ' + (data.message || 'Unknown error'));
+                        }
+                    } catch(e) {
+                        alert('Server error while pinning.');
+                    }
+                }
+            });
         });
 
     });

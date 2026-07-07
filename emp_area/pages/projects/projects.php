@@ -145,7 +145,7 @@ $completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_
                                             <?php echo !empty($row['deadline']) ? date('d M Y', strtotime($row['deadline'])) : '--'; ?>
                                         </td>
                                         <td style="text-align: center; padding: 15px;">
-                                            <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; <?php echo $badge_style; ?> display: inline-block; min-width: 90px;">
+                                            <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #ffeaeb; color: #dd2127; display: inline-block; min-width: 90px;">
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </span>
                                         </td>

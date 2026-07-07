@@ -36,11 +36,11 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
 
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
-        <h1></h1>
+        <h1><i class="fa fa-file-text"></i> Offer Letters</h1>
         <?php if (canAdminAccess('offer_letter_insert')): ?>
-        <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newOfferModal" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #6366f1; border: none; color: #fff; cursor: pointer; transition: all 0.3s ease;">
-            <i class="fa fa-plus"></i> New Offer Letter
-        </button>
+            <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newOfferModal" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #6366f1; border: none; color: #fff; cursor: pointer; transition: all 0.3s ease;">
+                <i class="fa fa-plus"></i> New Offer Letter
+            </button>
         <?php endif; ?>
     </div>
 
@@ -259,7 +259,7 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                                     <div style="font-size: 12px; color: #64748b;"><?php echo htmlspecialchars($email); ?></div>
                                 </td>
                                 <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
-                                    <span class="badge" style="background: #e0e7ff; color: #4338ca; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
+                                    <span class="badge" style="background: #ffeaeb; color: #dd2127; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
                                         <?php echo htmlspecialchars($position); ?>
                                     </span>
                                 </td>
@@ -275,12 +275,12 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                                             <i class="fa fa-download"></i>
                                         </a>
                                         <?php if (canAdminAccess('offer_letter_insert')): ?>
-                                        <a href="index.php?edit_offer_letter=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
+                                            <a href="index.php?edit_offer_letter=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </div>
                                 </td>

@@ -297,7 +297,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT * FROM emp_list ORDER BY id ASC";
+                $sql = "SELECT * FROM emp_list ORDER BY status ASC, id ASC";
                 $res = mysqli_query($con, $sql);
                 if ($res && mysqli_num_rows($res) > 0) {
                     while ($row = mysqli_fetch_assoc($res)) {
@@ -305,6 +305,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         $name = htmlspecialchars($row['name']);
                         $phone = htmlspecialchars($row['phone_number']);
                         $email = htmlspecialchars($row['email']);
+                        $status = isset($row['status']) ? $row['status'] : 'Active';
                         $img = !empty($row['employee_image']) ? 'uploads/' . $row['employee_image'] : 'admin_images/default.png';
 
                         $perfRow = isset($performanceMap[$pk]) ? $performanceMap[$pk] : null;
@@ -336,18 +337,25 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         $effectiveTotal = ($perfTotal !== null) ? $perfTotal : $calculatedTotal;
                         $breakdown[] = array('label' => 'Total', 'max' => 100, 'user' => $effectiveTotal);
                         $breakdownJson = htmlspecialchars(json_encode($breakdown), ENT_QUOTES, 'UTF-8');
+
+                        $rowStyle = ($status === 'Inactive') ? 'background: #fef2f2; opacity: 0.85;' : '';
                 ?>
-                        <tr>
+                        <tr style="<?php echo $rowStyle; ?>">
                             <td class="text-center" style="font-weight: 700; color: #64748b; text-align: center;"><?php echo $pk; ?></td>
                             <td class="text-center" style="text-align: center;">
                                 <div style="position: relative; display: inline-block;">
-                                    <img src="<?php echo $img; ?>" class="emp-table-img" alt="Profile"
+                                    <img src="<?php echo $img; ?>" class="emp-table-img <?php echo ($status === 'Inactive') ? 'grayscale-img' : ''; ?>" alt="Profile"
                                         onclick="viewImage('<?php echo $img; ?>', '<?php echo $name; ?>')"
-                                        title="Click to zoom">
+                                        title="Click to zoom" style="<?php echo ($status === 'Inactive') ? 'filter: grayscale(100%); opacity: 0.7;' : ''; ?>">
                                 </div>
                             </td>
                             <td>
-                                <div style="font-weight: 700; color: #1e293b; font-size: 14px;"><?php echo $name; ?></div>
+                                <div style="font-weight: 700; color: #1e293b; font-size: 14px;">
+                                    <?php echo $name; ?>
+                                    <?php if ($status === 'Inactive'): ?>
+                                        <span style="font-size: 9px; font-weight: 800; background: #fca5a5; color: #991b1b; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle;">INACTIVE</span>
+                                    <?php endif; ?>
+                                </div>
                                 <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
                                     <span style="display:inline-flex; align-items:center; gap:4px; margin-right:10px;"><i class="fa fa-phone" style="color:#333; opacity:0.7;"></i> <?php echo $phone; ?></span>
                                     <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa fa-envelope" style="color:#333; opacity:0.7;"></i> <?php echo $email; ?></span>

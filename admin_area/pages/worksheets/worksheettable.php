@@ -360,8 +360,8 @@ $result = mysqli_query($con, $sql);
     }
 
     .p-badge-primary {
-        background: rgba(37, 99, 235, 0.1);
-        color: #2563eb;
+        background: rgba(79, 70, 229, 0.05);
+        color: #dd2127;
     }
 
     .p-badge-danger {

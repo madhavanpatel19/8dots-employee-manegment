@@ -457,7 +457,7 @@ if ($run_stats) {
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="p-badge p-badge-secondary" style="background: #e0e7ff; color: #4338ca; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars($row['leave_name'] ?: 'N/A'); ?></span>
+                                    <span class="p-badge p-badge-secondary" style="background: #ffeaeb; color: #dd2127; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars($row['leave_name'] ?: 'N/A'); ?></span>
                                 </td>
                                 <td class="text-center" style="font-weight: 600; color: #475569; font-size: 13px;">
                                     <?php echo date('d-m-Y', strtotime($row['leave_from'])); ?>

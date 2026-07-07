@@ -229,7 +229,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                 $client_active_proj = $proj_data['active_projects'];
                                 ?>
                                 <td style="text-align: center;">
-                                    <span style="font-weight: 800; color: #4f46e5; background: #e0e7ff; padding: 4px 12px; border-radius: 8px; font-size: 13px;"><?php echo $client_total_proj; ?></span>
+                                    <span style="font-weight: 800; color: #dd2127; background: #ffeaeb; padding: 4px 12px; border-radius: 8px; font-size: 13px;"><?php echo $client_total_proj; ?></span>
                                 </td>
                                 <td style="text-align: center;">
                                     <?php if ($client_active_proj > 0): ?>
