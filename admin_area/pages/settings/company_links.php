@@ -82,9 +82,11 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                 <i class="fa fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
                 <input type="text" id="section-search-input" placeholder="Search sections..." style="width: 100%; padding: 12px 15px 12px 45px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
             </div>
-            <button type="button" id="btn-add-section" class="btn-premium-add">
-                <i class="fa fa-plus"></i> New Section
-            </button>
+            <?php if (canAdminAccess('company_link_insert')): ?>
+                <button type="button" id="btn-add-section" class="btn-premium-add">
+                    <i class="fa fa-plus"></i> New Section
+                </button>
+            <?php endif; ?>
         </div>
 
 
@@ -165,7 +167,10 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                 </div>
                 <div>
                     <h2 id="hub-section-title" style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
-                        Section<i id="btn-rename-section" class="fa fa-pencil" style="font-size: 14px; color: #df2127; cursor: pointer;" title="Rename Section"></i>
+                        Section
+                        <?php if (canAdminAccess('company_link_update')): ?>
+                            <i id="btn-rename-section" class="fa fa-pencil" style="font-size: 14px; color: #df2127; cursor: pointer;" title="Rename Section"></i>
+                        <?php endif; ?>
                     </h2>
                     <p id="hub-section-stats" style="margin: 4px 0 0 0; color: #df2127; font-size: 14px; font-weight: 500;">
                         0 Files &bull; 0 Links
@@ -182,9 +187,11 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                 </div>
 
                 <div style="position: relative;">
-                    <button type="button" id="btn-add-resource-dropdown" class="btn-premium-add">
-                        <i class="fa fa-plus"></i> Add Resource <i class="fa fa-caret-down"></i>
-                    </button>
+                    <?php if (canAdminAccess('company_link_insert')): ?>
+                        <button type="button" id="btn-add-resource-dropdown" class="btn-premium-add">
+                            <i class="fa fa-plus"></i> Add Resource <i class="fa fa-caret-down"></i>
+                        </button>
+                    <?php endif; ?>
                     <div id="add-resource-menu" style="display: none; position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-top: 5px; z-index: 100; min-width: 180px; overflow: hidden;">
                         <div class="add-menu-item" data-type="link" style="padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #e2e8f0; font-size: 14px; font-weight: 500; color: #475569; transition: 0.2s;"><i class="fa fa-link" style="margin-right: 8px; color: #3b82f6;"></i> Add Link</div>
                         <div class="add-menu-item" data-type="document" style="padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; transition: 0.2s;"><i class="fa fa-file-text-o" style="margin-right: 8px; color: #10b981;"></i> Add Document</div>
@@ -646,9 +653,11 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                             <a href="${url}" target="_blank" class="btn-icon-premium" style="width: 32px; height: 32px; font-size: 12px; background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="${typeInfo.type === 'Link' ? 'Visit' : 'Download'}">
                                 <i class="fa ${typeInfo.type === 'Link' ? 'fa-external-link' : 'fa-download'}"></i>
                             </a>
+                            <?php if (canAdminAccess('company_link_delete')): ?>
                             <button class="btn-icon-premium btn-delete-resource" data-id="${item.id}" style="width: 32px; height: 32px; font-size: 12px; background: #fef2f2; border-color: #fee2e2; color: #ef4444;" title="Delete">
                                 <i class="fa fa-trash-o"></i>
                             </button>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>
@@ -690,7 +699,8 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                 }
             });
 
-            $('#hub-section-title').html(`${category} Hub <i id="btn-rename-section" class="fa fa-pencil" style="font-size: 14px; color: #94a3b8; cursor: pointer;" title="Rename Section"></i>`);
+            const renameIcon = <?php echo canAdminAccess('company_link_update') ? '`<i id="btn-rename-section" class="fa fa-pencil" style="font-size: 14px; color: #94a3b8; cursor: pointer;" title="Rename Section"></i>`' : '""'; ?>;
+            $('#hub-section-title').html(`${category} Hub ${renameIcon}`);
             $('#hub-section-stats').html(`${files.length} Files &bull; ${links.length} Links`);
             $('#files-section-title').text(`Files (${files.length})`);
             $('#links-section-title').text(`Links (${links.length})`);
@@ -733,9 +743,11 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                             <a href="${url}" target="_blank" class="btn-icon-premium" style="width: 32px; height: 32px; font-size: 12px; background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="Download">
                                 <i class="fa fa-download"></i>
                             </a>
+                            <?php if (canAdminAccess('company_link_delete')): ?>
                             <button class="btn-icon-premium btn-delete-resource" data-id="${item.id}" style="width: 32px; height: 32px; font-size: 12px; background: #fef2f2; border-color: #fee2e2; color: #ef4444;" title="Delete">
                                 <i class="fa fa-trash-o"></i>
                             </button>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>
@@ -792,9 +804,11 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                             <a href="${url}" target="_blank" class="btn-icon-premium" style="width: 32px; height: 32px; font-size: 12px; background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="Visit">
                                 <i class="fa fa-external-link"></i>
                             </a>
+                            <?php if (canAdminAccess('company_link_delete')): ?>
                             <button class="btn-icon-premium btn-delete-resource" data-id="${item.id}" style="width: 32px; height: 32px; font-size: 12px; background: #fef2f2; border-color: #fee2e2; color: #ef4444;" title="Delete">
                                 <i class="fa fa-trash-o"></i>
                             </button>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>

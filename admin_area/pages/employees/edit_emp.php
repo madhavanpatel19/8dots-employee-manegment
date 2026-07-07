@@ -108,11 +108,13 @@ if (isset($_POST['update'])) {
     $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
     $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
 
-    $basic = $_POST['basic_salary'] ?? 0;
-    $hra = $_POST['hra'] ?? 0;
-    $allowance = $_POST['allowance'] ?? 0;
-    $deductions = $_POST['deductions'] ?? 0;
-    $salary = $_POST['salary'] ?? 0;
+    if (canAdminAccess('salary_update')) {
+        $basic = $_POST['basic_salary'] ?? 0;
+        $hra = $_POST['hra'] ?? 0;
+        $allowance = $_POST['allowance'] ?? 0;
+        $deductions = $_POST['deductions'] ?? 0;
+        $salary = $_POST['salary'] ?? 0;
+    }
     $status = isset($_POST['status']) ? 'Active' : 'Inactive';
 
     // Handle File Updates
@@ -146,9 +148,12 @@ if (isset($_POST['update'])) {
               emergency_name = '$e_name', emergency_relationship = '$e_rel', emergency_address = '$e_addr', emergency_phone = '$e_phone',
               education_json = '$edu_json', employment_json = '$emp_json', 
               account_name = '$acc_name', bank_branch = '$bank_br', account_number = '$acc_num', account_type_ifsc = '$acc_ifsc',
-              basic_salary = '$basic', hra = '$hra', allowance = '$allowance', deductions = '$deductions', salary = '$salary', status = '$status'
-              $q_extra
-              WHERE id = '$id'";
+              status = '$status'";
+    if (canAdminAccess('salary_update')) {
+        $query .= ", basic_salary = '$basic', hra = '$hra', allowance = '$allowance', deductions = '$deductions', salary = '$salary' ";
+    }
+    
+    $query .= " $q_extra WHERE id = '$id'";
 
     $result = mysqli_query($con, $query);
     if ($result) {
@@ -588,16 +593,21 @@ if (isset($_POST['update'])) {
                             <input type="date" name="joinDate" class="p-input-premium" value="<?php echo $employee['join_date']; ?>" required>
                         </div>
                     </div>
+                    <?php 
+                    $can_update_salary = canAdminAccess('salary_update');
+                    $salary_readonly = $can_update_salary ? '' : 'readonly style="background: #f1f5f9;"';
+                    ?>
+                    <?php if (canAdminAccess('salary_view') || $can_update_salary): ?>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Basic Pay *</label>
-                            <input type="number" id="edit_basic_salary" name="basic_salary" class="p-input-premium" value="<?php echo $employee['basic_salary']; ?>" required>
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Basic Pay <?php echo $can_update_salary ? '*' : ''; ?></label>
+                            <input type="number" id="edit_basic_salary" name="basic_salary" class="p-input-premium" value="<?php echo $employee['basic_salary']; ?>" <?php echo $can_update_salary ? 'required' : ''; ?> <?php echo $salary_readonly; ?>>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">HRA</label>
-                            <input type="number" id="edit_hra" name="hra" class="p-input-premium" value="<?php echo $employee['hra']; ?>">
+                            <input type="number" id="edit_hra" name="hra" class="p-input-premium" value="<?php echo $employee['hra']; ?>" <?php echo $salary_readonly; ?>>
                         </div>
                     </div>
                 </div>
@@ -606,13 +616,13 @@ if (isset($_POST['update'])) {
                     <div class="col-md-4">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Other Allowance</label>
-                            <input type="number" id="edit_allowance" name="allowance" class="p-input-premium" value="<?php echo $employee['allowance']; ?>">
+                            <input type="number" id="edit_allowance" name="allowance" class="p-input-premium" value="<?php echo $employee['allowance']; ?>" <?php echo $salary_readonly; ?>>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Monthly Deductions</label>
-                            <input type="number" id="edit_deductions" name="deductions" class="p-input-premium" value="<?php echo $employee['deductions']; ?>">
+                            <input type="number" id="edit_deductions" name="deductions" class="p-input-premium" value="<?php echo $employee['deductions']; ?>" <?php echo $salary_readonly; ?>>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -621,6 +631,7 @@ if (isset($_POST['update'])) {
                             <input type="text" id="edit_salary" name="salary" class="p-input-premium" value="<?php echo $employee['salary']; ?>" readonly style="background: #f0fdf4; font-weight: 800; color: #059669; font-size: 18px; border-color: #bbf7d0;">
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
 
                 <style>

@@ -252,9 +252,11 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 <div class="page-header-premium">
     <h1></h1>
     <div class="header-actions-premium">
-        <a href="index.php?add_emp" class="btn-premium-add">
-            <i class="fa fa-user-plus"></i> Add new Employee
-        </a>
+        <?php if (function_exists('canAdminAccess') && canAdminAccess('employee_insert')): ?>
+            <a href="index.php?add_emp" class="btn-premium-add">
+                <i class="fa fa-user-plus"></i> Add new Employee
+            </a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -393,18 +395,24 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                 </button>
                             </td>
                             <td class="text-center" style="text-align: center;">
-                                <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn" style="padding: 6px 14px; border-radius: 8px; background: #fff; border: 1.5px solid #e2e8f0; color: #64748b; font-weight: 600; font-size: 12px;" title="View Documents">
-                                    <i class="fa fa-folder-open-o"></i> View
-                                </a>
+                                <?php if (function_exists('canAdminAccess') && canAdminAccess('employee_update')): ?>
+                                    <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn" style="padding: 6px 14px; border-radius: 8px; background: #fff; border: 1.5px solid #e2e8f0; color: #64748b; font-weight: 600; font-size: 12px;" title="View Documents">
+                                        <i class="fa fa-folder-open-o"></i> View
+                                    </a>
+                                <?php endif; ?>
                             </td>
                             <td class="text-center" style="text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center;">
-                                    <a href="index.php?edit_emp=<?php echo $pk; ?>" class="btn-icon-premium btn-icon-edit" title="Edit Employee">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <button onclick="showDeleteConfirm(<?php echo $pk; ?>, '<?php echo addslashes($name); ?>')" type="button" class="btn-icon-premium btn-icon-delete" title="Delete Record">
-                                        <i class="fa fa-trash-o"></i>
-                                    </button>
+                                    <?php if (function_exists('canAdminAccess') && canAdminAccess('employee_update')): ?>
+                                        <a href="index.php?edit_emp=<?php echo $pk; ?>" class="btn-icon-premium btn-icon-edit" title="Edit Employee">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if (function_exists('canAdminAccess') && canAdminAccess('employee_delete')): ?>
+                                        <button onclick="showDeleteConfirm(<?php echo $pk; ?>, '<?php echo addslashes($name); ?>')" type="button" class="btn-icon-premium btn-icon-delete" title="Delete Record">
+                                            <i class="fa fa-trash-o"></i>
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -695,9 +703,11 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         <div class="profile-nav-item" data-target="section_bank" onclick="switchProfileTab(this)">
                             <i class="fa fa-bank"></i> Bank Details
                         </div>
-                        <div class="profile-nav-item" data-target="section_salary" onclick="switchProfileTab(this)">
-                            <i class="fa fa-money"></i> Professional & Salary
-                        </div>
+                        <?php if (canAdminAccess('salary_view')): ?>
+                            <div class="profile-nav-item" data-target="section_salary" onclick="switchProfileTab(this)">
+                                <i class="fa fa-money"></i> Professional & Salary
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- <div style="margin-top: auto; padding: 20px 25px;">
@@ -847,35 +857,37 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     </div>
 
                     <!-- Professional Section -->
-                    <div id="section_salary" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-money" style="color: #059669;"></i> Professional & Salary Details</h3>
-                        <div class="profile-data-grid">
-                            <div class="profile-data-card" style="background: #ecfdf5; border-color: #d1fae5;">
-                                <span class="profile-data-label" style="color: #059669;">Net Monthly Salary</span>
-                                <span class="profile-data-value" id="view_salary" style="color: #047857; font-size: 20px;">₹ 0.00</span>
-                            </div>
-                            <div class="profile-data-card">
-                                <span class="profile-data-label">Joining Date</span>
-                                <span class="profile-data-value" id="view_join">-</span>
-                            </div>
-                            <div class="profile-data-card">
-                                <span class="profile-data-label">Basic Salary</span>
-                                <span class="profile-data-value" id="view_basic">0.00</span>
-                            </div>
-                            <div class="profile-data-card">
-                                <span class="profile-data-label">HRA</span>
-                                <span class="profile-data-value" id="view_hra">0.00</span>
-                            </div>
-                            <div class="profile-data-card">
-                                <span class="profile-data-label">Allowance</span>
-                                <span class="profile-data-value" id="view_allowance">0.00</span>
-                            </div>
-                            <div class="profile-data-card">
-                                <span class="profile-data-label">Deductions</span>
-                                <span class="profile-data-value" id="view_deductions">0.00</span>
+                    <?php if (canAdminAccess('salary_view')): ?>
+                        <div id="section_salary" class="profile-section">
+                            <h3 class="profile-section-title"><i class="fa fa-money" style="color: #059669;"></i> Professional & Salary Details</h3>
+                            <div class="profile-data-grid">
+                                <div class="profile-data-card" style="background: #ecfdf5; border-color: #d1fae5;">
+                                    <span class="profile-data-label" style="color: #059669;">Net Monthly Salary</span>
+                                    <span class="profile-data-value" id="view_salary" style="color: #047857; font-size: 20px;">₹ 0.00</span>
+                                </div>
+                                <div class="profile-data-card">
+                                    <span class="profile-data-label">Joining Date</span>
+                                    <span class="profile-data-value" id="view_join">-</span>
+                                </div>
+                                <div class="profile-data-card">
+                                    <span class="profile-data-label">Basic Salary</span>
+                                    <span class="profile-data-value" id="view_basic">0.00</span>
+                                </div>
+                                <div class="profile-data-card">
+                                    <span class="profile-data-label">HRA</span>
+                                    <span class="profile-data-value" id="view_hra">0.00</span>
+                                </div>
+                                <div class="profile-data-card">
+                                    <span class="profile-data-label">Allowance</span>
+                                    <span class="profile-data-value" id="view_allowance">0.00</span>
+                                </div>
+                                <div class="profile-data-card">
+                                    <span class="profile-data-label">Deductions</span>
+                                    <span class="profile-data-value" id="view_deductions">0.00</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -1126,12 +1138,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         document.getElementById('view_acc_num').textContent = data.account_number || '-';
         document.getElementById('view_acc_ifsc').textContent = data.account_type_ifsc || '-';
 
-        document.getElementById('view_join').textContent = data.join_date || '-';
-        document.getElementById('view_salary').textContent = parseFloat(data.salary || 0).toFixed(2);
-        document.getElementById('view_basic').textContent = parseFloat(data.basic_salary || 0).toFixed(2);
-        document.getElementById('view_hra').textContent = parseFloat(data.hra || 0).toFixed(2);
-        document.getElementById('view_allowance').textContent = parseFloat(data.allowance || 0).toFixed(2);
-        document.getElementById('view_deductions').textContent = parseFloat(data.deductions || 0).toFixed(2);
+        if (document.getElementById('view_join')) document.getElementById('view_join').textContent = data.join_date || '-';
+        if (document.getElementById('view_salary')) document.getElementById('view_salary').textContent = parseFloat(data.salary || 0).toFixed(2);
+        if (document.getElementById('view_basic')) document.getElementById('view_basic').textContent = parseFloat(data.basic_salary || 0).toFixed(2);
+        if (document.getElementById('view_hra')) document.getElementById('view_hra').textContent = parseFloat(data.hra || 0).toFixed(2);
+        if (document.getElementById('view_allowance')) document.getElementById('view_allowance').textContent = parseFloat(data.allowance || 0).toFixed(2);
+        if (document.getElementById('view_deductions')) document.getElementById('view_deductions').textContent = parseFloat(data.deductions || 0).toFixed(2);
 
         const viewDocsList = document.getElementById('view_documents');
         viewDocsList.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fa fa-spinner fa-spin"></i></div>';

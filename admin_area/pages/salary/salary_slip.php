@@ -109,6 +109,10 @@ if ($res) {
 
 // ------------------ SALARY SAVE HANDLER ------------------ //
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_salary_amounts'])) {
+    if (!function_exists('canAdminAccess') || !canAdminAccess('salary_update')) {
+        echo "<script>Swal.fire('Error', 'You do not have permission to update salary.', 'error');</script>";
+        exit();
+    }
     $emp_id_save = (int)$_POST['emp_id'];
     $month_save  = mysqli_real_escape_string($con, $_POST['month']);
     $basic    = (float)$_POST['basic'];
@@ -786,8 +790,11 @@ if ($print_all_mode) {
             <!-- ACTION BUTTONS -->
             <div class="slip-actions" style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:8px;">
+
                     <a href="<?php echo $back_url; ?>" class="btn-premium-cancel"><i class="fa fa-arrow-left"></i> Back</a>
-                    <button class="btn-premium-add" data-toggle="modal" data-target="#amountModal"><i class="fa fa-edit"></i> Change Amount</button>
+                    <?php if (function_exists('canAdminAccess') && canAdminAccess('salary_update')): ?>
+                        <button class="btn-premium-add" data-toggle="modal" data-target="#amountModal"><i class="fa fa-edit"></i> Change Amount</button>
+                    <?php endif; ?>
                 </div>
                 <div style="display:flex; gap:8px;">
                     <button id="printBtn" class="btn-premium-cancel">
@@ -816,71 +823,73 @@ if ($print_all_mode) {
 </div>
 
 <!-- ================= AMOUNT EDIT MODAL ================= -->
-<div class="modal fade" id="amountModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
+<?php if (function_exists('canAdminAccess') && canAdminAccess('salary_update')): ?>
+    <div class="modal fade" id="amountModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
 
-            <form method="POST">
-                <input type="hidden" name="emp_id" value="<?php echo (int)$selected_emp; ?>">
-                <input type="hidden" name="month" value="<?php echo htmlspecialchars($selected_month); ?>">
+                <form method="POST">
+                    <input type="hidden" name="emp_id" value="<?php echo (int)$selected_emp; ?>">
+                    <input type="hidden" name="month" value="<?php echo htmlspecialchars($selected_month); ?>">
 
-                <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
-                    <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
-                        <i class="fa fa-times"></i>
-                    </button>
-                    <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                        <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa fa-edit" style="font-size: 14px;"></i>
+                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                        <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
+                            <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa fa-edit" style="font-size: 14px;"></i>
+                            </div>
+                            Edit Salary Amounts
+                        </h4>
+                    </div>
+
+                    <div class="modal-body" style="padding: 30px; background: #fff;">
+                        <div class="row">
+                            <div class="col-md-6" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Basic Salary (₹)</label>
+                                <input type="number" step="0.01" name="basic" value="<?php echo $base_salary_val; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+                            <div class="col-md-6" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">House Rent Allowance (HRA) (₹)</label>
+                                <input type="number" step="0.01" name="hra" value="<?php echo $hra; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
                         </div>
-                        Edit Salary Amounts
-                    </h4>
-                </div>
 
-                <div class="modal-body" style="padding: 30px; background: #fff;">
-                    <div class="row">
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Basic Salary (₹)</label>
-                            <input type="number" step="0.01" name="basic" value="<?php echo $base_salary_val; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <div class="row">
+                            <div class="col-md-6" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Provident Fund (PF) (₹)</label>
+                                <input type="number" step="0.01" name="pf" value="<?php echo $pf; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+                            <div class="col-md-6" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Tax Deduction (₹)</label>
+                                <input type="number" step="0.01" name="tax" value="<?php echo $tax; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
                         </div>
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">House Rent Allowance (HRA) (₹)</label>
-                            <input type="number" step="0.01" name="hra" value="<?php echo $hra; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+
+                        <div class="row">
+                            <div class="col-md-6" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Other Allowances (₹)</label>
+                                <input type="number" step="0.01" name="other_allow" value="<?php echo $other_allow; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+                            <div class="col-md-6" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Other Deductions (₹)</label>
+                                <input type="number" step="0.01" name="other_ded" value="<?php echo $other_ded; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Provident Fund (PF) (₹)</label>
-                            <input type="number" step="0.01" name="pf" value="<?php echo $pf; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Tax Deduction (₹)</label>
-                            <input type="number" step="0.01" name="tax" value="<?php echo $tax; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
+                    <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 20px 20px; text-align: right;">
+                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="save_salary_amounts" class="btn-premium-add"><i class="fa fa-save"></i> Save & Apply</button>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Other Allowances (₹)</label>
-                            <input type="number" step="0.01" name="other_allow" value="<?php echo $other_allow; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Other Deductions (₹)</label>
-                            <input type="number" step="0.01" name="other_ded" value="<?php echo $other_ded; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-                    </div>
-                </div>
+                </form>
 
-                <div class="modal-footer" style="padding: 20px 30px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 20px 20px; text-align: right;">
-                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
-                    <button type="submit" name="save_salary_amounts" class="btn-premium-add"><i class="fa fa-save"></i> Save & Apply</button>
-                </div>
-
-            </form>
-
+            </div>
         </div>
     </div>
-</div>
+<?php endif; ?>
 
 <script>
     (function() {

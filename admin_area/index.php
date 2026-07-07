@@ -196,8 +196,18 @@ if (!isset($_SESSION['admin_email'])) {
                     if (isset($_GET['access_denied'])) {
                         echo '<div class="alert alert-danger"><i class="fa fa-lock"></i> Access denied. You do not have permission to view that page.</div>';
                     }
-                    if (isset($_GET['dashboard'])) {
-                        include("pages/dashboard/dashboard.php");
+                    if (isset($_GET['dashboard']) || empty($_GET)) {
+                        if (canAdminAccess('dashboard_view')) {
+                            include("pages/dashboard/dashboard.php");
+                        } else {
+                            if (!isset($_GET['access_denied'])) {
+                                echo '<div style="padding: 40px; text-align: center; color: #64748b; margin-top: 20px;">';
+                                echo '<i class="fa fa-ban" style="font-size: 48px; margin-bottom: 15px; color: #cbd5e1;"></i>';
+                                echo '<h3 style="color: #475569;">Dashboard Restricted</h3>';
+                                echo '<p>You do not have permission to view the main dashboard widgets. Please use the sidebar to navigate to your authorized areas.</p>';
+                                echo '</div>';
+                            }
+                        }
                     }
                     // Previously had legacy e-commerce routes here (insert_product, delete_product,
                     // edit_product, view_customers, view_orders, view_payments, etc.)
@@ -419,21 +429,27 @@ if (!isset($_SESSION['admin_email'])) {
                         include("pages/clients/view_client_feedback.php");
                     }
                     if (isset($_GET['view_offer_letters'])) {
+                        requireAdminPermission('offer_letter_view');
                         include("pages/documents/view_offer_letters.php");
                     }
                     if (isset($_GET['edit_offer_letter'])) {
+                        requireAdminPermission('offer_letter_insert');
                         include("pages/documents/edit_offer_letter.php");
                     }
                     if (isset($_GET['view_experience_letters'])) {
+                        requireAdminPermission('experience_letter_view');
                         include("pages/documents/view_experience_letters.php");
                     }
                     if (isset($_GET['edit_experience_letter'])) {
+                        requireAdminPermission('experience_letter_insert');
                         include("pages/documents/edit_experience_letter.php");
                     }
                     if (isset($_GET['view_nda'])) {
+                        requireAdminPermission('nda_view');
                         include("pages/documents/view_nda.php");
                     }
                     if (isset($_GET['edit_nda'])) {
+                        requireAdminPermission('nda_insert');
                         include("pages/documents/edit_nda.php");
                     }
                     if (isset($_GET['add_client'])) {
@@ -445,7 +461,7 @@ if (!isset($_SESSION['admin_email'])) {
                         include("pages/clients/client_directory.php");
                     }
                     if (isset($_GET['view_projects'])) {
-                        requireAdminPermission('client_view');
+                        requireAdminPermission('project_view');
                         include("pages/projects/view_projects.php");
                     }
                     if (isset($_GET['edit_client'])) {
@@ -490,14 +506,15 @@ if (!isset($_SESSION['admin_email'])) {
                     }
                     // view_project.php & delete_project.php moved – use ajax handlers instead
                     if (isset($_GET['team_todo'])) {
-                        requireAdminPermission('project_view');
+                        requireAdminPermission('project_assign_task');
                         include("pages/projects/team_todo.php");
                     }
                     if (isset($_GET['global_team_todos'])) {
-                        requireAdminPermission('project_view');
+                        requireAdminPermission('todo_view');
                         include("pages/projects/global_team_todos.php");
                     }
                     if (isset($_GET['company_links'])) {
+                        requireAdminPermission('company_link_view');
                         include("pages/settings/company_links.php");
                     }
                     ?>

@@ -37,9 +37,11 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
         <h1></h1>
-        <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newExpModal">
-            <i class="fa fa-plus"></i> New Experience Letter
-        </button>
+        <?php if (canAdminAccess('experience_letter_insert')): ?>
+            <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newExpModal">
+                <i class="fa fa-plus"></i> New Experience Letter
+            </button>
+        <?php endif; ?>
     </div>
 
     <style>
@@ -273,12 +275,14 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
                                         <a href="pages/documents/generate_experience.php?id=<?php echo $id; ?>&action=download" class="btn-icon-premium btn-icon-download" title="Download PDF">
                                             <i class="fa fa-download"></i>
                                         </a>
-                                        <a href="index.php?edit_experience_letter=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
+                                        <?php if (canAdminAccess('experience_letter_insert')): ?>
+                                            <a href="index.php?edit_experience_letter=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

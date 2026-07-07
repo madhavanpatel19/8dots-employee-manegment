@@ -175,6 +175,14 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
     $eid  = (int)$emp_id;
     $date = mysqli_real_escape_string($con, $attendance_date);
     $st   = mysqli_real_escape_string($con, $status);
+
+    $check = mysqli_query($con, "SELECT id FROM attendance WHERE emp_id='$eid' AND attendance_date='$date'");
+    $exists = mysqli_num_rows($check) > 0;
+
+    if ($st === 'delete' || $st === 'clear') {
+        return true; // Deletion no longer supported
+    }
+
     $rm_raw   = $remarks;
     $normalized_checkin = normalize_checkin_time($check_in_time);
     $normalized_checkout = normalize_checkin_time($check_out_time);
@@ -193,9 +201,10 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
 
     $rm   = mysqli_real_escape_string($con, $rm_raw);
 
-    $check = mysqli_query($con, "SELECT id FROM attendance WHERE emp_id='$eid' AND attendance_date='$date'");
     $row_id = null;
-    if (mysqli_num_rows($check) > 0) {
+    if ($exists) {
+        if (!canAdminAccess('attendance_insert')) return false;
+
         $existing = mysqli_fetch_assoc($check);
         $row_id = (int)$existing['id'];
         $update = "UPDATE attendance 
@@ -208,6 +217,8 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
                    WHERE emp_id='$eid' AND attendance_date='$date'";
         $ok = mysqli_query($con, $update);
     } else {
+        if (!canAdminAccess('attendance_insert')) return false;
+
         $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks";
         if ($perf_val !== null) {
             $insert .= ", performance";
@@ -579,7 +590,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 } else {
                                     $pref        = isset($daily_attendance[$eid]) ? $daily_attendance[$eid] : null;
                                     $pref_status = $pref ? $pref['status'] : '';
-                                         $pref_remarks = $pref ? htmlspecialchars($pref['remarks'] ?? '') : '';
+                                    $pref_remarks = $pref ? htmlspecialchars($pref['remarks'] ?? '') : '';
                                     $pref_checkin = $pref ? htmlspecialchars($pref['check_in_time'] ?? '') : '10:00';
                                     $pref_checkout = $pref ? htmlspecialchars($pref['check_out_time'] ?? '') : '';
                                     $pref_performance = $pref ? htmlspecialchars($pref['performance'] ?? '') : '';
@@ -595,29 +606,51 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                         <?php echo htmlspecialchars($emp['name']); ?>
                                     </td>
                                     <td style="white-space: nowrap;">
-                                        <div class="status-options">
-                                            <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status == '') ? ' active' : ''; ?>">
-                                                <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status == '') ? 'checked' : ''; ?>>P
-                                            </label>
-                                            <label class="status-btn<?php echo ($pref_status === 'absent') ? ' active' : ''; ?>">
-                                                <input type="radio" name="status[<?php echo $i; ?>]" value="absent" <?php echo ($pref_status === 'absent') ? 'checked' : ''; ?>>A
-                                            </label>
-                                            <label class="status-btn<?php echo ($pref_status === 'leave') ? ' active' : ''; ?>">
-                                                <input type="radio" name="status[<?php echo $i; ?>]" value="leave" <?php echo ($pref_status === 'leave') ? 'checked' : ''; ?>>L
-                                            </label>
-                                        </div>
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <div class="status-options">
+                                                <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status == '') ? ' active' : ''; ?>">
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status == '') ? 'checked' : ''; ?>>P
+                                                </label>
+                                                <label class="status-btn<?php echo ($pref_status === 'absent') ? ' active' : ''; ?>">
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="absent" <?php echo ($pref_status === 'absent') ? 'checked' : ''; ?>>A
+                                                </label>
+                                                <label class="status-btn<?php echo ($pref_status === 'leave') ? ' active' : ''; ?>">
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="leave" <?php echo ($pref_status === 'leave') ? 'checked' : ''; ?>>L
+                                                </label>
+                                            </div>
+                                        <?php else: ?>
+                                            <span style="font-weight: bold; text-transform: uppercase;">
+                                                <?php echo htmlspecialchars($pref_status ? $pref_status : '-'); ?>
+                                            </span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm">
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_checkin ? date('h:i A', strtotime($pref_checkin)) : '-'); ?>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <input type="time" name="check_out_time_arr[]" value="<?php echo $pref_checkout; ?>" class="form-control input-sm">
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="time" name="check_out_time_arr[]" value="<?php echo $pref_checkout; ?>" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_checkout ? date('h:i A', strtotime($pref_checkout)) : '-'); ?>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <input type="number" name="performance_arr[]" value="<?php echo isset($pref_performance) ? htmlspecialchars($pref_performance) : ''; ?>" min="0" max="100" placeholder="0-100" class="form-control input-sm">
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="number" name="performance_arr[]" value="<?php echo isset($pref_performance) ? htmlspecialchars($pref_performance) : ''; ?>" min="0" max="100" placeholder="0-100" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_performance !== '' ? $pref_performance : '-'); ?>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <input type="text" name="remarks_arr[]" value="<?php echo $pref_remarks; ?>" placeholder="Optional remarks" class="form-control input-sm">
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="text" name="remarks_arr[]" value="<?php echo $pref_remarks; ?>" placeholder="Optional remarks" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_remarks ? $pref_remarks : '-'); ?>
+                                        <?php endif; ?>
                                         <?php
                                         // Inline error for leave without remarks (after failed POST)
                                         $show_leave_error = false;
@@ -649,11 +682,13 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         </tbody>
                     </table>
                 </div>
-                <div style="padding: 15px 24px; text-align:right; border-top: 1px solid #e2e8f0; background: #f8fafc;">
-                    <button type="submit" name="save_daily_attendance" class="btn-premium-add">
-                        <i class="fa fa-save"></i> Save Attendance
-                    </button>
-                </div>
+                <?php if (canAdminAccess('attendance_insert')): ?>
+                    <div style="padding: 15px 24px; text-align:right; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+                        <button type="submit" name="save_daily_attendance" class="btn-premium-add">
+                            <i class="fa fa-save"></i> Save Attendance
+                        </button>
+                    </div>
+                <?php endif; ?>
             </form>
 
             <!-- MONTHLY VIEW -->
@@ -686,7 +721,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         $today = date('Y-m-d');
                         $can_edit_today = false;
                         if (function_exists('canAdminAccess')) {
-                            $can_edit_today = canAdminAccess('attendance_edit');
+                            $can_edit_today = canAdminAccess('attendance_insert');
                         }
 
                         $total_secs_month = 0;
@@ -743,8 +778,8 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                             echo '<tr>';
                             echo '<td style="white-space: nowrap;"><strong>' . date('d-m-y', strtotime($date)) . '</strong></td>';
                             echo '<td style="white-space: nowrap;">' . $day_name . '</td>';
-                            // Lock editing for today if not permitted
-                            if ($date === $today && !$can_edit_today) {
+                            // Lock editing if not permitted
+                            if (!$can_edit_today) {
                                 echo '<td class="date-cell ' . $status_class . '" title="Editing locked by admin permission" style="white-space: nowrap;">' . $status . '</td>';
                             } else {
                                 echo '<td class="date-cell ' . $status_class . '" onclick="openModal(' . $selected_emp_id . ', \'' . $date . '\', \'' . $checkin . '\')" title="Click to mark attendance" style="white-space: nowrap;">' . $status . '</td>';

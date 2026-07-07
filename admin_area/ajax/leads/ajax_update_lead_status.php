@@ -1,12 +1,20 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) { session_start(); }
 header('Content-Type: application/json');
 if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (!function_exists('canAdminAccess')) {
+    require_once __DIR__ . '/../../includes/admin_permissions.php';
+}
 
 $response = ['success' => false, 'message' => 'Invalid request'];
 
 if (!isset($_SESSION['admin_email'])) {
     $response['message'] = 'Unauthorized access';
+    echo json_encode($response);
+    exit;
+}
+if (!canAdminAccess('lead_update')) {
+    $response['message'] = 'Permission denied';
     echo json_encode($response);
     exit;
 }

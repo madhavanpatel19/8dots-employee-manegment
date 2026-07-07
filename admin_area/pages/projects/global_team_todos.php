@@ -42,9 +42,11 @@ if ($run_projs) {
                 <i class="fa fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;"></i>
                 <input type="text" id="task-search" placeholder="Search tasks..." style="width: 250px; padding: 10px 15px 10px 38px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #334155; font-weight: 500; outline: none; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
             </div> -->
-            <button class="btn-premium-add" onclick="showGlobalAddTask()">
-                <i class="fa fa-plus"></i> Add Task
-            </button>
+            <?php if (function_exists('canAdminAccess') && canAdminAccess('todo_insert')): ?>
+                <button class="btn-premium-add" onclick="showGlobalAddTask()">
+                    <i class="fa fa-plus"></i> Add Task
+                </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -75,10 +77,12 @@ if ($run_projs) {
                         <button class="icon-btn"><i class="fa fa-ellipsis-v"></i></button>
                     </div>
 
-                    <div class="add-task-trigger" onclick="showInlineAddTask(<?php echo $emp_id; ?>)">
-                        <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
-                        <span>Add a task</span>
-                    </div>
+                    <?php if (function_exists('canAdminAccess') && canAdminAccess('todo_insert')): ?>
+                        <div class="add-task-trigger" onclick="showInlineAddTask(<?php echo $emp_id; ?>)">
+                            <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
+                            <span>Add a task</span>
+                        </div>
+                    <?php endif; ?>
 
                     <div class="add-task-form" id="inline-add-form-<?php echo $emp_id; ?>" style="display: none;">
                         <input type="text" class="task-input" id="inline-task-input-<?php echo $emp_id; ?>" placeholder="What needs to be done?">
@@ -591,6 +595,10 @@ if ($run_projs) {
 </style>
 
 <script>
+    const canTodoDelete = <?php echo (function_exists('canAdminAccess') && canAdminAccess('todo_delete')) ? 'true' : 'false'; ?>;
+    const canTodoUpdate = <?php echo (function_exists('canAdminAccess') && canAdminAccess('todo_update')) ? 'true' : 'false'; ?>;
+</script>
+<script>
     $(document).ready(function() {
         // Load tasks for all columns
         $('.todo-column').each(function() {
@@ -860,11 +868,27 @@ if ($run_projs) {
 
             const taskNameStyle = isCompleted ? 'text-decoration: line-through; color: #94a3b8;' : '';
 
+            const checkboxHtml = canTodoUpdate ?
+                `<div class="task-checkbox" onclick="toggleTask(${task.id}, ${empId}, ${isCompleted ? 0 : 1})"><i class="fa fa-check"></i></div>` :
+                `<div class="task-checkbox" style="cursor: default; opacity: 0.5;"><i class="fa fa-check"></i></div>`;
+
+            let dropdownHtml = '';
+            if (canTodoDelete) {
+                dropdownHtml = `
+                    <div class="dropdown">
+                        <div class="task-menu-btn" data-toggle="dropdown">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-right" style="border-radius: 8px; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); padding: 5px 0; min-width: 120px;">
+                            <li><a href="#" onclick="deleteTask(${task.id}, ${empId}); return false;" style="color: #ef4444; font-weight: 600; padding: 10px 20px;"><i class="fa fa-trash-o" style="margin-right: 8px;"></i> Delete</a></li>
+                        </ul>
+                    </div>
+                `;
+            }
+
             const html = `
                 <div class="${itemClass}" data-task-id="${task.id}" data-date="${safeDate}">
-                    <div class="task-checkbox" onclick="toggleTask(${task.id}, ${empId}, ${isCompleted ? 0 : 1})">
-                        <i class="fa fa-check"></i>
-                    </div>
+                    ${checkboxHtml}
                     <div style="flex: 1;">
                         <div class="task-proj-name"><i class="fa fa-building-o"></i> ${projName}</div>
                         <div class="task-name" style="${taskNameStyle}">${escapeHtml(task.task_name)}</div>
@@ -874,14 +898,7 @@ if ($run_projs) {
                             ${addedBadge}
                         </div>
                     </div>
-                    <div class="dropdown">
-                        <div class="task-menu-btn" data-toggle="dropdown">
-                            <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                        <ul class="dropdown-menu dropdown-menu-right" style="border-radius: 8px; border: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); padding: 5px 0; min-width: 120px;">
-                            <li><a href="#" onclick="deleteTask(${task.id}, ${empId}); return false;" style="color: #ef4444; font-weight: 600; padding: 10px 20px;"><i class="fa fa-trash-o" style="margin-right: 8px;"></i> Delete</a></li>
-                        </ul>
-                    </div>
+                    ${dropdownHtml}
                 </div>
             `;
 

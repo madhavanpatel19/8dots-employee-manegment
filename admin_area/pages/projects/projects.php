@@ -17,10 +17,12 @@ if (isset($_SESSION['admin_email'])) {
     }
 }
 
-// If NOT super admin, restrict to projects where this admin is assigned
+// If NOT super admin, restrict to projects where this admin is assigned ONLY IF they have the restriction permission
 $admin_project_filter = '';
 if (!$is_super_admin_proj && $current_admin_id_proj > 0) {
-    $admin_project_filter = " AND (FIND_IN_SET('$current_admin_id_proj', REPLACE(assigned_admins, ' ', '')) > 0) ";
+    if (canAdminAccess('project_assigned_only') || canAdminAccess('subadmin_assigned_project_only')) {
+        $admin_project_filter = " AND (FIND_IN_SET('$current_admin_id_proj', REPLACE(assigned_admins, ' ', '')) > 0) ";
+    }
 }
 
 // Fetch all active clients for the dropdown
@@ -75,9 +77,11 @@ $run_projects = mysqli_query($con, $get_projects);
             Global Project Portfolio -->
         </h1>
         <div class="header-actions-premium" style="display: flex; gap: 12px; align-items: center;">
-            <a href="index.php?add_project" class="btn-premium-add">
-                <i class="fa fa-plus"></i> Add New Project
-            </a>
+            <?php if (canAdminAccess('project_insert')): ?>
+                <a href="index.php?add_project" class="btn-premium-add">
+                    <i class="fa fa-plus"></i> Add New Project
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -148,6 +152,7 @@ $run_projects = mysqli_query($con, $get_projects);
                                 <th style="width: 80px; text-align: center;">#ID</th>
                                 <th>Project & Client</th>
                                 <th>Assign Employees</th>
+                                <?php if (canAdminAccess('project_source_view')): ?>
                                 <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($_GET['source']) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
                                         <?php echo !empty($_GET['source']) ? htmlspecialchars($_GET['source']) : 'Source'; ?>
@@ -168,6 +173,7 @@ $run_projects = mysqli_query($con, $get_projects);
                                         ?>
                                     </select>
                                 </th>
+                                <?php endif; ?>
                                 <th style="text-align: center;">Date</th>
                                 <th style="text-align: center;">Budget</th>
                                 <th style="text-align: center;">Documents</th>
@@ -461,9 +467,11 @@ $run_projects = mysqli_query($con, $get_projects);
                             <button type="button" onclick="downloadStatement()" class="btn-premium-add">
                                 <i class="fa fa-download" style="font-size: 16px;"></i>Statement
                             </button>
-                            <button type="button" onclick="openAddPhaseModal()" class="btn-premium-add">
-                                <i class="fa fa-plus" style="font-size: 16px;"></i> Add payment
-                            </button>
+                            <?php if (canAdminAccess('budget_insert')): ?>
+                                <button type="button" onclick="openAddPhaseModal()" class="btn-premium-add">
+                                    <i class="fa fa-plus" style="font-size: 16px;"></i> Add payment
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -495,9 +503,11 @@ $run_projects = mysqli_query($con, $get_projects);
 
             <div class="modal-footer" style="background: #fff; padding: 25px 35px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 15px;">
                 <button type="button" class="btn btn-default" data-dismiss="modal" style="padding: 12px 30px; border-radius: 12px; font-weight: 700; color: #64748b; border: 1.5px solid #e2e8f0;">Discard Changes</button>
-                <button type="button" onclick="saveBudget()" class="btn-premium-add" id="btn_save_budget">
-                    <i class="fa fa-save"></i> Execute Synchronization
-                </button>
+                <?php if (canAdminAccess('budget_insert') || canAdminAccess('budget_update') || canAdminAccess('budget_delete')): ?>
+                    <button type="button" onclick="saveBudget()" class="btn-premium-add" id="btn_save_budget">
+                        <i class="fa fa-save"></i> Execute Synchronization
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -1876,12 +1886,16 @@ $run_projects = mysqli_query($con, $get_projects);
             </td>
             <td style="padding: 15px 20px; border-bottom: 1px solid #f8fafc; text-align: center; vertical-align: middle; white-space: nowrap;"> 
                 <div style="display: flex; gap: 8px; justify-content: center;">
+                    <?php if (canAdminAccess('budget_update')): ?>
                     <button type="button" onclick="editPhase(this)" style="background: #eff6ff; border: 1px solid #bfdbfe; width: 32px; height: 32px; border-radius: 8px; color: #3b82f6; transition: 0.2s;">
                         <i class="fa fa-pencil" style="font-size: 12px;"></i>
                     </button>
+                    <?php endif; ?>
+                    <?php if (canAdminAccess('budget_delete')): ?>
                     <button type="button" class="delete-phase-btn" style="background: #fee2e2; border: 1px solid #fecaca; width: 32px; height: 32px; border-radius: 8px; color: #ef4444; transition: 0.2s;">
                         <i class="fa fa-trash" style="font-size: 12px;"></i>
                     </button>
+                    <?php endif; ?>
                 </div>
             </td>
         </tr>

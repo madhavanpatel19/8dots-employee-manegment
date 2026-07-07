@@ -37,9 +37,11 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
         <h1></h1>
+        <?php if (canAdminAccess('nda_insert')): ?>
         <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newNDAModal">
             <i class="fa fa-plus"></i> New NDA Form
         </button>
+        <?php endif; ?>
     </div>
 
     <style>
@@ -271,12 +273,14 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                                         <a href="pages/documents/generate_nda.php?id=<?php echo $id; ?>&action=download" class="btn-icon-premium btn-icon-download" title="Download PDF">
                                             <i class="fa fa-download"></i>
                                         </a>
+                                        <?php if (canAdminAccess('nda_insert')): ?>
                                         <a href="index.php?edit_nda=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

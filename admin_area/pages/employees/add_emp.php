@@ -80,11 +80,19 @@ if (isset($_POST['submit'])) {
     $gender = mysqli_real_escape_string($con, $_POST['gender']);
     $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
 
-    $basic = $_POST['basic_salary'] ?? 0;
-    $hra = $_POST['hra'] ?? 0;
-    $allowance = $_POST['allowance'] ?? 0;
-    $deductions = $_POST['deductions'] ?? 0;
-    $salary = $_POST['salary'] ?? 0;
+    if (canAdminAccess('salary_insert')) {
+        $basic = $_POST['basic_salary'] ?? 0;
+        $hra = $_POST['hra'] ?? 0;
+        $allowance = $_POST['allowance'] ?? 0;
+        $deductions = $_POST['deductions'] ?? 0;
+        $salary = $_POST['salary'] ?? 0;
+    } else {
+        $basic = 0;
+        $hra = 0;
+        $allowance = 0;
+        $deductions = 0;
+        $salary = 0;
+    }
 
     $age = mysqli_real_escape_string($con, $_POST['age'] ?? '');
     $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
@@ -634,18 +642,19 @@ if (isset($_POST['submit'])) {
                             <input type="date" name="joinDate" class="p-input-premium" max="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Basic Pay *</label>
-                            <input type="number" id="add_basic_salary" name="basic_salary" class="p-input-premium" placeholder="Monthly Basic" required>
+                    <?php if (canAdminAccess('salary_insert')): ?>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Basic Pay *</label>
+                                <input type="number" id="add_basic_salary" name="basic_salary" class="p-input-premium" placeholder="Monthly Basic" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">HRA</label>
-                            <input type="number" id="add_hra" name="hra" class="p-input-premium" placeholder="Allowance">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">HRA</label>
+                                <input type="number" id="add_hra" name="hra" class="p-input-premium" placeholder="Allowance">
+                            </div>
                         </div>
-                    </div>
                 </div>
 
                 <div class="row" style="margin-top: 15px;">
@@ -658,18 +667,17 @@ if (isset($_POST['submit'])) {
                     <div class="col-md-4">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Monthly Deductions</label>
-                            <input type="number" id="add_deductions" name="deductions" class="p-input-premium" placeholder="Tax, PF, etc.">
+                            <input type="number" id="add_deductions" name="deductions" class="p-input-premium" placeholder="Deductions">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Net Monthly Salary</label>
-                            <input type="text" id="add_salary" name="salary" class="p-input-premium" readonly style="background: #f0fdf4; font-weight: 800; color: #059669; font-size: 18px; border-color: #bbf7d0;">
+                            <input type="text" id="add_salary" name="salary" class="p-input-premium" placeholder="0.00" readonly style="background: #f0fdf4; font-weight: 800; color: #059669; font-size: 18px; border-color: #bbf7d0;">
                         </div>
                     </div>
+                <?php endif; ?>
                 </div>
-
-
             </div>
         </div>
 

@@ -76,9 +76,11 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                 <i class="fa fa-search" style="position: absolute; left: 15px; top: 13px; color: #94a3b8;"></i>
                 <input type="text" id="header_search" class="p-input-premium" placeholder="Search client name, email or company..." value="<?php echo htmlspecialchars($search); ?>" style="padding-left: 40px; height: 42px; width: 300px; font-size: 14px;" onchange="applyColumnFilter('search', this.value)">
             </div>
-            <a href="index.php?add_client" class="btn-premium-add">
-                <i class="fa fa-plus"></i> Add Client
-            </a>
+            <?php if (canAdminAccess('client_insert')): ?>
+                <a href="index.php?add_client" class="btn-premium-add">
+                    <i class="fa fa-plus"></i> Add Client
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -241,12 +243,16 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                         <a href="index.php?view_projects&id=<?php echo $row['id']; ?>" class="btn-icon-premium" title="View Projects" style="background: #f0f9ff; border-color: #e0f2fe;">
                                             <i class="fa fa-briefcase" style="color: #0ea5e9;"></i>
                                         </a>
-                                        <a href="index.php?edit_client=<?php echo $row['id']; ?>" class="btn-icon-premium" title="Edit Client" style="background: #fdfaf1; border-color: #fef3c7;">
-                                            <i class="fa fa-pencil" style="color: #d97706;"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" class="btn-icon-premium" title="Delete Client" style="background: #fef2f2; border-color: #fee2e2; color: #ef4444;" onclick="confirmDeleteClient(<?php echo $row['id']; ?>, '<?php echo addslashes($row['name']); ?>')">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
+                                        <?php if (canAdminAccess('client_update')): ?>
+                                            <a href="index.php?edit_client=<?php echo $row['id']; ?>" class="btn-icon-premium" title="Edit Client" style="background: #fdfaf1; border-color: #fef3c7;">
+                                                <i class="fa fa-pencil" style="color: #d97706;"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if (canAdminAccess('client_delete')): ?>
+                                            <a href="javascript:void(0)" class="btn-icon-premium" title="Delete Client" style="background: #fef2f2; border-color: #fee2e2; color: #ef4444;" onclick="confirmDeleteClient(<?php echo $row['id']; ?>, '<?php echo addslashes($row['name']); ?>')">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

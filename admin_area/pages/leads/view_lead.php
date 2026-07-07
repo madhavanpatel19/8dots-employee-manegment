@@ -66,9 +66,11 @@ include("leads_logic.php");
             <a href="index.php?leads" class="btn-premium-add">
                 <i class="fa fa-arrow-left"></i> Back
             </a>
-            <a href="index.php?edit_lead=<?php echo $view_id; ?>" class="btn-premium-add">
-                <i class="fa fa-pencil"></i> Edit
-            </a>
+            <?php if (canAdminAccess('lead_update')): ?>
+                <a href="index.php?edit_lead=<?php echo $view_id; ?>" class="btn-premium-add">
+                    <i class="fa fa-pencil"></i> Edit
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -110,10 +112,12 @@ include("leads_logic.php");
                             <th style="border:none; color: #64748b; font-size: 12px; text-transform: uppercase;">Budget</th>
                             <td style="border:none; font-weight: 700; color: #1e293b;"><?php echo !empty($row_lead['budget']) ? (isset($row_lead['currency']) && isset($currency_symbols[$row_lead['currency']]) ? $currency_symbols[$row_lead['currency']] : (isset($row_lead['currency']) ? $row_lead['currency'] : 'INR')) . ' ' . $row_lead['budget'] : 'N/A'; ?></td>
                         </tr>
-                        <tr>
-                            <th style="border:none; color: #64748b; font-size: 12px; text-transform: uppercase;">Lead Source</th>
-                            <td style="border:none; font-weight: 600;"><?php echo $row_lead['lead_source']; ?></td>
-                        </tr>
+                        <?php if (canAdminAccess('project_source_view')): ?>
+                            <tr>
+                                <th style="border:none; color: #64748b; font-size: 12px; text-transform: uppercase;">Lead Source</th>
+                                <td style="border:none; font-weight: 600;"><?php echo $row_lead['lead_source']; ?></td>
+                            </tr>
+                        <?php endif; ?>
                         <tr>
                             <th style="border:none; color: #64748b; font-size: 12px; text-transform: uppercase;">Current Status</th>
                             <td style="border:none;">
@@ -148,9 +152,11 @@ include("leads_logic.php");
                         <i class="fa fa-history"></i>
                         <h3>Follow-up Timeline</h3>
                     </div>
-                    <button onclick="openFollowupModal(<?php echo $view_id; ?>, '<?php echo htmlspecialchars($client_name); ?>')" class="btn-premium-add">
-                        <i class="fa fa-plus"></i> Add Follow-up
-                    </button>
+                    <?php if (canAdminAccess('lead_update')): ?>
+                        <button onclick="openFollowupModal(<?php echo $view_id; ?>, '<?php echo htmlspecialchars($client_name); ?>')" class="btn-premium-add">
+                            <i class="fa fa-plus"></i> Add Follow-up
+                        </button>
+                    <?php endif; ?>
                 </div>
                 <div style="padding: 25px; max-height: 500px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
                     <?php if (mysqli_num_rows($run_followups) > 0): ?>

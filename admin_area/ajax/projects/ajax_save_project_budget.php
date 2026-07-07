@@ -1,6 +1,17 @@
-﻿<?php
+<?php
 header('Content-Type: application/json');
 if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (!isset($_SESSION['admin_email'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit();
+}
+if (!function_exists('canAdminAccess')) {
+    require_once __DIR__ . '/../../includes/admin_permissions.php';
+}
+if (!canAdminAccess('budget_insert') && !canAdminAccess('budget_update') && !canAdminAccess('budget_delete')) {
+    echo json_encode(['success' => false, 'message' => 'Permission denied: budget access required']);
+    exit();
+}
 
 if (!isset($_POST['project_id']) || !isset($_POST['phases'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid parameters']);

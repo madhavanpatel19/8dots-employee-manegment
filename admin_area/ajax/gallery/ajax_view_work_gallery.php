@@ -179,7 +179,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         transform: translate(-50%, -50%) scale(0.5);
         color: #fff;
         font-size: 24px;
-        background: rgba(99, 102, 241, 0.9);
+        background: #dd2127;
         width: 48px;
         height: 48px;
         display: flex;

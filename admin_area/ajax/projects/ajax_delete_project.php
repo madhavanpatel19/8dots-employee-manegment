@@ -1,6 +1,17 @@
-﻿<?php
+<?php
 header('Content-Type: application/json');
 if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (!isset($_SESSION['admin_email'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit();
+}
+if (!function_exists('canAdminAccess')) {
+    require_once __DIR__ . '/../../includes/admin_permissions.php';
+}
+if (!canAdminAccess('project_delete')) {
+    echo json_encode(['success' => false, 'message' => 'Permission denied']);
+    exit();
+}
 
 $response = ['success' => false, 'message' => 'Invalid request'];
 

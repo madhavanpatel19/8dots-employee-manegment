@@ -1141,30 +1141,36 @@ $run_admins = mysqli_query($con, $get_admins);
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                <label class="premium-label" style="font-size:14px; color:#334155; margin: 0;">Source</label>
-                                <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#addSourceModal" style="border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 700; background: #10b981; border: none; box-shadow: 0 2px 4px rgba(16,185,129,0.2);">
-                                    <i class="fa fa-plus"></i> New
-                                </button>
-                            </div>
-                            <div style="background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 48px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
-                                <?php
-                                $get_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
-                                $run_sources = mysqli_query($con, $get_sources);
-                                while ($row_s = mysqli_fetch_array($run_sources)):
-                                    $s_name = $row_s['source_name'];
-                                    $s_id = $row_s['id'];
-                                    $s_checked = in_array($s_name, $existing_sources) ? 'checked' : '';
-                                ?>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                                        <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
-                                            <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $s_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #DF2127;"> <?php echo htmlspecialchars($s_name); ?>
-                                        </label>
-                                        <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
-                                    </div>
-                                <?php endwhile; ?>
-                            </div>
-                            <small style="color:#64748b; font-size:12px; margin-top:4px; display:block;">Select all that apply</small>
+                            <?php if (canAdminAccess('project_source_view')): ?>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                    <label class="premium-label" style="font-size:14px; color:#334155; margin: 0;">Source</label>
+                                    <?php if (canAdminAccess('project_source_insert')): ?>
+                                        <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#addSourceModal" style="border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 700; background: #10b981; border: none; box-shadow: 0 2px 4px rgba(16,185,129,0.2);">
+                                            <i class="fa fa-plus"></i> New
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 48px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
+                                    <?php
+                                    $get_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                    $run_sources = mysqli_query($con, $get_sources);
+                                    while ($row_s = mysqli_fetch_array($run_sources)):
+                                        $s_name = $row_s['source_name'];
+                                        $s_id = $row_s['id'];
+                                        $s_checked = in_array($s_name, $existing_sources) ? 'checked' : '';
+                                    ?>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                            <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
+                                                <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $s_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #DF2127;"> <?php echo htmlspecialchars($s_name); ?>
+                                            </label>
+                                            <?php if (canAdminAccess('project_source_delete')): ?>
+                                                <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endwhile; ?>
+                                </div>
+                                <small style="color:#64748b; font-size:12px; margin-top:4px; display:block;">Select all that apply</small>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -1173,77 +1179,101 @@ $run_admins = mysqli_query($con, $get_admins);
         </div> <!-- End First Card -->
 
         <!-- Second Card: Project Budget -->
-        <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
-            <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #DF2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
-                    2
-                </div>
-                <div>
-                    <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Project Budget</h3>
-                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Define total budget and phase-wise deliverables</p>
-                </div>
-            </div>
-
-            <div style="padding: 30px;">
-                <div class="row" style="margin-bottom: 25px;">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="premium-label">Currency <span style="color:#ef4444">*</span></label>
-                            <select name="currency" class="p-input-premium" style="height:48px; border-radius:8px; border:1px solid #e2e8f0; width:100%;" required>
-                                <option value="INR" <?php echo ($project_data['currency'] == 'INR') ? 'selected' : ''; ?>>INR - Indian Rupee (₹)</option>
-                                <option value="USD" <?php echo ($project_data['currency'] == 'USD') ? 'selected' : ''; ?>>USD - US Dollar ($)</option>
-                                <option value="EUR" <?php echo ($project_data['currency'] == 'EUR') ? 'selected' : ''; ?>>EUR - Euro (€)</option>
-                                <option value="GBP" <?php echo ($project_data['currency'] == 'GBP') ? 'selected' : ''; ?>>GBP - British Pound (£)</option>
-                            </select>
-                        </div>
+        <?php if (canAdminAccess('budget_view')): ?>
+            <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
+                <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 32px; height: 32px; background: #DF2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                        2
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="premium-label">Total Project Budget <span style="color:#ef4444">*</span></label>
-                            <div style="display:flex; align-items:center; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
-                                <div style="background:#f8fafc; padding:0 15px; height:48px; display:flex; align-items:center; border-right:1px solid #e2e8f0; color:#64748b; font-weight:600;" id="currency_symbol">₹</div>
-                                <input type="number" name="budget" id="total_budget" class="p-input-premium" style="height:48px; border:none; width:100%; outline:none; padding:0 15px;" placeholder="Enter total budget" value="<?php echo $project_data['budget']; ?>" required min="0" step="0.01">
+                    <div>
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Project Budget</h3>
+                        <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Define total budget and phase-wise deliverables</p>
+                    </div>
+                </div>
+
+                <div style="padding: 30px;">
+                    <div class="row" style="margin-bottom: 25px;">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="premium-label">Currency <span style="color:#ef4444">*</span></label>
+                                <select name="currency" class="p-input-premium" style="height:48px; border-radius:8px; border:1px solid #e2e8f0; width:100%;" required>
+                                    <option value="INR" <?php echo ($project_data['currency'] == 'INR') ? 'selected' : ''; ?>>INR - Indian Rupee (₹)</option>
+                                    <option value="USD" <?php echo ($project_data['currency'] == 'USD') ? 'selected' : ''; ?>>USD - US Dollar ($)</option>
+                                    <option value="EUR" <?php echo ($project_data['currency'] == 'EUR') ? 'selected' : ''; ?>>EUR - Euro (€)</option>
+                                    <option value="GBP" <?php echo ($project_data['currency'] == 'GBP') ? 'selected' : ''; ?>>GBP - British Pound (£)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="premium-label">Total Project Budget <span style="color:#ef4444">*</span></label>
+                                <div style="display:flex; align-items:center; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+                                    <div style="background:#f8fafc; padding:0 15px; height:48px; display:flex; align-items:center; border-right:1px solid #e2e8f0; color:#64748b; font-weight:600;" id="currency_symbol">₹</div>
+                                    <input type="number" name="budget" id="total_budget" class="p-input-premium" style="height:48px; border:none; width:100%; outline:none; padding:0 15px;" placeholder="Enter total budget" value="<?php echo $project_data['budget']; ?>" required min="0" step="0.01">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Phase Wise Breakdown -->
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-                    <div style="padding: 15px 20px; border-bottom: 1px solid #e2e8f0; background: #f1f5f9;">
-                        <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #334155;">Phase Wise Breakdown</h4>
-                    </div>
+                    <!-- Phase Wise Breakdown -->
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                        <div style="padding: 15px 20px; border-bottom: 1px solid #e2e8f0; background: #f1f5f9;">
+                            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #334155;">Phase Wise Breakdown</h4>
+                        </div>
 
-                    <div style="padding: 0;">
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr>
-                                    <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Phase / Deliverable</th>
-                                    <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Description</th>
-                                    <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Expected Date</th>
-                                    <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Cost</th>
-                                    <th style="padding: 12px 20px; text-align: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="phase_container">
-                                <?php
-                                $get_phases = "SELECT * FROM project_budget_phases WHERE project_id = $project_id ORDER BY id ASC";
-                                $run_phases = mysqli_query($con, $get_phases);
-                                if (mysqli_num_rows($run_phases) > 0) {
-                                    while ($p = mysqli_fetch_assoc($run_phases)) {
-                                ?>
+                        <div style="padding: 0;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Phase / Deliverable</th>
+                                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Description</th>
+                                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Expected Date</th>
+                                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Cost</th>
+                                        <th style="padding: 12px 20px; text-align: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="phase_container">
+                                    <?php
+                                    $get_phases = "SELECT * FROM project_budget_phases WHERE project_id = $project_id ORDER BY id ASC";
+                                    $run_phases = mysqli_query($con, $get_phases);
+                                    if (mysqli_num_rows($run_phases) > 0) {
+                                        while ($p = mysqli_fetch_assoc($run_phases)) {
+                                    ?>
+                                            <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
+                                                <td style="padding: 15px 20px;">
+                                                    <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="<?php echo htmlspecialchars($p['phase_name']); ?>" required>
+                                                </td>
+                                                <td style="padding: 15px 20px;">
+                                                    <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" value="<?php echo htmlspecialchars($p['description']); ?>" placeholder="Enter description">
+                                                </td>
+                                                <td style="padding: 15px 20px;">
+                                                    <input type="date" name="phase_date[]" class="p-input-premium" value="<?php echo $p['expected_date']; ?>" style="height: 42px; border-radius: 6px; width: 100%;">
+                                                </td>
+                                                <td style="padding: 15px 20px;">
+                                                    <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" value="<?php echo $p['cost']; ?>" placeholder="0.00" min="0" step="0.01">
+                                                </td>
+                                                <td style="padding: 15px 20px; text-align: center;">
+                                                    <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    } else {
+                                        ?>
                                         <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
                                             <td style="padding: 15px 20px;">
-                                                <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="<?php echo htmlspecialchars($p['phase_name']); ?>" required>
+                                                <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="Phase 1" required>
                                             </td>
                                             <td style="padding: 15px 20px;">
-                                                <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" value="<?php echo htmlspecialchars($p['description']); ?>" placeholder="Enter description">
+                                                <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter description">
                                             </td>
                                             <td style="padding: 15px 20px;">
-                                                <input type="date" name="phase_date[]" class="p-input-premium" value="<?php echo $p['expected_date']; ?>" style="height: 42px; border-radius: 6px; width: 100%;">
+                                                <input type="date" name="phase_date[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;">
                                             </td>
                                             <td style="padding: 15px 20px;">
-                                                <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" value="<?php echo $p['cost']; ?>" placeholder="0.00" min="0" step="0.01">
+                                                <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" placeholder="0.00" min="0" step="0.01">
                                             </td>
                                             <td style="padding: 15px 20px; text-align: center;">
                                                 <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
@@ -1251,47 +1281,25 @@ $run_admins = mysqli_query($con, $get_admins);
                                                 </button>
                                             </td>
                                         </tr>
-                                    <?php
-                                    }
-                                } else {
-                                    ?>
-                                    <tr class="phase-row" style="border-top: 1px solid #e2e8f0;">
-                                        <td style="padding: 15px 20px;">
-                                            <input type="text" name="phase_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter phase name" value="Phase 1" required>
-                                        </td>
-                                        <td style="padding: 15px 20px;">
-                                            <input type="text" name="phase_desc[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="Enter description">
-                                        </td>
-                                        <td style="padding: 15px 20px;">
-                                            <input type="date" name="phase_date[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;">
-                                        </td>
-                                        <td style="padding: 15px 20px;">
-                                            <input type="number" name="phase_cost[]" class="p-input-premium phase-cost" style="height: 42px; border-radius: 6px; width: 100%; text-align:right;" placeholder="0.00" min="0" step="0.01">
-                                        </td>
-                                        <td style="padding: 15px 20px; text-align: center;">
-                                            <button type="button" class="btn btn-light text-danger delete-phase-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <div style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: #fff; display: flex; justify-content: space-between; align-items: center;">
-                        <button type="button" id="add_phase_btn" style="background: #FFEAEB; color: #DF2127; border: 1px solid #FFEAEB; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <i class="fa fa-plus"></i> Add New Phase
-                        </button>
+                        <div style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: #fff; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" id="add_phase_btn" style="background: #FFEAEB; color: #DF2127; border: 1px solid #FFEAEB; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <i class="fa fa-plus"></i> Add New Phase
+                            </button>
 
-                        <div style="display:flex; align-items:center; gap:15px;">
-                            <span style="color:#64748b; font-size:14px; font-weight:600;">Total Cost</span>
-                            <span id="calculated_total_cost" style="color:#10b981; font-size:20px; font-weight:800;">₹ 0.00</span>
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <span style="color:#64748b; font-size:14px; font-weight:600;">Total Cost</span>
+                                <span id="calculated_total_cost" style="color:#10b981; font-size:20px; font-weight:800;">₹ 0.00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div> <!-- End Second Card -->
+            </div> <!-- End Second Card -->
+        <?php endif; ?>
 
         <!-- Third Card: Project Documents & Links -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">

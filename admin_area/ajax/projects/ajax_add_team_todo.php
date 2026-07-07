@@ -3,11 +3,18 @@ session_start();
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
+if (!function_exists('canAdminAccess')) {
+    require_once __DIR__ . '/../../includes/admin_permissions.php';
+}
 
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['admin_email'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit();
+}
+if (!canAdminAccess('project_assign_task')) {
+    echo json_encode(['success' => false, 'message' => 'Permission denied']);
     exit();
 }
 

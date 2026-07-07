@@ -77,10 +77,12 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                         <button class="icon-btn"><i class="fa fa-ellipsis-v"></i></button>
                     </div>
 
+                    <?php if (function_exists('canAdminAccess') && canAdminAccess('todo_insert')): ?>
                     <div class="add-task-trigger" onclick="showAddTask(<?php echo $emp_id; ?>)">
                         <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
                         <span>Add a task</span>
                     </div>
+                    <?php endif; ?>
 
                     <div class="add-task-form" id="add-form-<?php echo $emp_id; ?>" style="display: none;">
                         <input type="text" class="task-input" id="task-input-<?php echo $emp_id; ?>" placeholder="What needs to be done?">
@@ -328,6 +330,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 </style>
 
 <script>
+    const canTodoDelete = <?php echo (function_exists('canAdminAccess') && canAdminAccess('todo_delete')) ? 'true' : 'false'; ?>;
+    const canTodoUpdate = <?php echo (function_exists('canAdminAccess') && canAdminAccess('todo_update')) ? 'true' : 'false'; ?>;
+</script>
+<script>
     const projectId = <?php echo $project_id; ?>;
 
     $(document).ready(function() {
@@ -415,21 +421,30 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                 priorityHtml = `<div class="priority-flag priority-${task.priority}"><i class="fa fa-flag"></i> ${task.priority}</div>`;
             }
 
-            const html = `
-                <div class="${itemClass}" data-task-id="${task.id}">
-                    <div class="task-checkbox" onclick="toggleTask(${task.id}, ${empId}, ${isCompleted ? 0 : 1})">
-                        <i class="fa fa-check"></i>
-                    </div>
-                    <div class="task-name">${escapeHtml(task.task_name)}</div>
-                    <div class="task-meta">
-                        ${priorityHtml}
-                        ${dateBadge}
+            const checkboxHtml = canTodoUpdate 
+                ? `<div class="task-checkbox" onclick="toggleTask(${task.id}, ${empId}, ${isCompleted ? 0 : 1})"><i class="fa fa-check"></i></div>` 
+                : `<div class="task-checkbox" style="cursor: default; opacity: 0.5;"><i class="fa fa-check"></i></div>`;
+
+            let dropdownHtml = '';
+            if (canTodoDelete) {
+                dropdownHtml = `
                         <div class="dropdown">
                             <button class="icon-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>
                             <ul class="dropdown-menu dropdown-menu-right" style="border-radius: 12px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
                                 <li><a href="#" onclick="deleteTask(${task.id}, ${empId}); return false;" style="color: #ef4444; font-weight: 600; padding: 10px 20px;"><i class="fa fa-trash-o" style="margin-right: 8px;"></i> Delete</a></li>
                             </ul>
                         </div>
+                `;
+            }
+
+            const html = `
+                <div class="${itemClass}" data-task-id="${task.id}">
+                    ${checkboxHtml}
+                    <div class="task-name">${escapeHtml(task.task_name)}</div>
+                    <div class="task-meta">
+                        ${priorityHtml}
+                        ${dateBadge}
+                        ${dropdownHtml}
                     </div>
                 </div>
             `;

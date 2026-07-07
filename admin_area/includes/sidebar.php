@@ -141,17 +141,21 @@ if (!isset($_SESSION['admin_email'])) {
                                 } ?>">
                         <a href="index.php?projects"><i class="fa fa-briefcase"></i> Projects</a>
                     </li>
-                    <li class="<?php if (isset($_GET['global_team_todos'])) {
+                <?php endif; ?>
+                <?php if (canAdminAccess('todo_view')): ?>
+                    <li class="<?php if (isset($_GET['global_team_todos']) || isset($_GET['team_todo'])) {
                                     echo "active";
                                 } ?>">
                         <a href="index.php?global_team_todos"><i class="fa fa-list-alt"></i> Team To-Do</a>
                     </li>
                 <?php endif; ?>
-                <li class="<?php if (isset($_GET['leads'])) {
-                                echo "active";
-                            } ?>">
-                    <a href="index.php?leads"><i class="fa fa-bullseye"></i> Leads</a>
-                </li>
+                <?php if (canAdminAccess('lead_view')): ?>
+                    <li class="<?php if (isset($_GET['leads'])) {
+                                    echo "active";
+                                } ?>">
+                        <a href="index.php?leads"><i class="fa fa-bullseye"></i> Leads</a>
+                    </li>
+                <?php endif; ?>
                 <?php if (canAdminAccess('worksheet_view')): ?>
                     <li class="<?php if (isset($_GET['worksheettable'])) {
                                     echo "active";
@@ -159,11 +163,13 @@ if (!isset($_SESSION['admin_email'])) {
                         <a href="index.php?worksheettable"><i class="fa fa-table"></i> Worksheet</a>
                     </li>
                 <?php endif; ?>
-                <li class="<?php if (isset($_GET['company_links'])) {
-                                echo "active";
-                            } ?>">
-                    <a href="index.php?company_links"><i class="fa fa-link"></i> Company Links</a>
-                </li>
+                <?php if (canAdminAccess('company_link_view')): ?>
+                    <li class="<?php if (isset($_GET['company_links'])) {
+                                    echo "active";
+                                } ?>">
+                        <a href="index.php?company_links"><i class="fa fa-link"></i> Company Links</a>
+                    </li>
+                <?php endif; ?>
             </ul>
 
             <h3 class="menu-heading">HR MANAGEMENT</h3>
@@ -196,21 +202,27 @@ if (!isset($_SESSION['admin_email'])) {
                         <a href="index.php?salary_slip"><i class="fa fa-money"></i> Salary Slips</a>
                     </li>
                 <?php endif; ?>
-                <li class="<?php if (isset($_GET['view_offer_letters'])) {
-                                echo "active";
-                            } ?>">
-                    <a href="index.php?view_offer_letters"><i class="fa fa-file-text-o"></i> Offer Letters</a>
-                </li>
-                <li class="<?php if (isset($_GET['view_nda'])) {
-                                echo "active";
-                            } ?>">
-                    <a href="index.php?view_nda"><i class="fa fa-shield"></i> NDA Forms</a>
-                </li>
-                <li class="<?php if (isset($_GET['view_experience_letters'])) {
-                                echo "active";
-                            } ?>">
-                    <a href="index.php?view_experience_letters"><i class="fa fa-certificate"></i> Experience Letters</a>
-                </li>
+                <?php if (canAdminAccess('offer_letter_view')): ?>
+                    <li class="<?php if (isset($_GET['view_offer_letters'])) {
+                                    echo "active";
+                                } ?>">
+                        <a href="index.php?view_offer_letters"><i class="fa fa-file-text-o"></i> Offer Letters</a>
+                    </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('nda_view')): ?>
+                    <li class="<?php if (isset($_GET['view_nda'])) {
+                                    echo "active";
+                                } ?>">
+                        <a href="index.php?view_nda"><i class="fa fa-shield"></i> NDA Forms</a>
+                    </li>
+                <?php endif; ?>
+                <?php if (canAdminAccess('experience_letter_view')): ?>
+                    <li class="<?php if (isset($_GET['view_experience_letters'])) {
+                                    echo "active";
+                                } ?>">
+                        <a href="index.php?view_experience_letters"><i class="fa fa-certificate"></i> Experience Letters</a>
+                    </li>
+                <?php endif; ?>
             </ul>
 
             <h3 class="menu-heading">ADMIN</h3>

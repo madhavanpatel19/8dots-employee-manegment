@@ -106,9 +106,11 @@ $run_leads = mysqli_query($con, $get_leads);
             <a href="pages/leads/export_leads.php" class="btn-premium-add" style="background: #10b981 !important;">
                 <i class="fa fa-file-excel-o"></i> Export to CSV
             </a>
-            <a href="index.php?add_lead" class="btn-premium-add" style="margin-left: 10px;">
-                <i class="fa fa-plus"></i> Add New Lead
-            </a>
+            <?php if (canAdminAccess('lead_insert')): ?>
+                <a href="index.php?add_lead" class="btn-premium-add" style="margin-left: 10px;">
+                    <i class="fa fa-plus"></i> Add New Lead
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -258,6 +260,7 @@ $run_leads = mysqli_query($con, $get_leads);
                         <th style="width: 80px; text-align: center;">#ID</th>
                         <th>Client Detail</th>
                         <th>Project</th>
+                        <?php if (canAdminAccess('project_source_view')): ?>
                         <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
                             <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($source_filter) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
                                 <?php echo !empty($source_filter) ? $source_filter : 'Source'; ?>
@@ -277,6 +280,7 @@ $run_leads = mysqli_query($con, $get_leads);
                                 ?>
                             </select>
                         </th>
+                        <?php endif; ?>
                         <th style="text-align: center;">Budget</th>
                         <th style="text-align: center;">Status</th>
                         <th style="text-align: center;">Follow-up</th>
@@ -311,9 +315,11 @@ $run_leads = mysqli_query($con, $get_leads);
                                     </div>
                                 </td>
                                 <td style="font-weight: 500; color: #475569;"><?php echo !empty($project_name) ? $project_name : '-'; ?></td>
+                                <?php if (canAdminAccess('project_source_view')): ?>
                                 <td style="text-align: center;">
                                     <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px;width: 90px;display: inline-block;white-space: normal;word-wrap: break-word;"><?php echo $source; ?></span>
                                 </td>
+                                <?php endif; ?>
                                 <td style="text-align: center; font-weight: 700; color: #1e293b;"><?php echo !empty($budget) ? (isset($currency_symbols[$currency]) ? $currency_symbols[$currency] : $currency) . ' ' . $budget : '-'; ?></td>
                                 <td style="text-align: center;">
                                     <?php
@@ -341,8 +347,8 @@ $run_leads = mysqli_query($con, $get_leads);
                                     $current_bg = isset($bg_map[$status]) ? $bg_map[$status] : '#f8fafc';
                                     $current_border = isset($border_map[$status]) ? $border_map[$status] : '#e2e8f0';
                                     ?>
-                                    <select class="lead-status-select" data-lead-id="<?php echo $id; ?>"
-                                        style="appearance: none; -webkit-appearance: none; background: <?php echo $current_bg; ?> url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22<?php echo urlencode($current_color); ?>%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%226 9 12 15 18 9%22%3E%3C/polyline%3E%3C/svg%3E') no-repeat right 12px center; color: <?php echo $current_color; ?>; border: 1px solid <?php echo $current_border; ?>; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 7px 32px 7px 15px; border-radius: 20px; letter-spacing: 0.8px; cursor: pointer; outline: none; transition: all 0.3s ease; width: auto; min-width: 120px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                    <select class="lead-status-select" data-lead-id="<?php echo $id; ?>" <?php echo !canAdminAccess('lead_update') ? 'disabled' : ''; ?>
+                                        style="appearance: none; -webkit-appearance: none; background: <?php echo $current_bg; ?> url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22<?php echo urlencode($current_color); ?>%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%226 9 12 15 18 9%22%3E%3C/polyline%3E%3C/svg%3E') no-repeat right 12px center; color: <?php echo $current_color; ?>; border: 1px solid <?php echo $current_border; ?>; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 7px 32px 7px 15px; border-radius: 20px; letter-spacing: 0.8px; cursor: pointer; outline: none; transition: all 0.3s ease; width: auto; min-width: 120px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); <?php echo !canAdminAccess('lead_update') ? 'opacity: 0.7; cursor: not-allowed;' : ''; ?>">
                                         <option value="active" <?php if ($status == 'active') echo 'selected'; ?>>Active</option>
                                         <option value="future" <?php if ($status == 'future') echo 'selected'; ?>>Future</option>
                                         <option value="expired" <?php if ($status == 'expired') echo 'selected'; ?>>Expired</option>
@@ -380,15 +386,19 @@ $run_leads = mysqli_query($con, $get_leads);
                                         <a href="index.php?view_lead=<?php echo $id; ?>" class="btn-icon-premium btn-icon-view" title="View History">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a href="index.php?edit_lead=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit Lead">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
+                                        <?php if (canAdminAccess('lead_update')): ?>
+                                            <a href="index.php?edit_lead=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit Lead">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        <?php endif; ?>
                                         <!-- <button onclick="openFollowupModal(<?php echo $id; ?>, '<?php echo htmlspecialchars($name); ?>')" class="btn-icon-premium btn-icon-edit" style="background: rgba(16, 185, 129, 0.1); color: #10b981;" title="Add Follow-up">
-                                    <i class="fa fa-plus"></i>
-                                </button> -->
-                                        <a href="javascript:void(0)" onclick="confirmLeadDelete(<?php echo $id; ?>, '<?php echo addslashes($name); ?>')" class="btn-icon-premium btn-icon-delete" title="Delete Lead">
-                                            <i class="fa fa-trash-o"></i>
-                                        </a>
+                                            <i class="fa fa-plus"></i>
+                                        </button> -->
+                                        <?php if (canAdminAccess('lead_delete')): ?>
+                                            <a href="javascript:void(0)" onclick="confirmLeadDelete(<?php echo $id; ?>, '<?php echo addslashes($name); ?>')" class="btn-icon-premium btn-icon-delete" title="Delete Lead">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

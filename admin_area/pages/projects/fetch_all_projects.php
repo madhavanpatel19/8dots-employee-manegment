@@ -5,6 +5,9 @@ if (session_status() === PHP_SESSION_NONE) {
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
+if (!function_exists('canAdminAccess')) {
+    require_once(__DIR__ . '/../../includes/admin_permissions.php');
+}
 
 // Always read admin status fresh from DB (bypass session cache)
 $current_admin_id_proj = 0;
@@ -18,10 +21,12 @@ if (isset($_SESSION['admin_email'])) {
     }
 }
 
-// If NOT super admin, restrict to projects assigned to this admin
+// If NOT super admin, restrict to projects assigned to this admin ONLY IF they have the restriction permission
 $admin_project_filter = '';
 if (!$is_super_admin_proj && $current_admin_id_proj > 0) {
-    $admin_project_filter = " AND (FIND_IN_SET('$current_admin_id_proj', REPLACE(cp.assigned_admins, ' ', '')) > 0) ";
+    if (canAdminAccess('project_assigned_only') || canAdminAccess('subadmin_assigned_project_only')) {
+        $admin_project_filter = " AND (FIND_IN_SET('$current_admin_id_proj', REPLACE(cp.assigned_admins, ' ', '')) > 0) ";
+    }
 }
 
 $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, $_GET['status']) : '';
@@ -130,17 +135,23 @@ if (mysqli_num_rows($run_projects) > 0) {
                     ?>
                 </div>
             </td>
+            <?php if (canAdminAccess('project_source_view')): ?>
             <td>
                 <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; width: 90px; display: inline-block; white-space: normal; word-wrap: break-word;"><?php echo htmlspecialchars($source ?: '-'); ?></span>
             </td>
+            <?php endif; ?>
             <td style="color: #64748b; font-size: 13px; font-weight: 700;">
                 <i class="fa fa-calendar-o" style="margin-right: 5px;"></i> <?php echo $project_date; ?>
             </td>
             <td style="text-align: center;">
-                <span class="budget-badge-trigger" onclick="openBudgetModal(<?php echo $project_id; ?>, '<?php echo addslashes($p['project_name']); ?>', <?php echo $budget; ?>, '<?php echo $currency; ?>')"
-                    style="font-weight: 900; color: #16a34a; font-size: 13px; letter-spacing: -0.2px; cursor: pointer; background: #f0fdf4; padding: 7px 14px; border-radius: 12px; border: 1px solid #dcfce7; display: inline-flex; align-items: center; justify-content: center; min-width: 115px; transition: 0.2s; box-shadow: 0 2px 4px rgba(22, 163, 74, 0.05);">
-                    <span style="opacity: 0.6; margin-right: 4px;"><?php echo $sym; ?></span> <?php echo number_format($budget, 0); ?>
-                </span>
+                <?php if (canAdminAccess('budget_view')): ?>
+                    <span class="budget-badge-trigger" onclick="openBudgetModal(<?php echo $project_id; ?>, '<?php echo addslashes($p['project_name']); ?>', <?php echo $budget; ?>, '<?php echo $currency; ?>')"
+                        style="font-weight: 900; color: #16a34a; font-size: 13px; letter-spacing: -0.2px; cursor: pointer; background: #f0fdf4; padding: 7px 14px; border-radius: 12px; border: 1px solid #dcfce7; display: inline-flex; align-items: center; justify-content: center; min-width: 115px; transition: 0.2s; box-shadow: 0 2px 4px rgba(22, 163, 74, 0.05);">
+                        <span style="opacity: 0.6; margin-right: 4px;"><?php echo $sym; ?></span> <?php echo number_format($budget, 0); ?>
+                    </span>
+                <?php else: ?>
+                    <span style="font-weight: 700; color: #94a3b8; font-size: 12px;"><i class="fa fa-lock"></i></span>
+                <?php endif; ?>
             </td>
             <td style="text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -173,26 +184,32 @@ if (mysqli_num_rows($run_projects) > 0) {
             </td>
             <td style="text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <button class="btn-icon-premium" onclick="window.location.href='index.php?team_todo&project_id=<?php echo $project_id; ?>'"
-                        style="width: 32px; height: 32px; font-size: 12px; background: #fffbeb; border-color: #fef3c7;" title="Team To-Do">
-                        <i class="fa fa-list-alt" style="color: #f59e0b;"></i>
-                    </button>
+                    <?php if (canAdminAccess('project_assign_task')): ?>
+                        <button class="btn-icon-premium" onclick="window.location.href='index.php?team_todo&project_id=<?php echo $project_id; ?>'"
+                            style="width: 32px; height: 32px; font-size: 12px; background: #fffbeb; border-color: #fef3c7;" title="Team To-Do">
+                            <i class="fa fa-list-alt" style="color: #f59e0b;"></i>
+                        </button>
+                    <?php endif; ?>
                     <button class="btn-icon-premium btn-toggle-history" style="width: 32px; height: 32px; font-size: 12px; background: #f5f3ff; border-color: #ede9fe;" title="View History">
                         <i class="fa fa-history history-toggle-icon" style="color: #7c3aed;"></i>
                     </button>
-                    <button class="btn-icon-premium" onclick="window.location.href='index.php?edit_project=<?php echo $project_id; ?>'"
-                        style="width: 32px; height: 32px; font-size: 12px; background: #f0f9ff; border-color: #e0f2fe;" title="Edit Project">
-                        <i class="fa fa-pencil" style="color: #0284c7;"></i>
-                    </button>
-                    <button class="btn-icon-premium" onclick="deleteProject(<?php echo $project_id; ?>, '<?php echo addslashes($p['project_name']); ?>')"
-                        style="width: 32px; height: 32px; font-size: 12px; background: #fef2f2; border-color: #fee2e2;" title="Delete Project">
-                        <i class="fa fa-trash-o" style="color: #ef4444;"></i>
-                    </button>
+                    <?php if (canAdminAccess('project_update')): ?>
+                        <button class="btn-icon-premium" onclick="window.location.href='index.php?edit_project=<?php echo $project_id; ?>'"
+                            style="width: 32px; height: 32px; font-size: 12px; background: #f0f9ff; border-color: #e0f2fe;" title="Edit Project">
+                            <i class="fa fa-pencil" style="color: #0284c7;"></i>
+                        </button>
+                    <?php endif; ?>
+                    <?php if (canAdminAccess('project_delete')): ?>
+                        <button class="btn-icon-premium" onclick="deleteProject(<?php echo $project_id; ?>, '<?php echo addslashes($p['project_name']); ?>')"
+                            style="width: 32px; height: 32px; font-size: 12px; background: #fef2f2; border-color: #fee2e2;" title="Delete Project">
+                            <i class="fa fa-trash-o" style="color: #ef4444;"></i>
+                        </button>
+                    <?php endif; ?>
                 </div>
             </td>
         </tr>
         <tr class="project-detail-row" style="display: none; background: #fff;">
-            <td colspan="7" style="padding: 0; border: none;">
+            <td colspan="<?php echo canAdminAccess('project_source_view') ? '9' : '8'; ?>" style="padding: 0; border: none;">
                 <div style="padding: 35px 50px; border-top: 1px solid #f1f5f9; background: #fcfdfe;">
                     <div class="row">
                         <div class="col-md-7">

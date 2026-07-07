@@ -151,9 +151,11 @@ if (!isset($_SESSION['admin_email'])) {
     <div class="page-wrapper premium-ui-enabled">
         <div class="page-header-premium">
             <h1></h1>
-            <button class="btn-premium-add" data-toggle="modal" data-target="#addWorksheetModal" type="button">
-                <i class="fa fa-plus-circle"></i> Add Announcement
-            </button>
+            <?php if (canAdminAccess('announcement_insert')): ?>
+                <button class="btn-premium-add" data-toggle="modal" data-target="#addWorksheetModal" type="button">
+                    <i class="fa fa-plus-circle"></i> Add Announcement
+                </button>
+            <?php endif; ?>
         </div>
 
         <style>
@@ -680,9 +682,11 @@ if (!isset($_SESSION['admin_email'])) {
                             </div>
                         </div>
                         <div class="announcement-actions" style="justify-content: center;">
-                            <button type="button" class="btn-icon-premium" style="color: <?php echo $is_active == 1 ? '#10b981' : '#94a3b8'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
-                                <i class="fa <?php echo $is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
-                            </button>
+                            <?php if (canAdminAccess('announcement_update')): ?>
+                                <button type="button" class="btn-icon-premium" style="color: <?php echo $is_active == 1 ? '#10b981' : '#94a3b8'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
+                                    <i class="fa <?php echo $is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
+                                </button>
+                            <?php endif; ?>
                             <?php
                             $edit_data = json_encode([
                                 "id" => $announcement_id,
@@ -693,12 +697,16 @@ if (!isset($_SESSION['admin_email'])) {
                             ]);
                             $safe_edit_data = htmlspecialchars($edit_data, ENT_QUOTES, 'UTF-8');
                             ?>
-                            <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
+                            <?php if (canAdminAccess('announcement_update')): ?>
+                                <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            <?php endif; ?>
+                            <?php if (canAdminAccess('announcement_delete')): ?>
+                                <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php }

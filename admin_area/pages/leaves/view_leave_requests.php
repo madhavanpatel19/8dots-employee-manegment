@@ -8,46 +8,48 @@ $message = "";
 
 // Handle Approval / Rejection
 if (isset($_GET['approve']) || isset($_GET['reject'])) {
-    $request_id = isset($_GET['approve']) ? (int)$_GET['approve'] : (int)$_GET['reject'];
-    $new_status = isset($_GET['approve']) ? 'approved' : 'rejected';
+    if (!canAdminAccess('leave_approve')) {
+        $message = "You do not have permission to approve or reject leave requests.";
+    } else {
+        $request_id = isset($_GET['approve']) ? (int)$_GET['approve'] : (int)$_GET['reject'];
+        $new_status = isset($_GET['approve']) ? 'approved' : 'rejected';
 
-    $update = "UPDATE leave_applications SET status = '$new_status' WHERE id = '$request_id'";
-    if (mysqli_query($con, $update)) {
-        if ($new_status === 'approved') {
-            // Get leave details to update attendance
-            $get_leave = mysqli_query($con, "SELECT * FROM leave_applications WHERE id = '$request_id'");
-            $leave_row = mysqli_fetch_assoc($get_leave);
-            $emp_id = $leave_row['emp_id'];
-            $from = $leave_row['leave_from'];
-            $to = $leave_row['leave_to'];
-            $reason = $leave_row['reason'];
+        $update = "UPDATE leave_applications SET status = '$new_status' WHERE id = '$request_id'";
+        if (mysqli_query($con, $update)) {
+            if ($new_status === 'approved') {
+                // Get leave details to update attendance
+                $get_leave = mysqli_query($con, "SELECT * FROM leave_applications WHERE id = '$request_id'");
+                $leave_row = mysqli_fetch_assoc($get_leave);
+                $emp_id = $leave_row['emp_id'];
+                $from = $leave_row['leave_from'];
+                $to = $leave_row['leave_to'];
+                $reason = $leave_row['reason'];
 
-            // Loop through dates and update attendance
-            $start_date = new DateTime($from);
-            $end_date = new DateTime($to);
-            $interval = new DateInterval('P1D');
-            $period = new DatePeriod($start_date, $interval, $end_date->modify('+1 day'));
+                // Loop through dates and update attendance
+                $start_date = new DateTime($from);
+                $end_date = new DateTime($to);
+                $interval = new DateInterval('P1D');
+                $period = new DatePeriod($start_date, $interval, $end_date->modify('+1 day'));
 
-            foreach ($period as $date) {
-                $current_date = $date->format('Y-m-d');
-                // Check if record exists
-                $check = mysqli_query($con, "SELECT id, check_in_time FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
-                if (mysqli_num_rows($check) > 0) {
-                    $existing_att = mysqli_fetch_assoc($check);
-                    // If employee has already checked in on this day, they are on duty — do NOT override with leave
-                    if (!empty($existing_att['check_in_time'])) {
-                        continue; // Skip: employee is/was present on this day
+                foreach ($period as $date) {
+                    $current_date = $date->format('Y-m-d');
+                    // Check if record exists
+                    $check = mysqli_query($con, "SELECT id, check_in_time FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
+                    if (mysqli_num_rows($check) > 0) {
+                        $existing_att = mysqli_fetch_assoc($check);
+                        // If employee has already checked in on this day, they are on duty — do NOT override with leave
+                        if (!empty($existing_att['check_in_time'])) {
+                            continue; // Skip: employee is/was present on this day
+                        }
+                        mysqli_query($con, "UPDATE attendance SET status = 'leave', remarks = 'Leave: $reason' WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
+                    } else {
+                        // Only insert a leave record for future dates or dates with no activity
+                        mysqli_query($con, "INSERT INTO attendance (emp_id, attendance_date, status, remarks) VALUES ('$emp_id', '$current_date', 'leave', 'Leave: $reason')");
                     }
-                    mysqli_query($con, "UPDATE attendance SET status = 'leave', remarks = 'Leave: $reason' WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
-                } else {
-                    // Only insert a leave record for future dates or dates with no activity
-                    mysqli_query($con, "INSERT INTO attendance (emp_id, attendance_date, status, remarks) VALUES ('$emp_id', '$current_date', 'leave', 'Leave: $reason')");
                 }
             }
+            $message = "Leave request " . ($new_status === 'approved' ? "approved" : "rejected") . " successfully!";
         }
-        $message = "Leave request " . ($new_status === 'approved' ? "approved" : "rejected") . " successfully!";
-    } else {
-        $message = "Error: " . mysqli_error($con);
     }
 }
 
@@ -104,9 +106,11 @@ if ($run_stats) {
     <div class="page-header-premium">
         <h1></h1>
         <div class="header-actions" style="display: flex; gap: 10px;">
-            <button style="background:#DF2127 !important;" class="btn-premium-add" onclick="openManageLeaves()">
-                <i class="fa fa-cog"></i> Manage Leave Types
-            </button>
+            <?php if (canAdminAccess('leave_insert')): ?>
+                <button style="background:#DF2127 !important;" class="btn-premium-add" onclick="openManageLeaves()">
+                    <i class="fa fa-cogs"></i> Manage Leave Types
+                </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -473,14 +477,18 @@ if ($run_stats) {
                                 </td>
                                 <td class="text-center">
                                     <?php if ($status == 'pending') : ?>
-                                        <div style="display: flex; gap: 8px; justify-content: center;">
-                                            <a href="index.php?view_leave_requests&approve=<?php echo $id; ?>" class="btn-icon-premium btn-icon-approve" title="Approve">
-                                                <i class="fa fa-check"></i>
-                                            </a>
-                                            <a href="javascript:void(0)" class="btn-icon-premium btn-icon-reject" title="Reject" onclick="confirmReject('index.php?view_leave_requests&reject=<?php echo $id; ?>')">
-                                                <i class="fa fa-times"></i>
-                                            </a>
-                                        </div>
+                                        <?php if (canAdminAccess('leave_approve')): ?>
+                                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                                <a href="index.php?view_leave_requests&approve=<?php echo $id; ?>" class="btn-icon-premium btn-icon-approve" title="Approve">
+                                                    <i class="fa fa-check"></i>
+                                                </a>
+                                                <a href="javascript:void(0)" class="btn-icon-premium btn-icon-reject" title="Reject" onclick="confirmReject('index.php?view_leave_requests&reject=<?php echo $id; ?>')">
+                                                    <i class="fa fa-times"></i>
+                                                </a>
+                                            </div>
+                                        <?php else: ?>
+                                            <span style="color:#94a3b8; font-size:12px;">No Permission</span>
+                                        <?php endif; ?>
                                     <?php else : ?>
                                         <span style="color: #cbd5e1;">-</span>
                                     <?php endif; ?>

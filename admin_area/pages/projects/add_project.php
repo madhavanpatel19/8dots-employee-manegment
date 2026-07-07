@@ -1104,11 +1104,14 @@ $run_admins = mysqli_query($con, $get_admins);
 
                     <div class="col-md-6">
                         <div class="form-group">
+                            <?php if (canAdminAccess('project_source_view')): ?>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                 <label class="premium-label" style="font-size:14px; color:#334155; margin: 0;">Source</label>
+                                <?php if(canAdminAccess('project_source_insert')): ?>
                                 <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#addSourceModal" style="border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 700; background: #10b981; border: none; box-shadow: 0 2px 4px rgba(16,185,129,0.2);">
                                     <i class="fa fa-plus"></i> New
                                 </button>
+                                <?php endif; ?>
                             </div>
                             <div style="background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 48px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
                                 <?php
@@ -1122,11 +1125,14 @@ $run_admins = mysqli_query($con, $get_admins);
                                         <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
                                             <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #DF2127;"> <?php echo htmlspecialchars($s_name); ?>
                                         </label>
+                                        <?php if(canAdminAccess('project_source_delete')): ?>
                                         <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endwhile; ?>
                             </div>
                             <small style="color:#64748b; font-size:12px; margin-top:4px; display:block;">Select all that apply</small>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -1135,6 +1141,7 @@ $run_admins = mysqli_query($con, $get_admins);
         </div> <!-- End First Card -->
 
         <!-- Second Card: Project Budget -->
+        <?php if (canAdminAccess('budget_view')): ?>
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
                 <div style="width: 32px; height: 32px; background: #DF2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
@@ -1224,6 +1231,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 </div>
             </div>
         </div> <!-- End Second Card -->
+        <?php endif; ?>
 
         <!-- Third Card: Project Documents & Links -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">

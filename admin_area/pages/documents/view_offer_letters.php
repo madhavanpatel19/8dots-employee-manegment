@@ -37,9 +37,11 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
         <h1></h1>
+        <?php if (canAdminAccess('offer_letter_insert')): ?>
         <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newOfferModal" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #6366f1; border: none; color: #fff; cursor: pointer; transition: all 0.3s ease;">
             <i class="fa fa-plus"></i> New Offer Letter
         </button>
+        <?php endif; ?>
     </div>
 
     <style>
@@ -272,12 +274,14 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                                         <a href="pages/documents/generate_offer.php?id=<?php echo $id; ?>&action=download" class="btn-icon-premium btn-icon-download" title="Download PDF">
                                             <i class="fa fa-download"></i>
                                         </a>
+                                        <?php if (canAdminAccess('offer_letter_insert')): ?>
                                         <a href="index.php?edit_offer_letter=<?php echo $id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <button onclick="showDeleteConfirm(<?php echo $id; ?>)" type="button" class="btn-icon-premium btn-icon-delete" title="Delete">
                                             <i class="fa fa-trash-o"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

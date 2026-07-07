@@ -245,11 +245,14 @@ if (isset($_POST['update_lead'])) {
 
                     <div class="col-md-6">
                         <div class="form-group">
+                            <?php if (canAdminAccess('project_source_view')): ?>
                             <div class="col-md-4" style="display: flex; justify-content: flex-start; align-items: center; gap: 10px; padding-top: 7px; padding-right: 0;">
                                 <label class="control-label" style="text-align: left; color: #475569; font-weight: 600; margin: 0; padding-top: 0;">Source</label>
+                                <?php if (canAdminAccess('project_source_insert')): ?>
                                 <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#addSourceModal" style="border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 700; background: #10b981; border: none; box-shadow: 0 2px 4px rgba(16,185,129,0.2);">
                                     <i class="fa fa-plus"></i> New
                                 </button>
+                                <?php endif; ?>
                             </div>
                             <div class="col-md-8">
                                 <div style="background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 100px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
@@ -265,12 +268,15 @@ if (isset($_POST['update_lead'])) {
                                             <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
                                                 <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $is_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> <?php echo htmlspecialchars($s_name); ?>
                                             </label>
+                                            <?php if (canAdminAccess('project_source_delete')): ?>
                                             <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
+                                            <?php endif; ?>
                                         </div>
                                     <?php endwhile; ?>
                                 </div>
                                 <small style="color: #94a3b8; font-size: 11px; margin-top: 5px; display: block;">Select all that apply</small>
                             </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

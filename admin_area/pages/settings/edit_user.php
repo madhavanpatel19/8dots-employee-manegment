@@ -194,23 +194,34 @@ if (isset($_POST['update'])) {
             <div style="padding: 30px;">
                 <?php if (function_exists('isSuperAdmin') && isSuperAdmin()): ?>
                     <div style="margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                        <label style="font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
-                            <input type="checkbox" name="is_super_admin" value="1" style="width: 18px; height: 18px; accent-color: #DF2127;" <?php echo $current_super ? 'checked' : ''; ?>>
-                            Super Admin Access (All Permissions)
+                        <label style="font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 12px; cursor: pointer; margin: 0;">
+                            <div class="toggle-switch">
+                                <input type="checkbox" name="is_super_admin" value="1" <?php echo $current_super ? 'checked' : ''; ?>>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <span style="user-select: none;">Super Admin Access (All Permissions)</span>
                         </label>
                     </div>
                 <?php endif; ?>
 
-                <div class="row">
+                <div class="row" style="display: flex; flex-wrap: wrap;">
                     <?php
                     $categories = [
-                        'Employee Management' => ['employee_insert', 'employee_update', 'employee_delete', 'employee_view'],
-                        'Attendance & Leaves' => ['attendance_view', 'attendance_edit', 'leave_view', 'worksheet_view'],
-                        'Finance & Salary'    => ['salary_view'],
-                        'User & System'       => ['user_insert', 'user_update', 'user_view', 'announcement_view'],
-                        'Projects'            => ['project_view', 'project_insert', 'project_update', 'project_delete'],
-                        'Clients'             => ['client_view', 'client_insert', 'client_update', 'client_delete'],
-                        'Leads'               => ['lead_view', 'lead_insert', 'lead_update', 'lead_delete'],
+                        'Dashboard' => ['dashboard_view'],
+                        'Employee Management' => ['employee_view', 'employee_insert', 'employee_update', 'employee_delete'],
+                        'Attendance' => ['attendance_view', 'attendance_insert'],
+                        'Leaves' => ['leave_view', 'leave_insert', 'leave_approve'],
+                        'Worksheet' => ['worksheet_view'],
+                        'Finance & Salary' => ['salary_view', 'salary_insert', 'salary_update', 'salary_delete'],
+                        'Project Budget' => ['budget_view', 'budget_insert', 'budget_update', 'budget_delete'],
+                        'User & System' => ['user_view', 'user_insert', 'user_update', 'user_delete', 'announcement_view', 'announcement_insert', 'announcement_update', 'announcement_delete'],
+                        'Projects' => ['project_view', 'project_insert', 'project_update', 'project_delete', 'project_assign_task', 'project_assigned_only'],
+                        'Project Source' => ['project_source_view', 'project_source_insert', 'project_source_delete'],
+                        'Todo' => ['todo_view', 'todo_insert', 'todo_update', 'todo_delete'],
+                        'Leads' => ['lead_view', 'lead_insert', 'lead_update', 'lead_delete'],
+                        'Clients' => ['client_view', 'client_insert', 'client_update', 'client_delete'],
+                        'Company Links' => ['company_link_view', 'company_link_insert', 'company_link_update', 'company_link_delete'],
+                        'Documents' => ['offer_letter_view', 'offer_letter_insert', 'nda_view', 'nda_insert', 'experience_letter_view', 'experience_letter_insert']
                     ];
 
                     foreach ($categories as $catName => $perms):
@@ -226,9 +237,12 @@ if (isset($_POST['update'])) {
                                         $label = function_exists('getPermissionLabel') ? getPermissionLabel($perm) : ucwords(str_replace('_', ' ', $perm));
                                     ?>
                                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 10px;">
-                                                <input type="checkbox" name="permissions[]" value="<?php echo htmlspecialchars($perm); ?>" style="width: 16px; height: 16px; accent-color: #DF2127;" <?php echo $is_checked ? 'checked' : ''; ?>>
-                                                <?php echo htmlspecialchars($label); ?>
+                                            <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 12px; width: 100%;">
+                                                <div class="toggle-switch">
+                                                    <input type="checkbox" name="permissions[]" value="<?php echo htmlspecialchars($perm); ?>" <?php echo $is_checked ? 'checked' : ''; ?>>
+                                                    <span class="toggle-slider"></span>
+                                                </div>
+                                                <span style="user-select: none;"><?php echo htmlspecialchars($label); ?></span>
                                             </label>
                                         </div>
                                     <?php endforeach; ?>
@@ -262,6 +276,54 @@ if (isset($_POST['update'])) {
 
     .upload-area:hover {
         border-color: #DF2127;
+    }
+
+    /* Toggle Switch Styles */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+        flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .4s;
+        border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    input:checked+.toggle-slider {
+        background-color: #DF2127;
+    }
+
+    input:checked+.toggle-slider:before {
+        transform: translateX(20px);
     }
 </style>
 
