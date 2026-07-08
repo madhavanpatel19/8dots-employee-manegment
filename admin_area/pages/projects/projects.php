@@ -26,7 +26,7 @@ if (!$is_super_admin_proj && $current_admin_id_proj > 0) {
 }
 
 // Fetch all active clients for the dropdown
-$get_clients = "SELECT * FROM clients ORDER BY name ASC";
+$get_clients = "SELECT * FROM clients WHERE deleted_at IS NULL ORDER BY name ASC";
 $run_clients = mysqli_query($con, $get_clients);
 
 
@@ -34,11 +34,11 @@ $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, $_GET[
 
 
 // Count projects for Cards (scoped to visible projects)
-$total_projects   = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE 1=1 $admin_project_filter"));
-$active_projects  = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Active' $admin_project_filter"));
-$pending_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Pending' $admin_project_filter"));
-$completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Completed' $admin_project_filter"));
-$employees = mysqli_fetch_assoc(mysqli_query($con, "SELECT assigned_employees from client_projects "));
+$total_projects     = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE deleted_at IS NULL $admin_project_filter"));
+$active_projects    = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Active' AND deleted_at IS NULL $admin_project_filter"));
+$pending_projects   = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Pending' AND deleted_at IS NULL $admin_project_filter"));
+$completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_projects WHERE status='Completed' AND deleted_at IS NULL $admin_project_filter"));
+$employees = mysqli_fetch_assoc(mysqli_query($con, "SELECT assigned_employees from client_projects WHERE deleted_at IS NULL "));
 
 /* ==============================
    PAGINATION SETUP & QUERIES
@@ -48,7 +48,7 @@ $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']
 $offset = ($page - 1) * $limit;
 $start_from = $offset;
 
-$where_clause = " WHERE 1=1 $admin_project_filter ";
+$where_clause = " WHERE deleted_at IS NULL $admin_project_filter ";
 if ($status_filter) $where_clause .= " AND status='$status_filter' ";
 
 
@@ -163,7 +163,7 @@ $run_projects = mysqli_query($con, $get_projects);
                                             <option value="">All Sources</option>
                                             <?php
                                             $source_filter = isset($_GET['source']) ? $_GET['source'] : '';
-                                            $get_all_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                            $get_all_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
                                             $run_all_sources = mysqli_query($con, $get_all_sources);
                                             while ($s_row = mysqli_fetch_array($run_all_sources)) {
                                                 $s_name = $s_row['source_name'];

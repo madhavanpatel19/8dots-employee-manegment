@@ -4,7 +4,7 @@ if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
 if (isset($_POST['client_id'])) {
     $client_id = intval($_POST['client_id']);
     
-    $get_projects = "SELECT * FROM client_projects WHERE client_id = $client_id ORDER BY id DESC";
+    $get_projects = "SELECT * FROM client_projects WHERE client_id = $client_id AND deleted_at IS NULL ORDER BY id DESC";
     $run_projects = mysqli_query($con, $get_projects);
     
     if (!$run_projects) {

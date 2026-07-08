@@ -965,13 +965,13 @@ if (empty(array_filter($existing_admins))) {
     $existing_admins = [$current_admin_id];
 }
 
-$get_clients = "SELECT id, name, image FROM clients ORDER BY name ASC";
+$get_clients = "SELECT id, name, image FROM clients WHERE deleted_at IS NULL ORDER BY name ASC";
 $run_clients = mysqli_query($con, $get_clients);
 
-$get_emps = "SELECT id, employee_image, name FROM emp_list ORDER BY name ASC";
+$get_emps = "SELECT id, employee_image, name FROM emp_list WHERE deleted_at IS NULL ORDER BY name ASC";
 $run_emps = mysqli_query($con, $get_emps);
 
-$get_users = "SELECT id, employee_image, name FROM emp_list ORDER BY name ASC";
+$get_users = "SELECT id, employee_image, name FROM emp_list WHERE deleted_at IS NULL ORDER BY name ASC";
 $run_users = mysqli_query($con, $get_users);
 
 $get_admins = "SELECT admin_id, admin_image, admin_name FROM admins ORDER BY admin_name ASC";
@@ -1152,7 +1152,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                 </div>
                                 <div style="background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 48px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
                                     <?php
-                                    $get_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                    $get_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
                                     $run_sources = mysqli_query($con, $get_sources);
                                     while ($row_s = mysqli_fetch_array($run_sources)):
                                         $s_name = $row_s['source_name'];
@@ -1335,7 +1335,7 @@ $run_admins = mysqli_query($con, $get_admins);
                             </thead>
                             <tbody id="docs_container">
                                 <?php
-                                $get_docs = "SELECT * FROM project_documents WHERE project_id = $project_id";
+                                $get_docs = "SELECT * FROM project_documents WHERE project_id = $project_id AND deleted_at IS NULL";
                                 $run_docs = mysqli_query($con, $get_docs);
                                 $has_docs = mysqli_num_rows($run_docs) > 0;
                                 if ($has_docs) {
@@ -1400,7 +1400,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                 </thead>
                                 <tbody id="links_container">
                                     <?php
-                                    $get_links = "SELECT * FROM project_links WHERE project_id = $project_id";
+                                    $get_links = "SELECT * FROM project_links WHERE project_id = $project_id AND deleted_at IS NULL";
                                     $run_links = mysqli_query($con, $get_links);
                                     if (mysqli_num_rows($run_links) > 0) {
                                         while ($link = mysqli_fetch_assoc($run_links)) {

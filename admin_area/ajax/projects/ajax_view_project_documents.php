@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
 
 if (isset($_GET['project_id'])) {
     $project_id = mysqli_real_escape_string($con, $_GET['project_id']);
     
-    $get_docs = "SELECT * FROM project_documents WHERE project_id = '$project_id' ORDER BY created_at DESC";
+    $get_docs = "SELECT * FROM project_documents WHERE project_id = '$project_id' AND deleted_at IS NULL ORDER BY created_at DESC";
     $run_docs = mysqli_query($con, $get_docs);
     
     if (mysqli_num_rows($run_docs) > 0) {

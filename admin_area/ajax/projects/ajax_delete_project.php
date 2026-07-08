@@ -17,17 +17,17 @@ $response = ['success' => false, 'message' => 'Invalid request'];
 
 if (isset($_POST['project_id'])) {
     $project_id = intval($_POST['project_id']);
+    $now        = date('Y-m-d H:i:s');
 
-    // Delete remarks first (to clean up activity history)
-    $delete_remarks = "DELETE FROM client_project_remarks WHERE project_id = $project_id";
-    mysqli_query($con, $delete_remarks);
+    // Soft delete project remarks
+    mysqli_query($con, "UPDATE client_project_remarks SET deleted_at = '$now' WHERE project_id = $project_id AND deleted_at IS NULL");
 
-    // Delete the project
-    $delete_project = "DELETE FROM client_projects WHERE id = $project_id";
-    
-    if (mysqli_query($con, $delete_project)) {
+    // Soft delete the project
+    $update_project = "UPDATE client_projects SET deleted_at = '$now' WHERE id = $project_id AND deleted_at IS NULL";
+
+    if (mysqli_query($con, $update_project)) {
         $response['success'] = true;
-        $response['message'] = 'Project and associated remarks deleted successfully';
+        $response['message'] = 'Project soft-deleted successfully';
     } else {
         $response['message'] = 'Database error: ' . mysqli_error($con);
     }

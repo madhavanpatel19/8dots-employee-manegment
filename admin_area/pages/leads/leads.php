@@ -51,7 +51,7 @@ $create_sources = "CREATE TABLE IF NOT EXISTS lead_sources (
 mysqli_query($con, $create_sources);
 
 // Seed default sources if empty
-$check_sources = mysqli_query($con, "SELECT id FROM lead_sources LIMIT 1");
+$check_sources = mysqli_query($con, "SELECT id FROM lead_sources WHERE deleted_at IS NULL LIMIT 1");
 if (mysqli_num_rows($check_sources) == 0) {
     mysqli_query($con, "INSERT IGNORE INTO lead_sources (source_name) VALUES ('Mechanical'), ('BNI'), ('Turnkey'), ('Electrical'), ('Civil')");
 }
@@ -64,10 +64,10 @@ $source_filter = isset($_GET['source']) ? mysqli_real_escape_string($con, $_GET[
 $search_query = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
 
 // Count Leads for Cards
-$total_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads"));
-$active_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='active'"));
-$future_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='future'"));
-$expired_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='expired'"));
+$total_leads  = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE deleted_at IS NULL"));
+$active_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='active' AND deleted_at IS NULL"));
+$future_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='future' AND deleted_at IS NULL"));
+$expired_leads= mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='expired' AND deleted_at IS NULL"));
 
 /* ==============================
    PAGINATION SETUP & QUERIES
@@ -77,7 +77,7 @@ $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']
 $offset = ($page - 1) * $limit;
 $start_from = $offset;
 
-$where_clause = " WHERE 1=1 ";
+$where_clause = " WHERE deleted_at IS NULL ";
 if ($status_filter) $where_clause .= " AND status='$status_filter' ";
 if ($source_filter) $where_clause .= " AND lead_source LIKE '%$source_filter%' ";
 if ($search_query) $where_clause .= " AND (client_name LIKE '%$search_query%' OR phone LIKE '%$search_query%') ";
@@ -270,7 +270,7 @@ $run_leads = mysqli_query($con, $get_leads);
                                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
                                 <option value="">All Sources</option>
                                 <?php
-                                $get_all_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                $get_all_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
                                 $run_all_sources = mysqli_query($con, $get_all_sources);
                                 while ($s_row = mysqli_fetch_array($run_all_sources)) {
                                     $s_name = $s_row['source_name'];
@@ -719,7 +719,7 @@ $run_leads = mysqli_query($con, $get_leads);
         <?php
         // Check if there are any follow-ups today
         $today_date = date('Y-m-d');
-        $check_today = mysqli_query($con, "SELECT COUNT(*) as cnt FROM leads WHERE followup_date = '$today_date' AND status != 'expired'");
+        $check_today = mysqli_query($con, "SELECT COUNT(*) as cnt FROM leads WHERE followup_date = '$today_date' AND status != 'expired' AND deleted_at IS NULL");
         $today_count = 0;
         if ($check_today) {
             $today_row = mysqli_fetch_assoc($check_today);

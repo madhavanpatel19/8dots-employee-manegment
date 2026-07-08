@@ -38,7 +38,7 @@ if (!isset($_SESSION['admin_email'])) {
     // Count follow-up leads for today
     $today_followup_count = 0;
     $today_date = date('Y-m-d');
-    $count_followup_query = "SELECT count(*) AS total FROM leads WHERE followup_date = '$today_date' AND status != 'expired'";
+    $count_followup_query = "SELECT count(*) AS total FROM leads WHERE followup_date = '$today_date' AND status != 'expired' AND deleted_at IS NULL";
     $run_count_followup = mysqli_query($con, $count_followup_query);
     if ($run_count_followup) {
         $row_count_followup = mysqli_fetch_array($run_count_followup);

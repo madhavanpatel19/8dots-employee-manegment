@@ -297,7 +297,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT * FROM emp_list ORDER BY status ASC, id ASC";
+                $sql = "SELECT * FROM emp_list WHERE deleted_at IS NULL ORDER BY status ASC, id ASC";
                 $res = mysqli_query($con, $sql);
                 if ($res && mysqli_num_rows($res) > 0) {
                     while ($row = mysqli_fetch_assoc($res)) {

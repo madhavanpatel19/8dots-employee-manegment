@@ -897,7 +897,7 @@ if (isset($_POST['save_lead'])) {
                                         </label>
                                         <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 100px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
                                             <?php
-                                            $get_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                            $get_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
                                             $run_sources = mysqli_query($con, $get_sources);
                                             while ($row_s = mysqli_fetch_array($run_sources)):
                                                 $s_name = $row_s['source_name'];

@@ -7,7 +7,7 @@ if (!isset($con)) {
 
 // Fetch all employees for assignment
 $empList = [];
-$empQ = mysqli_query($con, "SELECT id, name, employee_image FROM emp_list ORDER BY name ASC");
+$empQ = mysqli_query($con, "SELECT id, name, employee_image FROM emp_list WHERE deleted_at IS NULL ORDER BY name ASC");
 while ($erow = mysqli_fetch_assoc($empQ)) {
     $empList[] = $erow;
 }

@@ -26,7 +26,7 @@ if ($run_project && mysqli_num_rows($run_project) > 0) {
     
     if (!empty($assigned_ids)) {
         $ids_str = implode(',', array_map('intval', $assigned_ids));
-        $get_emps = "SELECT id, name FROM emp_list WHERE id IN ($ids_str) AND status = 'Active' ORDER BY name ASC";
+        $get_emps = "SELECT id, name FROM emp_list WHERE id IN ($ids_str) AND status = 'Active' AND deleted_at IS NULL ORDER BY name ASC";
         $run_emps = mysqli_query($con, $get_emps);
         $employees = [];
         while ($e = mysqli_fetch_assoc($run_emps)) {

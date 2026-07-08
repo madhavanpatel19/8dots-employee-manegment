@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin_email'])) {
    FETCH EMPLOYEE LIST
 ============================== */
 $empList = [];
-$empQ = mysqli_query($con, "SELECT id, name FROM emp_list ORDER BY name ASC");
+$empQ = mysqli_query($con, "SELECT id, name FROM emp_list WHERE deleted_at IS NULL ORDER BY name ASC");
 while ($erow = mysqli_fetch_assoc($empQ)) $empList[] = $erow;
 
 /* ==============================

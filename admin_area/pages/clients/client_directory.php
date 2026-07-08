@@ -16,9 +16,9 @@ if ($search) {
 }
 if ($status_filter) {
     if ($status_filter == 'Active') {
-        $where_clauses[] = "id IN (SELECT client_id FROM client_projects WHERE status = 'Active')";
+        $where_clauses[] = "id IN (SELECT client_id FROM client_projects WHERE status = 'Active' AND deleted_at IS NULL)";
     } else if ($status_filter == 'Inactive') {
-        $where_clauses[] = "id NOT IN (SELECT client_id FROM client_projects WHERE status = 'Active')";
+        $where_clauses[] = "id NOT IN (SELECT client_id FROM client_projects WHERE status = 'Active' AND deleted_at IS NULL)";
     }
 }
 if ($industry_filter) {
@@ -28,21 +28,23 @@ if ($country_filter) {
     $where_clauses[] = "country = '$country_filter'";
 }
 
+$where_clauses[] = "deleted_at IS NULL";
+
 $where = "";
 if (count($where_clauses) > 0) {
     $where = "WHERE " . implode(" AND ", $where_clauses);
 }
 
 // Count queries for stat cards
-$total_clients_q = mysqli_query($con, "SELECT COUNT(*) as count FROM clients");
+$total_clients_q = mysqli_query($con, "SELECT COUNT(*) as count FROM clients WHERE deleted_at IS NULL");
 $total_clients = mysqli_fetch_assoc($total_clients_q)['count'];
 
-$active_clients_q = mysqli_query($con, "SELECT COUNT(*) as count FROM clients WHERE id IN (SELECT client_id FROM client_projects WHERE status = 'Active')");
+$active_clients_q = mysqli_query($con, "SELECT COUNT(*) as count FROM clients WHERE deleted_at IS NULL AND id IN (SELECT client_id FROM client_projects WHERE status = 'Active' AND deleted_at IS NULL)");
 $active_clients = mysqli_fetch_assoc($active_clients_q)['count'];
 
 $inactive_clients = $total_clients - $active_clients;
 
-$total_projects_q = mysqli_query($con, "SELECT COUNT(*) as count FROM client_projects");
+$total_projects_q = mysqli_query($con, "SELECT COUNT(*) as count FROM client_projects WHERE deleted_at IS NULL");
 $total_projects = mysqli_fetch_assoc($total_projects_q)['count'];
 
 $active_percent = $total_clients > 0 ? round(($active_clients / $total_clients) * 100, 1) : 0;
@@ -64,8 +66,8 @@ if (!empty($query_params)) {
 }
 
 // Get distinct countries and industries for dropdowns
-$countries_q = mysqli_query($con, "SELECT DISTINCT country FROM clients WHERE country IS NOT NULL AND country != '' ORDER BY country");
-$industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client_industries ORDER BY industry_name");
+$countries_q = mysqli_query($con, "SELECT DISTINCT country FROM clients WHERE deleted_at IS NULL AND country IS NOT NULL AND country != '' ORDER BY country");
+$industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client_industries WHERE deleted_at IS NULL ORDER BY industry_name");
 ?>
 
 <div class="page-wrapper premium-ui-enabled">
@@ -223,7 +225,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                 </td>
                                 <?php
                                 $client_id_for_proj = $row['id'];
-                                $proj_q = mysqli_query($con, "SELECT COUNT(*) as total_projects, SUM(CASE WHEN status='Active' THEN 1 ELSE 0 END) as active_projects FROM client_projects WHERE client_id='$client_id_for_proj'");
+                                $proj_q = mysqli_query($con, "SELECT COUNT(*) as total_projects, SUM(CASE WHEN status='Active' THEN 1 ELSE 0 END) as active_projects FROM client_projects WHERE client_id='$client_id_for_proj' AND deleted_at IS NULL");
                                 $proj_data = mysqli_fetch_assoc($proj_q);
                                 $client_total_proj = $proj_data['total_projects'];
                                 $client_active_proj = $proj_data['active_projects'];

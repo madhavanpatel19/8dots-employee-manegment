@@ -6,7 +6,7 @@ if (!isset($con)) {
 if (isset($_GET['project_id'])) {
     $project_id = mysqli_real_escape_string($con, $_GET['project_id']);
 
-    $get_links = "SELECT * FROM project_links WHERE project_id = '$project_id' ORDER BY created_at DESC";
+    $get_links = "SELECT * FROM project_links WHERE project_id = '$project_id' AND deleted_at IS NULL ORDER BY created_at DESC";
     $run_links = mysqli_query($con, $get_links);
 
     if (mysqli_num_rows($run_links) > 0) {

@@ -557,7 +557,7 @@ endif; ?>
                         </div>
                         <div style="background: #fff; padding: 10px; border-radius: 8px; border: 1.5px solid #e2e8f0; min-height: 48px; max-height: 150px; overflow-y: auto;" id="industry_checkbox_container">
                             <?php
-                            $get_industries = "SELECT * FROM client_industries ORDER BY industry_name ASC";
+                            $get_industries = "SELECT * FROM client_industries WHERE deleted_at IS NULL ORDER BY industry_name ASC";
                             $run_industries = mysqli_query($con, $get_industries);
                             if ($run_industries) {
                                 while ($row_i = mysqli_fetch_array($run_industries)):

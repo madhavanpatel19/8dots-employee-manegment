@@ -25,7 +25,8 @@ if ($task_id == 0) {
     exit();
 }
 
-$query = "DELETE FROM project_team_todos WHERE id = $task_id";
+$now   = date('Y-m-d H:i:s');
+$query = "UPDATE project_team_todos SET deleted_at = '$now' WHERE id = $task_id AND deleted_at IS NULL";
 if (mysqli_query($con, $query)) {
     echo json_encode(['success' => true]);
 } else {

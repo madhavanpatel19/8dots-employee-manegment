@@ -1,7 +1,7 @@
-﻿<?php
+<?php
 if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
 
-$query = "SELECT * FROM leave_types ORDER BY created_at DESC";
+$query = "SELECT * FROM leave_types WHERE deleted_at IS NULL ORDER BY created_at DESC";
 $result = mysqli_query($con, $query);
 
 if (mysqli_num_rows($result) > 0) {

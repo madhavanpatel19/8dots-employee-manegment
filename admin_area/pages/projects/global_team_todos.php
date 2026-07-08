@@ -4,7 +4,7 @@ if (!isset($con)) {
 }
 
 // Get all active employees for columns
-$get_emps = "SELECT * FROM emp_list WHERE status = 'Active' ORDER BY name ASC";
+$get_emps = "SELECT * FROM emp_list WHERE status = 'Active' AND deleted_at IS NULL ORDER BY name ASC";
 $run_emps = mysqli_query($con, $get_emps);
 $employees = [];
 if ($run_emps) {
@@ -14,7 +14,7 @@ if ($run_emps) {
 }
 
 // Get all active projects for the dropdown when adding a task
-$get_projs = "SELECT id, project_name FROM client_projects WHERE status = 'Active' ORDER BY project_name ASC";
+$get_projs = "SELECT id, project_name FROM client_projects WHERE status = 'Active' AND deleted_at IS NULL ORDER BY project_name ASC";
 $run_projs = mysqli_query($con, $get_projs);
 $active_projects = [];
 if ($run_projs) {

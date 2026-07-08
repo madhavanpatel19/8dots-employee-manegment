@@ -20,34 +20,33 @@ requireAdminPermission('employee_delete');
 if (isset($_POST['id']) || isset($_GET['id'])) {
 
     $raw_id = isset($_POST['id']) ? $_POST['id'] : $_GET['id'];
-    $id = mysqli_real_escape_string($con, $raw_id);
+    $id = intval($raw_id);
 
-    /* DELETE CHILD RECORDS FIRST */
+    if ($id <= 0) {
+        echo json_encode(['status' => 'error', 'message' => 'INVALID ID']);
+        exit;
+    }
 
-    mysqli_query(
-        $con,
-        "DELETE FROM employee_documents WHERE emp_id='$id'"
-    );
+    $now = date('Y-m-d H:i:s');
 
-    /* DELETE EMPLOYEE */
+    /* SOFT DELETE CHILD RECORDS (employee_documents) */
+    mysqli_query($con, "UPDATE employee_documents SET deleted_at = '$now' WHERE emp_id = $id AND deleted_at IS NULL");
 
-    $query =
-        "DELETE FROM emp_list WHERE id='$id'";
+    /* SOFT DELETE EMPLOYEE */
+    $query = "UPDATE emp_list SET deleted_at = '$now' WHERE id = $id AND deleted_at IS NULL";
+    $result = mysqli_query($con, $query);
 
-    $result =
-        mysqli_query($con, $query);
-
-    if ($result) {
+    if ($result && mysqli_affected_rows($con) > 0) {
         echo json_encode(['status' => 'success']);
         exit;
+    } elseif ($result) {
+        echo json_encode(['status' => 'error', 'message' => 'Employee not found or already deleted']);
     } else {
-
         echo json_encode([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => 'DELETE ERROR: ' . mysqli_error($con)
         ]);
     }
 } else {
-
     echo json_encode(['status' => 'error', 'message' => 'ID NOT FOUND']);
 }

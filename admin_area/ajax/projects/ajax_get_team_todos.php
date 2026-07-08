@@ -22,10 +22,10 @@ if ($emp_id == 0) {
 $query = "";
 if ($project_id == 0) {
     // Global view
-    $query = "SELECT t.*, p.project_name FROM project_team_todos t LEFT JOIN client_projects p ON t.project_id = p.id WHERE t.emp_id = $emp_id ORDER BY t.status ASC, CASE WHEN t.priority = 'High' THEN 1 WHEN t.priority = 'Medium' THEN 2 ELSE 3 END ASC, t.due_date ASC, t.id DESC";
+    $query = "SELECT t.*, p.project_name FROM project_team_todos t LEFT JOIN client_projects p ON t.project_id = p.id WHERE t.emp_id = $emp_id AND t.deleted_at IS NULL ORDER BY t.status ASC, CASE WHEN t.priority = 'High' THEN 1 WHEN t.priority = 'Medium' THEN 2 ELSE 3 END ASC, t.due_date ASC, t.id DESC";
 } else {
     // Project specific view
-    $query = "SELECT t.*, p.project_name FROM project_team_todos t JOIN client_projects p ON t.project_id = p.id WHERE t.project_id = $project_id AND t.emp_id = $emp_id ORDER BY t.status ASC, CASE WHEN t.priority = 'High' THEN 1 WHEN t.priority = 'Medium' THEN 2 ELSE 3 END ASC, t.due_date ASC, t.id DESC";
+    $query = "SELECT t.*, p.project_name FROM project_team_todos t JOIN client_projects p ON t.project_id = p.id WHERE t.project_id = $project_id AND t.emp_id = $emp_id AND t.deleted_at IS NULL ORDER BY t.status ASC, CASE WHEN t.priority = 'High' THEN 1 WHEN t.priority = 'Medium' THEN 2 ELSE 3 END ASC, t.due_date ASC, t.id DESC";
 }
 
 $result = mysqli_query($con, $query);

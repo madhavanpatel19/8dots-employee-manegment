@@ -104,9 +104,10 @@ if ($action == 'add') {
     }
     echo json_encode($data);
 } elseif ($action == 'delete') {
-    $id = mysqli_real_escape_string($con, $_POST['id']);
-    $delete = "DELETE FROM company_links WHERE id='$id'";
-    if (mysqli_query($con, $delete)) {
+    $id  = intval($_POST['id']);
+    $now = date('Y-m-d H:i:s');
+    $update = "UPDATE company_links SET deleted_at = '$now' WHERE id = $id AND deleted_at IS NULL";
+    if (mysqli_query($con, $update)) {
         echo json_encode(['status' => 'success', 'message' => 'Link removed successfully']);
     } else {
         echo json_encode(['status' => 'error', 'message' => mysqli_error($con)]);

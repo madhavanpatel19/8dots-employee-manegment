@@ -145,7 +145,7 @@ $result = mysqli_query($con, $query);
                     $total_allowed = 0;
                     $total_used = 0;
 
-                    $total_allowed_q = mysqli_query($con, "SELECT SUM(num_of_leave) as total FROM leave_types");
+                    $total_allowed_q = mysqli_query($con, "SELECT SUM(num_of_leave) as total FROM leave_types WHERE deleted_at IS NULL");
                     if ($total_allowed_q) {
                         $total_allowed = mysqli_fetch_assoc($total_allowed_q)['total'] ?: 0;
                     }
@@ -180,7 +180,7 @@ $result = mysqli_query($con, $query);
                     </div>
 
                     <?php
-                    $lt_sum = mysqli_query($con, "SELECT * FROM leave_types");
+                    $lt_sum = mysqli_query($con, "SELECT * FROM leave_types WHERE deleted_at IS NULL");
                     $colors = ['#6366f1', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
                     $bg_colors = ['rgba(99, 102, 241, 0.08)', 'rgba(16, 185, 129, 0.08)', 'rgba(59, 130, 246, 0.08)', 'rgba(245, 158, 11, 0.08)', 'rgba(239, 68, 68, 0.08)'];
                     $icons = ['fa-calendar-o', 'fa-heartbeat', 'fa-umbrella', 'fa-plane', 'fa-medkit'];
@@ -275,7 +275,7 @@ $result = mysqli_query($con, $query);
                                                 <select name="leave_type_id" class="p-input-premium" required>
                                                     <option value="">Select Leave Type...</option>
                                                     <?php
-                                                    $lt_query = mysqli_query($con, "SELECT * FROM leave_types ORDER BY leave_name ASC");
+                                                    $lt_query = mysqli_query($con, "SELECT * FROM leave_types WHERE deleted_at IS NULL ORDER BY leave_name ASC");
                                                     while ($lt = mysqli_fetch_assoc($lt_query)) {
                                                         echo "<option value='" . $lt['id'] . "'>" . $lt['leave_name'] . " (" . $lt['num_of_leave'] . " Days/Yr)</option>";
                                                     }

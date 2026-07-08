@@ -32,7 +32,7 @@ if (!$is_super_admin_proj && $current_admin_id_proj > 0) {
 $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, $_GET['status']) : '';
 $source_filter = isset($_GET['source']) ? mysqli_real_escape_string($con, $_GET['source']) : '';
 
-$where_clause = " WHERE 1=1 $admin_project_filter ";
+$where_clause = " WHERE cp.deleted_at IS NULL AND c.deleted_at IS NULL $admin_project_filter ";
 if ($status_filter !== "") {
     $where_clause .= " AND cp.status='$status_filter' ";
 }

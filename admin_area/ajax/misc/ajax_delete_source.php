@@ -7,10 +7,11 @@ if (!isset($_SESSION['admin_email'])) {
 }
 
 if (isset($_POST['source_id'])) {
-    $source_id = mysqli_real_escape_string($con, $_POST['source_id']);
-    
-    $delete = mysqli_query($con, "DELETE FROM lead_sources WHERE id = '$source_id'");
-    if ($delete) {
+    $source_id = intval($_POST['source_id']);
+    $now       = date('Y-m-d H:i:s');
+
+    $update = mysqli_query($con, "UPDATE lead_sources SET deleted_at = '$now' WHERE id = $source_id AND deleted_at IS NULL");
+    if ($update) {
         echo json_encode(['status' => 'success']);
     } else {
         echo json_encode(['status' => 'error', 'message' => mysqli_error($con)]);

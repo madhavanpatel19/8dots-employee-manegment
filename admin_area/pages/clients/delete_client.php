@@ -1,33 +1,31 @@
 <?php
 if (!isset($con)) {
-    if (!isset($con)) {
-        include(__DIR__ . '/../../includes/db.php');
-    }
+    include(__DIR__ . '/../../includes/db.php');
 }
 
 if (isset($_GET['delete_client'])) {
     $delete_id = intval($_GET['delete_client']);
-    $is_ajax = isset($_GET['ajax']);
+    $is_ajax   = isset($_GET['ajax']);
 
-    // Fetch client image to delete it from storage
-    $get_client = "SELECT image, name FROM clients WHERE id = $delete_id";
+    // Fetch client to confirm it exists and isn't already soft-deleted
+    $get_client = "SELECT image, name FROM clients WHERE id = $delete_id AND deleted_at IS NULL";
     $run_client = mysqli_query($con, $get_client);
     $row_client = mysqli_fetch_assoc($run_client);
 
     if ($row_client) {
-        $client_name = $row_client['name'];
+        $client_name  = $row_client['name'];
         $client_image = $row_client['image'];
+        $now          = date('Y-m-d H:i:s');
 
-        // Delete client record (Cascading will handle projects and remarks)
-        $delete_query = "DELETE FROM clients WHERE id = $delete_id";
-        $run_delete = mysqli_query($con, $delete_query);
+        // Soft delete the client (projects/remarks are also soft-deleted)
+        $delete_query = "UPDATE clients SET deleted_at = '$now' WHERE id = $delete_id AND deleted_at IS NULL";
+        $run_delete   = mysqli_query($con, $delete_query);
+
+        // Also soft delete child projects
+        mysqli_query($con, "UPDATE client_projects SET deleted_at = '$now' WHERE client_id = $delete_id AND deleted_at IS NULL");
 
         if ($run_delete) {
-            // Delete image file if exists
-            if (!empty($client_image) && file_exists("../uploads/client_images/$client_image")) {
-                unlink("../uploads/client_images/$client_image");
-            }
-
+            // We keep the image file on disk (soft delete = no data loss)
             if ($is_ajax) {
                 echo json_encode(['success' => true, 'message' => "Client $client_name deleted successfully."]);
                 exit();

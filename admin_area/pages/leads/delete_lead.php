@@ -5,15 +5,16 @@ if (!isset($_SESSION['admin_email'])) {
 }
 
 if (isset($_GET['delete_lead'])) {
-    $delete_id = mysqli_real_escape_string($con, $_GET['delete_lead']);
-    
-    // First delete follow-ups
-    mysqli_query($con, "DELETE FROM lead_followups WHERE lead_id = '$delete_id'");
-    
-    // Then delete lead
-    $delete_lead = "DELETE FROM leads WHERE id = '$delete_id'";
-    $run_delete = mysqli_query($con, $delete_lead);
-    
+    $delete_id = intval($_GET['delete_lead']);
+    $now       = date('Y-m-d H:i:s');
+
+    // Soft delete follow-ups
+    mysqli_query($con, "UPDATE lead_followups SET deleted_at = '$now' WHERE lead_id = $delete_id AND deleted_at IS NULL");
+
+    // Soft delete lead
+    $delete_lead = "UPDATE leads SET deleted_at = '$now' WHERE id = $delete_id AND deleted_at IS NULL";
+    $run_delete  = mysqli_query($con, $delete_lead);
+
     if ($run_delete) {
         echo "<script>window.open('index.php?leads','_self');</script>";
     } else {

@@ -23,12 +23,12 @@ if (isset($_POST['ajax_delete_announcement']) || isset($_GET['ajax_delete_announ
         ? $_POST['ajax_delete_announcement']
         : $_GET['ajax_delete_announcement'];
 
-    $delete_id = mysqli_real_escape_string($con, $delete_id);
-    $delete_query = "DELETE FROM announcements WHERE id='$delete_id'";
-    $delete_success = mysqli_query($con, $delete_query);
+    $delete_id    = intval($delete_id);
+    $now          = date('Y-m-d H:i:s');
+    $delete_success = mysqli_query($con, "UPDATE announcements SET deleted_at = '$now' WHERE id = $delete_id AND deleted_at IS NULL");
 
     echo json_encode([
-        "status" => $delete_success ? "success" : "error"
+        "status" => ($delete_success && mysqli_affected_rows($con) > 0) ? "success" : "error"
     ]);
     exit;
 }
@@ -609,7 +609,7 @@ if (!isset($_SESSION['admin_email'])) {
                 $offset = ($page - 1) * $limit;
 
                 // Count total records
-                $countSql = "SELECT COUNT(*) as total FROM announcements";
+                $countSql = "SELECT COUNT(*) as total FROM announcements WHERE deleted_at IS NULL";
                 $countResult = mysqli_query($con, $countSql);
                 $totalRecords = 0;
                 if ($countResult) {
@@ -619,7 +619,7 @@ if (!isset($_SESSION['admin_email'])) {
                 $totalPages = ceil($totalRecords / $limit);
 
                 $i = $offset; // Adjust numbering
-                $get_announcements = "SELECT * FROM announcements ORDER BY created_at DESC LIMIT $offset, $limit";
+                $get_announcements = "SELECT * FROM announcements WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT $offset, $limit";
                 $run_announcements = mysqli_query($con, $get_announcements);
 
                 $icon_classes = [

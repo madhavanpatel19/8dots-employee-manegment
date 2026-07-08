@@ -19,16 +19,17 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
         ? $_POST['ajax_delete_nda']
         : $_GET['ajax_delete_nda'];
 
-    $delete_id = mysqli_real_escape_string($con, $delete_id);
-    $delete_query = "DELETE FROM nda_forms WHERE id='$delete_id'";
-    $deleted = mysqli_query($con, $delete_query);
+    $delete_id = intval($delete_id);
+    $now       = date('Y-m-d H:i:s');
+
+    $deleted = mysqli_query($con, "UPDATE nda_forms SET deleted_at = '$now' WHERE id = $delete_id AND deleted_at IS NULL");
 
     if (!headers_sent()) {
         header('Content-Type: application/json');
     }
 
     echo json_encode([
-        "status" => $deleted ? "success" : "error"
+        "status" => ($deleted && mysqli_affected_rows($con) > 0) ? "success" : "error"
     ]);
     exit;
 }
@@ -239,7 +240,7 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                 <tbody>
                     <?php
                     $i = 0;
-                    $get_ndas = "SELECT * FROM nda_forms ORDER BY id DESC";
+                    $get_ndas = "SELECT * FROM nda_forms WHERE deleted_at IS NULL ORDER BY id DESC";
                     $run_ndas = mysqli_query($con, $get_ndas);
 
                     if ($run_ndas) {

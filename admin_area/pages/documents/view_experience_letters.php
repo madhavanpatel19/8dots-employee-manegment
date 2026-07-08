@@ -19,16 +19,17 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
         ? $_POST['ajax_delete_exp']
         : $_GET['ajax_delete_exp'];
 
-    $delete_id = mysqli_real_escape_string($con, $delete_id);
-    $delete_query = "DELETE FROM experience_letters WHERE id='$delete_id'";
-    $deleted = mysqli_query($con, $delete_query);
+    $delete_id = intval($delete_id);
+    $now       = date('Y-m-d H:i:s');
+
+    $deleted = mysqli_query($con, "UPDATE experience_letters SET deleted_at = '$now' WHERE id = $delete_id AND deleted_at IS NULL");
 
     if (!headers_sent()) {
         header('Content-Type: application/json');
     }
 
     echo json_encode([
-        "status" => $deleted ? "success" : "error"
+        "status" => ($deleted && mysqli_affected_rows($con) > 0) ? "success" : "error"
     ]);
     exit;
 }
@@ -239,7 +240,7 @@ if (isset($_POST['ajax_delete_exp']) || isset($_GET['ajax_delete_exp'])) {
                 <tbody>
                     <?php
                     $i = 0;
-                    $get_exps = "SELECT * FROM experience_letters ORDER BY id DESC";
+                    $get_exps = "SELECT * FROM experience_letters WHERE deleted_at IS NULL ORDER BY id DESC";
                     $run_exps = mysqli_query($con, $get_exps);
 
                     if ($run_exps) {
