@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2026 at 09:51 AM
+-- Generation Time: Jul 08, 2026 at 02:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -68,7 +68,7 @@ CREATE TABLE `admins` (
 
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_pass`, `admin_image`, `admin_contact`, `admin_country`, `admin_job`, `admin_about`, `is_super_admin`, `permissions`) VALUES
 (1, 'admin', 'admin@gmail.com', '123', 'IMG-20251208-WA0027.jpg', '987654321', 'india', 'CEO', ' hello ', 1, NULL),
-(6, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'manager', '', 0, 'dashboard_view,employee_view,employee_insert,employee_update,employee_delete,attendance_view,attendance_insert,leave_view,worksheet_view,salary_view');
+(6, 'hr', 'hr@123gmail.com', '123', 'ChatGPT Image May 29, 2026, 12_03_24 PM.png', '0987654321', 'India', 'manager', '', 0, 'dashboard_view,employee_view,employee_insert,employee_update,employee_delete,attendance_view,attendance_insert,leave_view,leave_insert,leave_approve,worksheet_view,salary_view,salary_insert,salary_update,salary_delete,budget_view,budget_insert,budget_update,budget_delete,announcement_view,project_view,project_insert,project_update,project_delete,project_assign_task,project_assigned_only,project_source_view,project_source_insert,project_source_delete,todo_view,todo_insert,todo_update,todo_delete,lead_view,lead_insert,lead_update,lead_delete,client_view,client_insert,client_update,client_delete,company_link_view,company_link_insert,company_link_update,company_link_delete,offer_letter_view,offer_letter_insert,nda_view,nda_insert,experience_letter_view,experience_letter_insert');
 
 -- --------------------------------------------------------
 
@@ -83,15 +83,16 @@ CREATE TABLE `announcements` (
   `publish_date` datetime DEFAULT current_timestamp(),
   `end_date` datetime DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `announcements`
 --
 
-INSERT INTO `announcements` (`id`, `title`, `message`, `publish_date`, `end_date`, `is_active`, `created_at`) VALUES
-(32, 'jh', 'demo', '2026-06-30 15:33:00', NULL, 0, '2026-06-30 10:04:06');
+INSERT INTO `announcements` (`id`, `title`, `message`, `publish_date`, `end_date`, `is_active`, `created_at`, `deleted_at`) VALUES
+(32, 'jh', 'demo', '2026-06-30 15:33:00', NULL, 0, '2026-06-30 10:04:06', '2026-07-08 18:04:22');
 
 -- --------------------------------------------------------
 
@@ -144,10 +145,19 @@ INSERT INTO `attendance` (`id`, `emp_id`, `attendance_date`, `check_in_time`, `c
 (121, 23, '2026-06-30', '09:22:47', '19:00:00', 'present', NULL, NULL, NULL, 533, '2026-06-30 17:02:40', 1, '2026-06-30 05:52:47', NULL, NULL),
 (123, 23, '2026-07-01', '08:13:00', NULL, 'present', 'fix bugs', '', NULL, 17963, '2026-07-01 15:15:00', 1, '2026-07-01 04:43:08', NULL, NULL),
 (124, 23, '2026-07-02', '10:11:00', '17:24:00', 'present', 'test', '[\"work_photos\\/23_2026-07-02_1782993302_0.png\",\"work_photos\\/23_2026-07-02_1782993302_1.jpg\"]', NULL, 25930, '2026-07-02 13:16:00', 0, '2026-07-01 07:26:04', '::1', 'Local Network'),
-(125, 27, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
-(126, 28, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
-(127, 23, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
-(128, 25, '2026-07-06', '10:00:00', NULL, 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL);
+(125, 27, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(126, 28, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(127, 23, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(128, 25, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
+(129, 23, '2026-07-09', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(130, 23, '2026-07-10', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(131, 23, '2026-07-11', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(132, 23, '2026-07-12', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(133, 23, '2026-07-13', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(134, 23, '2026-07-14', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(135, 23, '2026-07-15', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(136, 23, '2026-07-07', '14:22:00', '15:05:00', 'present', 'ew', '[\"work_photos\\/23_2026-07-07_1783416956_0.jpg\"]', NULL, 2580, '2026-07-07 14:22:55', 0, '2026-07-07 08:52:55', '::1', 'Local Network'),
+(137, 23, '2026-07-08', '10:10:12', NULL, 'present', NULL, NULL, NULL, 18709, '2026-07-08 15:26:10', 1, '2026-07-08 04:40:12', '::1', 'Local Network');
 
 -- --------------------------------------------------------
 
@@ -180,7 +190,12 @@ INSERT INTO `attendance_logs` (`id`, `att_id`, `emp_id`, `action`, `action_time`
 (7, 124, 23, 'check_in', '2026-07-02 10:11:35', '::1', 'Local Network', '2026-07-02 04:41:35'),
 (8, 124, 23, 'pause', '2026-07-02 13:15:45', '::1', 'Local Network', '2026-07-02 07:45:45'),
 (9, 124, 23, 'resume', '2026-07-02 13:16:00', '::1', 'Local Network', '2026-07-02 07:46:00'),
-(10, 124, 23, 'check_out', '2026-07-02 17:24:00', '::1', 'Local Network', '2026-07-02 11:55:02');
+(10, 124, 23, 'check_out', '2026-07-02 17:24:00', '::1', 'Local Network', '2026-07-02 11:55:02'),
+(11, 136, 23, 'check_in', '2026-07-07 14:22:55', '::1', 'Local Network', '2026-07-07 08:52:55'),
+(12, 136, 23, 'check_out', '2026-07-07 15:05:00', '::1', 'Local Network', '2026-07-07 09:35:56'),
+(13, 137, 23, 'check_in', '2026-07-08 10:10:12', '::1', 'Local Network', '2026-07-08 04:40:12'),
+(14, 137, 23, 'pause', '2026-07-08 15:22:01', '::1', 'Local Network', '2026-07-08 09:52:01'),
+(15, 137, 23, 'resume', '2026-07-08 15:26:10', '::1', 'Local Network', '2026-07-08 09:56:10');
 
 -- --------------------------------------------------------
 
@@ -212,16 +227,17 @@ CREATE TABLE `clients` (
   `website` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` enum('Active','Inactive') DEFAULT 'Active',
-  `industry` varchar(100) DEFAULT NULL
+  `industry` varchar(100) DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `clients`
 --
 
-INSERT INTO `clients` (`id`, `image`, `name`, `mobile`, `email`, `country`, `company_name`, `website`, `created_at`, `status`, `industry`) VALUES
-(45, '1782794422_4067.png', 'Patel Madhavan', '1234353222', 'madhavanpatel19@gmail.com', 'India', '8dots123', 'https://www.figma.com/design/41kQ1s4X3LY1HcwtY4c3hQ/CADLETE-CRM?node-id=68-3&t=qmv7Uj5y2jjlng3R-0', '2026-06-30 04:40:22', 'Active', '8dots'),
-(46, '1782794563_2264.jpeg', 'rajveer', '9876543211', 'madhavanpatel19@gmail.com', 'India', '8dots', 'https://8dots.in', '2026-06-30 04:42:43', 'Active', '8dots, 8dots1');
+INSERT INTO `clients` (`id`, `image`, `name`, `mobile`, `email`, `country`, `company_name`, `website`, `created_at`, `status`, `industry`, `deleted_at`) VALUES
+(45, '1782794422_4067.png', 'Patel Madhavan', '1234353222', 'madhavanpatel19@gmail.com', 'India', '8dots123', 'https://www.figma.com/design/41kQ1s4X3LY1HcwtY4c3hQ/CADLETE-CRM?node-id=68-3&t=qmv7Uj5y2jjlng3R-0', '2026-06-30 04:40:22', 'Active', '8dots', NULL),
+(46, '1782794563_2264.jpeg', 'rajveer', '9876543211', 'madhavanpatel19@gmail.com', 'India', '8dots', 'https://8dots.in', '2026-06-30 04:42:43', 'Active', '8dots, 8dots1', NULL);
 
 -- --------------------------------------------------------
 
@@ -232,16 +248,17 @@ INSERT INTO `clients` (`id`, `image`, `name`, `mobile`, `email`, `country`, `com
 CREATE TABLE `client_industries` (
   `id` int(11) NOT NULL,
   `industry_name` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `client_industries`
 --
 
-INSERT INTO `client_industries` (`id`, `industry_name`, `created_at`) VALUES
-(5, '8dots', '2026-06-24 10:39:22'),
-(8, '8dots1', '2026-06-24 10:42:02');
+INSERT INTO `client_industries` (`id`, `industry_name`, `created_at`, `deleted_at`) VALUES
+(5, '8dots', '2026-06-24 10:39:22', NULL),
+(8, '8dots1', '2026-06-24 10:42:02', NULL);
 
 -- --------------------------------------------------------
 
@@ -264,16 +281,18 @@ CREATE TABLE `client_projects` (
   `project_image` varchar(255) DEFAULT NULL,
   `assigned_employees` text DEFAULT NULL,
   `assigned_users` text DEFAULT NULL,
-  `assigned_admins` text DEFAULT NULL
+  `assigned_admins` text DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `client_projects`
 --
 
-INSERT INTO `client_projects` (`id`, `client_id`, `project_name`, `project_date`, `budget`, `currency`, `status`, `source`, `created_at`, `deadline`, `project_desc`, `project_image`, `assigned_employees`, `assigned_users`, `assigned_admins`) VALUES
-(38, 45, 'crroco123', '2026-06-30', 10000.00, 'INR', 'Active', '', '2026-06-30 04:44:17', '2026-06-30', '23423', '1782794657_2646.jpg', '27,28,23,25', '', '1,4'),
-(39, 45, 'crroco123123', '2026-06-25', 120000.00, 'INR', 'Pending', 'family ', '2026-06-30 05:34:42', '2026-06-24', '322', '1782797682_9838.jpeg', '27,28', '', '1');
+INSERT INTO `client_projects` (`id`, `client_id`, `project_name`, `project_date`, `budget`, `currency`, `status`, `source`, `created_at`, `deadline`, `project_desc`, `project_image`, `assigned_employees`, `assigned_users`, `assigned_admins`, `deleted_at`) VALUES
+(38, 45, 'crroco123', '2026-06-30', 10000.00, 'INR', 'Active', '', '2026-06-30 04:44:17', '2026-06-30', '23423', '1782794657_2646.jpg', '27,28,23,25', '', '1,4', NULL),
+(39, 45, 'crroco123123', '2026-06-25', 120000.00, 'INR', 'Completed', 'family ', '2026-06-30 05:34:42', '2026-06-24', '322', '1782797682_9838.jpeg', '27,28', '', '1', NULL),
+(40, 45, 'crroco', '2026-07-14', 12300012.00, 'INR', 'Active', 'bro', '2026-07-06 11:31:29', '2026-07-07', 'efer', '1783337489_8233.jpg', '23,25', '', '6', NULL);
 
 -- --------------------------------------------------------
 
@@ -285,15 +304,17 @@ CREATE TABLE `client_project_remarks` (
   `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
   `remark` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `client_project_remarks`
 --
 
-INSERT INTO `client_project_remarks` (`id`, `project_id`, `remark`, `created_at`) VALUES
-(96, 38, 'ewef', '2026-06-30 05:33:21');
+INSERT INTO `client_project_remarks` (`id`, `project_id`, `remark`, `created_at`, `deleted_at`) VALUES
+(96, 38, 'ewef', '2026-06-30 05:33:21', NULL),
+(97, 39, 'System: Project status updated to Completed', '2026-07-08 09:55:48', NULL);
 
 -- --------------------------------------------------------
 
@@ -309,16 +330,20 @@ CREATE TABLE `company_links` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_pinned` tinyint(1) DEFAULT 0,
   `uploaded_by_type` enum('admin','employee') DEFAULT 'admin',
-  `uploaded_by_id` int(11) DEFAULT NULL
+  `uploaded_by_id` int(11) DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `company_links`
 --
 
-INSERT INTO `company_links` (`id`, `link_name`, `link_url`, `category`, `created_at`, `is_pinned`, `uploaded_by_type`, `uploaded_by_id`) VALUES
-(31, 'cd', 'https://chatgpt.com/c/6a2fd810-ce98-83ee-ae23-c8c72a491147', 'demo', '2026-07-02 06:08:09', 0, 'admin', NULL),
-(32, 'figma12', 'uploads/company_links/1782977363_Gemini_Generated_Image_9toiw09toiw09toi.png', 'dem', '2026-07-02 07:29:23', 1, 'admin', NULL);
+INSERT INTO `company_links` (`id`, `link_name`, `link_url`, `category`, `created_at`, `is_pinned`, `uploaded_by_type`, `uploaded_by_id`, `deleted_at`) VALUES
+(31, 'cd', 'https://chatgpt.com/c/6a2fd810-ce98-83ee-ae23-c8c72a491147', 'demo', '2026-07-02 06:08:09', 1, 'admin', NULL, NULL),
+(32, 'figma12', 'uploads/company_links/1782977363_Gemini_Generated_Image_9toiw09toiw09toi.png', 'dem', '2026-07-02 07:29:23', 1, 'admin', NULL, NULL),
+(34, 'demo', 'http://localhost/8DOTS/admin_area/index.php?company_links', 'demo', '2026-07-07 09:21:18', 1, 'employee', 23, NULL),
+(35, 'cd', 'uploads/company_links/1783416087_takeaway-menu.pdf', 'demo', '2026-07-07 09:21:27', 1, 'employee', 23, NULL),
+(36, 'efjkw', 'uploads/company_links/1783416094_britanni spice takeaway menu.pdf', 'demo', '2026-07-07 09:21:34', 0, 'employee', 23, NULL);
 
 -- --------------------------------------------------------
 
@@ -378,7 +403,8 @@ CREATE TABLE `employee_documents` (
   `id` int(11) NOT NULL,
   `emp_id` int(11) NOT NULL,
   `file_name` varchar(255) NOT NULL,
-  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -430,18 +456,19 @@ CREATE TABLE `emp_list` (
   `last_birthday_wish_year` int(11) DEFAULT NULL,
   `department` varchar(100) DEFAULT 'Not Assigned',
   `designation` varchar(100) DEFAULT 'Not Assigned',
-  `status` enum('Active','Inactive') DEFAULT 'Active'
+  `status` enum('Active','Inactive') DEFAULT 'Active',
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `emp_list`
 --
 
-INSERT INTO `emp_list` (`id`, `name`, `phone_number`, `address`, `email`, `password`, `blood_group`, `gender`, `join_date`, `salary`, `basic_salary`, `hra`, `allowance`, `deductions`, `documents`, `age`, `dob`, `work_experience`, `marital_status`, `num_dependents`, `emergency_name`, `emergency_relationship`, `emergency_address`, `emergency_phone`, `education_json`, `employment_json`, `account_name`, `bank_branch`, `account_number`, `account_type_ifsc`, `employee_image`, `offer_latter`, `NDA`, `Aadhar_card`, `Pan_card`, `Passportsize_photo`, `old_company_slary_slip`, `otp`, `otp_expire`, `last_birthday_wish_year`, `department`, `designation`, `status`) VALUES
-(23, 'Patel Madhavan1', 1234566779, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 20000, 20000.00, 0.00, 0.00, 0.00, NULL, 26, '2000-06-09', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '1782882504_4083.jpeg', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
-(25, 'ram', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 0, 15000.00, 0.00, 0.00, 0.00, NULL, 0, '2009-06-29', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
-(27, 'Patel Madhavan', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 120001, 120001.00, 0.00, 0.00, 0.00, NULL, 0, '2026-06-30', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active'),
-(28, 'Patel Madhavan', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123', 'B+', 'Male', '2026-06-29', 15000, 15000.00, 0.00, 0.00, 0.00, NULL, 15, '2010-06-30', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active');
+INSERT INTO `emp_list` (`id`, `name`, `phone_number`, `address`, `email`, `password`, `blood_group`, `gender`, `join_date`, `salary`, `basic_salary`, `hra`, `allowance`, `deductions`, `documents`, `age`, `dob`, `work_experience`, `marital_status`, `num_dependents`, `emergency_name`, `emergency_relationship`, `emergency_address`, `emergency_phone`, `education_json`, `employment_json`, `account_name`, `bank_branch`, `account_number`, `account_type_ifsc`, `employee_image`, `offer_latter`, `NDA`, `Aadhar_card`, `Pan_card`, `Passportsize_photo`, `old_company_slary_slip`, `otp`, `otp_expire`, `last_birthday_wish_year`, `department`, `designation`, `status`, `deleted_at`) VALUES
+(23, 'Patel Madhavan1', 1234566779, 'Gota', 'madhavanpatel19@gmail.com', '123', 'A+', 'Male', '2026-06-29', 20000, 20000.00, 0.00, 0.00, 0.00, NULL, 26, '2000-06-09', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '1782882504_4083.jpeg', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active', NULL),
+(25, 'ram', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '1234', 'A+', 'Male', '2026-06-29', 0, 15000.00, 0.00, 0.00, 0.00, NULL, 0, '2009-06-29', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active', NULL),
+(27, 'Patel Madhavan', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '12345', 'A+', 'Male', '2026-06-29', 120001, 120001.00, 0.00, 0.00, 0.00, NULL, 0, '2026-06-30', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Active', NULL),
+(28, 'Patel Madhavan', 2147483647, 'Gota', 'madhavanpatel19@gmail.com', '123456', 'B+', 'Male', '2026-06-29', 15000, 15000.00, 0.00, 0.00, 0.00, NULL, 15, '2010-06-30', '', 'Single', 0, '', '', '', '', '[]', '[]', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, 'Not Assigned', 'Not Assigned', 'Inactive', NULL);
 
 -- --------------------------------------------------------
 
@@ -463,6 +490,64 @@ CREATE TABLE `emp_performance` (
   `total` int(11) DEFAULT 0,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emp_personal_categories`
+--
+
+CREATE TABLE `emp_personal_categories` (
+  `id` int(11) NOT NULL,
+  `emp_id` int(11) NOT NULL,
+  `category_name` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `emp_personal_categories`
+--
+
+INSERT INTO `emp_personal_categories` (`id`, `emp_id`, `category_name`, `created_at`) VALUES
+(1, 23, 'madhavan', '2026-07-08 06:25:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emp_personal_documents`
+--
+
+CREATE TABLE `emp_personal_documents` (
+  `id` int(11) NOT NULL,
+  `emp_id` int(11) NOT NULL,
+  `doc_name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emp_personal_resources`
+--
+
+CREATE TABLE `emp_personal_resources` (
+  `id` int(11) NOT NULL,
+  `emp_id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `resource_type` varchar(50) DEFAULT 'link',
+  `link_name` varchar(255) NOT NULL,
+  `link_url` text DEFAULT NULL,
+  `is_pinned` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `emp_personal_resources`
+--
+
+INSERT INTO `emp_personal_resources` (`id`, `emp_id`, `category`, `resource_type`, `link_name`, `link_url`, `is_pinned`, `created_at`) VALUES
+(1, 23, 'madhavan', 'link', 'figma', 'https://web.whatsapp.com/', 1, '2026-07-08 06:25:23');
 
 -- --------------------------------------------------------
 
@@ -499,15 +584,16 @@ CREATE TABLE `experience_letters` (
   `designation` varchar(255) DEFAULT NULL,
   `join_date` date DEFAULT NULL,
   `relieve_date` date DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `experience_letters`
 --
 
-INSERT INTO `experience_letters` (`id`, `name`, `email`, `number`, `designation`, `join_date`, `relieve_date`, `created_at`) VALUES
-(4, 'Patel Madhavan', 'madhavanpatel19@gmail.com', '9876543212', 'hr ', '2026-06-23', '2026-06-29', '2026-06-30 06:53:14');
+INSERT INTO `experience_letters` (`id`, `name`, `email`, `number`, `designation`, `join_date`, `relieve_date`, `created_at`, `deleted_at`) VALUES
+(4, 'Patel Madhavan', 'madhavanpatel19@gmail.com', '9876543212', 'hr ', '2026-06-23', '2026-06-29', '2026-06-30 06:53:14', NULL);
 
 -- --------------------------------------------------------
 
@@ -529,15 +615,16 @@ CREATE TABLE `leads` (
   `lead_source` varchar(255) DEFAULT NULL,
   `status` enum('active','future','expired') DEFAULT 'active',
   `followup_date` date DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `leads`
 --
 
-INSERT INTO `leads` (`id`, `client_name`, `phone`, `email`, `company_name`, `project_name`, `description`, `budget`, `currency`, `remark`, `lead_source`, `status`, `followup_date`, `created_at`) VALUES
-(8, 'Patel Madhavan', '0987654321', 'madhavanpatel19@gmail.com', '8dots DEMO', 'crroco', '', '123000', 'INR', '', 'qwewe', 'active', '2026-06-30', '2026-06-30 06:08:57');
+INSERT INTO `leads` (`id`, `client_name`, `phone`, `email`, `company_name`, `project_name`, `description`, `budget`, `currency`, `remark`, `lead_source`, `status`, `followup_date`, `created_at`, `deleted_at`) VALUES
+(8, 'Patel Madhavan', '0987654321', 'madhavanpatel19@gmail.com', '8dots DEMO', 'crroco', '', '123000', 'INR', '', 'qwewe', 'active', '2026-06-30', '2026-06-30 06:08:57', NULL);
 
 -- --------------------------------------------------------
 
@@ -552,15 +639,16 @@ CREATE TABLE `lead_followups` (
   `followup_method` enum('Phone','Email','WhatsApp','Meeting','Other') DEFAULT 'Phone',
   `followup_type` varchar(100) DEFAULT NULL,
   `remark` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lead_followups`
 --
 
-INSERT INTO `lead_followups` (`id`, `lead_id`, `followup_date`, `followup_method`, `followup_type`, `remark`, `created_at`) VALUES
-(18, 8, '2026-06-30', 'Phone', 'General Remark', '', '2026-06-30 06:26:52');
+INSERT INTO `lead_followups` (`id`, `lead_id`, `followup_date`, `followup_method`, `followup_type`, `remark`, `created_at`, `deleted_at`) VALUES
+(18, 8, '2026-06-30', 'Phone', 'General Remark', '', '2026-06-30 06:26:52', NULL);
 
 -- --------------------------------------------------------
 
@@ -571,18 +659,19 @@ INSERT INTO `lead_followups` (`id`, `lead_id`, `followup_date`, `followup_method
 CREATE TABLE `lead_sources` (
   `id` int(11) NOT NULL,
   `source_name` varchar(100) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lead_sources`
 --
 
-INSERT INTO `lead_sources` (`id`, `source_name`, `created_at`) VALUES
-(30, 'family ', '2026-06-30 05:24:35'),
-(32, 'qwewe', '2026-06-30 06:03:21'),
-(34, 'bro', '2026-06-30 10:48:32'),
-(35, 'hr', '2026-07-01 05:25:43');
+INSERT INTO `lead_sources` (`id`, `source_name`, `created_at`, `deleted_at`) VALUES
+(30, 'family ', '2026-06-30 05:24:35', NULL),
+(32, 'qwewe', '2026-06-30 06:03:21', NULL),
+(34, 'bro', '2026-06-30 10:48:32', NULL),
+(35, 'hr', '2026-07-01 05:25:43', NULL);
 
 -- --------------------------------------------------------
 
@@ -607,7 +696,7 @@ CREATE TABLE `leave_applications` (
 
 INSERT INTO `leave_applications` (`id`, `emp_id`, `leave_type_id`, `leave_from`, `leave_to`, `reason`, `status`, `created_at`) VALUES
 (7, 23, 4, '2026-07-01', '2026-07-02', 'demo', 'approved', '2026-06-30 12:16:55'),
-(8, 23, 4, '2026-07-09', '2026-07-15', 'efe', 'pending', '2026-07-06 06:20:57');
+(8, 23, 4, '2026-07-09', '2026-07-15', 'efe', 'approved', '2026-07-06 06:20:57');
 
 -- --------------------------------------------------------
 
@@ -619,19 +708,20 @@ CREATE TABLE `leave_types` (
   `id` int(11) NOT NULL,
   `leave_name` varchar(255) NOT NULL,
   `num_of_leave` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `leave_types`
 --
 
-INSERT INTO `leave_types` (`id`, `leave_name`, `num_of_leave`, `created_at`) VALUES
-(4, 'demo', 10, '2026-06-30 12:16:29'),
-(5, 'den1', 10, '2026-06-30 12:20:16'),
-(6, 'demo', 12, '2026-06-30 12:20:24'),
-(7, 'abc', 23, '2026-06-30 12:20:32'),
-(8, 'dfks', 12, '2026-06-30 12:20:36');
+INSERT INTO `leave_types` (`id`, `leave_name`, `num_of_leave`, `created_at`, `deleted_at`) VALUES
+(4, 'demo', 10, '2026-06-30 12:16:29', NULL),
+(5, 'den1', 10, '2026-06-30 12:20:16', NULL),
+(6, 'demo', 12, '2026-06-30 12:20:24', NULL),
+(7, 'abc', 23, '2026-06-30 12:20:32', NULL),
+(8, 'dfks', 12, '2026-06-30 12:20:36', NULL);
 
 -- --------------------------------------------------------
 
@@ -648,15 +738,16 @@ CREATE TABLE `nda_forms` (
   `salary` varchar(100) DEFAULT NULL,
   `start_date` date NOT NULL,
   `notice_period` varchar(100) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `nda_forms`
 --
 
-INSERT INTO `nda_forms` (`id`, `name`, `number`, `email`, `position`, `salary`, `start_date`, `notice_period`, `created_at`) VALUES
-(3, 'Patel Madhavan', '987654321', 'madhavanpatel19@gmail.com', 'hr', NULL, '2026-07-01', NULL, '2026-06-30 06:52:42');
+INSERT INTO `nda_forms` (`id`, `name`, `number`, `email`, `position`, `salary`, `start_date`, `notice_period`, `created_at`, `deleted_at`) VALUES
+(3, 'Patel Madhavan', '987654321', 'madhavanpatel19@gmail.com', 'hr', NULL, '2026-07-01', NULL, '2026-06-30 06:52:42', NULL);
 
 -- --------------------------------------------------------
 
@@ -672,15 +763,16 @@ CREATE TABLE `offer_letters` (
   `position` varchar(255) NOT NULL,
   `start_date` date NOT NULL,
   `notice_period` varchar(100) DEFAULT NULL,
-  `salary` decimal(10,2) NOT NULL
+  `salary` decimal(10,2) NOT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `offer_letters`
 --
 
-INSERT INTO `offer_letters` (`id`, `name`, `number`, `email`, `position`, `start_date`, `notice_period`, `salary`) VALUES
-(8, 'Patel Madhavan', 2147483647, 'madhavanpatel19@gmail.com', 'web devlpor', '2026-07-02', '90 days', 12000.00);
+INSERT INTO `offer_letters` (`id`, `name`, `number`, `email`, `position`, `start_date`, `notice_period`, `salary`, `deleted_at`) VALUES
+(8, 'Patel Madhavan', 2147483647, 'madhavanpatel19@gmail.com', 'web devlpor', '2026-07-02', '90 days', 12000.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -708,7 +800,8 @@ CREATE TABLE `project_budget_phases` (
 INSERT INTO `project_budget_phases` (`id`, `project_id`, `phase_name`, `description`, `expected_date`, `cost`, `received_amount`, `received_date`, `remark`, `created_at`) VALUES
 (56, 38, 'Phase 1', 'teset1', '2026-06-30', 5000.00, 0.00, NULL, NULL, '2026-07-02 09:56:58'),
 (57, 38, 'Phase 2', 'test2 ', '2026-07-04', 5000.00, 0.00, NULL, NULL, '2026-07-02 09:56:58'),
-(58, 39, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-07-02 09:57:29');
+(58, 39, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-07-02 09:57:29'),
+(59, 40, 'Phase 1', '', NULL, 0.00, 0.00, NULL, NULL, '2026-07-06 11:31:29');
 
 -- --------------------------------------------------------
 
@@ -721,7 +814,8 @@ CREATE TABLE `project_documents` (
   `project_id` int(11) NOT NULL,
   `document_name` varchar(255) NOT NULL,
   `file_path` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -735,17 +829,18 @@ CREATE TABLE `project_links` (
   `project_id` int(11) NOT NULL,
   `link_name` varchar(255) NOT NULL,
   `link_url` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `project_links`
 --
 
-INSERT INTO `project_links` (`id`, `project_id`, `link_name`, `link_url`, `created_at`) VALUES
-(22, 38, 'website', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-07-02 09:56:58'),
-(23, 38, 'ddd', 'https://web.whatsapp.com/', '2026-07-02 09:56:58'),
-(24, 38, 'efjkw', 'http://localhost/8DOTS/admin_area/index.php', '2026-07-02 09:56:58');
+INSERT INTO `project_links` (`id`, `project_id`, `link_name`, `link_url`, `created_at`, `deleted_at`) VALUES
+(22, 38, 'website', 'http://localhost/8DOTS/admin_area/index.php?add_project', '2026-07-02 09:56:58', NULL),
+(23, 38, 'ddd', 'https://web.whatsapp.com/', '2026-07-02 09:56:58', NULL),
+(24, 38, 'efjkw', 'http://localhost/8DOTS/admin_area/index.php', '2026-07-02 09:56:58', NULL);
 
 -- --------------------------------------------------------
 
@@ -761,27 +856,32 @@ CREATE TABLE `project_team_todos` (
   `due_date` date DEFAULT NULL,
   `priority` varchar(50) DEFAULT 'Medium',
   `status` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `project_team_todos`
 --
 
-INSERT INTO `project_team_todos` (`id`, `project_id`, `emp_id`, `task_name`, `due_date`, `priority`, `status`, `created_at`) VALUES
-(40, 0, 22, 'efjefke', '2026-06-24', 'Medium', 1, '2026-06-24 11:27:10'),
-(41, 0, 22, 'dfjoef', '2026-06-24', 'Medium', 1, '2026-06-24 11:27:15'),
-(42, 0, 22, 'wdkdkv', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:38'),
-(43, 0, 22, 'dkvfdvvkf', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:42'),
-(44, 0, 22, 'fkvaekver', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:59'),
-(45, 0, 23, 'wew', '2026-06-30', 'Medium', 1, '2026-06-30 04:23:11'),
-(46, 0, 23, 'faga', '2026-07-01', 'High', 1, '2026-07-01 11:25:37'),
-(47, 38, 23, 'ewfawf', NULL, 'Medium', 1, '2026-07-01 11:45:06'),
-(48, 38, 23, 'afafrrde', NULL, 'Medium', 1, '2026-07-01 11:45:10'),
-(49, 0, 23, 'wefef', '2026-07-02', 'Low', 0, '2026-07-02 11:30:30'),
-(50, 0, 23, 'ewfeae', '2026-07-02', 'Medium', 0, '2026-07-02 11:30:34'),
-(51, 0, 23, 'efadvdfvd', '2026-07-02', 'High', 0, '2026-07-02 11:30:38'),
-(52, 0, 23, 'frefer', '2026-07-02', 'Low', 0, '2026-07-02 11:30:44');
+INSERT INTO `project_team_todos` (`id`, `project_id`, `emp_id`, `task_name`, `due_date`, `priority`, `status`, `created_at`, `deleted_at`) VALUES
+(40, 0, 22, 'efjefke', '2026-06-24', 'Medium', 1, '2026-06-24 11:27:10', NULL),
+(41, 0, 22, 'dfjoef', '2026-06-24', 'Medium', 1, '2026-06-24 11:27:15', NULL),
+(42, 0, 22, 'wdkdkv', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:38', NULL),
+(43, 0, 22, 'dkvfdvvkf', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:42', NULL),
+(44, 0, 22, 'fkvaekver', '2026-06-24', 'Medium', 1, '2026-06-24 11:28:59', NULL),
+(45, 0, 23, 'wew', '2026-06-30', 'Medium', 1, '2026-06-30 04:23:11', NULL),
+(46, 0, 23, 'faga', '2026-07-01', 'High', 1, '2026-07-01 11:25:37', NULL),
+(47, 38, 23, 'ewfawf', NULL, 'Medium', 1, '2026-07-01 11:45:06', NULL),
+(48, 38, 23, 'afafrrde', NULL, 'Medium', 1, '2026-07-01 11:45:10', NULL),
+(49, 0, 23, 'wefef', '2026-07-02', 'Low', 1, '2026-07-02 11:30:30', NULL),
+(50, 0, 23, 'ewfeae', '2026-07-02', 'Medium', 1, '2026-07-02 11:30:34', NULL),
+(51, 0, 23, 'efadvdfvd', '2026-07-02', 'High', 1, '2026-07-02 11:30:38', NULL),
+(52, 0, 23, 'frefer', '2026-07-02', 'Low', 1, '2026-07-02 11:30:44', NULL),
+(53, 0, 23, 'demo1', '2026-12-31', 'High', 1, '2026-07-07 09:25:27', NULL),
+(54, 0, 27, 'ew', '2026-07-08', 'Low', 1, '2026-07-08 10:03:22', NULL),
+(55, 0, 25, '4ee', '2026-07-08', 'Medium', 1, '2026-07-08 10:05:42', NULL),
+(56, 0, 25, 'qefer', '2026-07-08', 'Medium', 1, '2026-07-08 10:05:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -907,6 +1007,24 @@ ALTER TABLE `emp_performance`
   ADD UNIQUE KEY `emp_month` (`emp_id`,`perf_year`,`perf_month`);
 
 --
+-- Indexes for table `emp_personal_categories`
+--
+ALTER TABLE `emp_personal_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `emp_personal_documents`
+--
+ALTER TABLE `emp_personal_documents`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `emp_personal_resources`
+--
+ALTER TABLE `emp_personal_resources`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `emp_salary_history`
 --
 ALTER TABLE `emp_salary_history`
@@ -1014,13 +1132,13 @@ ALTER TABLE `announcement_read`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 
 --
 -- AUTO_INCREMENT for table `attendance_logs`
 --
 ALTER TABLE `attendance_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1044,19 +1162,19 @@ ALTER TABLE `client_industries`
 -- AUTO_INCREMENT for table `client_projects`
 --
 ALTER TABLE `client_projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `client_project_remarks`
 --
 ALTER TABLE `client_project_remarks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT for table `company_links`
 --
 ALTER TABLE `company_links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `company_links_assignments`
@@ -1087,6 +1205,24 @@ ALTER TABLE `emp_list`
 --
 ALTER TABLE `emp_performance`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+--
+-- AUTO_INCREMENT for table `emp_personal_categories`
+--
+ALTER TABLE `emp_personal_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `emp_personal_documents`
+--
+ALTER TABLE `emp_personal_documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `emp_personal_resources`
+--
+ALTER TABLE `emp_personal_resources`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `emp_salary_history`
@@ -1146,7 +1282,7 @@ ALTER TABLE `offer_letters`
 -- AUTO_INCREMENT for table `project_budget_phases`
 --
 ALTER TABLE `project_budget_phases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `project_documents`
@@ -1164,7 +1300,7 @@ ALTER TABLE `project_links`
 -- AUTO_INCREMENT for table `project_team_todos`
 --
 ALTER TABLE `project_team_todos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- Constraints for dumped tables
