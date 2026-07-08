@@ -260,7 +260,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                 <div class="form-group" style="margin-top: 30px; margin-bottom: 0;">
                                     <div class="col-md-12" style="display: flex; gap: 10px; justify-content: flex-end;">
                                         <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn-premium-add" style="border: none;">
+                                        <button type="submit" class="btn-premium-add">
                                             <i class="fa fa-paper-plane"></i> Submit Worksheet
                                         </button>
                                     </div>

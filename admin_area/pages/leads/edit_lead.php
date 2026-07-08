@@ -122,7 +122,7 @@ if (isset($_POST['update_lead'])) {
     <div class="page-header-premium">
         <h1></h1>
         <div class="header-actions-premium">
-            <a href="index.php?leads" class="btn-premium-add" style="background: #f1f5f9 !important; color: #475569 !important; border: 1.5px solid #e2e8f0 !important; box-shadow: none !important;">
+            <a href="index.php?leads" class="btn-premium-cancel">
                 <i class="fa fa-arrow-left"></i> Back to Leads
             </a>
         </div>
@@ -298,8 +298,8 @@ if (isset($_POST['update_lead'])) {
                 </div>
 
                 <div style="margin-top: 50px; text-align: right; border-top: 1.5px solid #f1f5f9; padding-top: 30px;">
-                    <a href="index.php?leads" class="btn-premium-cancel" style="height: 48px; border-radius: 12px; padding: 12px 30px; font-weight: 600; margin-right: 10px;">Cancel</a>
-                    <button type="submit" name="update_lead" class="btn-premium-add" style="padding: 14px 45px !important; font-size: 15px !important; border: none;">
+                    <a href="index.php?leads" class="btn-premium-cancel">Cancel</a>
+                    <button type="submit" name="update_lead" class="btn-premium-add">
                         <i class="fa fa-save"></i> Update Lead Information
                     </button>
                 </div>

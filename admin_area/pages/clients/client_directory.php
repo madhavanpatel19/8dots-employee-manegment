@@ -486,27 +486,6 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
         box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
     }
 
-    .btn-premium-add {
-        border-radius: 12px;
-        font-weight: 700;
-        transition: all 0.3s;
-        padding: 12px 25px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: #1e293b;
-        color: #fff;
-        border: none;
-        text-decoration: none !important;
-    }
-
-    .btn-premium-add:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        color: #fff;
-        background: #0f172a;
-    }
-
     .id-badge-premium {
         font-family: 'Monaco', 'Consolas', monospace;
         font-weight: 800;

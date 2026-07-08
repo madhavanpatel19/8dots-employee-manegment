@@ -152,7 +152,7 @@ if (isset($_POST['update'])) {
     if (canAdminAccess('salary_update')) {
         $query .= ", basic_salary = '$basic', hra = '$hra', allowance = '$allowance', deductions = '$deductions', salary = '$salary' ";
     }
-    
+
     $query .= " $q_extra WHERE id = '$id'";
 
     $result = mysqli_query($con, $query);
@@ -206,7 +206,7 @@ if (isset($_POST['update'])) {
     <div class="page-header-premium">
         <h1></h1>
         <div class="header-actions-premium">
-            <a href="index.php?emp_directory" class="btn-premium-add" style="background: #f1f5f9 !important; color: #475569 !important; border: 1.5px solid #e2e8f0 !important; box-shadow: none !important;">
+            <a href="index.php?emp_directory" class="btn-premium-cancel">
                 <i class="fa fa-arrow-left"></i> Back to Directory
             </a>
         </div>
@@ -593,23 +593,23 @@ if (isset($_POST['update'])) {
                             <input type="date" name="joinDate" class="p-input-premium" value="<?php echo $employee['join_date']; ?>" required>
                         </div>
                     </div>
-                    <?php 
+                    <?php
                     $can_update_salary = canAdminAccess('salary_update');
                     $salary_readonly = $can_update_salary ? '' : 'readonly style="background: #f1f5f9;"';
                     ?>
                     <?php if (canAdminAccess('salary_view') || $can_update_salary): ?>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Basic Pay <?php echo $can_update_salary ? '*' : ''; ?></label>
-                            <input type="number" id="edit_basic_salary" name="basic_salary" class="p-input-premium" value="<?php echo $employee['basic_salary']; ?>" <?php echo $can_update_salary ? 'required' : ''; ?> <?php echo $salary_readonly; ?>>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Basic Pay <?php echo $can_update_salary ? '*' : ''; ?></label>
+                                <input type="number" id="edit_basic_salary" name="basic_salary" class="p-input-premium" value="<?php echo $employee['basic_salary']; ?>" <?php echo $can_update_salary ? 'required' : ''; ?> <?php echo $salary_readonly; ?>>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">HRA</label>
-                            <input type="number" id="edit_hra" name="hra" class="p-input-premium" value="<?php echo $employee['hra']; ?>" <?php echo $salary_readonly; ?>>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">HRA</label>
+                                <input type="number" id="edit_hra" name="hra" class="p-input-premium" value="<?php echo $employee['hra']; ?>" <?php echo $salary_readonly; ?>>
+                            </div>
                         </div>
-                    </div>
                 </div>
 
                 <div class="row" style="margin-top: 15px;">
@@ -631,7 +631,7 @@ if (isset($_POST['update'])) {
                             <input type="text" id="edit_salary" name="salary" class="p-input-premium" value="<?php echo $employee['salary']; ?>" readonly style="background: #f0fdf4; font-weight: 800; color: #059669; font-size: 18px; border-color: #bbf7d0;">
                         </div>
                     </div>
-                    <?php endif; ?>
+                <?php endif; ?>
                 </div>
 
                 <style>

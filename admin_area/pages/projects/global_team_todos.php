@@ -27,11 +27,9 @@ if ($run_projs) {
 <div class="page-wrapper premium-ui-enabled" style="background: #f8fafc; min-height: calc(100vh - 60px);">
     <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
         <div style="display: flex; align-items: center; gap: 20px;">
-            <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px;">
-                <i class="fa fa-globe" style="color: #dc2626;"></i> Global Team Tasks
-            </h1>
+            <h1></h1>
             <div style="padding: 8px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                All Workspace Tasks
+                Global Team Tasks
             </div>
         </div>
         <div class="header-actions-premium" style="display: flex; gap: 16px; align-items: center;">

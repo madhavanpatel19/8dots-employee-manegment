@@ -6,7 +6,7 @@ $content = file_get_contents($file);
 $button_search = '<button type="button" class="btn-premium-add" data-toggle="modal" data-target="#addProjectModal">
                 <i class="fa fa-plus"></i> Add New Project
             </button>';
-$button_replace = '<a href="index.php?add_project" class="btn-premium-add" style="text-decoration: none;">
+$button_replace = '<a href="index.php?add_project" class="btn-premium-add">
                 <i class="fa fa-plus"></i> Add New Project
             </a>';
 $content = str_replace($button_search, $button_replace, $content);

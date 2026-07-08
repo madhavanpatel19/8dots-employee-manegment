@@ -887,34 +887,34 @@ if (isset($_POST['save_lead'])) {
                             <div class="col-md-6">
                                 <div class="form-group" style="margin-bottom: 20px;">
                                     <?php if (canAdminAccess('project_source_view')): ?>
-                                    <label class="premium-label" style="font-size: 14px; color: #334155; display: flex; justify-content: space-between; align-items: center;">
-                                        Lead Source
-                                        <?php if (canAdminAccess('project_source_insert')): ?>
-                                        <span class="add-source-btn" data-toggle="modal" data-target="#addSourceModal" style="color: #10b981; font-size: 12px; cursor: pointer; padding: 4px 10px; background: #ecfdf5; border-radius: 6px; font-weight: 700;">
-                                            <i class="fa fa-plus"></i> New
-                                        </span>
-                                        <?php endif; ?>
-                                    </label>
-                                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 100px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
-                                        <?php
-                                        $get_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
-                                        $run_sources = mysqli_query($con, $get_sources);
-                                        while ($row_s = mysqli_fetch_array($run_sources)):
-                                            $s_name = $row_s['source_name'];
-                                            $s_id = $row_s['id'];
-                                        ?>
-                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                                <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                                    <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="width: 16px; height: 16px; accent-color: #DF2127;">
-                                                    <?php echo htmlspecialchars($s_name); ?>
-                                                </label>
-                                                <?php if (canAdminAccess('project_source_delete')): ?>
-                                                <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px; padding: 5px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endwhile; ?>
-                                    </div>
-                                    <small style="color: #94a3b8; font-size: 11px; margin-top: 8px; display: block;">Select all that apply</small>
+                                        <label class="premium-label" style="font-size: 14px; color: #334155; display: flex; justify-content: space-between; align-items: center;">
+                                            Lead Source
+                                            <?php if (canAdminAccess('project_source_insert')): ?>
+                                                <span class="add-source-btn" data-toggle="modal" data-target="#addSourceModal" style="color: #10b981; font-size: 12px; cursor: pointer; padding: 4px 10px; background: #ecfdf5; border-radius: 6px; font-weight: 700;">
+                                                    <i class="fa fa-plus"></i> New
+                                                </span>
+                                            <?php endif; ?>
+                                        </label>
+                                        <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 100px; max-height: 150px; overflow-y: auto;" id="source_checkbox_container">
+                                            <?php
+                                            $get_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                            $run_sources = mysqli_query($con, $get_sources);
+                                            while ($row_s = mysqli_fetch_array($run_sources)):
+                                                $s_name = $row_s['source_name'];
+                                                $s_id = $row_s['id'];
+                                            ?>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                                    <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                                        <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="width: 16px; height: 16px; accent-color: #DF2127;">
+                                                        <?php echo htmlspecialchars($s_name); ?>
+                                                    </label>
+                                                    <?php if (canAdminAccess('project_source_delete')): ?>
+                                                        <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px; padding: 5px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endwhile; ?>
+                                        </div>
+                                        <small style="color: #94a3b8; font-size: 11px; margin-top: 8px; display: block;">Select all that apply</small>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -944,7 +944,7 @@ if (isset($_POST['save_lead'])) {
 
         <!-- Action Buttons -->
         <div style="margin: 0 30px 40px 30px; display: flex; justify-content: flex-end; gap: 15px;">
-            <a href="index.php?leads" class="btn-premium-cancel" style="text-decoration: none;">Cancel</a>
+            <a href="index.php?leads" class="btn-premium-cancel">Cancel</a>
             <button type="submit" name="save_lead" class="btn-premium-add">
                 <i class="fa fa-save"></i> Save Lead Information
             </button>

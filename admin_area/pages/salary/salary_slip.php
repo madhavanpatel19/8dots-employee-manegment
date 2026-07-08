@@ -800,7 +800,7 @@ if ($print_all_mode) {
                     <button id="printBtn" class="btn-premium-cancel">
                         <i class="fa fa-print"></i> Print
                     </button>
-                    <button id="downloadBtn" class="btn-premium-add" style="background: #10b981 !important; color: #fff !important;">
+                    <button id="downloadBtn" class="btn-premium-add">
                         <i class="fa fa-download"></i> Save as PDF
                     </button>
                 </div>

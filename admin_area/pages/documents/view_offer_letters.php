@@ -36,9 +36,9 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
 
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
-        <h1><i class="fa fa-file-text"></i> Offer Letters</h1>
+        <h1></h1>
         <?php if (canAdminAccess('offer_letter_insert')): ?>
-            <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newOfferModal" style="padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #6366f1; border: none; color: #fff; cursor: pointer; transition: all 0.3s ease;">
+            <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#newOfferModal">
                 <i class="fa fa-plus"></i> New Offer Letter
             </button>
         <?php endif; ?>

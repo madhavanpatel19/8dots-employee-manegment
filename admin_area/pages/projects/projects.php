@@ -153,26 +153,26 @@ $run_projects = mysqli_query($con, $get_projects);
                                 <th>Project & Client</th>
                                 <th>Assign Employees</th>
                                 <?php if (canAdminAccess('project_source_view')): ?>
-                                <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($_GET['source']) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
-                                        <?php echo !empty($_GET['source']) ? htmlspecialchars($_GET['source']) : 'Source'; ?>
-                                        <i class="fa fa-filter" style="font-size: 11px; color: <?php echo !empty($_GET['source']) ? '#4f46e5' : '#94a3b8'; ?>;"></i>
-                                    </div>
-                                    <select id="sourceSelect" onchange="applySourceFilter(this.value)"
-                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
-                                        <option value="">All Sources</option>
-                                        <?php
-                                        $source_filter = isset($_GET['source']) ? $_GET['source'] : '';
-                                        $get_all_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
-                                        $run_all_sources = mysqli_query($con, $get_all_sources);
-                                        while ($s_row = mysqli_fetch_array($run_all_sources)) {
-                                            $s_name = $s_row['source_name'];
-                                            $selected = ($source_filter == $s_name) ? 'selected' : '';
-                                            echo "<option value='" . htmlspecialchars($s_name) . "' $selected>" . htmlspecialchars($s_name) . "</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </th>
+                                    <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($_GET['source']) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
+                                            <?php echo !empty($_GET['source']) ? htmlspecialchars($_GET['source']) : 'Source'; ?>
+                                            <i class="fa fa-filter" style="font-size: 11px; color: <?php echo !empty($_GET['source']) ? '#4f46e5' : '#94a3b8'; ?>;"></i>
+                                        </div>
+                                        <select id="sourceSelect" onchange="applySourceFilter(this.value)"
+                                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
+                                            <option value="">All Sources</option>
+                                            <?php
+                                            $source_filter = isset($_GET['source']) ? $_GET['source'] : '';
+                                            $get_all_sources = "SELECT * FROM lead_sources ORDER BY source_name ASC";
+                                            $run_all_sources = mysqli_query($con, $get_all_sources);
+                                            while ($s_row = mysqli_fetch_array($run_all_sources)) {
+                                                $s_name = $s_row['source_name'];
+                                                $selected = ($source_filter == $s_name) ? 'selected' : '';
+                                                echo "<option value='" . htmlspecialchars($s_name) . "' $selected>" . htmlspecialchars($s_name) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </th>
                                 <?php endif; ?>
                                 <th style="text-align: center;">Date</th>
                                 <th style="text-align: center;">Budget</th>

@@ -447,7 +447,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn-premium-add" style="width: 100%; max-width: 400px; padding: 14px; font-size: 15px; margin-top: 15px; justify-content: center;">
+                    <button type="submit" class="btn-premium-add">
                         View Attendance
                     </button>
                 </div>

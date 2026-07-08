@@ -26,10 +26,10 @@ if (!$client_data) {
             Project Portfolio: <?php echo htmlspecialchars($client_data['name']); ?>
         </h1>
         <div class="header-actions-premium" style="display: flex; gap: 12px; align-items: center;">
-            <a href="index.php?add_project&client_id=<?php echo $client_id; ?>" class="btn-premium-add" style="text-decoration: none;">
+            <a href="index.php?add_project&client_id=<?php echo $client_id; ?>" class="btn-premium-add">
                 <i class="fa fa-plus"></i> Add New Project
             </a>
-            <a href="index.php?client_directory" class="btn-premium-add" style="background: #fff !important; color: #475569 !important; border: 1.5px solid #e2e8f0 !important; box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;">
+            <a href="index.php?client_directory" class="btn-premium-cancel">
                 <i class="fa fa-arrow-left"></i> Back to Directory
             </a>
         </div>
@@ -261,27 +261,6 @@ if (!$client_data) {
         background: #f1f5f9;
         padding: 4px 10px;
         border-radius: 8px;
-    }
-
-    .btn-premium-add {
-        border-radius: 12px;
-        font-weight: 700;
-        transition: all 0.3s;
-        padding: 12px 25px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: #1e293b;
-        color: #fff;
-        border: none;
-        text-decoration: none !important;
-    }
-
-    .btn-premium-add:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        color: #fff;
-        background: #0f172a;
     }
 
     .glass-card-premium {
@@ -796,8 +775,8 @@ if (!$client_data) {
                         <textarea name="remark" class="p-input-premium" style="height: 100px;" placeholder="Define primary objectives..."></textarea>
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
-                        <button type="button" class="btn-premium-add" data-dismiss="modal" style="background: #f1f5f9 !important; color: #64748b !important; border: none; padding: 12px 25px !important;">Cancel</button>
-                        <button type="submit" class="btn-premium-add" style="background: #1e293b !important; padding: 12px 35px !important; border-radius: 12px; font-size: 14px;">
+                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-premium-add">
                             <i class="fa fa-paper-plane"></i> Deploy Project
                         </button>
                     </div>

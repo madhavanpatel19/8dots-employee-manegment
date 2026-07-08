@@ -40,7 +40,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                 <i class="fa fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;"></i>
                 <input type="text" id="task-search" placeholder="Search tasks..." style="width: 250px; padding: 10px 15px 10px 38px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #334155; font-weight: 500; outline: none; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
             </div>
-            <a href="index.php?view_projects&id=<?php echo $project['client_id']; ?>" class="btn-premium-add" style="background: #fff !important; color: #475569 !important; border: 1.5px solid #e2e8f0 !important; box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;">
+            <a href="index.php?view_projects&id=<?php echo $project['client_id']; ?>" class="btn-premium-cancel">
                 <i class="fa fa-arrow-left"></i> Back to Project
             </a>
         </div>
@@ -78,10 +78,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                     </div>
 
                     <?php if (function_exists('canAdminAccess') && canAdminAccess('todo_insert')): ?>
-                    <div class="add-task-trigger" onclick="showAddTask(<?php echo $emp_id; ?>)">
-                        <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
-                        <span>Add a task</span>
-                    </div>
+                        <div class="add-task-trigger" onclick="showAddTask(<?php echo $emp_id; ?>)">
+                            <i class="fa fa-plus-circle" style="font-size: 16px; color: #94a3b8;"></i>
+                            <span>Add a task</span>
+                        </div>
                     <?php endif; ?>
 
                     <div class="add-task-form" id="add-form-<?php echo $emp_id; ?>" style="display: none;">
@@ -421,9 +421,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                 priorityHtml = `<div class="priority-flag priority-${task.priority}"><i class="fa fa-flag"></i> ${task.priority}</div>`;
             }
 
-            const checkboxHtml = canTodoUpdate 
-                ? `<div class="task-checkbox" onclick="toggleTask(${task.id}, ${empId}, ${isCompleted ? 0 : 1})"><i class="fa fa-check"></i></div>` 
-                : `<div class="task-checkbox" style="cursor: default; opacity: 0.5;"><i class="fa fa-check"></i></div>`;
+            const checkboxHtml = canTodoUpdate ?
+                `<div class="task-checkbox" onclick="toggleTask(${task.id}, ${empId}, ${isCompleted ? 0 : 1})"><i class="fa fa-check"></i></div>` :
+                `<div class="task-checkbox" style="cursor: default; opacity: 0.5;"><i class="fa fa-check"></i></div>`;
 
             let dropdownHtml = '';
             if (canTodoDelete) {

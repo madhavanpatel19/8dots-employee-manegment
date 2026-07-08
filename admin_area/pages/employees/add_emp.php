@@ -233,7 +233,7 @@ if (isset($_POST['submit'])) {
     <div class="page-header-premium">
         <h1></h1>
         <div class="header-actions-premium">
-            <a href="index.php?emp_directory" class="btn-premium-add" style="background: #f1f5f9 !important; color: #475569 !important; border: 1.5px solid #e2e8f0 !important; box-shadow: none !important;">
+            <a href="index.php?emp_directory" class="btn-premium-cancel">
                 <i class="fa fa-arrow-left"></i> Back to Directory
             </a>
         </div>
@@ -682,7 +682,7 @@ if (isset($_POST['submit'])) {
         </div>
 
         <div style="margin: 0 30px 40px 30px; text-align: right;">
-            <button type="submit" name="submit" class="btn-premium-add" style="padding: 14px 40px !important; font-size: 16px !important; background: #DF2127 !important; border: none; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.3);">
+            <button type="submit" name="submit" class="btn-premium-add">
                 <i class="fa fa-user-plus"></i> Register New Employee
             </button>
         </div>

@@ -115,7 +115,7 @@ $result = mysqli_query($con, $query);
                 <h1 style="font-size: 24px; font-weight: 800; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 12px;">
                     <i class="fa fa-calendar-check-o" style="color: #1e293b;"></i> Leave Application
                 </h1>
-                <button class="btn-premium-add-black" data-toggle="modal" data-target="#applyLeaveModal" style="background: #0f172a; color: #fff; border: none; padding: 12px 24px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 10px; transition: 0.3s; box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.25);">
+                <button class="btn-premium-add" data-toggle="modal" data-target="#applyLeaveModal">
                     <i class="fa fa-plus"></i> Apply Leave
                 </button>
             </div>
@@ -304,7 +304,7 @@ $result = mysqli_query($con, $query);
                                         <div class="form-group" style="margin-top: 30px; margin-bottom: 0;">
                                             <div class="col-md-12" style="display: flex; gap: 10px; justify-content: flex-end;">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal" style="border-radius: 10px; padding: 10px 20px; font-weight: 600;">Cancel</button>
-                                                <button type="submit" name="apply_leave" class="btn-premium-add" style="border: none;">
+                                                <button type="submit" name="apply_leave" class="btn-premium-add">
                                                     <i class="fa fa-paper-plane"></i> Submit Application
                                                 </button>
                                             </div>

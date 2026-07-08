@@ -107,7 +107,7 @@ if ($run_stats) {
         <h1></h1>
         <div class="header-actions" style="display: flex; gap: 10px;">
             <?php if (canAdminAccess('leave_insert')): ?>
-                <button style="background:#DF2127 !important;" class="btn-premium-add" onclick="openManageLeaves()">
+                <button class="btn-premium-add" onclick="openManageLeaves()">
                     <i class="fa fa-cogs"></i> Manage Leave Types
                 </button>
             <?php endif; ?>
@@ -143,7 +143,7 @@ if ($run_stats) {
                                 <input type="number" id="new_leave_count" class="p-input-premium" placeholder="12" style="height: 42px;">
                             </div>
                             <div style="align-self: flex-end;">
-                                <button class="btn-premium-add" onclick="addLeaveType()" style="height: 42px; border: none;">
+                                <button class="btn-premium-add" onclick="addLeaveType()">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>

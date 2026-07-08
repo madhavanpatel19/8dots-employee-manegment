@@ -428,24 +428,6 @@ endif; ?>
         color: #0f172a;
     }
 
-    .btn-premium-add {
-        padding: 12px 30px;
-        background: #2563eb;
-        border: none;
-        border-radius: 8px;
-        color: #fff;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-premium-add:hover {
-        background: #1d4ed8;
-    }
-
     @media (max-width: 768px) {
         .add-client-wrapper {
             padding: 20px;
