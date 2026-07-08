@@ -47,7 +47,7 @@ if (isset($_POST['login'])) {
     <link rel="stylesheet" href="../../../admin_area/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../admin_area/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../admin_area/css/login.css">
-    <link rel="shortcut icon" href="../../../admin_area/images/Cadlete_Black_logo_favicon.png" type="image/png">
+    <link rel="shortcut icon" href="../../../admin_area/images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
 
     <style>
         .premium-notification {

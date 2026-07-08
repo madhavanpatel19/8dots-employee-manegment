@@ -112,7 +112,7 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                     </select>
                 </div>
                 <div style="margin-top: 23px;">
-                    <button type="submit" class="btn-premium-add" style="height: 48px; display: flex; align-items: center; justify-content: center; padding: 0 25px;">
+                    <button type="submit" class="btn-premium-add">
                         Create Section
                     </button>
                 </div>

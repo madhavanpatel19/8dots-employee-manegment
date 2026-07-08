@@ -22,6 +22,10 @@ if (!isset($_SESSION['emp_id']) || !isset($_SESSION['emp_name'])) {
 $emp_id   = $_SESSION['emp_id'];
 $emp_name = $_SESSION['emp_name'];
 
+$emp_q = mysqli_query($con, "SELECT employee_image FROM emp_list WHERE id='$emp_id'");
+$emp_data = mysqli_fetch_assoc($emp_q);
+$emp_img_path = !empty($emp_data['employee_image']) ? '../admin_area/uploads/' . $emp_data['employee_image'] : '../admin_area/admin_images/default.png';
+
 $is_partial = isset($_GET['partial']);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -221,7 +225,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                         <th style="text-align: center;">Check-out</th>
                                         <th style="text-align: center;">Duration</th>
                                         <th style="text-align: center;">Status</th>
-                                        <th class="p-cell-wrap">Task Details</th>
+                                        <th style="text-align: center;">Work Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -267,27 +271,27 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                                         <?php echo ucfirst($st); ?>
                                                     </span>
                                                 </td>
-                                                <td class="p-cell-wrap">
-                                                    <div style="font-size: 13px; line-height: 1.6;">
-                                                        <?php echo nl2br(htmlspecialchars($row['remarks'] ?? '')); ?>
-
-                                                        <?php
-                                                        if (!empty($row['work_photos'])) {
-                                                            $photos = json_decode($row['work_photos'], true);
-                                                            if (!empty($photos)) {
-                                                                echo '<div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;">';
-                                                                foreach ($photos as $p) {
-                                                                    $img_url = '../admin_area/' . $p;
-                                                                    echo '<div class="work-photo-item" onclick="window.open(\'' . htmlspecialchars($img_url) . '\')" title="Click to view full image">
-                                                                        <img src="' . htmlspecialchars($img_url) . '">
-                                                                        <div class="work-photo-overlay"><i class="fa fa-search-plus"></i></div>
-                                                                      </div>';
-                                                                }
-                                                                echo '</div>';
-                                                            }
+                                                <td style="text-align: center;">
+                                                    <?php
+                                                    $photos = [];
+                                                    if (!empty($row['work_photos'])) {
+                                                        $decoded = json_decode($row['work_photos'], true);
+                                                        if (is_array($decoded)) {
+                                                            $photos = $decoded;
                                                         }
-                                                        ?>
-                                                    </div>
+                                                    }
+
+                                                    if (!empty($photos) || !empty(trim($row['remarks'] ?? ''))) {
+                                                        $json_photos = htmlspecialchars(json_encode($photos), ENT_QUOTES, 'UTF-8');
+                                                        $emp_name_js = htmlspecialchars($emp_name, ENT_QUOTES, 'UTF-8');
+                                                        $date_js = htmlspecialchars(date('d M Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
+                                                        $emp_img_js = htmlspecialchars($emp_img_path, ENT_QUOTES, 'UTF-8');
+                                                        $remark_js = htmlspecialchars(json_encode(nl2br(htmlspecialchars($row['remarks'] ?? ''))), ENT_QUOTES, 'UTF-8');
+                                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name_js . '\', \'' . $date_js . '\', \'' . $emp_img_js . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #4f46e5; margin-right: 4px;"></i> View Details</button>';
+                                                    } else {
+                                                        echo '<span style="color: #cbd5e1;">-</span>';
+                                                    }
+                                                    ?>
                                                 </td>
                                             </tr>
                                         <?php endwhile; ?>
@@ -443,6 +447,159 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                 });
             });
         </script>
+
+        <script>
+            window.openRowGallery = function(photosJson, empName, date, empImg, remarkHtml) {
+                var photos = JSON.parse(photosJson);
+                var html = '';
+                if (remarkHtml && remarkHtml !== '-') {
+                    html += '<div style="background: #fff; padding: 15px 20px; border-radius: 12px; text-align: left; margin-bottom: 20px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02); font-size: 14px; color: #475569; width: 100%;"><h5 style="margin-top:0; font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Remark</h5>' + remarkHtml + '</div>';
+                }
+                html += '<div class="work-gallery-grid" style="width: 100%;">';
+                photos.forEach(function(url) {
+                    var fullUrl = '../admin_area/' + url;
+                    html += '<div class="work-gallery-item" onclick="window.open(\'' + fullUrl + '\')">';
+                    html += '<img src="' + fullUrl + '" loading="lazy">';
+                    html += '<div class="item-overlay">';
+                    html += '<div class="item-info">';
+                    html += '<div class="item-emp"><img src="' + empImg + '" class="emp-mini-img"><span>' + empName + '</span></div>';
+                    html += '<div class="item-date">' + date + '</div>';
+                    html += '</div>';
+                    html += '<i class="fa fa-search-plus"></i>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+                $('#previewModalImageContainer').html(html);
+                $('#imagePreviewModal').modal('show');
+            }
+        </script>
+
+        <!-- Image Preview Modal -->
+        <div id="imagePreviewModal" class="modal fade" role="dialog" style="z-index: 999999;">
+            <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
+                <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden; background: #fff;">
+                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                        <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 50px; height: 50px; border-radius: 16px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                <i class="fa fa-picture-o" style="font-size: 24px; color: #f43f5e;"></i>
+                            </div>
+                            <div>
+                                <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Work Details</h4>
+                                <div style="font-size: 13px; color: #64748b; margin-top: 4px; font-weight: 500;">View remarks and work photos</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body" style="padding: 30px; text-align: center; background: #f8fafc; min-height: 400px; max-height: 75vh; overflow-y: auto;">
+                        <div id="previewModalImageContainer" style="display: flex; flex-direction: column; gap: 20px; align-items: center;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .work-gallery-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 25px;
+                padding: 10px;
+            }
+
+            .work-gallery-item {
+                position: relative;
+                aspect-ratio: 1;
+                border-radius: 24px;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .work-gallery-item>img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.4s;
+            }
+
+            .work-gallery-item:hover>img {
+                transform: scale(1.05);
+            }
+
+            .item-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to top, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.1));
+                opacity: 0;
+                transition: opacity 0.3s;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                padding: 15px;
+            }
+
+            .work-gallery-item:hover .item-overlay {
+                opacity: 1;
+            }
+
+            .item-info {
+                transform: translateY(10px);
+                transition: transform 0.3s;
+                text-align: left;
+            }
+
+            .work-gallery-item:hover .item-info {
+                transform: translateY(0);
+            }
+
+            .item-emp {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 800;
+                font-size: 13px;
+                color: #fff;
+            }
+
+            .emp-mini-img {
+                width: 22px !important;
+                height: 22px !important;
+                border-radius: 6px !important;
+                border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+            }
+
+            .item-date {
+                font-size: 10px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.6);
+                margin-top: 3px;
+            }
+
+            .item-overlay i {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.5);
+                color: #fff;
+                font-size: 24px;
+                background: #dd2127;
+                width: 48px;
+                height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                opacity: 0;
+                transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+
+            .work-gallery-item:hover .item-overlay i {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        </style>
 
         <?php if (!$is_partial) : ?>
         </div>

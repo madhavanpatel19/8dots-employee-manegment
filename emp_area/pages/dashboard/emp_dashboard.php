@@ -790,6 +790,32 @@ function getResourceTypePhp($url)
         background: #94a3b8;
     }
 
+    /* ── Bookmarks ── */
+    .bm-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-color: #dd2127 !important;
+    }
+
+    .bm-box:hover .bm-rem {
+        opacity: 1 !important;
+    }
+
+    .bm-box-empty:hover {
+        border-color: #dd2127 !important;
+        background: #ffeaeb !important;
+    }
+
+    .bm-box-empty:hover i {
+        color: #dd2127 !important;
+    }
+
+    /* ── SweetAlert Input ── */
+    .swal2-input:focus {
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 3px #ffeaeb !important;
+    }
+
     /* ── Responsive ── */
     @media (max-width:1100px) {
         .dash-grid {
@@ -930,51 +956,15 @@ function getResourceTypePhp($url)
             </div>
         </div>
 
-        <!-- Quick Links (Pinned) -->
+        <!-- My Bookmarks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-thumb-tack" style="color:#e11d48;"></i> Pinned Links</h3>
-                <a href="index.php?quick_links">View All</a>
+                <h3><i class="fa fa-bookmark" style="color:#e11d48;"></i> My Bookmarks</h3>
+                <a href="#" onclick="clearBookmarks(); return false;" style="font-weight:normal; font-size:11px; color:#6b7280;"><i class="fa fa-trash"></i> Clear All</a>
             </div>
-            <?php if (empty($pinned_links)): ?>
-                <div class="empty-s"><i class="fa fa-thumb-tack"></i>No pinned links available.</div>
-            <?php else: ?>
-                <div style="max-height: 220px; overflow-y: auto; padding-right: 5px;" class="custom-scrollbar">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tbody>
-                            <?php foreach ($pinned_links as $plink):
-                                $typeInfo = getResourceTypePhp($plink['link_url']);
-                                $url = $plink['link_url'];
-                                if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://') && !str_starts_with($url, 'uploads/')) {
-                                    $url = 'http://' . $url;
-                                }
-                                if (str_starts_with($url, 'uploads/')) {
-                                    $url = '../admin_area/' . $url;
-                                }
-                            ?>
-                                <tr style="border-bottom: 1px solid #f3f4f6;">
-                                    <td style="padding: 10px 0;">
-                                        <div style="display: flex; align-items: center; gap: 12px;">
-                                            <div style="width: 42px; height: 42px; border-radius: 10px; background: <?php echo $typeInfo['bg']; ?>; color: <?php echo $typeInfo['color']; ?>; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">
-                                                <i class="fa <?php echo $typeInfo['icon']; ?>"></i>
-                                            </div>
-                                            <div style="flex: 1; min-width: 0;">
-                                                <h4 style="margin: 0; font-size: 13px; font-weight: 700; color: #1f2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo htmlspecialchars($plink['link_name']); ?></h4>
-                                                <small style="font-size: 11px; color: #9ca3af;"><?php echo htmlspecialchars($plink['category']); ?></small>
-                                            </div>
-                                            <div style="flex-shrink: 0;">
-                                                <a href="<?php echo htmlspecialchars($url); ?>" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: #f0f9ff; border: 1px solid #e0f2fe; color: #0284c7; text-decoration: none;" title="Open">
-                                                    <i class="fa <?php echo $typeInfo['type'] === 'Link' ? 'fa-external-link' : 'fa-download'; ?>"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
+            <div id="bookmarksGrid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                <!-- Filled via JS -->
+            </div>
         </div>
 
         <!-- My Projects -->
@@ -1210,6 +1200,104 @@ function getResourceTypePhp($url)
                 reader.readAsDataURL(input.files[0]);
             }
         };
+
+        // --- Bookmarks functionality ---
+        window.initBookmarks = function() {
+            let b = localStorage.getItem('empBookmarks_<?php echo $emp_id; ?>');
+            let bookmarks = b ? JSON.parse(b) : [];
+
+            let html = '';
+            for (let i = 0; i < 8; i++) {
+                if (bookmarks[i] && bookmarks[i].name) {
+                    let domain = '';
+                    try {
+                        domain = new URL(bookmarks[i].url).hostname;
+                    } catch (e) {
+                        domain = bookmarks[i].url;
+                    }
+                    html += `<div style="height:80px; border:1px solid #dd2127; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
+                        <div onclick="event.stopPropagation(); removeBookmark(${i})" style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; opacity:0; transition:0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.2);" class="bm-rem"><i class="fa fa-times"></i></div>
+                        <div style="width:36px; height:36px; border-radius:10px; background:#ffeaeb; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+                            <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" style="width:18px; height:18px; border-radius:3px;" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                            <i class="fa fa-globe" style="color:#3b82f6; font-size:16px; display:none;"></i>
+                        </div>
+                        <span style="font-size:11px; font-weight:600; color:#1e293b; text-align:center; width:90%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${bookmarks[i].name}</span>
+                    </div>`;
+                } else {
+                    html += `<div onclick="addBookmark(${i})" style="height:80px; border:2px dashed #cbd5e1; border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#f8fafc; transition:all 0.2s;" class="bm-box-empty">
+                        <i class="fa fa-plus" style="color:#94a3b8; font-size:20px;"></i>
+                    </div>`;
+                }
+            }
+            $('#bookmarksGrid').html(html);
+        };
+
+        window.addBookmark = function(idx) {
+            Swal.fire({
+                title: 'Add Bookmark',
+                html: '<input id="swal-input1" class="swal2-input" placeholder="Name (e.g. Google)" style="font-size:14px;">' +
+                    '<input id="swal-input2" class="swal2-input" placeholder="URL (e.g. google.com)" style="font-size:14px; ">',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                confirmButtonColor: '#e11d48',
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-input1').value,
+                        document.getElementById('swal-input2').value
+                    ]
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let name = result.value[0].trim();
+                    let url = result.value[1].trim();
+                    if (!name || !url) {
+                        Swal.fire('Error', 'Both fields are required', 'error');
+                        return;
+                    }
+                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                        url = 'https://' + url;
+                    }
+                    let b = localStorage.getItem('empBookmarks_<?php echo $emp_id; ?>');
+                    let bookmarks = b ? JSON.parse(b) : [];
+                    bookmarks[idx] = {
+                        name: name,
+                        url: url
+                    };
+                    localStorage.setItem('empBookmarks_<?php echo $emp_id; ?>', JSON.stringify(bookmarks));
+                    initBookmarks();
+                }
+            });
+        };
+
+        window.removeBookmark = function(idx) {
+            let b = localStorage.getItem('empBookmarks_<?php echo $emp_id; ?>');
+            if (b) {
+                let bookmarks = JSON.parse(b);
+                bookmarks[idx] = null;
+                localStorage.setItem('empBookmarks_<?php echo $emp_id; ?>', JSON.stringify(bookmarks));
+                initBookmarks();
+            }
+        };
+
+        window.clearBookmarks = function() {
+            Swal.fire({
+                title: 'Clear All Bookmarks?',
+                text: "This will remove all your saved links.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, clear them!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('empBookmarks_<?php echo $emp_id; ?>');
+                    initBookmarks();
+                }
+            });
+        };
+
+        initBookmarks();
     });
 
     function completeTask(taskId) {

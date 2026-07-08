@@ -144,8 +144,7 @@ $result = mysqli_query($con, $sql);
                         <th>Date & Time</th>
                         <th style="text-align: center;">Status</th>
                         <th style="text-align: center;">Performance</th>
-                        <th>Work Photo</th>
-                        <th>Remarks</th>
+                        <th>Work Details</th>
                         <th>Recorded On</th>
                     </tr>
                 </thead>
@@ -198,26 +197,25 @@ $result = mysqli_query($con, $sql);
                                 </td>
                                 <td>
                                     <?php
+                                    $photos = [];
                                     if (!empty($row['work_photos'])) {
-                                        $photos = json_decode($row['work_photos'], true);
-                                        if (!empty($photos)) {
-                                            $json_photos = htmlspecialchars(json_encode($photos), ENT_QUOTES, 'UTF-8');
-                                            $emp_name = htmlspecialchars($row['emp_name'], ENT_QUOTES, 'UTF-8');
-                                            $date = htmlspecialchars(date('d M Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
-                                            $emp_img = htmlspecialchars($img, ENT_QUOTES, 'UTF-8');
-                                            echo '<button type="button" class="btn-premium-add" style="padding: 4px 12px; font-size: 12px; border-radius: 6px;" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name . '\', \'' . $date . '\', \'' . $emp_img . '\'); event.stopPropagation();"><i class="fa fa-eye"></i> View</button>';
-                                        } else {
-                                            echo '<span style="color: #cbd5e1;">-</span>';
+                                        $decoded = json_decode($row['work_photos'], true);
+                                        if (is_array($decoded)) {
+                                            $photos = $decoded;
                                         }
+                                    }
+
+                                    if (!empty($photos) || !empty(trim($row['remarks'] ?? ''))) {
+                                        $json_photos = htmlspecialchars(json_encode($photos), ENT_QUOTES, 'UTF-8');
+                                        $emp_name = htmlspecialchars($row['emp_name'], ENT_QUOTES, 'UTF-8');
+                                        $date = htmlspecialchars(date('d M Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
+                                        $emp_img = htmlspecialchars($img, ENT_QUOTES, 'UTF-8');
+                                        $remark_js = htmlspecialchars(json_encode(nl2br(htmlspecialchars($row['remarks'] ?: '-'))), ENT_QUOTES, 'UTF-8');
+                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name . '\', \'' . $date . '\', \'' . $emp_img . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #4f46e5; margin-right: 4px;"></i> View Details</button>';
                                     } else {
                                         echo '<span style="color: #cbd5e1;">-</span>';
                                     }
                                     ?>
-                                </td>
-                                <td>
-                                    <div style="max-width: 350px; min-width: 200px; font-size: 13px; color: var(--p-secondary); line-height: 1.6; white-space: normal; word-wrap: break-word;">
-                                        <?php echo nl2br(htmlspecialchars($row['remarks'] ?: '-')); ?>
-                                    </div>
                                 </td>
                                 <td style="font-size: 11px; color: var(--p-secondary);"><?php echo date('d-m-Y H:i', strtotime($row['created_at'])); ?></td>
                             </tr>
@@ -332,8 +330,8 @@ $result = mysqli_query($con, $sql);
                         <i class="fa fa-picture-o" style="font-size: 24px; color: #f43f5e;"></i>
                     </div>
                     <div>
-                        <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Photo Preview</h4>
-                        <div style="font-size: 13px; color: #64748b; margin-top: 4px; font-weight: 500;">View work photo in full resolution</div>
+                        <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Work Details</h4>
+                        <div style="font-size: 13px; color: #64748b; margin-top: 4px; font-weight: 500;">View remarks and work photos</div>
                     </div>
                 </div>
             </div>
@@ -1112,9 +1110,13 @@ $result = mysqli_query($con, $sql);
         });
     });
 
-    window.openRowGallery = function(photosJson, empName, date, empImg) {
+    window.openRowGallery = function(photosJson, empName, date, empImg, remarkHtml) {
         var photos = JSON.parse(photosJson);
-        var html = '<div class="work-gallery-grid">';
+        var html = '';
+        if (remarkHtml && remarkHtml !== '-') {
+            html += '<div style="background: #fff; padding: 15px 20px; border-radius: 12px; text-align: left; margin-bottom: 20px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02); font-size: 14px; color: #475569; width: 100%;"><h5 style="margin-top:0; font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Remark</h5>' + remarkHtml + '</div>';
+        }
+        html += '<div class="work-gallery-grid" style="width: 100%;">';
         photos.forEach(function(url) {
             html += '<div class="work-gallery-item" onclick="window.open(\'' + url + '\')">';
             html += '<img src="' + url + '" loading="lazy">';

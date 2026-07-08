@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -14,7 +14,7 @@ if (!isset($con)) {
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../css/login.css">
-    <link rel="shortcut icon" href="../../images/Cadlete_Black_logo_favicon.png" type="image/png">
+    <link rel="shortcut icon" href="../../images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
 
     <style>
         .premium-notification {
