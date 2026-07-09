@@ -593,10 +593,10 @@ if (!isset($_SESSION['admin_email'])) {
                 <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Announcements</h3>
             </div>
             <div class="announcement-header-row">
-                <div style="padding-left: 64px;">Announcement</div>
-                <div style="text-align: center;">Published On</div>
+                <div style="padding-left: 64px;">Title</div>
+                <div style="text-align: center;">Posted On</div>
                 <div style="text-align: center;">Status</div>
-                <div style="text-align: center;">Actions</div>
+                <div style="text-align: center;">Manage</div>
             </div>
 
             <div class="announcement-list-body">
@@ -715,8 +715,8 @@ if (!isset($_SESSION['admin_email'])) {
                             <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
                                 <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
                             </div>
-                            <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No Announcements Found</div>
-                            <div style='font-size: 13px; color: #94a3b8;'>There are no announcements to display at this time.</div>
+                            <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No announcements.</div>
+                            <div style='font-size: 13px; color: #94a3b8;'>No notices to show right now.</div>
                         </div>";
                 }
                 ?>
@@ -768,7 +768,7 @@ if (!isset($_SESSION['admin_email'])) {
                             <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
                             </div>
-                            Add Announcement
+                            New Notice
                         </h4>
                     </div>
 

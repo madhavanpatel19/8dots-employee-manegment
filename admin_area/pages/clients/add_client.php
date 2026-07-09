@@ -408,43 +408,6 @@ endif; ?>
         border-top: 1.5px solid #f1f5f9;
     }
 
-    .btn-cancel {
-        padding: 12px 30px;
-        background: #fff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        color: #475569;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .btn-cancel:hover {
-        background: #f8fafc;
-        color: #0f172a;
-    }
-
-    .btn-save {
-        padding: 12px 30px;
-        background: #2563eb;
-        border: none;
-        border-radius: 8px;
-        color: #fff;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-save:hover {
-        background: #1d4ed8;
-    }
-
     /* Media query */
     @media (max-width: 768px) {
         .add-client-wrapper {
@@ -581,7 +544,7 @@ endif; ?>
             </div>
 
             <div class="actions-footer">
-                <a href="index.php?client_directory" class="btn-cancel">Cancel</a>
+                <a href="index.php?client_directory" class="btn-premium-cancel">Cancel</a>
                 <button type="submit" name="submit_client" class="btn-premium-add">
                     <i class="fa fa-save"></i> Save Client
                 </button>
@@ -612,8 +575,8 @@ endif; ?>
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
-                <h4 class="modal-title" id="addIndustryModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #dd2127; color:white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
+                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Industry

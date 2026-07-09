@@ -67,7 +67,7 @@ $search_query = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['
 $total_leads  = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE deleted_at IS NULL"));
 $active_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='active' AND deleted_at IS NULL"));
 $future_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='future' AND deleted_at IS NULL"));
-$expired_leads= mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='expired' AND deleted_at IS NULL"));
+$expired_leads = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE status='expired' AND deleted_at IS NULL"));
 
 /* ==============================
    PAGINATION SETUP & QUERIES
@@ -104,7 +104,7 @@ $run_leads = mysqli_query($con, $get_leads);
         <h1></h1>
         <div class="header-actions-premium">
             <a href="pages/leads/export_leads.php" class="btn-premium-add" style="background: #10b981 !important;">
-                <i class="fa fa-file-excel-o"></i> Export to CSV
+                <i class="fa fa-file-excel-o"></i> Download Report
             </a>
             <?php if (canAdminAccess('lead_insert')): ?>
                 <a href="index.php?add_lead" class="btn-premium-add" style="margin-left: 10px;">
@@ -198,7 +198,7 @@ $run_leads = mysqli_query($con, $get_leads);
                 <i class="fa fa-folder-open"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Active</div>
+                <div class="stat-card-title">Current Leads</div>
                 <div class="stat-card-value"><?php echo $active_leads; ?></div>
             </div>
         </div>
@@ -209,7 +209,7 @@ $run_leads = mysqli_query($con, $get_leads);
                 <i class="fa fa-check-circle"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Future</div>
+                <div class="stat-card-title">Upcoming</div>
                 <div class="stat-card-value"><?php echo $future_leads; ?></div>
             </div>
         </div>
@@ -220,7 +220,7 @@ $run_leads = mysqli_query($con, $get_leads);
                 <i class="fa fa-clock-o"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Expired</div>
+                <div class="stat-card-title">Lost Leads</div>
                 <div class="stat-card-value"><?php echo $expired_leads; ?></div>
             </div>
         </div>
@@ -233,7 +233,7 @@ $run_leads = mysqli_query($con, $get_leads);
         <div class="card-hdr">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <i class="fa fa-list"></i>
-                <h3>Leads Listing</h3>
+                <h3>All Leads</h3>
             </div>
 
             <form method="GET" style="display: flex; gap: 10px; margin: 0;">
@@ -257,34 +257,34 @@ $run_leads = mysqli_query($con, $get_leads);
             <table class="table-premium">
                 <thead>
                     <tr>
-                        <th style="width: 80px; text-align: center;">#ID</th>
-                        <th>Client Detail</th>
-                        <th>Project</th>
+                        <th style="width: 80px; text-align: center;">ID</th>
+                        <th>Client Info</th>
+                        <th>Project Type</th>
                         <?php if (canAdminAccess('project_source_view')): ?>
-                        <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($source_filter) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
-                                <?php echo !empty($source_filter) ? $source_filter : 'Source'; ?>
-                                <i class="fa fa-filter" style="font-size: 11px; color: <?php echo !empty($source_filter) ? '#4f46e5' : '#94a3b8'; ?>;"></i>
-                            </div>
-                            <select id="sourceSelect" onchange="applySourceFilter(this.value)"
-                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
-                                <option value="">All Sources</option>
-                                <?php
-                                $get_all_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
-                                $run_all_sources = mysqli_query($con, $get_all_sources);
-                                while ($s_row = mysqli_fetch_array($run_all_sources)) {
-                                    $s_name = $s_row['source_name'];
-                                    $selected = ($source_filter == $s_name) ? 'selected' : '';
-                                    echo "<option value='" . htmlspecialchars($s_name) . "' $selected>" . htmlspecialchars($s_name) . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </th>
+                            <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($source_filter) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
+                                    <?php echo !empty($source_filter) ? $source_filter : 'Source'; ?>
+                                    <i class="fa fa-filter" style="font-size: 11px; color: <?php echo !empty($source_filter) ? '#4f46e5' : '#94a3b8'; ?>;"></i>
+                                </div>
+                                <select id="sourceSelect" onchange="applySourceFilter(this.value)"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
+                                    <option value="">Platform</option>
+                                    <?php
+                                    $get_all_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
+                                    $run_all_sources = mysqli_query($con, $get_all_sources);
+                                    while ($s_row = mysqli_fetch_array($run_all_sources)) {
+                                        $s_name = $s_row['source_name'];
+                                        $selected = ($source_filter == $s_name) ? 'selected' : '';
+                                        echo "<option value='" . htmlspecialchars($s_name) . "' $selected>" . htmlspecialchars($s_name) . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </th>
                         <?php endif; ?>
-                        <th style="text-align: center;">Budget</th>
+                        <th style="text-align: center;">Cost</th>
                         <th style="text-align: center;">Status</th>
-                        <th style="text-align: center;">Follow-up</th>
-                        <th style="text-align: center;">Actions</th>
+                        <th style="text-align: center;">Next Call</th>
+                        <th style="text-align: center;">Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -316,9 +316,9 @@ $run_leads = mysqli_query($con, $get_leads);
                                 </td>
                                 <td style="font-weight: 500; color: #475569;"><?php echo !empty($project_name) ? $project_name : '-'; ?></td>
                                 <?php if (canAdminAccess('project_source_view')): ?>
-                                <td style="text-align: center;">
-                                    <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px;width: 90px;display: inline-block;white-space: normal;word-wrap: break-word;"><?php echo $source; ?></span>
-                                </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px;width: 90px;display: inline-block;white-space: normal;word-wrap: break-word;"><?php echo $source; ?></span>
+                                    </td>
                                 <?php endif; ?>
                                 <td style="text-align: center; font-weight: 700; color: #1e293b;"><?php echo !empty($budget) ? (isset($currency_symbols[$currency]) ? $currency_symbols[$currency] : $currency) . ' ' . $budget : '-'; ?></td>
                                 <td style="text-align: center;">
@@ -411,8 +411,8 @@ $run_leads = mysqli_query($con, $get_leads);
                                 <div style="background: #f8fafc; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
                                     <i class="fa fa-bullseye" style="font-size: 35px; color: #cbd5e1;"></i>
                                 </div>
-                                <h3 style="color: #64748b; font-size: 18px; font-weight: 700; margin-bottom: 5px;">No Leads Found</h3>
-                                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">We couldn't find any leads matching your current filters.</p>
+                                <h3 style="color: #64748b; font-size: 18px; font-weight: 700; margin-bottom: 5px;">No leads found.</h3>
+                                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">No leads match your search.</p>
                                 <?php if (!empty($source_filter) || !empty($status_filter) || !empty($search_query)): ?>
                                     <a href="index.php?leads" class="btn btn-primary btn-sm" style="background: #4f46e5; border: none; border-radius: 8px; padding: 8px 20px;">Clear All Filters</a>
                                 <?php endif; ?>

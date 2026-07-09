@@ -208,7 +208,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                 <i class="fa fa-users"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Active Projects</div>
+                <div class="stat-card-title">Current Projects</div>
                 <div class="stat-card-value"><?php echo canAdminAccess('project_view') ? $active_projects : '<i class="fa fa-lock" style="font-size:24px; color:#cbd5e1;"></i>'; ?></div>
             </div>
         </div>
@@ -219,7 +219,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                 <i class="fa fa-users"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Total Employees</div>
+                <div class="stat-card-title"> Total Team</div>
                 <div class="stat-card-value"><?php echo canAdminAccess('employee_view') ? $count_employees : '<i class="fa fa-lock" style="font-size:24px; color:#cbd5e1;"></i>'; ?></div>
             </div>
         </div>
@@ -230,7 +230,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                 <i class="fa fa-calendar"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Pending Leaves</div>
+                <div class="stat-card-title">Leave Requests</div>
                 <div class="stat-card-value"><?php echo canAdminAccess('leave_view') ? $pending_leaves : '<i class="fa fa-lock" style="font-size:24px; color:#cbd5e1;"></i>'; ?></div>
                 <!-- <a href="index.php?view_leave_requests" class="stat-card-link">View Requests &rarr;</a> -->
             </div>
@@ -251,8 +251,8 @@ if ($res && mysqli_num_rows($res) > 0) {
             <table class="recent-leads-table" style="width: 100%;">
                 <thead>
                     <tr style="border-bottom: 2px solid var(--border-light);">
-                        <th style="text-align:left; padding:12px 10px; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Project & Client</th>
-                        <th style="text-align:center; padding:12px 10px; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Date</th>
+                        <th style="text-align:left; padding:12px 10px; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Project Name</th>
+                        <th style="text-align:center; padding:12px 10px; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Deadline</th>
                         <th style="text-align:center; padding:12px 10px; font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Status</th>
                     </tr>
                 </thead>
@@ -316,7 +316,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                                 <div style="width: 60px; height: 60px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
                                     <i class="fa fa-folder-open-o" style="font-size:24px; color: #cbd5e1;"></i>
                                 </div>
-                                <div style="font-size: 14px; font-weight: 700; color: #64748b;">No Recent Projects</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #64748b;">No projects to show</div>
                             </td>
                         </tr>
                     <?php } ?>
@@ -333,7 +333,7 @@ if ($res && mysqli_num_rows($res) > 0) {
 
     <div class="projects-panel">
         <div class="panel-title-row">
-            <h3>Recent Leads</h3>
+            <h3>New Leads</h3>
             <?php if (canAdminAccess('lead_view')): ?>
                 <a href="index.php?leads" class="btn btn-info btn-sm"><i class="fa fa-eye"></i> View All</a>
             <?php endif; ?>
@@ -343,8 +343,8 @@ if ($res && mysqli_num_rows($res) > 0) {
                 <thead>
                     <tr style="border-bottom: 2px solid var(--border-light);">
                         <th style="text-align:left; padding:10px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Client</th>
-                        <th style="text-align:left; padding:10px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Project</th>
-                        <th style="text-align:center; padding:10px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Follow-up</th>
+                        <th style="text-align:left; padding:10px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Project Type</th>
+                        <th style="text-align:center; padding:10px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Next Call</th>
                         <th style="text-align:center; padding:10px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Status</th>
                     </tr>
                 </thead>
@@ -410,7 +410,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                                 <div style="width: 60px; height: 60px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
                                     <i class="fa fa-inbox" style="font-size:24px; color: #cbd5e1;"></i>
                                 </div>
-                                <div style="font-size: 14px; font-weight: 700; color: #64748b;">No Recent Leads Found</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #64748b;">No leads to show</div>
                             </td>
                         </tr>
                     <?php } ?>
@@ -431,7 +431,7 @@ if ($res && mysqli_num_rows($res) > 0) {
     <div class="panel-title-row">
         <div style="display:flex; align-items:center; gap:10px;">
             <div class="panel-header-icon" style="background: #ffeaeb; color: #dd2127; width:32px; height:32px; font-size:14px; display:flex; align-items:center; justify-content:center; border-radius:8px;"><i class="fa fa-user"></i></div>
-            <h3 style="font-size:18px;">Employee Work Log (Today)</h3>
+            <h3 style="font-size:18px;">Today's Attendance</h3>
         </div>
         <?php if (canAdminAccess('attendance_view')): ?>
             <a href="index.php?attendance&daily=1&date=<?php echo $today; ?>" class="btn btn-info btn-sm" style="font-size: 13px;"><i class="fa fa-eye"></i> View Full Timesheet</a>
@@ -442,10 +442,10 @@ if ($res && mysqli_num_rows($res) > 0) {
             <thead>
                 <tr>
                     <th>Employee</th>
-                    <th>Role</th>
-                    <th>Check In</th>
-                    <th>Check Out</th>
-                    <th>Total Work</th>
+                    <th>Job Title</th>
+                    <th>Sign In </th>
+                    <th>Sign Out</th>
+                    <th>Total Hours</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -544,7 +544,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                             <div style="width: 60px; height: 60px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
                                 <i class="fa fa-calendar-check-o" style="font-size:24px; color: #cbd5e1;"></i>
                             </div>
-                            <div style="font-size: 14px; font-weight: 700; color: #64748b;">No attendance records for today</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #64748b;">No records for today</div>
                         </td></tr>';
                 }
                 ?>

@@ -224,17 +224,17 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
     <div class="premium-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden;">
         <div class="card-hdr" style="padding: 20px 24px; background:var(--p-bg-header);color:white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
             <i class="fa fa-list"></i>
-            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">NDA History</h3>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">All NDAs</h3>
         </div>
         <div style="overflow-x: auto; padding: 0 10px 10px 10px;">
             <table class="table-premium" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                 <thead>
                     <tr style="background: #fff;">
                         <th style="padding: 15px; text-align: center; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">#</th>
-                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Party Name</th>
-                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Position</th>
-                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Agreement Date</th>
-                        <th style="padding: 15px; text-align: center; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Actions</th>
+                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Name</th>
+                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Job Role</th>
+                        <th style="padding: 15px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Date Signed</th>
+                        <th style="padding: 15px; text-align: center; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #f1f5f9;">Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -295,8 +295,8 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                                         <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
                                             <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
                                         </div>
-                                        <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No NDA Forms Found</div>
-                                        <div style='font-size: 13px; color: #94a3b8;'>There are no NDA forms to display at this time.</div>
+                                        <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No NDAs found.</div>
+                                        <div style='font-size: 13px; color: #94a3b8;'> No agreements to show right now.</div>
                                     </div>
                                 </td>
                               </tr>";

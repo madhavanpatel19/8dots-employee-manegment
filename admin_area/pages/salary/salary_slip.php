@@ -317,7 +317,7 @@ if ($print_all_mode) {
                 <div class="premium-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden; margin-bottom: 25px; max-width: 600px;">
                     <div class="card-hdr" style="padding: 20px 30px; background: var(--p-bg-header); display: flex; align-items: center; gap: 12px;">
                         <i class="fa fa-user-circle" style="font-size: 18px; color: #333;"></i>
-                        <h3 style="margin: 0; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Generate Salary Slip</h3>
+                        <h3 style="margin: 0; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Salary Slip</h3>
                     </div>
 
                     <div style="padding: 40px 30px; background: #fff;">
@@ -329,7 +329,7 @@ if ($print_all_mode) {
                                     <label for="emp_id" class="col-sm-3" style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.02em;">Employee</label>
                                     <div class="col-sm-9">
                                         <select name="emp_id" id="emp_id" class="p-input-premium" required style="appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 20px top 50%; background-size: 12px 20px;">
-                                            <option value="">-- Select Employee --</option>
+                                            <option value="">-- Choose Employee --</option>
                                             <?php foreach ($employees as $e): ?>
                                                 <option
                                                     value="<?php echo (int)$e['id']; ?>"
@@ -356,7 +356,7 @@ if ($print_all_mode) {
                                             <i class="fa fa-arrow-left" style="margin-right: 5px;"></i> Back
                                         </a>
                                         <button type="submit" class="btn-premium-add">
-                                            <i class="fa fa-search" style="margin-right: 8px;"></i> Show Slip
+                                            <i class="fa fa-search" style="margin-right: 8px;"></i> View Slip
                                         </button>
                                     </div>
                                 </div>

@@ -394,7 +394,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
     <div class="premium-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden; margin-bottom: 25px; max-width: 450px;">
         <div class="card-hdr" style="padding: 20px 24px; background:var(--p-bg-header);color:white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
             <i class="fa fa-search"></i>
-            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Select Employee & Mode</h3>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Find Attendance</h3>
         </div>
 
         <div style="padding: 35px 30px; background: #fff;">
@@ -408,15 +408,15 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                 <div style="display: flex; flex-direction: column; gap: 25px; max-width: 400px;">
                     <!-- Mode Toggle -->
                     <div class="selection-control">
-                        <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; display: block;">Select Entry Mode</label>
+                        <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; display: block;">View By</label>
                         <div class="p-radio-group">
                             <label class="p-radio-item">
                                 <input type="radio" name="mode" value="monthly" checked>
-                                <span>Monthly View</span>
+                                <span>Month</span>
                             </label>
                             <label class="p-radio-item">
                                 <input type="radio" name="mode" value="daily">
-                                <span>Daily Entry</span>
+                                <span>Day</span>
                             </label>
                         </div>
                     </div>
@@ -425,7 +425,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                     <div class="selection-control" id="empControl">
                         <label for="empSelectInitial" style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Employee</label>
                         <select id="empSelectInitial" name="emp_id" class="p-input-premium" style="appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right%2015px%20top%2050%25; background-size: 12px%20auto;">
-                            <option value="">-- Choose Employee --</option>
+                            <option value="">--Select Employee--</option>
                             <?php foreach ($employees_array as $emp): ?>
                                 <option value="<?php echo $emp['id']; ?>">
                                     <?php echo htmlspecialchars($emp['name']); ?>
@@ -436,19 +436,19 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
                     <!-- Month Picker -->
                     <div class="selection-control" id="monthControl">
-                        <label for="monthSelectInitial" style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block;">Target Month</label>
+                        <label for="monthSelectInitial" style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block;">Month</label>
                         <input type="month" id="monthSelectInitial" name="month_date" class="p-input-premium">
                     </div>
 
                     <!-- Date Picker (Hidden by default) -->
                     <div class="selection-control" id="dayControl" style="display:none;">
-                        <label for="daySelectInitial" style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block;">Select Date</label>
+                        <label for="daySelectInitial" style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: block;">Date</label>
                         <input type="date" id="daySelectInitial" name="day_date" class="p-input-premium">
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn-premium-add">
-                        View Attendance
+                    <button type="submit" class="btn-premium-add" style="justify-content: center;">
+                        Show Attendance
                     </button>
                 </div>
             </form>

@@ -29,7 +29,7 @@ if ($run_projs) {
         <div style="display: flex; align-items: center; gap: 20px;">
             <h1></h1>
             <div style="padding: 8px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                Global Team Tasks
+                All Tasks
             </div>
         </div>
         <div class="header-actions-premium" style="display: flex; gap: 16px; align-items: center;">
@@ -51,7 +51,7 @@ if ($run_projs) {
     <div class="todo-board">
         <?php
         if (empty($employees)) {
-            echo '<div style="text-align: center; width: 100%; padding: 50px; color: #64748b; font-weight: 600;">No employees found in the directory.</div>';
+            echo '<div style="text-align: center; width: 100%; padding: 50px; color: #64748b; font-weight: 600;">No tasks found for this date.</div>';
         } else {
             foreach ($employees as $emp) {
                 $emp_id = intval($emp['id']);

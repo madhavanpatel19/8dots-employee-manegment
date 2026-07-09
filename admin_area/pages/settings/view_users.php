@@ -57,26 +57,26 @@ if (!isset($_SESSION['admin_email'])) {
     <div class="page-header-premium">
         <h1></h1>
         <?php if (canAdminAccess('user_insert')): ?>
-        <a href="index.php?insert_user" class="btn-premium-add">
-            <i class="fa fa-user-plus"></i> Add new User
-        </a>
+            <a href="index.php?insert_user" class="btn-premium-add">
+                <i class="fa fa-user-plus"></i>Add User
+            </a>
         <?php endif; ?>
     </div>
 
     <div class="premium-card">
         <div class="card-hdr">
             <i class="fa fa-list"></i>
-            <h3>All Administrative Users</h3>
+            <h3>All Admins</h3>
         </div>
         <div style="overflow-x: auto;">
             <table class="table-premium">
                 <thead>
                     <tr>
-                        <th>User Identity</th>
-                        <th style="text-align: center;">Email Contact</th>
+                        <th>Name</th>
+                        <th style="text-align: center;">Email</th>
                         <th style="text-align: center;">Country</th>
-                        <th style="text-align: center;">Job Title</th>
-                        <th style="text-align: center;">Actions</th>
+                        <th style="text-align: center;">Role</th>
+                        <th style="text-align: center;">Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,14 +112,14 @@ if (!isset($_SESSION['admin_email'])) {
                             <td style="text-align: center;">
                                 <div style="display: flex; justify-content: center; gap: 8px;">
                                     <?php if (canAdminAccess('user_update')): ?>
-                                    <a href="index.php?edit_user=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit User">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
+                                        <a href="index.php?edit_user=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-edit" title="Edit User">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
                                     <?php endif; ?>
                                     <?php if (canAdminAccess('user_delete')): ?>
-                                    <a href="index.php?user_delete=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-delete" title="Delete User">
-                                        <i class="fa fa-trash-o"></i>
-                                    </a>
+                                        <a href="index.php?user_delete=<?php echo $admin_id; ?>" class="btn-icon-premium btn-icon-delete" title="Delete User">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
                                     <?php endif; ?>
                                 </div>
                             </td>

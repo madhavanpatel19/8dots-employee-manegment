@@ -84,7 +84,7 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
             </div>
             <?php if (canAdminAccess('company_link_insert')): ?>
                 <button type="button" id="btn-add-section" class="btn-premium-add">
-                    <i class="fa fa-plus"></i> New Section
+                    <i class="fa fa-plus"></i> Add Section
                 </button>
             <?php endif; ?>
         </div>
@@ -138,9 +138,9 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
                         <th style="padding: 12px 20px; text-align: left; font-size: 12px; color: #64748b; font-weight: 600;">Name</th>
                         <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Type</th>
                         <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Section</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Updated By</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Updated On</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Actions</th>
+                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Changed By</th>
+                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Date</th>
+                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Manage</th>
                     </tr>
                 </thead>
                 <tbody id="recently-updated-table">
@@ -598,9 +598,11 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
             if (categories.length === 0) {
                 html = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px 0; background: #fff; border-radius: 12px; border: 1px dashed #e2e8f0;">
-                    <i class="fa fa-folder-open-o" style="font-size: 40px; color: #cbd5e1; margin-bottom: 15px;"></i>
-                    <h3 style="color: #64748b; font-weight: 600; font-size: 16px;">No repository sections found</h3>
-                    <p style="color: #94a3b8; font-size: 14px;">Initialize your first section above</p>
+                    <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                        <i class="fa fa-folder-open-o" style="font-size: 24px; color: #94a3b8;"></i>
+                    </div>
+                    <h3 style="color: #64748b; font-weight: 600; font-size: 16px;">No sections found.</h3>
+                    <p style="color: #94a3b8; font-size: 14px;">Create your first section using the button above.</p>
                 </div>
                 `;
             }
@@ -665,7 +667,7 @@ while ($erow = mysqli_fetch_assoc($empQ)) {
             });
 
             if (pinned.length === 0) {
-                html = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">No pinned links</td></tr>`;
+                html = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">No pinned links to show.</td></tr>`;
             }
 
             $('#recently-updated-table').html(html);

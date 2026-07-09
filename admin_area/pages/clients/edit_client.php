@@ -595,13 +595,15 @@ endif; ?>
 <div class="modal fade" id="addIndustryModal" tabindex="-1" role="dialog" aria-labelledby="addIndustryModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #1e293b; color: #fff; padding: 20px 25px; border: none;">
-                <h4 class="modal-title" id="addIndustryModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
+                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Industry
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8; font-size: 24px; position: absolute; right: 20px; top: 20px;">&times;</button>
                 </h4>
             </div>
             <div class="modal-body" style="padding: 30px; background: #fff;">
@@ -611,8 +613,8 @@ endif; ?>
                         <input type="text" name="industry_name" id="new_industry_name" placeholder="e.g. Technology, Healthcare" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
-                        <button type="button" data-dismiss="modal" style="background: #f1f5f9; color: #64748b; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; transition: all 0.3s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';">Cancel</button>
-                        <button type="submit" style="background: #10b981; color: #fff; border: none; padding: 12px 35px; border-radius: 12px; font-size: 14px; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                        <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
+                        <button type="submit" class="btn-premium-add">
                             <i class="fa fa-save"></i> Save Industry
                         </button>
                     </div>

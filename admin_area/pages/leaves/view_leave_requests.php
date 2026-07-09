@@ -108,7 +108,7 @@ if ($run_stats) {
         <div class="header-actions" style="display: flex; gap: 10px;">
             <?php if (canAdminAccess('leave_insert')): ?>
                 <button class="btn-premium-add" onclick="openManageLeaves()">
-                    <i class="fa fa-cogs"></i> Manage Leave Types
+                    <i class="fa fa-cogs"></i> Settings
                 </button>
             <?php endif; ?>
         </div>
@@ -329,7 +329,7 @@ if ($run_stats) {
             </div>
             <div class="stat-card-body" style="text-align: left;">
                 <div class="stat-card-value"><?php echo sprintf('%02d', $stat_total_requests); ?></div>
-                <div class="stat-card-title">TOTAL REQUESTS</div>
+                <div class="stat-card-title">Total</div>
             </div>
         </div>
         <!-- Pending Requests -->
@@ -367,7 +367,7 @@ if ($run_stats) {
         <div class="card-hdr" style="padding: 20px 24px; background:var(--p-bg-header);color:white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <i class="fa fa-list"></i>
-                <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Leave Requests List</h3>
+                <h3 style="margin: 0; font-size: 16px; font-weight: 700;"> All Requests</h3>
             </div>
         </div>
 
@@ -385,14 +385,14 @@ if ($run_stats) {
                     <tr>
                         <th style="width: 50px;">#</th>
                         <th style="width: 200px;">Employee</th>
-                        <th>Leave Type</th>
-                        <th style="width: 110px;">From Date</th>
-                        <th style="width: 110px;">To Date</th>
-                        <th style="width: 100px;">Duration</th>
+                        <th>Type</th>
+                        <th style="width: 110px;">Start Date</th>
+                        <th style="width: 110px;">End Date</th>
+                        <th style="width: 100px;">Days</th>
                         <th>Reason</th>
-                        <th style="width: 110px;">Applied On</th>
+                        <th style="width: 110px;">Request Date</th>
                         <th style="width: 120px;">Status</th>
-                        <th style="width: 160px;">Actions</th>
+                        <th style="width: 160px;">Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -500,22 +500,12 @@ if ($run_stats) {
                             <td colspan="10" style="padding: 80px 0; text-align: center;">
                                 <div style="background: #f8fafc; padding: 35px; border-radius: 16px; border: 1.5px dashed #cbd5e1; display: inline-block; max-width: 450px;">
                                     <i class="fa fa-inbox" style="color: #94a3b8; font-size: 48px; margin-bottom: 20px;"></i>
-                                    <h4 style="color: #334155; font-weight: 800; font-size: 18px; margin-bottom: 8px;">No Leave Requests Found</h4>
-                                    <p style="color: #64748b; font-size: 14px; font-weight: 500; margin: 0;">There are no leave requests matching the current filters.</p>
+                                    <h4 style="color: #334155; font-weight: 800; font-size: 18px; margin-bottom: 8px;"> No requests found.</h4>
+                                    <p style="color: #64748b; font-size: 14px; font-weight: 500; margin: 0;"> No requests match your search.</p>
                                 </div>
                             </td>
                         </tr>
                     <?php } else { ?>
-                        <tr>
-                            <td colspan="10" style="padding: 80px 0; text-align: center;">
-                                <div style="background: #fef2f2; padding: 25px; border-radius: 16px; border: 1.5px dashed #fecaca; display: inline-block; max-width: 400px;">
-                                    <i class="fa fa-database" style="color: #ef4444; font-size: 40px; margin-bottom: 15px;"></i>
-                                    <h4 style="color: #991b1b; font-weight: 800;">Schema Out of Sync</h4>
-                                    <p style="color: #b91c1c; font-size: 13px; font-weight: 600;">The leave management tables are missing from your database.</p>
-                                    <p style="color: #7f1d1d; font-size: 12px; margin-top: 10px; opacity: 0.8;">Please import <b>8dots.sql</b> to fix this.</p>
-                                </div>
-                            </td>
-                        </tr>
                     <?php } ?>
                 </tbody>
             </table>

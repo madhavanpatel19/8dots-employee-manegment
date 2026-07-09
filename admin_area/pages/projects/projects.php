@@ -104,7 +104,7 @@ $run_projects = mysqli_query($con, $get_projects);
                 <i class="fa fa-folder-open"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Active Projects</div>
+                <div class="stat-card-title">Current Projects</div>
                 <div class="stat-card-value"><?php echo $active_projects; ?></div>
             </div>
         </div>
@@ -115,7 +115,7 @@ $run_projects = mysqli_query($con, $get_projects);
                 <i class="fa fa-check-circle"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Completed Projects</div>
+                <div class="stat-card-title">Done Projects</div>
                 <div class="stat-card-value"><?php echo $completed_projects; ?></div>
             </div>
         </div>
@@ -126,7 +126,7 @@ $run_projects = mysqli_query($con, $get_projects);
                 <i class="fa fa-clock-o"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Pending Projects</div>
+                <div class="stat-card-title">Waiting Projects</div>
                 <div class="stat-card-value"><?php echo $pending_projects; ?></div>
             </div>
         </div>
@@ -139,7 +139,7 @@ $run_projects = mysqli_query($con, $get_projects);
                 <div class="card-hdr">
                     <div class="header-left">
                         <i class="fa fa-list-ul"></i>
-                        <h3>All Client Projects</h3>
+                        <h3>All Projects</h3>
                     </div>
                     <!-- <button type="button" class="btn-premium-add" data-toggle="modal" data-target="#addProjectModal">
                         <i class="fa fa-plus"></i> Add New Project
@@ -149,9 +149,9 @@ $run_projects = mysqli_query($con, $get_projects);
                     <table class="table-premium">
                         <thead>
                             <tr>
-                                <th style="width: 80px; text-align: center;">#ID</th>
-                                <th>Project & Client</th>
-                                <th>Assign Employees</th>
+                                <th style="width: 80px; text-align: center;">ID</th>
+                                <th>Project Name</th>
+                                <th>Team Members</th>
                                 <?php if (canAdminAccess('project_source_view')): ?>
                                     <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
                                         <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($_GET['source']) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
@@ -160,7 +160,7 @@ $run_projects = mysqli_query($con, $get_projects);
                                         </div>
                                         <select id="sourceSelect" onchange="applySourceFilter(this.value)"
                                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
-                                            <option value="">All Sources</option>
+                                            <option value="">Platform</option>
                                             <?php
                                             $source_filter = isset($_GET['source']) ? $_GET['source'] : '';
                                             $get_all_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
@@ -174,11 +174,11 @@ $run_projects = mysqli_query($con, $get_projects);
                                         </select>
                                     </th>
                                 <?php endif; ?>
-                                <th style="text-align: center;">Date</th>
-                                <th style="text-align: center;">Budget</th>
-                                <th style="text-align: center;">Documents</th>
+                                <th style="text-align: center;">Deadline</th>
+                                <th style="text-align: center;">Cost</th>
+                                <th style="text-align: center;">Files</th>
                                 <th style="text-align: center;">Status</th>
-                                <th style="text-align: center;">Actions</th>
+                                <th style="text-align: center;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="full-projects-container">
@@ -1191,8 +1191,8 @@ $run_projects = mysqli_query($con, $get_projects);
                                 <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
                                     <i class="fa fa-folder-open-o" style="font-size: 24px; color: #94a3b8;"></i>
                                 </div>
-                                <h4 style="color: #1e293b; font-weight: 700; margin-bottom: 5px;">No Projects Found</h4>
-                                <p style="color: #64748b; font-size: 13px;">There are currently no active projects in the system.</p>
+                                <h4 style="color: #64748b; font-weight: 600; font-size: 16px;">No projects found</h4>
+                                <p style="color: #64748b; font-size: 13px;">There are no projects to show right now.</p>
                             </td>
                         </tr>
                     `);

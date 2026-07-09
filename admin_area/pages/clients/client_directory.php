@@ -76,7 +76,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
         <div class="header-actions-premium" style="display: flex; align-items: center; gap: 15px;">
             <div style="position: relative;">
                 <i class="fa fa-search" style="position: absolute; left: 15px; top: 13px; color: #94a3b8;"></i>
-                <input type="text" id="header_search" class="p-input-premium" placeholder="Search client name, email or company..." value="<?php echo htmlspecialchars($search); ?>" style="padding-left: 40px; height: 42px; width: 300px; font-size: 14px;" onchange="applyColumnFilter('search', this.value)">
+                <input type="text" id="header_search" class="p-input-premium" placeholder=" Search... " value="<?php echo htmlspecialchars($search); ?>" style="padding-left: 40px; height: 42px; width: 300px; font-size: 14px;" onchange="applyColumnFilter('search', this.value)">
             </div>
             <?php if (canAdminAccess('client_insert')): ?>
                 <a href="index.php?add_client" class="btn-premium-add">
@@ -104,7 +104,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                 <i class="fa fa-building-o"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Active Clients</div>
+                <div class="stat-card-title">Active</div>
                 <div class="stat-card-value"><?php echo $active_clients; ?></div>
             </div>
         </div>
@@ -115,7 +115,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                 <i class="fa fa-clock-o"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-card-title">Inactive Clients</div>
+                <div class="stat-card-title">Inactive</div>
                 <div class="stat-card-value"><?php echo $inactive_clients; ?></div>
             </div>
         </div>
@@ -137,15 +137,15 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
     <div class="premium-card">
         <div class="card-hdr">
             <i class="fa fa-table"></i>
-            <h3>Client Records</h3>
+            <h3>All Clients</h3>
         </div>
         <div style="overflow-x: auto;">
             <table class="table-premium">
                 <thead>
                     <tr>
-                        <th style="width: 80px; text-align: center;">#ID</th>
+                        <th style="width: 80px; text-align: center;">ID</th>
                         <th style="width: 80px; text-align: center;">Photo</th>
-                        <th>Client Details</th>
+                        <th>Client Info</th>
                         <th style="text-align: center;">Company</th>
                         <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
                             <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 13px; color: <?php echo !empty($_GET['country']) ? '#1e293b' : '#475569'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
@@ -177,10 +177,10 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                 <?php endwhile; ?>
                             </select>
                         </th>
-                        <th style="text-align: center;">Website</th>
-                        <th style="text-align: center;">Project</th>
+                        <th style="text-align: center;">Link</th>
+                        <th style="text-align: center;">Projects</th>
                         <th style="text-align: center;">Status</th>
-                        <th style="text-align: center;">Actions</th>
+                        <th style="text-align: center;">Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -266,8 +266,8 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                     <div style="width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
                                         <i class="fa fa-folder-open-o" style="font-size: 28px; color: #cbd5e1;"></i>
                                     </div>
-                                    <div style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;">No Clients Found</div>
-                                    <div style="font-size: 13px; color: #94a3b8;">There are no clients to display at this time.</div>
+                                    <div style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;">No clients found.</div>
+                                    <div style="font-size: 13px; color: #94a3b8;">No clients to show right now.</div>
                                 </div>
                             </td>
                         </tr>
@@ -466,8 +466,8 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
 
     .client-table-img:hover {
         transform: scale(1.15) rotate(5deg);
-        border-color: #4f46e5;
-        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        border-color: #dd2127;
+        box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
     }
 
     .p-input-premium {
@@ -484,8 +484,8 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
 
     .p-input-premium:focus {
         background: #fff;
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 4px rgba(221, 33, 39, 0.1) !important;
     }
 
     .id-badge-premium {

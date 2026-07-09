@@ -66,13 +66,13 @@ $result = mysqli_query($con, $sql);
         <div class="header-actions">
             <!-- Optional: Filter Toggle or Export Button -->
             <button class="btn-premium-add" onclick="window.filter()">
-                <i class="fa fa-filter"></i> filter
+                <i class="fa fa-filter"></i>filter
             </button>
             <button class="btn-premium-add" onclick="openWorkGallery()">
-                <i class="fa fa-photo"></i> Photo Gallery
+                <i class="fa fa-photo"></i>Images
             </button>
             <button class="btn-premium-add" onclick="window.print()">
-                <i class="fa fa-print"></i> Print Report
+                <i class="fa fa-print"></i>Print
             </button>
         </div>
     </div>
@@ -81,7 +81,7 @@ $result = mysqli_query($con, $sql);
     <div id="filter-section" class="premium-card filter-card" style="display: <?php echo (!empty($filter_emp) || !empty($filter_status) || !empty($filter_from) || !empty($filter_to)) ? 'block' : 'none'; ?>; ">
         <div class="card-hdr">
             <i class="fa fa-sliders"></i>
-            <h3>Filter</h3>
+            <h3>Filter By</h3>
             <button class="btn-close-filter" onclick="window.filter()" style="margin-left: auto; background: none; border: none; color: #94a3b8; cursor: pointer;">
                 <i class="fa fa-times"></i>
             </button>
@@ -110,20 +110,20 @@ $result = mysqli_query($con, $sql);
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>From Date</label>
+                    <label>Start Date</label>
                     <input type="date" name="from" class="p-input-premium" value="<?php echo $filter_from; ?>">
                 </div>
                 <div class="filter-group">
-                    <label>To Date</label>
+                    <label>End Date</label>
                     <input type="date" name="to" class="p-input-premium" value="<?php echo $filter_to; ?>">
                 </div>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;">
                 <a href="index.php?worksheettable" class="btn-clear-filter">
-                    <i class="fa fa-refresh"></i> Clear
+                    <i class="fa fa-refresh"></i>Clear
                 </a>
                 <button type="submit" class="btn-premium-add">
-                    <i class="fa fa-check"></i> Apply Filters
+                    <i class="fa fa-check"></i>Search
                 </button>
             </div>
         </form>
@@ -132,7 +132,7 @@ $result = mysqli_query($con, $sql);
     <div class="premium-card">
         <div class="card-hdr">
             <i class="fa fa-table"></i>
-            <h3>Detailed Worksheet Activity</h3>
+            <h3>Work Details</h3>
         </div>
         <div style="overflow-x: auto;">
             <table class="table-premium">
@@ -140,12 +140,12 @@ $result = mysqli_query($con, $sql);
                     <tr>
                         <th style="width: 50px; text-align: center;"></th>
                         <th style="width: 60px; text-align: center;">#</th>
-                        <th>Employee</th>
-                        <th>Date & Time</th>
+                        <th>Team Member</th>
+                        <th>Time Logged</th>
                         <th style="text-align: center;">Status</th>
-                        <th style="text-align: center;">Performance</th>
-                        <th>Work Details</th>
-                        <th>Recorded On</th>
+                        <th style="text-align: center;">Activity %</th>
+                        <th>Tasks Done</th>
+                        <th>Saved At</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,9 +233,12 @@ $result = mysqli_query($con, $sql);
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 50px; color: #94a3b8;">
-                                <i class="fa fa-folder-open-o" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
-                                No worksheet records found for the selected criteria.
+                            <td colspan="8" style="padding: 100px 20px; text-align: center;">
+                                <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                                    <i class="fa fa-folder-open-o" style="font-size: 24px; color: #94a3b8;"></i>
+                                </div>
+                                <h3 style="color: #64748b; font-weight: 600; font-size: 16px;">No reports found.</h3>
+                                <p style="color: #64748b; font-size: 13px;">No logs match your search filters.</p>
                             </td>
                         </tr>
                     <?php endif; ?>

@@ -254,7 +254,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     <div class="header-actions-premium">
         <?php if (function_exists('canAdminAccess') && canAdminAccess('employee_insert')): ?>
             <a href="index.php?add_emp" class="btn-premium-add">
-                <i class="fa fa-user-plus"></i> Add new Employee
+                <i class="fa fa-user-plus"></i> Add Employee
             </a>
         <?php endif; ?>
     </div>
@@ -287,12 +287,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             <thead>
                 <tr>
                     <th class="text-center" style="width: 60px; text-align: center;">ID</th>
-                    <th class="text-center" style="width: 80px; text-align: center;">Image</th>
-                    <th>Employee Name</th>
-                    <th class="text-center" style="text-align: center;">Information</th>
-                    <th class="text-center" style="text-align: center;">Performance</th>
-                    <th class="text-center" style="text-align: center;">Documents</th>
-                    <th class="text-center" style="text-align: center;">Actions</th>
+                    <th class="text-center" style="width: 80px; text-align: center;">Photo</th>
+                    <th> Name</th>
+                    <th class="text-center" style="text-align: center;">Details</th>
+                    <th class="text-center" style="text-align: center;">Rating</th>
+                    <th class="text-center" style="text-align: center;">Files</th>
+                    <th class="text-center" style="text-align: center;">Manage</th>
                 </tr>
             </thead>
             <tbody>
@@ -429,9 +429,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                 } else {
                     ?>
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 60px 40px; color: #94a3b8;">
-                            <i class="fa fa-users" style="font-size: 32px; display: block; margin-bottom: 15px; opacity: 0.3;"></i>
-                            <span style="font-weight: 600;">No employees found in the directory.</span>
+                        <td colspan="8" style="padding: 100px 20px; text-align: center;">
+                            <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                                <i class="fa fa-users" style="font-size: 24px; color: #94a3b8;"></i>
+                            </div>
+                            <h3 style="color: #64748b; font-weight: 600; font-size: 16px;">No employees found.</h3>
+                            <p style="color: #64748b; font-size: 13px;">There are no employees to show right now.</p>
                         </td>
                     </tr>
                 <?php } ?>
