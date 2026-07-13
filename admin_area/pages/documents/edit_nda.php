@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['admin_email'])) {
-    echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
+    echo "<script>window.open('pages/auth/login.php','_self')</script>";
     exit();
 }
 
@@ -15,7 +15,7 @@ if (isset($_GET['edit_nda'])) {
     $row_edit = mysqli_fetch_array($run_edit);
 
     if (!$row_edit) {
-        echo "<script>Swal.fire({title: 'Notification', text: 'NDA record not found.', icon: 'error'}).then(() => { window.open('../../index.php?view_nda','_self'); });</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'NDA record not found.', icon: 'error'}).then(() => { window.open('index.php?view_nda','_self'); });</script>";
         exit();
     }
 
@@ -47,7 +47,7 @@ if (isset($_POST['update_nda'])) {
 
     if ($run_update) {
         echo "<script>Swal.fire({title: 'Notification', text: 'NDA has been updated successfully', icon: 'success'});</script>";
-        echo "<script>window.open('../../index.php?view_nda','_self')</script>";
+        echo "<script>window.open('index.php?view_nda','_self')</script>";
     } else {
         echo "<script>Swal.fire({title: 'Notification', text: 'Error: Could not update NDA.', icon: 'error'});</script>";
     }

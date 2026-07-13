@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['admin_email'])) {
-    echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
+    echo "<script>window.open('pages/auth/login.php','_self')</script>";
     exit();
 }
 
@@ -21,7 +21,7 @@ if (isset($_GET['edit_experience_letter'])) {
     $row_exp = mysqli_fetch_array($run_exp);
 
     if (!$row_exp) {
-        echo "<script>Swal.fire({title: 'Notification', text: 'Experience letter not found.', icon: 'error'}).then(() => { window.open('../../index.php?view_experience_letters','_self'); });</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Experience letter not found.', icon: 'error'}).then(() => { window.open('index.php?view_experience_letters','_self'); });</script>";
         exit();
     }
 
@@ -32,7 +32,7 @@ if (isset($_GET['edit_experience_letter'])) {
     $join_date = $row_exp['join_date'];
     $relieve_date = $row_exp['relieve_date'];
 } else {
-    echo "<script>window.open('../../index.php?view_experience_letters','_self')</script>";
+    echo "<script>window.open('index.php?view_experience_letters','_self')</script>";
     exit();
 }
 
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_exp'])) {
 
     if ($run_update) {
         $_SESSION['exp_updated'] = true;
-        echo "<script>window.open('../../index.php?view_experience_letters','_self')</script>";
+        echo "<script>window.open('index.php?view_experience_letters','_self')</script>";
         exit();
     } else {
         $error_msg = "Error updating record: " . mysqli_error($con);

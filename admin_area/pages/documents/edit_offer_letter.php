@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['admin_email'])) {
-    echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
+    echo "<script>window.open('pages/auth/login.php','_self')</script>";
     exit();
 }
 
@@ -15,7 +15,7 @@ if (isset($_GET['edit_offer_letter'])) {
     $row_edit = mysqli_fetch_array($run_edit);
 
     if (!$row_edit) {
-        echo "<script>Swal.fire({title: 'Notification', text: 'Offer letter not found.', icon: 'error'}).then(() => { window.open('../../index.php?view_offer_letters','_self'); });</script>";
+        echo "<script>Swal.fire({title: 'Notification', text: 'Offer letter not found.', icon: 'error'}).then(() => { window.open('index.php?view_offer_letters','_self'); });</script>";
         exit();
     }
 
@@ -53,7 +53,7 @@ if (isset($_POST['update_offer'])) {
 
     if ($run_update) {
         echo "<script>Swal.fire({title: 'Notification', text: 'Offer Letter has been updated successfully', icon: 'success'});</script>";
-        echo "<script>window.open('../../index.php?view_offer_letters','_self')</script>";
+        echo "<script>window.open('index.php?view_offer_letters','_self')</script>";
     } else {
         echo "<script>Swal.fire({title: 'Notification', text: 'Error: Could not update offer letter.', icon: 'error'});</script>";
     }
