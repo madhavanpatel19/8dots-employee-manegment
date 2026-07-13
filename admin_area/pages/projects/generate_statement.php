@@ -1,0 +1,557 @@
+<?php
+ob_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
+
+// Require project_id
+if (!isset($_GET['project_id'])) {
+    die("Project ID is required.");
+}
+
+$project_id = (int) $_GET['project_id'];
+
+// Fetch project details from client_projects
+$proj_q = mysqli_query($con, "SELECT * FROM client_projects WHERE id = '$project_id'");
+$project = mysqli_fetch_assoc($proj_q);
+if (!$project) {
+    die("Project not found.");
+}
+
+// Fetch budget phases from project_budget_phases
+$phases_q = mysqli_query($con, "SELECT * FROM project_budget_phases WHERE project_id = '$project_id' ORDER BY id ASC");
+$phases = [];
+while ($row = mysqli_fetch_assoc($phases_q)) {
+    $phases[] = $row;
+}
+
+// Currency symbols
+$currency_symbols = [
+    'INR' => '₹',
+    'USD' => '$',
+    'EUR' => '€',
+    'GBP' => '£',
+    'AED' => 'د.إ'
+];
+$currency = !empty($project['currency']) ? $project['currency'] : 'INR';
+$sym      = $currency_symbols[$currency] ?? '₹';
+
+// Totals
+$total_cost     = (float)($project['budget'] ?? 0);
+$total_received = array_sum(array_column($phases, 'received_amount'));
+$total_pending  = $total_cost - $total_received;
+
+$current_date = date("d F Y");
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Statement – <?php echo htmlspecialchars($project['project_name'] ?? ''); ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #e31e24;
+            --dark: #222;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            margin: 0;
+            background: #ececec;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        /* ── PAGE WRAP ── */
+        .page-wrap {
+            width: 100%;
+            margin: 20px auto;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* ── A4 SHEET ── */
+        .letter-sheet {
+            background: #fff;
+            width: 210mm;
+            min-height: 297mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .10);
+            padding: 0 0 110px;
+        }
+
+        /* ── HEADER: exact same as experience letter ── */
+        .top-shape {
+            height: 80px;
+            position: relative;
+            background: transparent;
+        }
+
+        .top-shape .black-bar {
+            width: 65%;
+            height: 45px;
+            background: #222;
+            clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+        }
+
+        .top-shape .red-bar {
+            width: 50%;
+            height: 12px;
+            background: var(--red);
+            margin-top: 12px;
+            clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);
+        }
+
+        .brand-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 52px;
+            margin-top: -65px;
+        }
+
+        .brand-row img {
+            height: 85px;
+            object-fit: contain;
+        }
+
+        /* ── TITLE ── */
+        .title {
+            text-align: center;
+            color: var(--red);
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: .5px;
+            margin: 8px 0 6px;
+            text-transform: uppercase;
+        }
+
+        .title-underline {
+            display: flex;
+            align-items: center;
+            margin: 0 50px 24px;
+            height: 6px;
+        }
+
+        .title-underline .left {
+            width: 44%;
+            height: 4px;
+            background: #121212;
+        }
+
+        .title-underline .right {
+            width: 56%;
+            height: 4px;
+            background: var(--red);
+        }
+
+        /* ── META ROW ── */
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0 52px;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .meta .project-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .meta .project-sub {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        .meta .date-right {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ── SUMMARY BOXES ── */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            padding: 0 52px;
+            margin-bottom: 22px;
+        }
+
+        .summary-box {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 14px 18px;
+            background: #f8fafc;
+        }
+
+        .summary-box .s-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 6px;
+        }
+
+        .summary-box .s-value {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .s-value.total {
+            color: #0f172a;
+        }
+
+        .s-value.received {
+            color: #16a34a;
+        }
+
+        .summary-box .s-bar {
+            width: 28px;
+            height: 4px;
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+
+        /* ── TABLE ── */
+        .content {
+            padding: 0 52px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+        }
+
+        .stmt-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .stmt-table thead tr {
+            background: #1e293b;
+        }
+
+        .stmt-table thead th {
+            padding: 10px 12px;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            text-align: center;
+            border: none;
+        }
+
+        .stmt-table tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .stmt-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .stmt-table tbody td {
+            padding: 10px 12px;
+            text-align: center;
+            color: #334155;
+            font-weight: 500;
+            vertical-align: middle;
+        }
+
+        .stmt-table tbody td.phase-name {
+            font-weight: 700;
+            color: #0f172a;
+            text-align: left;
+        }
+
+        .stmt-table tbody td.amount {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .stmt-table tbody td.received-amt {
+            font-weight: 800;
+            color: #16a34a;
+        }
+
+        .no-phases {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* ── FOOTER: exact same as experience letter ── */
+        .footer-bar {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #d1d1d1;
+            padding: 15px 52px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: flex-start;
+            gap: 40px;
+            flex-wrap: nowrap;
+            font-size: 13px;
+            color: #222;
+            font-weight: 600;
+            padding-right: 160px;
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-item i {
+            color: #222;
+            width: 18px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* ── RED CORNER: exact same as experience letter ── */
+        .corner-red {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 180px;
+            height: 80px;
+            background: var(--red);
+            clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+            z-index: 10;
+        }
+
+        /* ── ACTION BUTTONS ── */
+        .actions {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 9999;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-print {
+            background: #dd2127;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background: #fff;
+            border: 1px solid #ddd;
+            color: #333;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .page-wrap {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                display: block;
+            }
+
+            .letter-sheet {
+                box-shadow: none;
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0 auto;
+            }
+
+            .actions {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Action Buttons -->
+    <div class="actions">
+        <button onclick="window.print()" class="btn btn-print">
+            <i class="fa fa-print"></i> Print / Save PDF
+        </button>
+        <a href="javascript:window.close();" class="btn-back">Back</a>
+    </div>
+
+    <div class="page-wrap">
+        <div class="letter-sheet">
+
+            <!-- ── HEADER ── -->
+            <div class="top-shape">
+                <div class="black-bar"></div>
+                <div class="red-bar"></div>
+            </div>
+            <div class="brand-row">
+                <img src="../../images/Cadlete_logo%20Landscape.png" alt="CADLETE DESIGNS Logo">
+            </div>
+
+            <!-- ── TITLE ── -->
+            <div class="title">Project Statement</div>
+            <div class="title-underline">
+                <div class="left"></div>
+                <div class="right"></div>
+            </div>
+
+            <!-- ── META ── -->
+            <div class="meta">
+                <div>
+                    <div class="project-name"><?php echo htmlspecialchars($project['project_name']); ?></div>
+                    <div class="project-sub">Project Financial Statement</div>
+                </div>
+                <div class="date-right"><?php echo $current_date; ?></div>
+            </div>
+
+            <!-- ── SUMMARY ── -->
+            <div class="summary-grid">
+                <div class="summary-box">
+                    <div class="s-label">Total Estimated Cost</div>
+                    <div class="s-value total"><?php echo $sym . ' ' . number_format($total_cost, 0); ?></div>
+                    <div class="s-bar" style="background:#6366f1;"></div>
+                </div>
+                <div class="summary-box">
+                    <div class="s-label">Collections Received</div>
+                    <div class="s-value received"><?php echo $sym . ' ' . number_format($total_received, 0); ?></div>
+                    <div class="s-bar" style="background:#22c55e;"></div>
+                </div>
+                <div class="summary-box">
+                    <div class="s-label">Outstanding Balance</div>
+                    <div class="s-value" style="color:<?php echo $total_pending > 0 ? '#ef4444' : '#16a34a'; ?>">
+                        <?php echo $sym . ' ' . number_format(abs($total_pending), 0); ?>
+                    </div>
+                    <div class="s-bar" style="background:<?php echo $total_pending > 0 ? '#ef4444' : '#22c55e'; ?>;"></div>
+                </div>
+            </div>
+
+            <!-- ── PAYMENT TABLE ── -->
+            <div class="content">
+                <div class="section-label">Payment History</div>
+
+                <?php if (empty($phases)): ?>
+                    <div class="no-phases">No payment records found for this project.</div>
+                <?php else: ?>
+                    <table class="stmt-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center; width:30px;">#</th>
+                                <th style="text-align:left;">Phase</th>
+                                <th>Total Cost (<?php echo $sym; ?>)</th>
+                                <th>Received (<?php echo $sym; ?>)</th>
+                                <th>Payment Method</th>
+                                <th>Description</th>
+                                <th>Received Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($phases as $i => $phase):
+                                $cost_fmt = number_format((float)$phase['cost'], 0);
+                                $rec_fmt  = number_format((float)$phase['received_amount'], 0);
+                                $date_fmt = (!empty($phase['received_date']) && $phase['received_date'] !== '0000-00-00')
+                                    ? date("d M Y", strtotime($phase['received_date'])) : '—';
+                                $method   = !empty($phase['remark'])      ? htmlspecialchars($phase['remark'])      : '—';
+                                $desc     = !empty($phase['description'])  ? htmlspecialchars($phase['description']) : '—';
+                            ?>
+                                <tr>
+                                    <td><?php echo $i + 1; ?></td>
+                                    <td class="phase-name"><?php echo htmlspecialchars($phase['phase_name']); ?></td>
+                                    <td class="amount"><?php echo $sym . ' ' . $cost_fmt; ?></td>
+                                    <td class="received-amt"><?php echo $sym . ' ' . $rec_fmt; ?></td>
+                                    <td><?php echo $method; ?></td>
+                                    <td><?php echo $desc; ?></td>
+                                    <td><?php echo $date_fmt; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+
+            <!-- ── FOOTER: exact same as experience letter ── -->
+            <div class="footer-bar">
+                <div class="footer-inner">
+                    <div class="footer-col">
+                        <div class="footer-item">📱 +91 83202 11773</div>
+                        <div class="footer-item">✉️ info@cadletedesigns.com</div>
+                    </div>
+                    <div class="footer-col">
+                        <div class="footer-item">📍 A-106 Sun South Street</div>
+                        <div class="footer-item">🌐 www.cadletedesigns.com</div>
+                    </div>
+                </div>
+            </div>
+            <div class="corner-red"></div>
+
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

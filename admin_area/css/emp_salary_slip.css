@@ -1,0 +1,270 @@
+/* Premium Salary Slip Design */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #27ae60;
+    --border-color: #dee2e6;
+    --bg-light: #f8f9fa;
+    --text-muted: #6c757d;
+}
+
+.salary-slip-wrap {
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Premium Card Style */
+.premium-card {
+    max-width: 850px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    overflow: hidden;
+    position: relative;
+    color: #333;
+}
+
+.premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+
+/* Header Section */
+.slip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 30px 40px 20px;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+.company-brand {
+    display: flex;
+    align-items: center;
+}
+
+.company-logo {
+    height: 70px;
+    margin-right: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.company-name {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+}
+
+.company-address,
+.company-contact {
+    margin: 4px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.slip-title-box {
+    text-align: right;
+}
+
+.slip-title-box h3 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.slip-title-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Employee Details */
+.employee-details {
+    padding: 20px 40px;
+    background: var(--bg-light);
+    display: flex;
+    justify-content: space-between;
+}
+
+.detail-row p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.detail-row strong {
+    color: var(--primary-color);
+    min-width: 120px;
+    display: inline-block;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Table Styling */
+.salary-breakdown {
+    padding: 30px 40px;
+}
+
+.table-premium {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table-premium th,
+.table-premium td {
+    border: 1px solid var(--border-color);
+    padding: 12px 15px;
+    font-size: 14px;
+}
+
+.table-premium thead tr:first-child th {
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.table-premium thead tr:nth-child(2) th {
+    background: #f1f3f5;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.table-premium .amt {
+    text-align: right;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.row-totals td {
+    background: #f8f9fa;
+    font-weight: 700;
+    border-top: 2px solid var(--primary-color) !important;
+}
+
+.row-net td {
+    background: #e8f5e9;
+    border: 2px solid var(--accent-color) !important;
+}
+
+.net-label-col {
+    font-size: 16px;
+    color: var(--accent-color);
+}
+
+.net-value-col {
+    font-size: 20px;
+    color: var(--accent-color);
+}
+
+.words-col {
+    padding: 15px !important;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 13px;
+    background: #fff;
+}
+
+/* Footer & Signatures */
+.slip-footer {
+    padding: 40px 40px 60px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.signature-box {
+    width: 200px;
+    text-align: center;
+}
+
+.sig-line {
+    border-top: 1px solid #333;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.signature-box p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Misc */
+.badge-success {
+    background: var(--accent-color);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Print Rules */
+@media print {
+    body {
+        background: #fff !important;
+    }
+
+    .salary-slip-wrap,
+    .main-footer,
+    .sidebar,
+    .navbar,
+    .modal-header,
+    .modal-footer,
+    .no-print {
+        display: none !important;
+    }
+
+    .premium-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        position: static !important;
+    }
+
+    .premium-card::before {
+        display: block;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .table-premium thead tr:first-child th {
+        background: #333 !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .row-net td {
+        background: #e8f5e9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+}

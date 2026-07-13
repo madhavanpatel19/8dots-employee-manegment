@@ -1,0 +1,12 @@
+{
+    "require": {
+        "kreait/firebase-php": "^6.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "tecnickcom/tcpdf": "^6.11"
+    },
+    "config": {
+        "platform": {
+            "php": "8.0.30"
+        }
+    }
+}
