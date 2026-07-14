@@ -42,7 +42,7 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Employee Login | 8DOTS</title>
+    <title>Employee Login | Cadlete</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../admin_area/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../admin_area/font-awesome/css/font-awesome.min.css">

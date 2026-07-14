@@ -199,12 +199,17 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
     $time_out = $normalized_checkout ? mysqli_real_escape_string($con, $normalized_checkout) : null;
     $perf_val = is_numeric($performance) ? (int)$performance : null;
 
-    // Auto-flag late if after 10:15 AM when marked present
+    // Auto-flag late if after 10:00:00 AM when marked present
     $late_cutoff = strtotime('1970-01-01 10:15:00');
-    if ($time_in && $status === 'present') {
+    if ($time_in && ($status === 'present' || $status === 'late')) {
         $tstamp = strtotime('1970-01-01 ' . $normalized_checkin);
-        if ($tstamp !== false && $tstamp > $late_cutoff && stripos($rm_raw, 'late') === false) {
-            $rm_raw = ($rm_raw ? $rm_raw . ' | ' : '') . 'Late check-in (after 10:15 AM)';
+        if ($tstamp !== false && $tstamp > $late_cutoff) {
+            $st = 'late';
+            if (stripos($rm_raw, 'late') === false) {
+                $rm_raw = ($rm_raw ? $rm_raw . ' | ' : '') . 'Late check-in';
+            }
+        } else {
+            $st = 'present';
         }
     }
 
@@ -610,14 +615,11 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     <td style="white-space: nowrap;">
                                         <?php if (canAdminAccess('attendance_insert')): ?>
                                             <div class="status-options">
-                                                <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status == '') ? ' active' : ''; ?>">
-                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status == '') ? 'checked' : ''; ?>>P
+                                                <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status === 'late' || $pref_status == '') ? ($pref_status === 'late' ? ' active-late' : ' active') : ''; ?>">
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status === 'late' || $pref_status == '') ? 'checked' : ''; ?> onclick="updateStatusUI(this)">P
                                                 </label>
                                                 <label class="status-btn<?php echo ($pref_status === 'absent') ? ' active' : ''; ?>">
-                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="absent" <?php echo ($pref_status === 'absent') ? 'checked' : ''; ?>>A
-                                                </label>
-                                                <label class="status-btn<?php echo ($pref_status === 'late') ? ' active' : ''; ?>">
-                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="late" <?php echo ($pref_status === 'late') ? 'checked' : ''; ?>>L
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="absent" <?php echo ($pref_status === 'absent') ? 'checked' : ''; ?> onclick="updateStatusUI(this)">A
                                                 </label>
                                             </div>
                                         <?php else: ?>
@@ -628,7 +630,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     </td>
                                     <td>
                                         <?php if (canAdminAccess('attendance_insert')): ?>
-                                            <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm">
+                                            <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm" onchange="autoSetLateStatus(this, <?php echo $i; ?>)">
                                         <?php else: ?>
                                             <?php echo htmlspecialchars($pref_checkin ? date('h:i A', strtotime($pref_checkin)) : '-'); ?>
                                         <?php endif; ?>
@@ -866,7 +868,6 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         <option value="">Select Status</option>
                         <option value="present">Present</option>
                         <option value="absent">Absent</option>
-                        <option value="late">Late</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -898,6 +899,53 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 </div>
 
 <script>
+    // ---- AUTO LATE STATUS UI ----
+    function updateStatusUI(radio) {
+        let name = radio.name;
+        let allRadios = document.querySelectorAll('input[name="' + name + '"]');
+        allRadios.forEach(r => {
+            if (r.checked) {
+                if (r.value === 'present') {
+                    let tr = r.closest('tr');
+                    let timeInput = tr.querySelector('input[type="time"]');
+                    let isLate = false;
+                    if (timeInput && timeInput.value) {
+                        let timeParts = timeInput.value.split(':');
+                        let hours = parseInt(timeParts[0]);
+                        let minutes = parseInt(timeParts[1]);
+                        if (hours > 10 || (hours === 10 && minutes > 15)) {
+                            isLate = true;
+                        }
+                    }
+                    if (isLate) {
+                        r.parentElement.classList.add('active-late');
+                        r.parentElement.classList.remove('active');
+                    } else {
+                        r.parentElement.classList.add('active');
+                        r.parentElement.classList.remove('active-late');
+                    }
+                } else {
+                    r.parentElement.classList.add('active');
+                    r.parentElement.classList.remove('active-late');
+                }
+            } else {
+                r.parentElement.classList.remove('active');
+                r.parentElement.classList.remove('active-late');
+            }
+        });
+    }
+
+    function autoSetLateStatus(input, index) {
+        let pRadio = document.querySelector('input[name="status[' + index + ']"][value="present"]');
+        let aRadio = document.querySelector('input[name="status[' + index + ']"][value="absent"]');
+
+        // Only change it if they haven't explicitly marked it Absent
+        if (aRadio && !aRadio.checked && pRadio) {
+            pRadio.checked = true;
+            updateStatusUI(pRadio);
+        }
+    }
+
     // ---- REMARKS VALIDATION (REMOVED LEAVE VALIDATION) ----
     function validateLeaveRemarks() {
         return true;

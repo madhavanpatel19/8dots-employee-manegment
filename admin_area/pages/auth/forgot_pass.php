@@ -1,7 +1,11 @@
 ﻿<?php
-if (session_status() == PHP_SESSION_NONE) { session_start(); }
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 date_default_timezone_set('Asia/Kolkata'); // Synchronize with local server time
-if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -66,24 +70,24 @@ if (isset($_POST['send_otp'])) {
             $mail->Port       = 587;
 
             // Recipients
-            $mail->setFrom('madhavanpatel19@gmail.com', '8DOTS Support');
+            $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete Support');
             $mail->addAddress($email);
 
             // Content
             $mail->isHTML(true);
-            $mail->Subject = 'Password Reset OTP - 8DOTS';
+            $mail->Subject = 'Password Reset OTP - Cadlete';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
                     <h2 style='color: #2c3e50; text-align: center;'>Password Reset Request</h2>
                     <p>Hello,</p>
-                    <p>We received a request to reset your password for your 8DOTS account. Use the OTP below to proceed:</p>
+                    <p>We received a request to reset your password for your Cadlete account. Use the OTP below to proceed:</p>
                     <div style='background: #f4f7f6; padding: 15px; text-align: center; border-radius: 5px; margin: 20px 0;'>
                         <span style='font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3498db;'>$otp</span>
                     </div>
                     <p style='color: #e74c3c; font-weight: bold;'>This OTP will expire in 15 minutes.</p>
                     <p>If you did not request this, please ignore this email.</p>
                     <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
-                    <p style='font-size: 12px; color: #7f8c8d; text-align: center;'>&copy; " . date('Y') . " 8DOTS. All rights reserved.</p>
+                    <p style='font-size: 12px; color: #7f8c8d; text-align: center;'>&copy; " . date('Y') . " Cadlete. All rights reserved.</p>
                 </div>
             ";
 
@@ -161,7 +165,7 @@ if (isset($_POST['reset_password'])) {
 <html>
 
 <head>
-    <title>Forgot Password - 8DOTS</title>
+    <title>Forgot Password - Cadlete</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/login.css">
     <!-- Font Awesome for icons -->

@@ -162,11 +162,11 @@ if (isset($_POST['submit'])) {
             $mail->Password = 'yawi nqpw wbhp icrx';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
-            $mail->setFrom('madhavanpatel19@gmail.com', '8DOTS');
+            $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete');
             $mail->addAddress($email);
             $mail->isHTML(true);
             $mail->Subject = 'Employee Login Password';
-            $mail->Body = "<h3>Welcome to 8DOTS</h3><p>Your login password is: <b>$plainPassword</b></p><p>Please login from Employee Portal.</p>";
+            $mail->Body = "<h3>Welcome to Cadlete</h3><p>Your login password is: <b>$plainPassword</b></p><p>Please login from Employee Portal.</p>";
             $mail->send();
         } catch (Exception $e) {
         }

@@ -431,6 +431,7 @@ input[type="time"]:active {
     display: flex;
     gap: 4px;
     align-items: center;
+    justify-content: center;
     flex-wrap: nowrap;
 }
 
@@ -462,6 +463,13 @@ input[type="time"]:active {
     background-color: #5cb85c;
     color: white;
     box-shadow: 0 2px 6px rgba(92, 184, 92, 0.4);
+}
+
+.status-btn:nth-child(1).active-late {
+    background-color: #f0ad4e;
+    border-color: #f0ad4e;
+    color: white;
+    box-shadow: 0 2px 6px rgba(240, 173, 78, 0.4);
 }
 
 /* Absent - Red */

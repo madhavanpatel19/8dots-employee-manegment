@@ -537,12 +537,13 @@ $current_date = date("d F Y");
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item">📱 +91 83202 11773</div>
-                        <div class="footer-item">✉️ info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
+                        </div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item">📍 A-106 Sun South Street</div>
-                        <div class="footer-item">🌐 www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
                     </div>
                 </div>
             </div>
@@ -551,7 +552,7 @@ $current_date = date("d F Y");
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 
 </html>

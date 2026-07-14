@@ -22,7 +22,7 @@ if (!isset($_SESSION['emp_id'])) {
     <html lang="en">
 
     <head>
-        <title> Cadelete- Employee Dashboard</title>
+        <title> Cadlete- Employee Dashboard</title>
         <link href="../admin_area/css/bootstrap.min.css" rel="stylesheet">
         <link href="../admin_area/css/style.css" rel="stylesheet">
         <link href="../admin_area/css/dashboard.css" rel="stylesheet">

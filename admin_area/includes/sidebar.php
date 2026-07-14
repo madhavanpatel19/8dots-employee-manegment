@@ -55,7 +55,7 @@ if (!isset($_SESSION['admin_email'])) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button><!-- navbar-ex1-collapse Ends -->
-            <a class="navbar-brand" href="index.php?dashboard">8dots</a>
+            <a class="navbar-brand" href="index.php?dashboard">Cadlete</a>
         </div><!-- navbar-header Ends -->
         <ul class="nav navbar-right top-nav"><!-- nav navbar-right top-nav Starts -->
             <li class="dropdown"><!-- notification dropdown Starts -->

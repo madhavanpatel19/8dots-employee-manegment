@@ -154,7 +154,7 @@ function generate_attendance_pdf($con, $employees, $report_data, $from_date, $to
     // Header
     echo '<div class="report-header">';
     echo '<h1>ATTENDANCE REPORT</h1>';
-    echo '<div class="company-info">8Dots</div>';
+    echo '<div class="company-info">Cadlete</div>';
     echo '<p>' . $period_text . '</p>';
     echo '<p>Generated on: ' . date('d-m-y H:i:s') . '</p>';
     echo '</div>';

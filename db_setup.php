@@ -2,7 +2,7 @@
 include("admin_area/includes/db.php");
 
 echo "<div style='font-family: sans-serif; padding: 40px; line-height: 1.6; max-width: 800px; margin: 0 auto;'>";
-echo "<h1 style='color: #1e293b;'>8DOTS Database Setup</h1>";
+echo "<h1 style='color: #1e293b;'>Cadlete Database Setup</h1>";
 echo "<p style='color: #64748b;'>Initializing database synchronization...</p><hr style='border: 1px solid #f1f5f9; margin: 20px 0;'>";
 
 $tables = [
@@ -181,4 +181,3 @@ echo "<div style='margin-top: 40px; padding: 20px; background: #f0fdf4; border-r
 echo "<strong>Success!</strong> Database synchronization complete. You can now delete this file and continue using the application.";
 echo "</div>";
 echo "</div>";
-?>

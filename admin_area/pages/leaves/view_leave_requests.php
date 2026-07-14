@@ -79,7 +79,7 @@ $query = "SELECT l.*, e.id as emp_list_id, e.name as emp_name, e.employee_image,
 $result = mysqli_query($con, $query);
 
 if (!$result) {
-    $message = "Database synchronization required. Please import the latest 8dots.sql file. (Error: " . mysqli_error($con) . ")";
+    $message = "Database synchronization required. Please import the latest Cadlete.sql file. (Error: " . mysqli_error($con) . ")";
 }
 
 // Calculate Stats

@@ -55,7 +55,8 @@ elseif (isset($_GET['id'])) {
 $date                  = date("d F Y");
 $annual_salary         = $salary * 12;
 $formatted_salary      = number_format($salary);
-$formatted_annual      = number_format($annual_salary);
+$lpa_value             = $annual_salary / 100000;
+$formatted_annual      = rtrim(rtrim(number_format($lpa_value, 2, '.', ''), '0'), '.');
 $formatted_start       = date("d F Y", strtotime($start_date));
 ?>
 <!DOCTYPE html>
@@ -109,7 +110,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             position: relative;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, .10);
-            padding: 0 0 120px;
+            padding: 0 0 100px;
         }
 
         /* ===== HEADER ===== */
@@ -198,14 +199,14 @@ $formatted_start       = date("d F Y", strtotime($start_date));
         }
 
         .meta .label {
-            min-width: 120px;
+            min-width: 150px;
             font-weight: 700;
             color: #444;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .meta .value {
-            font-size: 14px;
+            font-size: 16px;
             color: #555;
             font-weight: 500;
         }
@@ -213,41 +214,41 @@ $formatted_start       = date("d F Y", strtotime($start_date));
         .meta .date-right {
             min-width: 170px;
             text-align: right;
-            font-size: 15px;
-            font-weight: 600;
-            color: #444;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
             padding-top: 2px;
         }
 
         /* ===== CONTENT ===== */
         .content {
             padding: 0 52px;
-            font-size: 15px;
+            font-size: 17px;
             line-height: 1.8;
             color: #555;
         }
 
         .content .salutation {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--red);
-            margin: 8px 0 16px;
+            margin: 10px 0 18px;
         }
 
         .content p {
-            margin: 0 0 14px;
-            font-size: 14px;
+            margin: 0 0 16px;
             text-align: left;
+            font-size: 16px;
         }
 
         .content strong {
             color: #333;
-            font-weight: 800;
+            font-weight: 600;
         }
 
         .section-title {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 16px;
             color: #222;
             margin: 18px 0 8px;
             text-transform: uppercase;
@@ -261,7 +262,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
         }
 
         .details-list li {
-            font-size: 14px;
+            font-size: 16px;
             color: #555;
             margin-bottom: 6px;
             display: flex;
@@ -277,7 +278,8 @@ $formatted_start       = date("d F Y", strtotime($start_date));
 
         /* ===== SIGNATURE ===== */
         .signature-area {
-            padding: 18px 52px 30px;
+            padding: 10px 52px 30px;
+            margin-top: 0;
         }
 
         .signature-area .sincerely {
@@ -361,6 +363,14 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             background: var(--red);
             clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
             z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 800;
+            padding-left: 40px;
+            /* Offset for slant */
         }
 
         /* ===== ACTIONS ===== */
@@ -411,12 +421,31 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             .letter-sheet {
                 box-shadow: none;
                 width: 210mm;
-                min-height: 297mm;
+                height: 297mm;
                 margin: 0 auto;
+                overflow: hidden;
             }
 
             .actions {
                 display: none !important;
+            }
+
+            /* Slight reductions to ensure content fits */
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+
+            .content p {
+                margin: 0 0 12px;
+            }
+
+            .title-underline {
+                margin-bottom: 20px;
+            }
+
+            .meta {
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -464,8 +493,13 @@ $formatted_start       = date("d F Y", strtotime($start_date));
                     </div>
                     <div class="row">
                         <div class="label">Contact</div>
-                        <div class="value"><?php echo htmlspecialchars($number); ?> &nbsp;|&nbsp; <?php echo htmlspecialchars($email); ?></div>
+                        <div class="value"><?php echo htmlspecialchars($number); ?></div>
                     </div>
+                    <div class="row">
+                        <div class="label">Email</div>
+                        <div class="value"><?php echo htmlspecialchars($email); ?></div>
+                    </div>
+
                 </div>
                 <div class="date-right"><?php echo htmlspecialchars($date); ?></div>
             </div>
@@ -483,29 +517,32 @@ $formatted_start       = date("d F Y", strtotime($start_date));
                 <div class="section-title">Position Details:</div>
                 <ul class="details-list">
                     <li><strong>Position:</strong>&nbsp;<?php echo htmlspecialchars($position); ?></li>
-                    <li><strong>Monthly Salary:</strong>&nbsp;₹<?php echo $formatted_salary; ?> per month (₹<?php echo $formatted_annual; ?> per annum In Hand)</li>
-                    <li><strong>Working Hours:</strong>&nbsp;Monday – Saturday, 10:00 AM – 7:00 PM</li>
+                    <li><strong>Salary:</strong>&nbsp;₹<?php echo $formatted_salary; ?> Per Month (In Hand) (₹<?php echo $formatted_annual; ?> LPA)</li>
+                    <li><strong>Working Hours:</strong>&nbsp;Monday - Saturday, 10:00 AM - 7:00 PM</li>
                     <li><strong>Start Date:</strong>&nbsp;<?php echo htmlspecialchars($formatted_start); ?></li>
                     <li><strong>Notice Period:</strong>&nbsp;<?php echo htmlspecialchars($notice_period); ?></li>
+                </ul>
                 </ul>
 
                 <p>
                     We believe that you will thrive in this role and contribute significantly to the success of
-                    <strong>CADLETE DESIGNS</strong>. Please confirm your acceptance of this offer by replying
-                    to this letter at the earliest convenience.
-                </p>
+                    <strong>CADLETE DESIGNS</strong>.<br>
+                    <br>
 
+                    Please confirm your acceptance of this offer by replying to this email. If you have any
+                    questions or need further information, please do not hesitate to contact us.
+                </p>
                 <p>
-                    If you have any questions or need further information, please do not hesitate to contact us.
                     We look forward to welcoming you to our team.
                 </p>
             </div>
+            <br>
 
             <!-- SIGNATURE -->
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/S_Sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
                         <div class="name">Smit Ramani</div>
                         <div class="role">Founder &amp; CEO</div>
@@ -518,11 +555,12 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i> 091 95865 45430</div>
+                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
+                        </div>
                         <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-map-marker"></i> SMIT,1-A Gulabvatika Society</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
                         <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
                     </div>
                 </div>
@@ -542,7 +580,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
         </script>
     <?php endif; ?>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 
 </html>

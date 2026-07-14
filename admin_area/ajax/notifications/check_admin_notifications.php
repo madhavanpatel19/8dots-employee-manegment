@@ -42,7 +42,7 @@ while ($emp = mysqli_fetch_array($run_today)) {
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
 
-            $mail->setFrom('madhavanpatel19@gmail.com', '8DOTS HR Team');
+            $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete HR Team');
             $mail->addAddress($emp_email);
 
             $mail->isHTML(true);
@@ -50,10 +50,10 @@ while ($emp = mysqli_fetch_array($run_today)) {
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
                     <h1 style='color: #4f46e5;'>🎉 Happy Birthday, $emp_name! 🎂</h1>
-                    <p>On behalf of the 8DOTS team, we wish you a wonderful day filled with joy, laughter, and success!</p>
+                    <p>On behalf of the Cadlete team, we wish you a wonderful day filled with joy, laughter, and success!</p>
                     <p>May this year bring you closer to your dreams and reward you with all the happiness you deserve.</p>
                     <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
-                    <p style='font-size: 14px; color: #777;'>Sent with ❤️ from 8DOTS</p>
+                    <p style='font-size: 14px; color: #777;'>Sent with ❤️ from Cadlete</p>
                 </div>
             ";
 

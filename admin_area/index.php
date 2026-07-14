@@ -42,7 +42,7 @@ if (!isset($_SESSION['admin_email'])) {
     <html>
 
     <head>
-        <title>Cadelete Designs HRMS</title>
+        <title>Cadlete Designs HRMS</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet">
         <link href="css/dashboard.css" rel="stylesheet">
