@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 08, 2026 at 02:34 PM
+-- Generation Time: Jul 14, 2026 at 12:39 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `Cadlete_crm`
+-- Database: `cadelete_crm`
 --
 
 -- --------------------------------------------------------
@@ -125,7 +125,7 @@ CREATE TABLE `attendance` (
   `attendance_date` date NOT NULL,
   `check_in_time` time DEFAULT NULL,
   `check_out_time` time DEFAULT NULL,
-  `status` enum('present','absent','leave') DEFAULT 'present',
+  `status` enum('present','absent','late') DEFAULT 'present',
   `remarks` varchar(255) DEFAULT NULL,
   `work_photos` text DEFAULT NULL,
   `performance` int(11) DEFAULT NULL,
@@ -149,15 +149,21 @@ INSERT INTO `attendance` (`id`, `emp_id`, `attendance_date`, `check_in_time`, `c
 (126, 28, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
 (127, 23, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
 (128, 25, '2026-07-06', '10:00:00', '17:24:00', 'present', '', NULL, NULL, 0, NULL, 0, '2026-07-06 05:56:09', NULL, NULL),
-(129, 23, '2026-07-09', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
-(130, 23, '2026-07-10', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
-(131, 23, '2026-07-11', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
-(132, 23, '2026-07-12', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
-(133, 23, '2026-07-13', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
-(134, 23, '2026-07-14', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
-(135, 23, '2026-07-15', NULL, NULL, 'leave', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(129, 23, '2026-07-09', NULL, NULL, 'absent', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(130, 23, '2026-07-10', '10:18:35', NULL, 'present', 'Leave: efe', NULL, NULL, 0, '2026-07-10 10:18:35', 1, '2026-07-07 04:28:27', '::1', 'Local Network'),
+(131, 23, '2026-07-11', NULL, NULL, 'absent', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(132, 23, '2026-07-12', NULL, NULL, 'absent', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(133, 23, '2026-07-13', NULL, NULL, 'late', '', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(134, 23, '2026-07-14', NULL, NULL, 'absent', '', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
+(135, 23, '2026-07-15', NULL, NULL, 'absent', 'Leave: efe', NULL, NULL, 0, NULL, 0, '2026-07-07 04:28:27', NULL, NULL),
 (136, 23, '2026-07-07', '14:22:00', '15:05:00', 'present', 'ew', '[\"work_photos\\/23_2026-07-07_1783416956_0.jpg\"]', NULL, 2580, '2026-07-07 14:22:55', 0, '2026-07-07 08:52:55', '::1', 'Local Network'),
-(137, 23, '2026-07-08', '10:10:12', NULL, 'present', NULL, NULL, NULL, 18709, '2026-07-08 15:26:10', 1, '2026-07-08 04:40:12', '::1', 'Local Network');
+(137, 23, '2026-07-08', '10:10:12', NULL, 'present', NULL, NULL, NULL, 18709, '2026-07-08 15:26:10', 1, '2026-07-08 04:40:12', '::1', 'Local Network'),
+(138, 27, '2026-07-13', '10:00:00', NULL, 'absent', '', NULL, NULL, 0, NULL, 0, '2026-07-13 11:31:04', NULL, NULL),
+(139, 28, '2026-07-13', '10:00:00', NULL, 'late', '', NULL, NULL, 0, NULL, 0, '2026-07-13 11:31:04', NULL, NULL),
+(140, 25, '2026-07-13', '10:00:00', NULL, 'absent', '', NULL, NULL, 0, NULL, 0, '2026-07-13 11:31:04', NULL, NULL),
+(141, 27, '2026-07-14', '10:00:00', '18:00:00', 'present', '', NULL, NULL, 28800, NULL, 0, '2026-07-14 09:51:56', NULL, NULL),
+(142, 28, '2026-07-14', '10:16:00', NULL, 'late', 'Late check-in', NULL, NULL, 0, NULL, 0, '2026-07-14 09:51:56', NULL, NULL),
+(143, 25, '2026-07-14', '10:19:00', NULL, 'late', 'Late check-in', NULL, NULL, 0, NULL, 0, '2026-07-14 09:51:56', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -195,7 +201,8 @@ INSERT INTO `attendance_logs` (`id`, `att_id`, `emp_id`, `action`, `action_time`
 (12, 136, 23, 'check_out', '2026-07-07 15:05:00', '::1', 'Local Network', '2026-07-07 09:35:56'),
 (13, 137, 23, 'check_in', '2026-07-08 10:10:12', '::1', 'Local Network', '2026-07-08 04:40:12'),
 (14, 137, 23, 'pause', '2026-07-08 15:22:01', '::1', 'Local Network', '2026-07-08 09:52:01'),
-(15, 137, 23, 'resume', '2026-07-08 15:26:10', '::1', 'Local Network', '2026-07-08 09:56:10');
+(15, 137, 23, 'resume', '2026-07-08 15:26:10', '::1', 'Local Network', '2026-07-08 09:56:10'),
+(16, 130, 23, 'check_in', '2026-07-10 10:18:35', '::1', 'Local Network', '2026-07-10 04:48:35');
 
 -- --------------------------------------------------------
 
@@ -593,7 +600,7 @@ CREATE TABLE `experience_letters` (
 --
 
 INSERT INTO `experience_letters` (`id`, `name`, `email`, `number`, `designation`, `join_date`, `relieve_date`, `created_at`, `deleted_at`) VALUES
-(4, 'Patel Madhavan', 'madhavanpatel19@gmail.com', '9876543212', 'hr ', '2026-06-23', '2026-06-29', '2026-06-30 06:53:14', NULL);
+(4, 'Patel Madhavan', 'madhavanpatel19@gmail.com', '98765432', 'hr', '2026-06-23', '2026-06-29', '2026-06-30 06:53:14', NULL);
 
 -- --------------------------------------------------------
 
@@ -726,6 +733,18 @@ INSERT INTO `leave_types` (`id`, `leave_name`, `num_of_leave`, `created_at`, `de
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `nda_forms`
 --
 
@@ -747,7 +766,7 @@ CREATE TABLE `nda_forms` (
 --
 
 INSERT INTO `nda_forms` (`id`, `name`, `number`, `email`, `position`, `salary`, `start_date`, `notice_period`, `created_at`, `deleted_at`) VALUES
-(3, 'Patel Madhavan', '987654321', 'madhavanpatel19@gmail.com', 'hr', NULL, '2026-07-01', NULL, '2026-06-30 06:52:42', NULL);
+(3, 'Patel Madhavan', '9876543213', 'madhavanpatel19@gmail.com', 'hr', NULL, '2026-07-13', NULL, '2026-06-30 06:52:42', NULL);
 
 -- --------------------------------------------------------
 
@@ -772,7 +791,7 @@ CREATE TABLE `offer_letters` (
 --
 
 INSERT INTO `offer_letters` (`id`, `name`, `number`, `email`, `position`, `start_date`, `notice_period`, `salary`, `deleted_at`) VALUES
-(8, 'Patel Madhavan', 2147483647, 'madhavanpatel19@gmail.com', 'web devlpor', '2026-07-02', '90 days', 12000.00, NULL);
+(8, 'Patel Madhavan', 2147483647, 'madhavanpatel19@gmail.com', 'web devloper', '2026-07-02', '90 days', 12000.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -1071,6 +1090,12 @@ ALTER TABLE `leave_types`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `nda_forms`
 --
 ALTER TABLE `nda_forms`
@@ -1132,13 +1157,13 @@ ALTER TABLE `announcement_read`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 
 --
 -- AUTO_INCREMENT for table `attendance_logs`
 --
 ALTER TABLE `attendance_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1265,6 +1290,12 @@ ALTER TABLE `leave_applications`
 --
 ALTER TABLE `leave_types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `nda_forms`
