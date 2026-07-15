@@ -1,9 +1,25 @@
 <?php
+// =============================================================
+// admin_area/pages/employees/edit_emp.php
+// Admin: Edit / Update Existing Employee
+// Functions: edit_user() - updates employee with optional password reset
+//            handleFileUpload() - handles document uploads
+// PHPMailer: Fully commented out (uncomment to enable email sending)
+// =============================================================
+
 if (!isset($con)) {
-    if (!isset($con)) {
-        include(__DIR__ . '/../../includes/db.php');
-    }
+    include(__DIR__ . '/../../includes/db.php');
 }
+
+// ------------------------------------------------------------------
+// PHPMailer Includes (commented out - uncomment to enable email)
+// ------------------------------------------------------------------
+// require_once __DIR__ . '/../../PHPMailer/src/Exception.php';
+// require_once __DIR__ . '/../../PHPMailer/src/PHPMailer.php';
+// require_once __DIR__ . '/../../PHPMailer/src/SMTP.php';
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
+// ------------------------------------------------------------------
 
 $employee = null;
 if (isset($_GET['edit_emp'])) {
@@ -20,22 +36,26 @@ if (!$employee) {
     exit;
 }
 
-// File Upload Handler
+// =============================================================
+// FUNCTION: handleFileUpload()
+// Handles single file upload, unlocks PDFs via qpdf if available.
+// Returns uploaded filename or empty string on failure.
+// =============================================================
 if (!function_exists('handleFileUpload')) {
     function handleFileUpload($fileArray, $targetDir = __DIR__ . "/../../uploads/")
     {
         if (isset($fileArray) && $fileArray['error'] == 0) {
             $file_name = $fileArray['name'];
-            $tmp_name = $fileArray['tmp_name'];
-            $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-            $new_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+            $tmp_name  = $fileArray['tmp_name'];
+            $ext       = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $new_name  = time() . '_' . rand(1000, 9999) . '.' . $ext;
             $target_path = $targetDir . $new_name;
             if (move_uploaded_file($tmp_name, $target_path)) {
                 // PDF Unlock Logic
                 if ($ext === "pdf") {
-                    $qpdf = "C:/Program Files/qpdf/qpdf 12.3.2/bin/qpdf.exe";
+                    $qpdf          = "C:/Program Files/qpdf/qpdf 12.3.2/bin/qpdf.exe";
                     $unlocked_file = $targetDir . "unlock_" . $new_name;
-                    $command = "\"$qpdf\" --decrypt \"$target_path\" \"$unlocked_file\" 2>&1";
+                    $command       = "\"$qpdf\" --decrypt \"$target_path\" \"$unlocked_file\" 2>&1";
                     exec($command, $output, $return_var);
                     if ($return_var === 0 && file_exists($unlocked_file)) {
                         unlink($target_path);
@@ -49,8 +69,19 @@ if (!function_exists('handleFileUpload')) {
     }
 }
 
-// Update employee data
-if (isset($_POST['update'])) {
+// =============================================================
+// FUNCTION: edit_user()
+// Handles the full employee update process:
+//   - Validates input (phone digits)
+//   - Handles file uploads / replacements
+//   - Optionally resets password (dynamic, admin-controlled)
+//   - Updates employee in DB
+//   - [OPTIONAL] Sends new-password email via PHPMailer (commented)
+// Called when: $_POST['update'] is set
+// =============================================================
+function edit_user($con, $employee)
+{
+    // -- Show loading spinner while processing --
     echo '
     <div id="php_server_loader" style="width: 100%; min-height: 80vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
         <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #DF2127; border-radius: 50%; animation: spin 1s linear infinite;"></div>
@@ -61,11 +92,14 @@ if (isset($_POST['update'])) {
     ';
     @ob_flush();
     @flush();
-    $id = mysqli_real_escape_string($con, $_POST['id']);
-    $name = mysqli_real_escape_string($con, $_POST['name']);
-    $email = mysqli_real_escape_string($con, $_POST['email']);
+
+    // -- Sanitize fields --
+    $id      = mysqli_real_escape_string($con, $_POST['id']);
+    $name    = mysqli_real_escape_string($con, $_POST['name']);
+    $email   = mysqli_real_escape_string($con, $_POST['email']);
     $contact = preg_replace('/\D+/', '', $_POST['number']);
 
+    // -- Validate phone (must be exactly 10 digits) --
     if (strlen($contact) != 10) {
         echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
         echo "<script>
@@ -84,49 +118,57 @@ if (isset($_POST['update'])) {
         exit;
     }
 
-    $address = mysqli_real_escape_string($con, $_POST['address']);
-    $blood = mysqli_real_escape_string($con, $_POST['blood']);
-    $gender = mysqli_real_escape_string($con, $_POST['gender']);
+    // -- Sanitize remaining fields --
+    $address  = mysqli_real_escape_string($con, $_POST['address']);
+    $blood    = mysqli_real_escape_string($con, $_POST['blood']);
+    $gender   = mysqli_real_escape_string($con, $_POST['gender']);
     $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
 
-    $age = mysqli_real_escape_string($con, $_POST['age'] ?? '');
-    $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
-    $work_exp = mysqli_real_escape_string($con, $_POST['work_experience'] ?? '');
-    $marital = mysqli_real_escape_string($con, $_POST['marital_status'] ?? '');
-    $dependents = mysqli_real_escape_string($con, $_POST['num_dependents'] ?? 0);
+    // -- Personal details --
+    $age        = mysqli_real_escape_string($con, $_POST['age']              ?? '');
+    $dob        = mysqli_real_escape_string($con, $_POST['dob']              ?? '');
+    $work_exp   = mysqli_real_escape_string($con, $_POST['work_experience']  ?? '');
+    $marital    = mysqli_real_escape_string($con, $_POST['marital_status']   ?? '');
+    $dependents = mysqli_real_escape_string($con, $_POST['num_dependents']   ?? 0);
 
-    $e_name = mysqli_real_escape_string($con, $_POST['emergency_name'] ?? '');
-    $e_rel = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
-    $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address'] ?? '');
-    $e_phone = mysqli_real_escape_string($con, $_POST['emergency_phone'] ?? '');
+    // -- Emergency contact --
+    $e_name = mysqli_real_escape_string($con, $_POST['emergency_name']         ?? '');
+    $e_rel  = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
+    $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address']      ?? '');
+    $e_phone= mysqli_real_escape_string($con, $_POST['emergency_phone']        ?? '');
 
-    $edu_json = mysqli_real_escape_string($con, $_POST['education_json'] ?? '[]');
+    // -- Education & Employment JSON --
+    $edu_json = mysqli_real_escape_string($con, $_POST['education_json']  ?? '[]');
     $emp_json = mysqli_real_escape_string($con, $_POST['employment_json'] ?? '[]');
 
-    $acc_name = mysqli_real_escape_string($con, $_POST['account_name'] ?? '');
-    $bank_br = mysqli_real_escape_string($con, $_POST['bank_branch'] ?? '');
-    $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
+    // -- Bank details --
+    $acc_name = mysqli_real_escape_string($con, $_POST['account_name']      ?? '');
+    $bank_br  = mysqli_real_escape_string($con, $_POST['bank_branch']       ?? '');
+    $acc_num  = mysqli_real_escape_string($con, $_POST['account_number']    ?? '');
     $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
 
+    // -- Salary fields (only if admin has permission) --
     if (canAdminAccess('salary_update')) {
-        $basic = $_POST['basic_salary'] ?? 0;
-        $hra = $_POST['hra'] ?? 0;
-        $allowance = $_POST['allowance'] ?? 0;
-        $deductions = $_POST['deductions'] ?? 0;
-        $salary = $_POST['salary'] ?? 0;
+        $basic      = $_POST['basic_salary'] ?? 0;
+        $hra        = $_POST['hra']          ?? 0;
+        $allowance  = $_POST['allowance']    ?? 0;
+        $deductions = $_POST['deductions']   ?? 0;
+        $salary     = $_POST['salary']       ?? 0;
     }
+
+    // -- Status (Active/Inactive toggle) --
     $status = isset($_POST['status']) ? 'Active' : 'Inactive';
 
-    // Handle File Updates
+    // -- Handle File Updates --
     $q_extra = "";
     $docs_to_check = [
-        'employee_image' => 'employee_image',
-        'offer_latter' => 'offer_latter',
-        'NDA' => 'NDA',
-        'Aadhar_card' => 'Aadhar_card',
-        'Pan_card' => 'Pan_card',
-        'Passportsize_photo' => 'Passportsize_photo',
-        'old_company_slary_slip' => 'old_company_slary_slip'
+        'employee_image'        => 'employee_image',
+        'offer_latter'          => 'offer_latter',
+        'NDA'                   => 'NDA',
+        'Aadhar_card'           => 'Aadhar_card',
+        'Pan_card'              => 'Pan_card',
+        'Passportsize_photo'    => 'Passportsize_photo',
+        'old_company_slary_slip'=> 'old_company_slary_slip'
     ];
 
     foreach ($docs_to_check as $postKey => $dbCol) {
@@ -142,13 +184,31 @@ if (isset($_POST['update'])) {
         }
     }
 
-    $query = "UPDATE emp_list SET 
+    // =============================================================
+    // DYNAMIC PASSWORD RESET LOGIC
+    // Admin can:
+    //   (a) Type a new password in the edit form  → password is updated
+    //   (b) Leave blank                           → password remains unchanged
+    //   (c) Click 'Generate New Password'         → auto-generate new password
+    // =============================================================
+    $passwordResetMsg = '';
+    $newPassword      = trim($_POST['edit_emp_password'] ?? '');
+    if (!empty($newPassword)) {
+        $safeNewPassword = mysqli_real_escape_string($con, $newPassword);
+        $q_extra .= ", password = '$safeNewPassword'";
+        $passwordResetMsg = $newPassword; // Store for success message display
+    }
+
+    // -- Build UPDATE query --
+    $query = "UPDATE emp_list SET
               name = '$name', phone_number = '$contact', address = '$address', email = '$email', blood_group = '$blood', gender = '$gender', join_date = '$joinDate',
               age = '$age', dob = '$dob', work_experience = '$work_exp', marital_status = '$marital', num_dependents = '$dependents',
               emergency_name = '$e_name', emergency_relationship = '$e_rel', emergency_address = '$e_addr', emergency_phone = '$e_phone',
-              education_json = '$edu_json', employment_json = '$emp_json', 
+              education_json = '$edu_json', employment_json = '$emp_json',
               account_name = '$acc_name', bank_branch = '$bank_br', account_number = '$acc_num', account_type_ifsc = '$acc_ifsc',
               status = '$status'";
+
+    // -- Append salary fields if admin has permission --
     if (canAdminAccess('salary_update')) {
         $query .= ", basic_salary = '$basic', hra = '$hra', allowance = '$allowance', deductions = '$deductions', salary = '$salary' ";
     }
@@ -157,17 +217,65 @@ if (isset($_POST['update'])) {
 
     $result = mysqli_query($con, $query);
     if ($result) {
-        // Handle extra documents
+        // -- Handle extra documents upload --
         if (!empty($_FILES['documents']['name'][0])) {
-            foreach ($_FILES['documents']['name'] as $key => $name) {
+            foreach ($_FILES['documents']['name'] as $key => $doc_name) {
                 if ($_FILES['documents']['error'][$key] == 0) {
-                    $new_name = handleFileUpload(['name' => $name, 'tmp_name' => $_FILES['documents']['tmp_name'][$key], 'error' => 0]);
+                    $new_name = handleFileUpload(['name' => $doc_name, 'tmp_name' => $_FILES['documents']['tmp_name'][$key], 'error' => 0]);
                     if ($new_name) {
                         mysqli_query($con, "INSERT INTO employee_documents (emp_id, file_name) VALUES ('$id', '$new_name')");
                     }
                 }
             }
         }
+
+        // =============================================================
+        // PHPMailer - Send New Password Notification to Employee
+        // STATUS: FULLY COMMENTED OUT
+        // To enable: uncomment the PHPMailer includes at the top AND
+        // uncomment this entire block.
+        // =============================================================
+        //
+        // if (!empty($passwordResetMsg)) { // Only send email if password was changed
+        //     $mail = new PHPMailer(true);
+        //     try {
+        //         // SMTP Server Settings
+        //         $mail->isSMTP();
+        //         $mail->Host       = 'smtp.gmail.com';            // SMTP host
+        //         $mail->SMTPAuth   = true;                        // Enable SMTP auth
+        //         $mail->Username   = 'madhavanpatel19@gmail.com'; // SMTP username (Gmail)
+        //         $mail->Password   = 'yawi nqpw wbhp icrx';       // Gmail App Password
+        //         $mail->SMTPSecure = 'tls';                       // Encryption: tls | ssl
+        //         $mail->Port       = 587;                         // SMTP port
+        //
+        //         // Sender & Recipient
+        //         $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete HR');
+        //         $mail->addAddress($email);
+        //
+        //         // Email Content
+        //         $mail->isHTML(true);
+        //         $mail->Subject = 'Your Cadlete Login Password Has Been Updated';
+        //         $mail->Body    = "
+        //             <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #eee;border-radius:10px;'>
+        //                 <h2 style='color:#DF2127;'>Password Updated</h2>
+        //                 <p>Dear <strong>$name</strong>,</p>
+        //                 <p>Your employee portal password has been updated by an administrator.</p>
+        //                 <table style='background:#f8fafc;padding:15px;border-radius:8px;width:100%;'>
+        //                     <tr><td><strong>Email:</strong></td><td>$email</td></tr>
+        //                     <tr><td><strong>New Password:</strong></td><td><strong>$passwordResetMsg</strong></td></tr>
+        //                 </table>
+        //                 <p style='margin-top:15px;'>Please login and change your password at your earliest convenience.</p>
+        //                 <p style='color:#64748b;font-size:12px;'>This is an automated message. Do not reply.</p>
+        //             </div>
+        //         ";
+        //         $mail->send();
+        //     } catch (Exception $e) {
+        //         // Email failed silently – profile is still updated
+        //         // Log: $e->getMessage()
+        //     }
+        // }
+        // =============================================================
+
         echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
         echo "<script>
             if(document.getElementById('php_server_loader')) document.getElementById('php_server_loader').style.display = 'none';
@@ -199,8 +307,14 @@ if (isset($_POST['update'])) {
             });
         </script></body></html>";
     }
+} // end edit_user()
+
+// -- Trigger edit_user() on form submit --
+if (isset($_POST['update'])) {
+    edit_user($con, $employee);
 }
 ?>
+
 
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
@@ -345,6 +459,40 @@ if (isset($_POST['update'])) {
                                 <i class="fa fa-map-marker" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
                                 <input type="text" name="address" class="p-input-premium" value="<?php echo htmlspecialchars($employee['address']); ?>" required style="padding-left: 40px;">
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Password Reset Row -->
+                <div class="row" style="margin-top: 15px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">
+                                <i class="fa fa-key" style="color:#DF2127;"></i> Login Password
+                                <span style="font-weight:400; color:#64748b; font-size:12px; margin-left:8px;">(Current password shown — edit to change, or click Generate New Password)</span>
+                            </label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="position: relative; flex: 1;">
+                                    <i class="fa fa-lock" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
+                                    <input type="text" name="edit_emp_password" id="edit_emp_password_field"
+                                           class="p-input-premium"
+                                           value="<?php echo htmlspecialchars($employee['password'] ?? ''); ?>"
+                                           placeholder="Current password"
+                                           style="padding-left: 40px; font-family: monospace; letter-spacing: 1px;">
+                                </div>
+                                <button type="button" onclick="generateEditPassword()"
+                                        style="white-space:nowrap; background: linear-gradient(135deg,#DF2127,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
+                                    <i class="fa fa-refresh"></i> Generate New Password
+                                </button>
+                                <button type="button" onclick="toggleEditPassword()"
+                                        style="background:#f1f5f9; color:#475569; border:1.5px solid #e2e8f0; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:13px;" title="Show/Hide Password">
+                                    <i class="fa fa-eye" id="edit_pass_eye_icon"></i>
+                                </button>
+                            </div>
+                            <small style="color:#64748b; margin-top:6px; display:block; font-weight:500;">
+                                <i class="fa fa-info-circle"></i>
+                                Password can only be changed by admin from this page. Employee cannot reset it themselves.
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -824,4 +972,46 @@ if (isset($_POST['update'])) {
     ['edit_basic_salary', 'edit_hra', 'edit_allowance', 'edit_deductions'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', calculateTotalEdit);
     });
+
+    // =============================================================
+    // Dynamic Password: Generate New & Toggle Visibility (Edit Form)
+    // =============================================================
+
+    /**
+     * generateEditPassword()
+     * Fills the password reset input with a random 10-character strong password.
+     * Admin clicks "Generate New Password" to create and populate.
+     */
+    function generateEditPassword() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
+        let pwd = '';
+        for (let i = 0; i < 10; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        const input = document.getElementById('edit_emp_password_field');
+        if (input) {
+            input.value = pwd;
+            input.type = 'text'; // Show the generated password
+            const icon = document.getElementById('edit_pass_eye_icon');
+            if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+        }
+    }
+
+    /**
+     * toggleEditPassword()
+     * Toggles the edit password field between visible text and hidden password.
+     */
+    function toggleEditPassword() {
+        const input = document.getElementById('edit_emp_password_field');
+        const icon  = document.getElementById('edit_pass_eye_icon');
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+        } else {
+            input.type = 'password';
+            if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+        }
+    }
+
 </script>

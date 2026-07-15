@@ -1,33 +1,47 @@
 <?php
+// =============================================================
+// admin_area/pages/employees/add_emp.php
+// Admin: Add New Employee
+// Functions: add_user() - inserts employee with dynamic password
+//            handleFileUpload() - handles document uploads
+// PHPMailer: Fully commented out (uncomment to enable email sending)
+// =============================================================
+
 if (!isset($con)) {
-    if (!isset($con)) {
-        include(__DIR__ . '/../../includes/db.php');
-    }
+    include(__DIR__ . '/../../includes/db.php');
 }
 
-require_once __DIR__ . '/../../PHPMailer/src/Exception.php';
-require_once __DIR__ . '/../../PHPMailer/src/PHPMailer.php';
-require_once __DIR__ . '/../../PHPMailer/src/SMTP.php';
+// ------------------------------------------------------------------
+// PHPMailer Includes (commented out - uncomment to enable email)
+// ------------------------------------------------------------------
+// require_once __DIR__ . '/../../PHPMailer/src/Exception.php';
+// require_once __DIR__ . '/../../PHPMailer/src/PHPMailer.php';
+// require_once __DIR__ . '/../../PHPMailer/src/SMTP.php';
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
+// ------------------------------------------------------------------
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-// File Upload Function
+// =============================================================
+// FUNCTION: handleFileUpload()
+// Handles single file upload, unlocks PDFs via qpdf if available.
+// Returns uploaded filename or empty string on failure.
+// =============================================================
 if (!function_exists('handleFileUpload')) {
     function handleFileUpload($fileArray, $targetDir = __DIR__ . "/../../uploads/")
     {
         if (isset($fileArray) && $fileArray['error'] == 0) {
             $file_name = $fileArray['name'];
-            $tmp_name = $fileArray['tmp_name'];
-            $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-            $new_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
+            $tmp_name  = $fileArray['tmp_name'];
+            $ext       = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $new_name  = time() . '_' . rand(1000, 9999) . '.' . $ext;
             $target_path = $targetDir . $new_name;
 
             if (move_uploaded_file($tmp_name, $target_path)) {
+                // PDF Unlock Logic (using qpdf)
                 if ($ext === "pdf") {
-                    $qpdf = "C:/Program Files/qpdf/qpdf 12.3.2/bin/qpdf.exe";
+                    $qpdf        = "C:/Program Files/qpdf/qpdf 12.3.2/bin/qpdf.exe";
                     $unlocked_file = $targetDir . "unlock_" . $new_name;
-                    $command = "\"$qpdf\" --decrypt \"$target_path\" \"$unlocked_file\" 2>&1";
+                    $command     = "\"$qpdf\" --decrypt \"$target_path\" \"$unlocked_file\" 2>&1";
                     exec($command, $output, $return_var);
                     if ($return_var === 0 && file_exists($unlocked_file)) {
                         unlink($target_path);
@@ -41,22 +55,38 @@ if (!function_exists('handleFileUpload')) {
     }
 }
 
-if (isset($_POST['submit'])) {
+// =============================================================
+// FUNCTION: add_user()
+// Handles the full employee registration process:
+//   - Validates input (phone digits, required fields)
+//   - Handles file uploads (documents, photos)
+//   - Generates or uses admin-provided password (dynamic)
+//   - Inserts employee into DB
+//   - [OPTIONAL] Sends login credentials via PHPMailer (commented)
+// Called when: $_POST['submit'] is set
+// =============================================================
+function add_user($con)
+{
+    global $name; // Make $name accessible for success message after function
+
+    // -- Show loading spinner while processing --
     echo '
     <div id="php_server_loader" style="width: 100%; min-height: 80vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
         <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #DF2127; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         <h3 style="margin-top: 20px; color: #1e293b;">Saving Employee...</h3>
-        <p style="color: #64748b; margin-top: 5px;">Please wait while we upload documents and send the login email.</p>
+        <p style="color: #64748b; margin-top: 5px;">Please wait while we upload documents.</p>
         <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
     </div>
     ';
     @ob_flush();
     @flush();
 
-    $name = mysqli_real_escape_string($con, $_POST['name']);
-    $email = mysqli_real_escape_string($con, $_POST['email']);
+    // -- Sanitize basic fields --
+    $name    = mysqli_real_escape_string($con, $_POST['name']);
+    $email   = mysqli_real_escape_string($con, $_POST['email']);
     $contact = preg_replace('/\D+/', '', $_POST['number']);
 
+    // -- Validate phone number (must be exactly 10 digits) --
     if (strlen($contact) != 10) {
         echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
         echo "<script>
@@ -75,49 +105,52 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
-    $address = mysqli_real_escape_string($con, $_POST['address']);
-    $blood = mysqli_real_escape_string($con, $_POST['blood']);
-    $gender = mysqli_real_escape_string($con, $_POST['gender']);
+    // -- Sanitize remaining fields --
+    $address  = mysqli_real_escape_string($con, $_POST['address']);
+    $blood    = mysqli_real_escape_string($con, $_POST['blood']);
+    $gender   = mysqli_real_escape_string($con, $_POST['gender']);
     $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
 
+    // -- Salary fields (only if admin has permission) --
     if (canAdminAccess('salary_insert')) {
-        $basic = $_POST['basic_salary'] ?? 0;
-        $hra = $_POST['hra'] ?? 0;
-        $allowance = $_POST['allowance'] ?? 0;
-        $deductions = $_POST['deductions'] ?? 0;
-        $salary = $_POST['salary'] ?? 0;
+        $basic      = $_POST['basic_salary'] ?? 0;
+        $hra        = $_POST['hra']          ?? 0;
+        $allowance  = $_POST['allowance']    ?? 0;
+        $deductions = $_POST['deductions']   ?? 0;
+        $salary     = $_POST['salary']       ?? 0;
     } else {
-        $basic = 0;
-        $hra = 0;
-        $allowance = 0;
-        $deductions = 0;
-        $salary = 0;
+        $basic = $hra = $allowance = $deductions = $salary = 0;
     }
 
-    $age = mysqli_real_escape_string($con, $_POST['age'] ?? '');
-    $dob = mysqli_real_escape_string($con, $_POST['dob'] ?? '');
-    $work_exp = mysqli_real_escape_string($con, $_POST['work_experience'] ?? '');
-    $marital = mysqli_real_escape_string($con, $_POST['marital_status'] ?? '');
-    $dependents = mysqli_real_escape_string($con, $_POST['num_dependents'] ?? 0);
+    // -- Personal details --
+    $age        = mysqli_real_escape_string($con, $_POST['age']              ?? '');
+    $dob        = mysqli_real_escape_string($con, $_POST['dob']              ?? '');
+    $work_exp   = mysqli_real_escape_string($con, $_POST['work_experience']  ?? '');
+    $marital    = mysqli_real_escape_string($con, $_POST['marital_status']   ?? '');
+    $dependents = mysqli_real_escape_string($con, $_POST['num_dependents']   ?? 0);
 
-    $e_name = mysqli_real_escape_string($con, $_POST['emergency_name'] ?? '');
-    $e_rel = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
-    $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address'] ?? '');
-    $e_phone = mysqli_real_escape_string($con, $_POST['emergency_phone'] ?? '');
+    // -- Emergency contact --
+    $e_name = mysqli_real_escape_string($con, $_POST['emergency_name']         ?? '');
+    $e_rel  = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
+    $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address']      ?? '');
+    $e_phone= mysqli_real_escape_string($con, $_POST['emergency_phone']        ?? '');
 
-    $edu_json = mysqli_real_escape_string($con, $_POST['education_json'] ?? '[]');
+    // -- Education & Employment JSON --
+    $edu_json = mysqli_real_escape_string($con, $_POST['education_json']  ?? '[]');
     $emp_json = mysqli_real_escape_string($con, $_POST['employment_json'] ?? '[]');
 
-    $acc_name = mysqli_real_escape_string($con, $_POST['account_name'] ?? '');
-    $bank_br = mysqli_real_escape_string($con, $_POST['bank_branch'] ?? '');
-    $acc_num = mysqli_real_escape_string($con, $_POST['account_number'] ?? '');
+    // -- Bank details --
+    $acc_name = mysqli_real_escape_string($con, $_POST['account_name']      ?? '');
+    $bank_br  = mysqli_real_escape_string($con, $_POST['bank_branch']       ?? '');
+    $acc_num  = mysqli_real_escape_string($con, $_POST['account_number']    ?? '');
     $acc_ifsc = mysqli_real_escape_string($con, $_POST['account_type_ifsc'] ?? '');
 
-    $offer_letter = handleFileUpload($_FILES['offer_latter']);
-    $NDA = handleFileUpload($_FILES['NDA']);
-    $Aadhar_card = handleFileUpload($_FILES['Aadhar_card']);
-    $Pan_card = handleFileUpload($_FILES['Pan_card']);
-    $Passportsize_photo = handleFileUpload($_FILES['Passportsize_photo']);
+    // -- Handle file uploads --
+    $offer_letter           = handleFileUpload($_FILES['offer_latter']);
+    $NDA                    = handleFileUpload($_FILES['NDA']);
+    $Aadhar_card            = handleFileUpload($_FILES['Aadhar_card']);
+    $Pan_card               = handleFileUpload($_FILES['Pan_card']);
+    $Passportsize_photo     = handleFileUpload($_FILES['Passportsize_photo']);
     $old_company_slary_slip = handleFileUpload($_FILES['old_company_slary_slip']);
 
     $employee_image = '';
@@ -125,58 +158,101 @@ if (isset($_POST['submit'])) {
         $employee_image = handleFileUpload($_FILES['employee_image']);
     }
 
-    $plainPassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8);
+    // =============================================================
+    // DYNAMIC PASSWORD LOGIC
+    // Admin can:
+    //   (a) Type a custom password in the form field  → used as-is
+    //   (b) Leave blank / click Auto Generate         → 8-char random password
+    // =============================================================
+    $adminTypedPassword = trim($_POST['emp_password'] ?? '');
+    if (!empty($adminTypedPassword)) {
+        // Use the admin-provided password (dynamic/custom)
+        $plainPassword = mysqli_real_escape_string($con, $adminTypedPassword);
+    } else {
+        // Auto-generate a random 8-character password
+        $plainPassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%'), 0, 8);
+    }
 
-    $query = "INSERT INTO emp_list 
-    (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary, password, 
-    age, dob, work_experience, marital_status, num_dependents, emergency_name, emergency_relationship, emergency_address, emergency_phone, 
+    // -- Insert employee record into DB --
+    $query = "INSERT INTO emp_list
+    (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary, password,
+    age, dob, work_experience, marital_status, num_dependents, emergency_name, emergency_relationship, emergency_address, emergency_phone,
     education_json, employment_json, account_name, bank_branch, account_number, account_type_ifsc, employee_image, offer_latter, NDA, Aadhar_card, Pan_card, Passportsize_photo, old_company_slary_slip)
-              VALUES 
-    ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic', '$hra', '$allowance', '$deductions', '$salary', '$plainPassword', 
-    '$age', '$dob', '$work_exp', '$marital', '$dependents', '$e_name', '$e_rel', '$e_addr', '$e_phone', 
+              VALUES
+    ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic', '$hra', '$allowance', '$deductions', '$salary', '$plainPassword',
+    '$age', '$dob', '$work_exp', '$marital', '$dependents', '$e_name', '$e_rel', '$e_addr', '$e_phone',
     '$edu_json', '$emp_json', '$acc_name', '$bank_br', '$acc_num', '$acc_ifsc', '$employee_image', '$offer_letter', '$NDA', '$Aadhar_card', '$Pan_card', '$Passportsize_photo', '$old_company_slary_slip')";
 
     $run = mysqli_query($con, $query);
 
     if ($run) {
         $emp_id = mysqli_insert_id($con);
+
+        // -- Handle additional/extra document uploads --
         if (!empty($_FILES['documents']['name'][0])) {
-            foreach ($_FILES['documents']['name'] as $key => $name) {
+            foreach ($_FILES['documents']['name'] as $key => $doc_name) {
                 if ($_FILES['documents']['error'][$key] == 0) {
                     $tmp_name = $_FILES['documents']['tmp_name'][$key];
-                    $ext = pathinfo($name, PATHINFO_EXTENSION);
+                    $ext      = pathinfo($doc_name, PATHINFO_EXTENSION);
                     $new_name = time() . '_extra_' . rand(1000, 9999) . '.' . $ext;
-                    if (move_uploaded_file($tmp_name, "../../uploads/" . $new_name)) {
+                    if (move_uploaded_file($tmp_name, __DIR__ . "/../../uploads/" . $new_name)) {
                         mysqli_query($con, "INSERT INTO employee_documents (emp_id, file_name) VALUES ('$emp_id', '$new_name')");
                     }
                 }
             }
         }
 
-        $mail = new PHPMailer(true);
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'madhavanpatel19@gmail.com';
-            $mail->Password = 'yawi nqpw wbhp icrx';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete');
-            $mail->addAddress($email);
-            $mail->isHTML(true);
-            $mail->Subject = 'Employee Login Password';
-            $mail->Body = "<h3>Welcome to Cadlete</h3><p>Your login password is: <b>$plainPassword</b></p><p>Please login from Employee Portal.</p>";
-            $mail->send();
-        } catch (Exception $e) {
-        }
+        // =============================================================
+        // PHPMailer - Send Login Credentials to Employee
+        // STATUS: FULLY COMMENTED OUT
+        // To enable: uncomment the PHPMailer includes at the top of this
+        // file AND uncomment this entire block.
+        // =============================================================
+        //
+        // $mail = new PHPMailer(true);
+        // try {
+        //     // SMTP Server Settings
+        //     $mail->isSMTP();
+        //     $mail->Host       = 'smtp.gmail.com';            // SMTP host
+        //     $mail->SMTPAuth   = true;                        // Enable SMTP auth
+        //     $mail->Username   = 'madhavanpatel19@gmail.com'; // SMTP username (Gmail)
+        //     $mail->Password   = 'yawi nqpw wbhp icrx';       // Gmail App Password
+        //     $mail->SMTPSecure = 'tls';                       // Encryption: tls | ssl
+        //     $mail->Port       = 587;                         // SMTP port (587 for TLS)
+        //
+        //     // Sender & Recipient
+        //     $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete HR');
+        //     $mail->addAddress($email);                       // New employee email
+        //
+        //     // Email Content
+        //     $mail->isHTML(true);
+        //     $mail->Subject = 'Welcome to Cadlete – Your Login Credentials';
+        //     $mail->Body    = "
+        //         <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #eee;border-radius:10px;'>
+        //             <h2 style='color:#DF2127;'>Welcome to Cadlete Designs!</h2>
+        //             <p>Dear <strong>$name</strong>,</p>
+        //             <p>Your employee account has been created. Here are your login credentials:</p>
+        //             <table style='background:#f8fafc;padding:15px;border-radius:8px;width:100%;'>
+        //                 <tr><td><strong>Email:</strong></td><td>$email</td></tr>
+        //                 <tr><td><strong>Password:</strong></td><td><strong>$plainPassword</strong></td></tr>
+        //             </table>
+        //             <p style='margin-top:15px;'>Please login at the Employee Portal and change your password immediately.</p>
+        //             <p style='color:#64748b;font-size:12px;'>This is an automated message. Do not reply.</p>
+        //         </div>
+        //     ";
+        //     $mail->send();
+        //     // Email sent successfully
+        // } catch (Exception $e) {
+        //     // Email failed silently – employee is still registered
+        //     // Log: $e->getMessage()
+        // }
+        // =============================================================
 
-?>
+        // -- Show success modal and redirect --
+        ?>
         <link rel="stylesheet" href="css/success_notification.css">
         <style>
-            #php_server_loader {
-                display: none !important;
-            }
+            #php_server_loader { display: none !important; }
         </style>
         <div class="success-modal-overlay" id="successModal">
             <div class="success-modal-content">
@@ -184,31 +260,31 @@ if (isset($_POST['submit'])) {
                     <i class="fa fa-check"></i>
                 </div>
                 <h2 class="success-title">Success!</h2>
-                <p class="success-message">Employee <strong><?php echo $name; ?></strong> has been registered successfully. The login password has been sent to their email.</p>
+                <p class="success-message">
+                    Employee <strong><?php echo htmlspecialchars($name); ?></strong> has been registered successfully.<br>
+                    <small style="color:#64748b;">Login Password: <strong style="color:#DF2127;"><?php echo htmlspecialchars($plainPassword); ?></strong></small>
+                </p>
                 <div class="success-actions">
                     <a href="index.php?emp_directory" class="btn-success-go">
                         <i class="fa fa-users"></i> Go to Directory
                     </a>
                 </div>
-                <div class="success-timer-bar" style="animation-duration: 4s;"></div>
+                <div class="success-timer-bar" style="animation-duration: 5s;"></div>
             </div>
         </div>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const modal = document.getElementById('successModal');
-                setTimeout(() => {
-                    modal.classList.add('active');
-                }, 100);
-
-                // Auto redirect after 4 seconds
-                setTimeout(() => {
-                    window.location.href = 'index.php?emp_directory';
-                }, 4000);
+                setTimeout(() => { modal.classList.add('active'); }, 100);
+                // Auto redirect after 5 seconds
+                setTimeout(() => { window.location.href = 'index.php?emp_directory'; }, 5000);
             });
         </script>
-<?php
+        <?php
         exit();
+
     } else {
+        // -- DB insert failed – show error --
         $dbError = addslashes(mysqli_error($con));
         echo "<!DOCTYPE html><html><head><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head><body style='background:#f1f5f9;'>";
         echo "<script>
@@ -226,6 +302,11 @@ if (isset($_POST['submit'])) {
         </script></body></html>";
         exit();
     }
+} // end add_user()
+
+// -- Trigger add_user() on form submit --
+if (isset($_POST['submit'])) {
+    add_user($con);
 }
 ?>
 
@@ -378,6 +459,39 @@ if (isset($_POST['submit'])) {
                                 <i class="fa fa-map-marker" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
                                 <input type="text" name="address" class="p-input-premium" placeholder="House No, Street, City, State" required style="padding-left: 40px;">
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Password Row -->
+                <div class="row" style="margin-top: 15px;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">
+                                <i class="fa fa-key" style="color:#DF2127;"></i> Login Password
+                                <span style="font-weight:400; color:#64748b; font-size:12px; margin-left:8px;">(Leave blank to auto-generate, or type a custom password)</span>
+                            </label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="position: relative; flex: 1;">
+                                    <i class="fa fa-lock" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
+                                    <input type="text" name="emp_password" id="add_emp_password"
+                                           class="p-input-premium"
+                                           placeholder="Type custom password OR click Auto Generate →"
+                                           style="padding-left: 40px; font-family: monospace; letter-spacing: 1px;">
+                                </div>
+                                <button type="button" onclick="generateAutoPassword()"
+                                        style="white-space:nowrap; background: linear-gradient(135deg,#DF2127,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
+                                    <i class="fa fa-refresh"></i> Auto Generate
+                                </button>
+                                <button type="button" onclick="toggleAddPassword()"
+                                        style="background:#f1f5f9; color:#475569; border:1.5px solid #e2e8f0; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:13px;" title="Show/Hide Password">
+                                    <i class="fa fa-eye" id="add_pass_eye_icon"></i>
+                                </button>
+                            </div>
+                            <small style="color:#64748b; margin-top:6px; display:block;">
+                                <i class="fa fa-info-circle"></i>
+                                Password will be shown on the success screen. Share it with the employee manually.
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -799,6 +913,48 @@ if (isset($_POST['submit'])) {
     }
 
     ['add_basic_salary', 'add_hra', 'add_allowance', 'add_deductions'].forEach(id => {
-        document.getElementById(id).addEventListener('input', calculateTotalAdd);
+        document.getElementById(id)?.addEventListener('input', calculateTotalAdd);
     });
+
+    // =============================================================
+    // Dynamic Password: Auto Generate & Toggle Visibility
+    // =============================================================
+
+    /**
+     * generateAutoPassword()
+     * Fills the password input with a random 10-character alphanumeric password.
+     * Admin can click "Auto Generate" button to populate a strong password.
+     */
+    function generateAutoPassword() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
+        let pwd = '';
+        for (let i = 0; i < 10; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        const input = document.getElementById('add_emp_password');
+        if (input) {
+            input.value = pwd;
+            input.type = 'text'; // Show generated password
+            const icon = document.getElementById('add_pass_eye_icon');
+            if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+        }
+    }
+
+    /**
+     * toggleAddPassword()
+     * Toggles the password field between text and password type for show/hide.
+     */
+    function toggleAddPassword() {
+        const input = document.getElementById('add_emp_password');
+        const icon  = document.getElementById('add_pass_eye_icon');
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+        } else {
+            input.type = 'password';
+            if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+        }
+    }
+
 </script>

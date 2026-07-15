@@ -7,14 +7,17 @@ if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// ------------------------------------------------------------------
+// PHPMailer Includes (commented out - uncomment to enable OTP email)
+// ------------------------------------------------------------------
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
+// require __DIR__ . '/../../../admin_area/PHPMailer/src/Exception.php';
+// require __DIR__ . '/../../../admin_area/PHPMailer/src/PHPMailer.php';
+// require __DIR__ . '/../../../admin_area/PHPMailer/src/SMTP.php';
+// ------------------------------------------------------------------
 
-require __DIR__ . '/../../../admin_area/PHPMailer/src/Exception.php';
-require __DIR__ . '/../../../admin_area/PHPMailer/src/PHPMailer.php';
-require __DIR__ . '/../../../admin_area/PHPMailer/src/SMTP.php';
-
-$error = '';
+$error   = '';
 $success = '';
 
 // Capture success message from resend redirect
@@ -35,7 +38,7 @@ if (isset($_GET['clear'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['resend']) && isset($_SESSION['reset_email'])) {
     $email = $_SESSION['reset_email'];
     $_POST['send_otp'] = true; // Mimic form submission to reuse logic
-    $_POST['email'] = $email;
+    $_POST['email']    = $email;
     $_SESSION['resend_triggered'] = true; // Flag for later redirect
 }
 
@@ -47,71 +50,94 @@ if (isset($_SESSION['reset_step'])) {
 
 // 1. SEND OTP ACTION
 if (isset($_POST['send_otp'])) {
-    $email = mysqli_real_escape_string($con, $_POST['email']);
-    $query = "SELECT * FROM emp_list WHERE email='$email'";
+    $email     = mysqli_real_escape_string($con, $_POST['email']);
+    $query     = "SELECT * FROM emp_list WHERE email='$email'";
     $run_query = mysqli_query($con, $query);
 
     if ($run_query && mysqli_num_rows($run_query) > 0) {
-        $otp = rand(100000, 999999);
+        $otp    = rand(100000, 999999);
         $expire = date("Y-m-d H:i:s", strtotime("+15 minutes")); // Increased to 15 mins for reliability
 
         // Update DB with OTP
         mysqli_query($con, "UPDATE emp_list SET otp='$otp', otp_expire='$expire' WHERE email='$email'");
 
-        $mail = new PHPMailer(true);
-        try {
-            // Server settings
-            $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'madhavanpatel19@gmail.com'; // your gmail
-            $mail->Password   = 'yawi nqpw wbhp icrx';       // gmail app password
-            $mail->SMTPSecure = 'tls';
-            $mail->Port       = 587;
+        // =============================================================
+        // PHPMailer - Send OTP Email to Employee
+        // STATUS: FULLY COMMENTED OUT
+        // To enable: uncomment the PHPMailer includes at the top AND
+        // uncomment this entire $mail block.
+        // =============================================================
+        //
+        // $mail = new PHPMailer(true);
+        // try {
+        //     // Server settings
+        //     $mail->isSMTP();
+        //     $mail->Host       = 'smtp.gmail.com';
+        //     $mail->SMTPAuth   = true;
+        //     $mail->Username   = 'madhavanpatel19@gmail.com'; // your gmail
+        //     $mail->Password   = 'yawi nqpw wbhp icrx';       // gmail app password
+        //     $mail->SMTPSecure = 'tls';
+        //     $mail->Port       = 587;
+        //
+        //     // Recipients
+        //     $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete Support');
+        //     $mail->addAddress($email);
+        //
+        //     // Content
+        //     $mail->isHTML(true);
+        //     $mail->Subject = 'Password Reset OTP - Cadlete';
+        //     $mail->Body    = "
+        //         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
+        //             <h2 style='color: #2c3e50; text-align: center;'>Password Reset Request</h2>
+        //             <p>Hello,</p>
+        //             <p>We received a request to reset your password for your Cadlete account. Use the OTP below to proceed:</p>
+        //             <div style='background: #f4f7f6; padding: 15px; text-align: center; border-radius: 5px; margin: 20px 0;'>
+        //                 <span style='font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3498db;'>$otp</span>
+        //             </div>
+        //             <p style='color: #e74c3c; font-weight: bold;'>This OTP will expire in 15 minutes.</p>
+        //             <p>If you did not request this, please ignore this email.</p>
+        //             <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
+        //             <p style='font-size: 12px; color: #7f8c8d; text-align: center;'>&copy; " . date('Y') . " Cadlete. All rights reserved.</p>
+        //         </div>
+        //     ";
+        //
+        //     $mail->send();
+        //
+        //     $_SESSION['reset_email'] = $email;
+        //     $_SESSION['reset_step']  = 'otp';
+        //     $currentState = 'otp';
+        //     $success = "A 6-digit OTP has been sent to your registered email.";
+        //
+        //     // If this was a resend, redirect to clear the ?resend=true from URL
+        //     if (isset($_SESSION['resend_triggered'])) {
+        //         unset($_SESSION['resend_triggered']);
+        //         $_SESSION['resend_success'] = $success;
+        //         header("Location: forgot_pass.php");
+        //         exit();
+        //     }
+        // } catch (Exception $e) {
+        //     $error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        // }
+        // =============================================================
 
-            // Recipients
-            $mail->setFrom('madhavanpatel19@gmail.com', 'Cadlete Support');
-            $mail->addAddress($email);
+        // -- Since PHPMailer is disabled, advance state directly --
+        $_SESSION['reset_email'] = $email;
+        $_SESSION['reset_step']  = 'otp';
+        $currentState = 'otp';
+        $success = "OTP generated. (Email sending is currently disabled — contact admin.)";
 
-            // Content
-            $mail->isHTML(true);
-            $mail->Subject = 'Password Reset OTP - Cadlete';
-            $mail->Body    = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
-                    <h2 style='color: #2c3e50; text-align: center;'>Password Reset Request</h2>
-                    <p>Hello,</p>
-                    <p>We received a request to reset your password for your Cadlete account. Use the OTP below to proceed:</p>
-                    <div style='background: #f4f7f6; padding: 15px; text-align: center; border-radius: 5px; margin: 20px 0;'>
-                        <span style='font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3498db;'>$otp</span>
-                    </div>
-                    <p style='color: #e74c3c; font-weight: bold;'>This OTP will expire in 15 minutes.</p>
-                    <p>If you did not request this, please ignore this email.</p>
-                    <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
-                    <p style='font-size: 12px; color: #7f8c8d; text-align: center;'>&copy; " . date('Y') . " Cadlete. All rights reserved.</p>
-                </div>
-            ";
-
-            $mail->send();
-
-            $_SESSION['reset_email'] = $email;
-            $_SESSION['reset_step'] = 'otp';
-            $currentState = 'otp';
-            $success = "A 6-digit OTP has been sent to your registered email.";
-
-            // If this was a resend, redirect to clear the ?resend=true from URL
-            if (isset($_SESSION['resend_triggered'])) {
-                unset($_SESSION['resend_triggered']);
-                $_SESSION['resend_success'] = $success;
-                header("Location: forgot_pass.php");
-                exit();
-            }
-        } catch (Exception $e) {
-            $error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        if (isset($_SESSION['resend_triggered'])) {
+            unset($_SESSION['resend_triggered']);
+            $_SESSION['resend_success'] = $success;
+            header("Location: forgot_pass.php");
+            exit();
         }
+
     } else {
         $error = "The provided email address is not registered in our system.";
     }
 }
+
 
 // 2. VERIFY OTP & RESET PASSWORD ACTION
 if (isset($_POST['reset_password'])) {

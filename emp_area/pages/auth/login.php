@@ -4,35 +4,57 @@
 // Employee login page.
 // Moved from: admin_area/pages/auth/emp-login.php
 // Paths updated to be relative from emp_area/pages/auth.
+// Functions: login_user() - handles employee authentication
+// PHPMailer: Used in forgot_pass.php for OTP (not deleted/not here)
 // =============================================================
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
 
 $login_status = "";
-if (isset($_POST['login'])) {
 
-    $email = mysqli_real_escape_string($con, $_POST['email']);
-    $password = $_POST['password'];
+// =============================================================
+// FUNCTION: login_user()
+// Handles employee authentication:
+//   - Validates email & password against emp_list table
+//   - Checks account active/inactive status
+//   - Sets session variables on success
+//   - Returns status: 'success' | 'error' | 'inactive'
+// Called when: $_POST['login'] is set
+// =============================================================
+function login_user($con)
+{
+    // -- Sanitize inputs --
+    $email    = mysqli_real_escape_string($con, $_POST['email']);
+    $password = $_POST['password']; // Plain text comparison (same as existing)
 
+    // -- Query emp_list for matching credentials --
     $query = mysqli_query($con, "SELECT * FROM emp_list WHERE email='$email' AND password='$password'");
 
     if ($query && mysqli_num_rows($query) > 0) {
         $user = mysqli_fetch_assoc($query);
+
+        // -- Check if account is active --
         if (isset($user['status']) && $user['status'] === 'Inactive') {
-            $login_status = "inactive";
+            return "inactive";
         } else {
+            // -- Start session and set session variables --
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['emp_id'] = $user['id'];
+            $_SESSION['emp_id']  = $user['id'];
             $_SESSION['emp_name'] = $user['name'];
-            $login_status = "success";
+            return "success";
         }
     } else {
-        $login_status = "error";
+        return "error";
     }
+} // end login_user()
+
+// -- Trigger login_user() on form submit --
+if (isset($_POST['login'])) {
+    $login_status = login_user($con);
 }
 ?>
 
@@ -113,7 +135,8 @@ if (isset($_POST['login'])) {
                     <label class="remember-me">
                         <input type="checkbox" name="remember" checked> Remember me
                     </label>
-                    <a href="forgot_pass.php" class="forgot-link">Forgot Password?</a>
+                    <!-- Forgot Password disabled: password changes are managed by Admin via Edit Employee page -->
+                    <!-- <a href="forgot_pass.php" class="forgot-link">Forgot Password?</a> -->
                 </div>
 
                 <button type="submit" name="login" class="btn-login">
