@@ -427,7 +427,9 @@ if ($print_all_mode) {
                             <p><strong>Employee Name:</strong> <?php echo htmlspecialchars($emp_name_local); ?></p>
                             <p><strong>Employee ID:</strong> <?php echo $emp_id_local; ?></p>
                         </div>
-                        <div class="emp-right"></div>
+                        <div class="emp-right">
+                            <p><strong>Pay Date:</strong> <?php echo date('t M Y', strtotime($current_month . '-01')); ?></p>
+                        </div>
                     </div>
 
                     <div class="slip-tables">
@@ -482,12 +484,15 @@ if ($print_all_mode) {
                         </table>
                     </div>
 
-                    <div class="slip-signature clearfix">
-                        <div class="sign-left">
-                            <p>Employee Signature</p>
+                    <div class="slip-signature clearfix" style="border-top: none; display: flex; align-items: flex-end; justify-content: space-between; margin-top: 20px;">
+                        <div class="sign-left" style="width: 60%; text-align: left; float: none;">
+                            <p style="font-size: 11px; color: #666; border-top: none; margin: 0; padding: 0; margin-bottom: 5px; display: block; font-weight: normal;">This is a system generated payslip.</p>
                         </div>
-                        <div class="sign-right">
-                            <p>Authorized Signatory</p>
+                        <div class="sign-right" style="width: 40%; float: none; text-align: right;">
+                            <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
+                                <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                                <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -579,7 +584,7 @@ if ($print_all_mode) {
                                     <td>
                                         <span style="font-weight: 700; color: #1e293b;"><?php echo htmlspecialchars($slip['name']); ?></span>
                                     </td>
-                                    <td class="text-center" style="text-align: center !important; font-weight: 800; color: #0f172a; font-family: 'JetBrains Mono', monospace;">
+                                    <td class="text-center" style="text-align: center !important; font-weight: 800; color: #0f172a; font-family: 'Poppins', sans-serif;">
                                         <?php echo $currency_symbol . ' ' . format_money($slip['salary']); ?>
                                     </td>
                                     <td class="text-center" style="text-align: center !important;">
@@ -666,7 +671,8 @@ if ($print_all_mode) {
     <?php
     // ------------------ SALARY SLIP VIEW ------------------ //
     if ($view_mode && $employee && $selected_month && !$is_before_joining_month): ?>
-        <div id="slip" class="salary-slip card" style="margin-top:18px; padding:18px;">
+        <div id="slip" class="salary-slip card" style="margin:10px auto; padding:18px; max-width:820px;">
+            <div class="slip-top-decor"></div>
 
             <?php
             // Build back URL:
@@ -702,25 +708,19 @@ if ($print_all_mode) {
                 </div>
                 <div class="slip-meta">
                     <h4>Salary Slip</h4>
-                    <div class="slip-id">Slip No: <strong><?php echo sprintf("%05d", (int)$employee["id"]); ?></strong></div>
-                    <p><strong>Period:</strong> <?php echo date("F, Y", strtotime($selected_month . "-01")); ?></p>
-                    <p><strong>Pay Date:</strong> <?php echo date("d M Y"); ?></p>
+                    <div class="slip-id">Slip No: <strong><?php echo sprintf('%05d', $selected_emp); ?></strong></div>
+                    <p><strong>Period:</strong> <?php echo date('F, Y', strtotime($selected_month . '-01')); ?></p>
                 </div>
             </div>
 
             <!-- EMPLOYEE INFO -->
             <div class="employee-info clearfix">
                 <div class="emp-left">
-                    <p><strong>Employee Name:</strong> <?php echo htmlspecialchars($employee["name"]); ?></p>
-                    <p><strong>Employee ID:</strong> <?php echo (int)$employee["id"]; ?></p>
+                    <p><strong>Employee Name:</strong> <?php echo htmlspecialchars($employee['name']); ?></p>
+                    <p><strong>Employee ID:</strong> <?php echo (int)$selected_emp; ?></p>
                 </div>
                 <div class="emp-right">
-                    <?php if (!empty($designation)): ?>
-                        <p><strong>Designation:</strong> <?php echo htmlspecialchars($designation); ?></p>
-                    <?php endif; ?>
-                    <?php if (!empty($department)): ?>
-                        <p><strong>Department:</strong> <?php echo htmlspecialchars($department); ?></p>
-                    <?php endif; ?>
+                    <p><strong>Pay Date:</strong> <?php echo date('t M Y', strtotime($selected_month . '-01')); ?></p>
                 </div>
             </div>
 
@@ -777,13 +777,15 @@ if ($print_all_mode) {
                 </table>
             </div>
 
-            <!-- SIGNATURES -->
-            <div class="slip-signature clearfix">
-                <div class="sign-left">
-                    <p>Employee Signature</p>
+            <div class="slip-signature clearfix" style="border-top: none; display: flex; align-items: flex-end; justify-content: space-between; margin-top: 20px;">
+                <div class="sign-left" style="width: 60%; text-align: left; float: none;">
+                    <p style="font-size: 11px; color: #666; border-top: none; margin: 0; padding: 0; margin-bottom: 5px; display: block; font-weight: normal;">This is a system generated payslip.</p>
                 </div>
-                <div class="sign-right">
-                    <p>Authorized Signatory</p>
+                <div class="sign-right" style="width: 40%; float: none; text-align: right;">
+                    <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
+                        <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                        <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
+                    </div>
                 </div>
             </div>
 

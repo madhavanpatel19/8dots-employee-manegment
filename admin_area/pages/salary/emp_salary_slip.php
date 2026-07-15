@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
@@ -235,12 +235,15 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             </table>
         </div>
 
-        <div class="slip-signature clearfix">
-            <div class="sign-left">
-                <p>Employee Signature</p>
+        <div class="slip-signature clearfix" style="border-top: none; display: flex; align-items: flex-end; justify-content: space-between; margin-top: 20px;">
+            <div class="sign-left" style="width: 60%; text-align: left; float: none;">
+                <p style="font-size: 11px; color: #666; border-top: none; margin: 0; padding: 0; margin-bottom: 5px; display: block; font-weight: normal;">This is a system generated payslip.</p>
             </div>
-            <div class="sign-right">
-                <p>Authorized Signatory</p>
+            <div class="sign-right" style="width: 40%; float: none; text-align: right;">
+                <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
+                    <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                    <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
+                </div>
             </div>
         </div>
     </div>

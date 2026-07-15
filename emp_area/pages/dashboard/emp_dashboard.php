@@ -930,7 +930,7 @@ function getResourceTypePhp($url)
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="taskSec">
                 <h3><i class="fa fa-tasks" style="color:#e11d48;"></i> My Tasks</h3>
-                <a href="#">View All</a>
+                <a href="index.php?todo">View All</a>
             </div>
             <div id="emptyTasksMsg" class="empty-s" style="<?php echo empty($tasks) ? '' : 'display:none;'; ?>">
                 <i class="fa fa-check-circle"></i>You're all caught up! No pending tasks.
@@ -971,7 +971,7 @@ function getResourceTypePhp($url)
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="projSec">
                 <h3><i class="fa fa-briefcase" style="color:#dd2127;"></i> My Projects</h3>
-                <a href="#">View All</a>
+                <a href="index.php?projects">View All</a>
             </div>
             <?php if (empty($projects)): ?>
                 <div class="empty-s"><i class="fa fa-folder-open-o"></i>No active projects assigned to you.</div>
