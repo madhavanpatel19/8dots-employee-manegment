@@ -442,7 +442,7 @@ if ($run_stats) {
                                 $duration_str = $requested_days . ' Day' . ($requested_days > 1 ? 's' : '');
                             }
 
-                            $emp_img = !empty($row['employee_image']) ? "uploads/" . $row['employee_image'] : "../admin_images/default.png";
+                            $emp_img = !empty($row['employee_image']) ? "uploads/" . $row['employee_image'] : "admin_images/default.png";
                             $emp_id_formatted = "EMP" . str_pad($row['emp_list_id'], 3, "0", STR_PAD_LEFT);
                     ?>
                             <tr>
