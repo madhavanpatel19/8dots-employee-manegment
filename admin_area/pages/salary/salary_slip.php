@@ -412,7 +412,7 @@ if ($print_all_mode) {
                             <div class="company-center">
                                 <h3 class="company-name">CADLETE DESIGNS</h3>
                                 <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
-                                <div class="company-meta-small">Phone: +91 95865 45430 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
+                                <div class="company-meta-small">Phone: +91 8320211773 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
                             </div>
                         </div>
                         <div class="slip-meta">
@@ -702,7 +702,7 @@ if ($print_all_mode) {
                             A-106, Sun South Street, Ahmedabad
                         </div>
                         <div class="company-meta-small">
-                            Phone: +91 95865 45430 &nbsp;|&nbsp; Email: info@cadletedesigns.com
+                            Phone: +91 8320211773 &nbsp;|&nbsp; Email: info@cadletedesigns.com
                         </div>
                     </div>
                 </div>

@@ -2288,11 +2288,11 @@ $run_projects = mysqli_query($con, $get_projects);
                 <div class="footer-bar">
                     <div class="footer-inner">
                         <div class="footer-col">
-                            <div class="footer-item">📞 091 95865 45430</div>
+                            <div class="footer-item">📞 +91 8320211773</div>
                             <div class="footer-item">✉ info@cadletedesigns.com</div>
                         </div>
                         <div class="footer-col">
-                            <div class="footer-item">📍 1-A Gulabvatika Society</div>
+                            <div class="footer-item">📍 A-106, Sun South Street, Ahmedabad</div>
                             <div class="footer-item">🌐 www.cadletedesigns.com</div>
                         </div>
                     </div>

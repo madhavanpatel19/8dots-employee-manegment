@@ -71,7 +71,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $photos_json = empty($uploaded_photos) ? '' : json_encode($uploaded_photos);
 
-            $update = "UPDATE attendance SET check_in_time='$check_in_time', check_out_time='$check_out_time', remarks='$remarks', work_photos='$photos_json' WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'";
+            $status = 'present';
+            if (!empty($check_in_time)) {
+                $tstamp = strtotime('1970-01-01 ' . $check_in_time);
+                $late_cutoff = strtotime('1970-01-01 10:15:00');
+                if ($tstamp !== false && $tstamp > $late_cutoff) {
+                    $status = 'late';
+                }
+            }
+
+            $update = "UPDATE attendance SET check_in_time='$check_in_time', check_out_time='$check_out_time', status='$status', remarks='$remarks', work_photos='$photos_json' WHERE emp_id='$emp_id' AND attendance_date='$attendance_date'";
             if (mysqli_query($con, $update)) {
                 $successMessage = "Worksheet updated successfully!";
             }
@@ -92,7 +101,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $photos_json = empty($uploaded_photos) ? '' : json_encode($uploaded_photos);
 
-            $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks, work_photos) VALUES ('$emp_id', '$attendance_date', '$check_in_time', '$check_out_time', 'present', '$remarks', '$photos_json')";
+            $status = 'present';
+            if (!empty($check_in_time)) {
+                $tstamp = strtotime('1970-01-01 ' . $check_in_time);
+                $late_cutoff = strtotime('1970-01-01 10:15:00');
+                if ($tstamp !== false && $tstamp > $late_cutoff) {
+                    $status = 'late';
+                }
+            }
+
+            $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks, work_photos) VALUES ('$emp_id', '$attendance_date', '$check_in_time', '$check_out_time', '$status', '$remarks', '$photos_json')";
             if (mysqli_query($con, $insert)) {
                 $successMessage = "Worksheet submitted successfully!";
             }
@@ -114,7 +132,6 @@ $today_att   = mysqli_fetch_assoc($today_res);
 $prefill_in  = ($today_att && $today_att['check_in_time'])  ? date('H:i', strtotime($today_att['check_in_time']))  : '';
 $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtotime($today_att['check_out_time'])) : date('H:i');
 ?>
-
 <?php if (!$is_partial) : ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -126,52 +143,88 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
         <link rel="stylesheet" href="../../../admin_area/css/bootstrap.min.css">
         <link href="../../../admin_area/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="../../../admin_area/css/style.css" rel="stylesheet">
-        <style>
-            body {
-                background: #f4f7f6;
-                padding-top: 20px;
-            }
+    <?php endif; ?>
+    <style>
+        body {
+            background: #f4f7f6;
+            padding-top: 20px;
+        }
 
-            .page-header {
-                border-bottom: 1px solid #eee;
-                margin-bottom: 20px;
-            }
+        .page-header {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
 
-            .work-photo-item {
-                width: 45px;
-                height: 45px;
-                border-radius: 8px;
-                overflow: hidden;
-                position: relative;
-                cursor: pointer;
-                border: 1px solid #e2e8f0;
-            }
+        .work-photo-item {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
 
-            .work-photo-item img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+        .work-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-            .work-photo-overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.4);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0;
-                transition: 0.3s ease;
-                color: #fff;
-            }
+        .work-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s ease;
+            color: #fff;
+        }
 
-            .work-photo-item:hover .work-photo-overlay {
-                opacity: 1;
-            }
-        </style>
+        .work-photo-item:hover .work-photo-overlay {
+            opacity: 1;
+        }
+
+        .p-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .p-badge-success {
+            background: rgba(16, 185, 129, 0.1) !important;
+            color: #10b981 !important;
+        }
+
+        .p-badge-primary {
+            background: rgba(79, 70, 229, 0.05) !important;
+            color: #dd2127 !important;
+        }
+
+        .p-badge-danger {
+            background: rgba(239, 68, 68, 0.1) !important;
+            color: #ef4444 !important;
+        }
+
+        .p-badge-warning {
+            background: rgba(245, 158, 11, 0.1) !important;
+            color: #f59e0b !important;
+        }
+
+        .p-badge-secondary {
+            background: #f1f5f9 !important;
+            color: #64748b !important;
+        }
+    </style>
+    <?php if (!$is_partial) : ?>
     </head>
 
     <body>
@@ -232,10 +285,19 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                     <?php if (mysqli_num_rows($history_result) > 0) : $i = 1; ?>
                                         <?php while ($row = mysqli_fetch_assoc($history_result)) :
                                             $st = $row['status'] ?: 'present';
+                                            $check_in = $row['check_in_time'];
+                                            if ($st === 'present' && !empty($check_in) && $check_in != '00:00:00') {
+                                                $tstamp = strtotime('1970-01-01 ' . $check_in);
+                                                $late_cutoff = strtotime('1970-01-01 10:15:00');
+                                                if ($tstamp !== false && $tstamp > $late_cutoff) {
+                                                    $st = 'late';
+                                                }
+                                            }
                                             $badge_class = 'p-badge-secondary';
                                             if ($st == 'present') $badge_class = 'p-badge-success';
                                             elseif ($st == 'absent') $badge_class = 'p-badge-danger';
                                             elseif ($st == 'leave')  $badge_class = 'p-badge-primary';
+                                            elseif ($st == 'late')   $badge_class = 'p-badge-warning';
                                         ?>
                                             <tr>
                                                 <td style="text-align: center; font-weight: 700; color: #64748b;"><?php echo $i++; ?></td>
@@ -253,8 +315,11 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                                 <td style="text-align: center; color: #dd2127; font-weight: 700;">
                                                     <?php
                                                     $active_secs = $row['total_duration_secs'];
-                                                    if ($row['attendance_date'] == date('Y-m-d') && $row['is_working'] && !empty($row['last_resume_time'])) {
-                                                        $active_secs += time() - strtotime($row['last_resume_time']);
+                                                    if ($row['attendance_date'] == date('Y-m-d') && $row['is_working']) {
+                                                        $startTime = (!empty($row['total_duration_secs']) && $row['total_duration_secs'] > 0) ? $row['last_resume_time'] : ($row['attendance_date'] . ' ' . $row['check_in_time']);
+                                                        if (!empty($startTime)) {
+                                                            $active_secs += time() - strtotime($startTime);
+                                                        }
                                                     }
 
                                                     if ($active_secs > 0) {

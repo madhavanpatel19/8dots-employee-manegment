@@ -594,6 +594,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     $pref_checkin = isset($_POST['check_in_time_arr'][$i]) ? $_POST['check_in_time_arr'][$i] : '';
                                     $pref_checkout = isset($_POST['check_out_time_arr'][$i]) ? $_POST['check_out_time_arr'][$i] : '';
                                     $pref_performance = isset($_POST['performance_arr'][$i]) ? $_POST['performance_arr'][$i] : '';
+
+                                    if ($pref_status === 'present' && $pref_checkin) {
+                                        $tstamp = strtotime('1970-01-01 ' . $pref_checkin);
+                                        $late_cutoff = strtotime('1970-01-01 10:15:00');
+                                        if ($tstamp !== false && $tstamp > $late_cutoff) {
+                                            $pref_status = 'late';
+                                        }
+                                    }
                                 } else {
                                     $pref        = isset($daily_attendance[$eid]) ? $daily_attendance[$eid] : null;
                                     $pref_status = $pref ? $pref['status'] : '';
@@ -601,6 +609,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     $pref_checkin = $pref ? htmlspecialchars($pref['check_in_time'] ?? '') : '10:00';
                                     $pref_checkout = $pref ? htmlspecialchars($pref['check_out_time'] ?? '') : '';
                                     $pref_performance = $pref ? htmlspecialchars($pref['performance'] ?? '') : '';
+
+                                    if ($pref_status === 'present' && $pref_checkin) {
+                                        $tstamp = strtotime('1970-01-01 ' . $pref_checkin);
+                                        $late_cutoff = strtotime('1970-01-01 10:15:00');
+                                        if ($tstamp !== false && $tstamp > $late_cutoff) {
+                                            $pref_status = 'late';
+                                        }
+                                    }
                                 }
                             ?>
                                 <tr>
@@ -717,6 +733,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         }
 
                         $total_secs_month = 0;
+                        $total_display_minutes = 0;
 
                         for ($day = 1; $day <= $days_in_month; $day++) {
                             $date     = sprintf('%04d-%02d-%02d', $current_year, $current_month, $day);
@@ -746,7 +763,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
                                 // Calculate formatted duration
                                 $row_secs = isset($attendance_data[$date]['total_duration_secs']) ? (int)$attendance_data[$date]['total_duration_secs'] : 0;
-                                if ($row_secs == 0 && $checkin && $checkout) {
+                                if ($date === date('Y-m-d') && isset($attendance_data[$date]['is_working']) && $attendance_data[$date]['is_working'] == 1) {
+                                    $last_res = $attendance_data[$date]['last_resume_time'];
+                                    $db_tot_secs = (int)($attendance_data[$date]['total_duration_secs'] ?? 0);
+                                    $start_time_calc = ($db_tot_secs > 0 && !empty($last_res)) ? $last_res : ($date . ' ' . $checkin);
+                                    if (!empty($start_time_calc)) {
+                                        $row_secs = $db_tot_secs + (time() - strtotime($start_time_calc));
+                                    }
+                                } elseif ($row_secs == 0 && $checkin && $checkout) {
                                     $in_t = strtotime("1970-01-01 $checkin");
                                     $out_t = strtotime("1970-01-01 $checkout");
                                     if ($out_t > $in_t) {
@@ -759,6 +783,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     $rh = floor($row_secs / 3600);
                                     $rm = floor(($row_secs % 3600) / 60);
                                     $display_duration = "{$rh}h {$rm}m";
+                                    $total_display_minutes += ($rh * 60) + $rm;
                                 }
 
                                 $created_at   = htmlspecialchars($attendance_data[$date]['created_at'] ?? '');
@@ -812,9 +837,9 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
                             <td style="color: #3b82f6;">
                                 <?php
-                                if ($total_secs_month > 0) {
-                                    $th = floor($total_secs_month / 3600);
-                                    $tm = floor(($total_secs_month % 3600) / 60);
+                                if ($total_display_minutes > 0) {
+                                    $th = floor($total_display_minutes / 60);
+                                    $tm = $total_display_minutes % 60;
                                     echo "{$th}h {$tm}m";
                                 } else {
                                     echo "-";

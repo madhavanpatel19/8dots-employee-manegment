@@ -112,6 +112,13 @@ if ($action == 'check_in') {
     $safe_ip     = mysqli_real_escape_string($con, $visitor_ip);
     $safe_loc    = mysqli_real_escape_string($con, $visitor_loc);
 
+    $late_cutoff = strtotime('1970-01-01 10:15:00');
+    $tstamp = strtotime('1970-01-01 ' . $current_time);
+    $status = 'present';
+    if ($tstamp !== false && $tstamp > $late_cutoff) {
+        $status = 'late';
+    }
+
     if (mysqli_num_rows($check_res) > 0) {
         $row = mysqli_fetch_assoc($check_res);
         if (!empty($row['check_in_time'])) {
@@ -123,7 +130,7 @@ if ($action == 'check_in') {
                      last_resume_time = '$now_dt', 
                      is_working = 1, 
                      total_duration_secs = 0, 
-                     status = 'present',
+                     status = '$status',
                      ip_address = '$safe_ip',
                      location = '$safe_loc'
                      WHERE id = " . $row['id'];
@@ -135,7 +142,7 @@ if ($action == 'check_in') {
         }
     } else {
         $insert_q = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, last_resume_time, is_working, total_duration_secs, status, ip_address, location) 
-                     VALUES ('$emp_id', '$today', '$current_time', '$now_dt', 1, 0, 'present', '$safe_ip', '$safe_loc')";
+                     VALUES ('$emp_id', '$today', '$current_time', '$now_dt', 1, 0, '$status', '$safe_ip', '$safe_loc')";
         if (mysqli_query($con, $insert_q)) {
             $att_id = mysqli_insert_id($con);
             logAttendanceAction($con, $att_id, $emp_id, 'check_in', $now_dt, $visitor_ip, $visitor_loc);
@@ -251,11 +258,19 @@ if ($action == 'check_in') {
             $in_diff      = strtotime($today . ' ' . $manual_in) - strtotime($today . ' ' . $original_in);
             $new_duration = max(0, $base_timer - $in_diff);
 
+            $status = 'present';
+            $tstamp = strtotime('1970-01-01 ' . $manual_in);
+            $late_cutoff = strtotime('1970-01-01 10:15:00');
+            if ($tstamp !== false && $tstamp > $late_cutoff) {
+                $status = 'late';
+            }
+
             $update_q = "UPDATE attendance SET 
                          check_in_time = '$manual_in',
                          check_out_time = '$manual_out', 
                          is_working = 0,
                          total_duration_secs = '$new_duration',
+                         status = '$status',
                          remarks = '$work_details',
                          work_photos = '$photos_json'
                          WHERE id = " . $row['id'];

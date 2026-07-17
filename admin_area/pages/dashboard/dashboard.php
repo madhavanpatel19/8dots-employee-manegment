@@ -471,24 +471,25 @@ if ($res && mysqli_num_rows($res) > 0) {
                             if ($diff > 0) $total_secs = $diff;
                         }
 
-                        // Currently working = present + is_working is 1
-                        $currently_working = ($status === 'present' && $is_working_val == 1);
+                        // Currently working = is_working is 1 (regardless of present/late status)
+                        $currently_working = ($is_working_val == 1);
                         $dot_color = $currently_working ? '#10b981' : '#ef4444';
+                        
+                        if ($currently_working) {
+                            $start_time_calc = ($total_secs > 0 && !empty($att_row['last_resume_time'])) ? $att_row['last_resume_time'] : ($today . ' ' . $att_row['check_in_time']);
+                            if (!empty($start_time_calc)) {
+                                $diff = time() - strtotime($start_time_calc);
+                                if ($diff > 0) {
+                                    $total_secs += $diff;
+                                }
+                            }
+                        }
+
                         $total_work_txt = '00h 00m';
                         if ($total_secs > 0) {
                             $h = floor($total_secs / 3600);
                             $m = floor(($total_secs % 3600) / 60);
                             $total_work_txt = sprintf('%02dh %02dm', $h, $m);
-                        } elseif (empty($att_row['check_out_time']) && !empty($att_row['check_in_time'])) {
-                            // Basic fallback calculation if total_secs is not maintained perfectly and still working
-                            $in_time = strtotime($att_row['check_in_time']);
-                            $now = time();
-                            $diff = $now - $in_time;
-                            if ($diff > 0) {
-                                $h = floor($diff / 3600);
-                                $m = floor(($diff % 3600) / 60);
-                                $total_work_txt = sprintf('%02dh %02dm', $h, $m);
-                            }
                         }
 
                         $badge_bg = 'var(--border-light)';
@@ -528,7 +529,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                             <td style="vertical-align: middle; text-align: center;"><span class="check-in" style="color: var(--green); font-weight: 600;"><?php echo $check_in; ?></span></td>
                             <td style="vertical-align: middle; text-align: center;"><span class="check-out" style="color: <?php echo $check_out == '-' ? 'var(--text-muted)' : 'var(--red)'; ?>; font-weight: <?php echo $check_out == '-' ? '400' : '600'; ?>"><?php echo $check_out; ?></span></td>
                             <td style="vertical-align: middle; text-align: center;">
-                                <div class="duration-cell" data-emp-id="<?php echo $att_row['emp_id']; ?>" data-is-working="<?php echo $currently_working ? 1 : 0; ?>" data-total-secs="<?php echo $total_secs; ?>" data-last-resume="<?php echo !empty($att_row['last_resume_time']) ? date('Y-m-d\TH:i:s', strtotime($att_row['last_resume_time'])) : (!empty($att_row['check_in_time']) ? date('Y-m-d\TH:i:s', strtotime($att_row['check_in_time'])) : ''); ?>" style="display:flex; align-items:center; justify-content: center; gap:7px;">
+                                <div class="duration-cell" data-emp-id="<?php echo $att_row['emp_id']; ?>" data-is-working="<?php echo $currently_working ? 1 : 0; ?>" data-total-secs="<?php echo $att_row['total_duration_secs']; ?>" data-last-resume="<?php echo !empty($att_row['last_resume_time']) ? date('Y-m-d\TH:i:s', strtotime($att_row['last_resume_time'])) : ''; ?>" data-check-in="<?php echo !empty($att_row['check_in_time']) ? date('Y-m-d\TH:i:s', strtotime($today . ' ' . $att_row['check_in_time'])) : ''; ?>" style="display:flex; align-items:center; justify-content: center; gap:7px;">
                                     <?php if ($currently_working): ?>
                                         <span class="live-dot" title="Currently Working"></span>
                                     <?php endif; ?>
@@ -561,6 +562,9 @@ if ($res && mysqli_num_rows($res) > 0) {
 
 <script>
     $(document).ready(function() {
+        var serverTime = <?php echo time() * 1000; ?>;
+        var serverClientOffset = serverTime - Date.now();
+
         function formatDuration(seconds) {
             var h = Math.floor(seconds / 3600);
             var m = Math.floor((seconds % 3600) / 60);
@@ -577,11 +581,13 @@ if ($res && mysqli_num_rows($res) > 0) {
                 var $cell = $(this);
                 var totalSecs = parseInt($cell.attr('data-total-secs')) || 0;
                 var lastResumeStr = $cell.attr('data-last-resume');
+                var checkInStr = $cell.attr('data-check-in');
 
-                if (lastResumeStr) {
-                    var lastResumeTime = new Date(lastResumeStr).getTime();
-                    var now = new Date().getTime();
-                    var elapsedSinceResume = Math.floor((now - lastResumeTime) / 1000);
+                var startStr = (totalSecs > 0 && lastResumeStr) ? lastResumeStr : checkInStr;
+                if (startStr) {
+                    var startTime = new Date(startStr).getTime();
+                    var adjustedNow = Date.now() + serverClientOffset;
+                    var elapsedSinceResume = Math.floor((adjustedNow - startTime) / 1000);
 
                     if (elapsedSinceResume < 0) elapsedSinceResume = 0;
 
@@ -608,6 +614,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                             $cell.attr('data-is-working', info.is_working);
                             $cell.attr('data-total-secs', info.total_secs);
                             $cell.attr('data-last-resume', info.last_resume);
+                            $cell.attr('data-check-in', info.check_in);
 
                             // Update Live Indicator
                             var hasIndicator = $cell.find('.live-dot').length > 0;

@@ -110,8 +110,11 @@ $max_week = max(array_column($week_secs_arr, 'secs')) ?: 1;
 
 // ── Today's logged duration ───────────────────────────────────
 $today_secs = (int)($today_record['total_duration_secs'] ?? 0);
-if ($today_record && $today_record['is_working'] && $today_record['last_resume_time']) {
-    $today_secs += time() - strtotime($today_record['last_resume_time']);
+if ($today_record && $today_record['is_working']) {
+    $startTime = (!empty($today_record['total_duration_secs']) && $today_record['total_duration_secs'] > 0) ? $today_record['last_resume_time'] : ($today . ' ' . $today_record['check_in_time']);
+    if ($startTime) {
+        $today_secs += time() - strtotime($startTime);
+    }
 }
 
 function fmtHM($secs)
@@ -1039,6 +1042,12 @@ function getResourceTypePhp($url)
             basePastMins: <?php echo (int)$base_past_mins; ?>,
             maxWeek: <?php echo $max_week > 0 ? $max_week : 1; ?>
         };
+        if (att.totalSecs === 0 && <?php echo ($today_record && $today_record['check_in_time']) ? 'true' : 'false'; ?>) {
+            att.lastResume = <?php echo ($today_record && $today_record['check_in_time']) ? (strtotime($today . ' ' . $today_record['check_in_time']) * 1000) : 'null'; ?>;
+        }
+
+        var serverTime = <?php echo time() * 1000; ?>;
+        var serverClientOffset = serverTime - Date.now();
 
         function fmtDur(s) {
             var h = Math.floor(s / 3600),
@@ -1058,7 +1067,8 @@ function getResourceTypePhp($url)
             var cur = att.totalSecs;
             var activeSecs = 0;
             if (att.isWorking && att.lastResume) {
-                activeSecs = Math.floor((Date.now() - att.lastResume) / 1000);
+                var adjustedNow = Date.now() + serverClientOffset;
+                activeSecs = Math.floor((adjustedNow - att.lastResume) / 1000);
             }
             cur += activeSecs;
 
