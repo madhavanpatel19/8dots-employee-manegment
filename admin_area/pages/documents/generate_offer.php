@@ -226,6 +226,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             font-size: 17px;
             line-height: 1.8;
             color: #555;
+            padding-bottom: 10px;
         }
 
         .content .salutation {
@@ -292,14 +293,14 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 4px;
+            gap: 6px;
         }
 
         .sign-image {
-            width: 120px;
+            width: 160px;
             height: auto;
             object-fit: contain;
-            margin-left: -5px;
+            margin-left: 0;
         }
 
         .sign-text .name {
@@ -321,24 +322,27 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             right: 0;
             bottom: 0;
             background: #d1d1d1;
-            padding: 15px 52px;
+            height: 80px;
+            padding: 0 52px;
+            display: flex;
+            align-items: center;
         }
 
         .footer-inner {
             display: flex;
-            justify-content: flex-start;
-            gap: 40px;
-            flex-wrap: nowrap;
+            flex-direction: column;
+            gap: 10px;
             font-size: 13px;
             color: #222;
             font-weight: 600;
             padding-right: 160px;
+            width: 100%;
         }
 
-        .footer-col {
+        .footer-row {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            gap: 40px;
+            width: 100%;
         }
 
         .footer-item {
@@ -347,11 +351,20 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             gap: 10px;
         }
 
+        .footer-row .footer-item:first-child {
+            flex: 0 0 200px;
+        }
+
+        .footer-row .footer-item:last-child {
+            flex: 1;
+        }
+
         .footer-item i {
             color: #222;
             width: 18px;
             text-align: center;
             font-size: 16px;
+            flex-shrink: 0;
         }
 
         .corner-red {
@@ -470,7 +483,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
             </div>
 
             <!-- TITLE -->
@@ -510,7 +523,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
 
                 <p>
                     We are pleased to offer you the position of <strong><?php echo htmlspecialchars($position); ?></strong>
-                    at <strong>CADLETE DESIGNS</strong>. We are confident that your skills and experience will be
+                    at <strong>8Dots</strong>. We are confident that your skills and experience will be
                     an excellent addition to our team.
                 </p>
 
@@ -526,7 +539,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
 
                 <p>
                     We believe that you will thrive in this role and contribute significantly to the success of
-                    <strong>CADLETE DESIGNS</strong>.<br>
+                    <strong>8Dots</strong>.<br>
                     <br>
 
                     Please confirm your acceptance of this offer by replying to this email. If you have any
@@ -536,17 +549,16 @@ $formatted_start       = date("d F Y", strtotime($start_date));
                     We look forward to welcoming you to our team.
                 </p>
             </div>
-            <br>
 
             <!-- SIGNATURE -->
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/K_logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
-                        <div class="name">Smit Ramani</div>
+                        <div class="name">kamal parmar</div>
                         <div class="role">Founder &amp; CEO</div>
-                        <div class="company">CADLETE DESIGNS</div>
+                        <div class="company">8Dots</div>
                     </div>
                 </div>
             </div>
@@ -554,14 +566,13 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             <!-- FOOTER -->
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
-                        </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
                     </div>
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
                     </div>
                 </div>
             </div>

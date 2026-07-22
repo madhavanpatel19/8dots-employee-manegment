@@ -19,7 +19,7 @@ if (!isset($_SESSION['emp_id'])) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php?dashboard">Cadlete Designs (Employee)</a>
+            <a class="navbar-brand" href="index.php?dashboard">8Dots (Employee)</a>
         </div>
         <ul class="nav navbar-right top-nav">
             <?php
@@ -91,7 +91,7 @@ if (!isset($_SESSION['emp_id'])) {
     <!-- MODERN SIDEBAR -->
     <aside class="modern-sidebar">
         <div class="sidebar-logo">
-            <img src="../admin_area/images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+            <img src="../admin_area/images/8dots-logo.png" alt="8Dots">
         </div>
 
         <div class="sidebar-menu">

@@ -133,7 +133,7 @@ function add_user($con)
     $e_name = mysqli_real_escape_string($con, $_POST['emergency_name']         ?? '');
     $e_rel  = mysqli_real_escape_string($con, $_POST['emergency_relationship'] ?? '');
     $e_addr = mysqli_real_escape_string($con, $_POST['emergency_address']      ?? '');
-    $e_phone= mysqli_real_escape_string($con, $_POST['emergency_phone']        ?? '');
+    $e_phone = mysqli_real_escape_string($con, $_POST['emergency_phone']        ?? '');
 
     // -- Education & Employment JSON --
     $edu_json = mysqli_real_escape_string($con, $_POST['education_json']  ?? '[]');
@@ -229,7 +229,7 @@ function add_user($con)
         //     $mail->Subject = 'Welcome to Cadlete – Your Login Credentials';
         //     $mail->Body    = "
         //         <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #eee;border-radius:10px;'>
-        //             <h2 style='color:#DF2127;'>Welcome to Cadlete Designs!</h2>
+        //             <h2 style='color:#DF2127;'>Welcome to 8Dots!</h2>
         //             <p>Dear <strong>$name</strong>,</p>
         //             <p>Your employee account has been created. Here are your login credentials:</p>
         //             <table style='background:#f8fafc;padding:15px;border-radius:8px;width:100%;'>
@@ -249,10 +249,12 @@ function add_user($con)
         // =============================================================
 
         // -- Show success modal and redirect --
-        ?>
+?>
         <link rel="stylesheet" href="css/success_notification.css">
         <style>
-            #php_server_loader { display: none !important; }
+            #php_server_loader {
+                display: none !important;
+            }
         </style>
         <div class="success-modal-overlay" id="successModal">
             <div class="success-modal-content">
@@ -275,14 +277,17 @@ function add_user($con)
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const modal = document.getElementById('successModal');
-                setTimeout(() => { modal.classList.add('active'); }, 100);
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 100);
                 // Auto redirect after 5 seconds
-                setTimeout(() => { window.location.href = 'index.php?emp_directory'; }, 5000);
+                setTimeout(() => {
+                    window.location.href = 'index.php?emp_directory';
+                }, 5000);
             });
         </script>
-        <?php
+<?php
         exit();
-
     } else {
         // -- DB insert failed – show error --
         $dbError = addslashes(mysqli_error($con));
@@ -475,16 +480,16 @@ if (isset($_POST['submit'])) {
                                 <div style="position: relative; flex: 1;">
                                     <i class="fa fa-lock" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
                                     <input type="text" name="emp_password" id="add_emp_password"
-                                           class="p-input-premium"
-                                           placeholder="Type custom password OR click Auto Generate →"
-                                           style="padding-left: 40px; font-family: monospace; letter-spacing: 1px;">
+                                        class="p-input-premium"
+                                        placeholder="Type custom password OR click Auto Generate →"
+                                        style="padding-left: 40px; font-family: monospace; letter-spacing: 1px;">
                                 </div>
                                 <button type="button" onclick="generateAutoPassword()"
-                                        style="white-space:nowrap; background: linear-gradient(135deg,#DF2127,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
+                                    style="white-space:nowrap; background: linear-gradient(135deg,#DF2127,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
                                     <i class="fa fa-refresh"></i> Auto Generate
                                 </button>
                                 <button type="button" onclick="toggleAddPassword()"
-                                        style="background:#f1f5f9; color:#475569; border:1.5px solid #e2e8f0; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:13px;" title="Show/Hide Password">
+                                    style="background:#f1f5f9; color:#475569; border:1.5px solid #e2e8f0; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:13px;" title="Show/Hide Password">
                                     <i class="fa fa-eye" id="add_pass_eye_icon"></i>
                                 </button>
                             </div>
@@ -936,7 +941,10 @@ if (isset($_POST['submit'])) {
             input.value = pwd;
             input.type = 'text'; // Show generated password
             const icon = document.getElementById('add_pass_eye_icon');
-            if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+            if (icon) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
     }
 
@@ -946,15 +954,20 @@ if (isset($_POST['submit'])) {
      */
     function toggleAddPassword() {
         const input = document.getElementById('add_emp_password');
-        const icon  = document.getElementById('add_pass_eye_icon');
+        const icon = document.getElementById('add_pass_eye_icon');
         if (!input) return;
         if (input.type === 'password') {
             input.type = 'text';
-            if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+            if (icon) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
         } else {
             input.type = 'password';
-            if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+            if (icon) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
     }
-
 </script>

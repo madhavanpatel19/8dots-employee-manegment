@@ -462,15 +462,15 @@ $current_date   = date("d F Y");
         }
 
         .sign-logo {
-            height: 70px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .sign-logo img {
-            max-width: 130px;
-            max-height: 60px;
+            max-width: 220px;
+            max-height: 110px;
             object-fit: contain;
         }
 
@@ -622,10 +622,10 @@ $current_date   = date("d F Y");
 
             <!-- ── HEADER ── -->
             <div class="inv-header">
-                <div class="company-name">CADLETE DESIGNS</div>
+                <div class="company-name">8Dots</div>
                 <div class="company-addr">
                     A-106, Sun South Street, near Safal Parisar 1, South Bopal, Bopal, Ahmedabad, Gujarat 380058 &nbsp;|&nbsp;
-                    Phone: +91 83202 11773 &nbsp;|&nbsp; Email: info@cadletedesigns.com
+                    Phone: +91 83202 11773 &nbsp;|&nbsp; Email: Info@8dots.in
                 </div>
             </div>
 
@@ -798,9 +798,9 @@ $current_date   = date("d F Y");
                     </div>
                 </div>
                 <div class="sign-block">
-                    <div class="for-label">For, CADLETE DESIGNS</div>
+                    <div class="for-label">For, 8Dots</div>
                     <div class="sign-logo">
-                        <img src="../../images/logo_sign.png" alt="CADLETE DESIGNS sign">
+                        <img src="../../images/K_logo_sign.png" alt="8Dots sign">
                     </div>
                     <div class="auth-label">Authorised Signatory</div>
                 </div>

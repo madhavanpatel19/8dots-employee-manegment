@@ -408,11 +408,11 @@ if ($print_all_mode) {
                     <div class="slip-top-decor"></div>
                     <div class="slip-header">
                         <div class="company-left">
-                            <img src="../admin_area/images/cadlete_Black_logo_favicon.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
+                            <img src="../admin_area/images/8dots_favicon.png" alt="8Dots Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                             <div class="company-center">
-                                <h3 class="company-name">CADLETE DESIGNS</h3>
-                                <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
-                                <div class="company-meta-small">Phone: +91 8320211773 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
+                                <h3 class="company-name">8Dots</h3>
+                                <div class="company-address">516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
+                                <div class="company-meta-small">Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: Info@8dots.in</div>
                             </div>
                         </div>
                         <div class="slip-meta">
@@ -490,7 +490,7 @@ if ($print_all_mode) {
                         </div>
                         <div class="sign-right" style="width: 40%; float: none; text-align: right;">
                             <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
-                                <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                                <img src="images/K_logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
                                 <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
                             </div>
                         </div>
@@ -691,18 +691,18 @@ if ($print_all_mode) {
             <!-- HEADER -->
             <div class="slip-header">
                 <div class="company-left">
-                    <img src="images/Cadlete_Black_logo_favicon.png"
-                        alt="CADLETE DESIGNS Logo"
+                    <img src="images/8dots_favicon.png"
+                        alt="8Dots Logo"
                         class="company-logo"
                         style="max-height: 80px;"
                         onerror="this.style.display='none'">
                     <div class="company-center">
-                        <h3 class="company-name">CADLETE DESIGNS</h3>
+                        <h3 class="company-name">8Dots</h3>
                         <div class="company-address">
-                            A-106, Sun South Street, Ahmedabad
+                            516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .
                         </div>
                         <div class="company-meta-small">
-                            Phone: +91 8320211773 &nbsp;|&nbsp; Email: info@cadletedesigns.com
+                            Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: Info@8dots.in
                         </div>
                     </div>
                 </div>
@@ -782,9 +782,9 @@ if ($print_all_mode) {
                     <p style="font-size: 11px; color: #666; border-top: none; margin: 0; padding: 0; margin-bottom: 5px; display: block; font-weight: normal;">This is a system generated payslip.</p>
                 </div>
                 <div class="sign-right" style="width: 40%; float: none; text-align: right;">
-                    <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
-                        <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
-                        <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
+                    <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 0;">
+                        <img src="images/K_logo_sign.png" alt="Signature" style="height: 90px; width: auto; object-fit: contain; display: block;">
+                        <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; font-weight: 600; text-align: center;">Authorized Signatory</p>
                     </div>
                 </div>
             </div>

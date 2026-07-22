@@ -2276,7 +2276,7 @@ $run_projects = mysqli_query($con, $get_projects);
                     <div class="red-stripe"></div>
                 </div>
                 <div class="brand-row">
-                    <img src="images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                    <img src="images/8dots-logo.png" alt="8Dots Logo">
                 </div>
 
                 <!-- ── CONTENT ── -->
@@ -2288,12 +2288,12 @@ $run_projects = mysqli_query($con, $get_projects);
                 <div class="footer-bar">
                     <div class="footer-inner">
                         <div class="footer-col">
-                            <div class="footer-item">📞 +91 8320211773</div>
-                            <div class="footer-item">✉ info@cadletedesigns.com</div>
+                            <div class="footer-item">📞 +91 8155 8133 55</div>
+                            <div class="footer-item">✉ Info@8dots.in</div>
                         </div>
                         <div class="footer-col">
-                            <div class="footer-item">📍 A-106, Sun South Street, Ahmedabad</div>
-                            <div class="footer-item">🌐 www.cadletedesigns.com</div>
+                            <div class="footer-item">📍 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
+                            <div class="footer-item">🌐 www.8dots.in</div>
                         </div>
                     </div>
                 </div>

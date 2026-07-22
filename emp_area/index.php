@@ -28,7 +28,7 @@ if (!isset($_SESSION['emp_id'])) {
         <link href="../admin_area/css/dashboard.css" rel="stylesheet">
         <link href="../admin_area/css/sidebar.css" rel="stylesheet">
         <link href="../admin_area/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="shortcut icon" href="../admin_area/images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+        <link rel="shortcut icon" href="../admin_area/images/8dots_favicon.png?v=<?php echo time(); ?>" type="image/png">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="../admin_area/js/jquery.min.js"></script>

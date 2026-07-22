@@ -69,7 +69,7 @@ if (isset($_POST['login'])) {
     <link rel="stylesheet" href="../../../admin_area/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../admin_area/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../admin_area/css/login.css">
-    <link rel="shortcut icon" href="../../../admin_area/images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+    <link rel="shortcut icon" href="../../../admin_area/images/8dots_favicon.png?v=<?php echo time(); ?>" type="image/png">
 
     <style>
         .premium-notification {
@@ -115,10 +115,10 @@ if (isset($_POST['login'])) {
         <div class="login-card">
             <form action="" method="post">
                 <div class="brand-logo">
-                    <img src="../../../admin_area/images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+                    <img src="../../../admin_area/images/8dots-logo.png" alt="8Dots">
                 </div>
                 <h2 class="welcome-text">Employee Login</h2>
-                <p class="subtitle">Sign in to continue to Cadlete Designs Portal</p>
+                <p class="subtitle">Sign in to continue to 8Dots Portal</p>
 
                 <div class="login-input-wrap">
                     <i class="fa fa-envelope-o input-icon"></i>

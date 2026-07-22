@@ -450,7 +450,7 @@ $current_date = date("d F Y");
                 <div class="red-bar"></div>
             </div>
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo%20Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/Cadlete_logo%20Landscape.png" alt="8Dots Logo">
             </div>
 
             <!-- ── TITLE ── -->
@@ -537,13 +537,13 @@ $current_date = date("d F Y");
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
                     </div>
                 </div>
             </div>

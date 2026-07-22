@@ -247,15 +247,15 @@ $current_date = date("d F Y");
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 4px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
         }
 
         .sign-image {
-            width: 120px;
+            width: 160px;
             height: auto;
             object-fit: contain;
-            margin-left: -5px;
+            margin-left: 0;
         }
 
         .sign-text {
@@ -280,24 +280,27 @@ $current_date = date("d F Y");
             right: 0;
             bottom: 0;
             background: #d1d1d1;
-            padding: 15px 52px;
+            height: 80px;
+            padding: 0 52px;
+            display: flex;
+            align-items: center;
         }
 
         .footer-inner {
             display: flex;
-            justify-content: flex-start;
-            gap: 40px;
-            flex-wrap: nowrap;
+            flex-direction: column;
+            gap: 10px;
             font-size: 13px;
             color: #222;
             font-weight: 600;
             padding-right: 160px;
+            width: 100%;
         }
 
-        .footer-col {
+        .footer-row {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            gap: 40px;
+            width: 100%;
         }
 
         .footer-item {
@@ -306,11 +309,20 @@ $current_date = date("d F Y");
             gap: 10px;
         }
 
+        .footer-row .footer-item:first-child {
+            flex: 0 0 200px;
+        }
+
+        .footer-row .footer-item:last-child {
+            flex: 1;
+        }
+
         .footer-item i {
             color: #222;
             width: 18px;
             text-align: center;
             font-size: 16px;
+            flex-shrink: 0;
         }
 
         .corner-red {
@@ -407,7 +419,7 @@ $current_date = date("d F Y");
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">NON-DISCLOSURE AGREEMENT</div>
@@ -417,7 +429,7 @@ $current_date = date("d F Y");
                 <div class="right"></div>
             </div>
             <div class="content">
-                <p>This Non-Disclosure Agreement (the "Agreement") is made and entered into as of <strong>DATE: <?php echo htmlspecialchars($date_formatted); ?></strong>, by and between CADLETE Designs ("Disclosing Party") and <strong><?php echo htmlspecialchars($name); ?></strong> ("Receiving Party").
+                <p>This Non-Disclosure Agreement (the "Agreement") is made and entered into as of <strong>DATE: <?php echo htmlspecialchars($date_formatted); ?></strong>, by and between 8Dots ("Disclosing Party") and <strong><?php echo htmlspecialchars($name); ?></strong> ("Receiving Party").
                 </p>
                 <p>
                     <strong>1. Definition of Confidential Information</strong><br>
@@ -456,14 +468,13 @@ $current_date = date("d F Y");
             </div>
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
-                        </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
                     </div>
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
                     </div>
                 </div>
             </div>
@@ -480,7 +491,7 @@ $current_date = date("d F Y");
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">NON-DISCLOSURE AGREEMENT</div>
@@ -514,29 +525,17 @@ $current_date = date("d F Y");
                     <strong>9. Governing Law</strong><br>
                     This Agreement shall be governed by and construed in accordance with the laws of
                     the State of [State], without regard to its conflict of laws principles.
-
-                </p>
-                <p>
-                    <strong>10. Miscellaneous</strong><br>
-                    - This Agreement constitutes the entire agreement between the parties and
-                    supersedes all prior agreements, understandings, and communications between the
-                    parties.<br>
-                    - No amendment or modification of this Agreement shall be valid or binding upon the
-                    parties unless made in writing and signed by both parties.<br>
-                    - If any provision of this Agreement is found to be invalid or unenforceable, the
-                    remaining provisions shall continue to be valid and enforceable.
                 </p>
             </div>
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
-                        </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
                     </div>
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
                     </div>
                 </div>
             </div>
@@ -552,7 +551,7 @@ $current_date = date("d F Y");
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">NON-DISCLOSURE AGREEMENT</div>
@@ -562,6 +561,16 @@ $current_date = date("d F Y");
                 <div class="right"></div>
             </div>
             <div class="content">
+                <p>
+                    <strong>10. Miscellaneous</strong><br>
+                    - This Agreement constitutes the entire agreement between the parties and
+                    supersedes all prior agreements, understandings, and communications between the
+                    parties.<br>
+                    - No amendment or modification of this Agreement shall be valid or binding upon the
+                    parties unless made in writing and signed by both parties.<br>
+                    - If any provision of this Agreement is found to be invalid or unenforceable, the
+                    remaining provisions shall continue to be valid and enforceable.
+                </p>
                 <p><strong>IN WITNESS WHEREOF</strong>, the parties hereto have executed this Non-Disclosure
                     Agreement as of the day and year first above written.
                 </p>
@@ -572,12 +581,12 @@ $current_date = date("d F Y");
                         <div style="display: flex; align-items: flex-end; margin-bottom: 15px;">
                             <div>Releasor's Signature</div>
                             <div style="position: relative; flex: 0 0 220px; border-bottom: 1px dashed #888; margin: 0 10px;">
-                                <img src="../../images/logo_sign.png" alt="Signature" style="position: absolute; bottom: -10px; left: 10px; height: 65px; object-fit: contain;">
+                                <img src="../../images/K_logo_sign.png" alt="Signature" style="position: absolute; bottom: -5px; left: 10px; height: 80px; object-fit: contain;">
                             </div>
                             <div>Date</div>
                             <div style="flex: 0 0 140px; border-bottom: 1px dashed #888; margin-left: 10px;"></div>
                         </div>
-                        <div>Print Name: Smit Ramani, CADLETE DESIGNS, India</div>
+                        <div>Print Name: kamal parmar, 8Dots, India</div>
                     </div>
                     <br>
 
@@ -599,14 +608,13 @@ $current_date = date("d F Y");
             </div>
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8320211773
-                        </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
                     </div>
-                    <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                    <div class="footer-row">
+                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
                     </div>
                 </div>
             </div>

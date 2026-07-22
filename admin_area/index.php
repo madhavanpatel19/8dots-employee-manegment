@@ -30,13 +30,13 @@ if (!isset($_SESSION['admin_email'])) {
     <html>
 
     <head>
-        <title>Cadlete Designs HRMS</title>
+        <title>8Dots HRMS</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet">
         <link href="css/dashboard.css" rel="stylesheet">
         <link href="css/sidebar.css" rel="stylesheet">
         <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="shortcut icon" href="images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+        <link rel="shortcut icon" href="images/8dots_favicon.png?v=<?php echo time(); ?>" type="image/png">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="js/jquery.min.js"></script>

@@ -132,7 +132,6 @@ if (isset($_POST['send_otp'])) {
             header("Location: forgot_pass.php");
             exit();
         }
-
     } else {
         $error = "The provided email address is not registered in our system.";
     }
@@ -231,7 +230,7 @@ if (isset($_POST['reset_password'])) {
             <?php if ($currentState === 'email') { ?>
                 <form action="" method="POST">
                     <div class="brand-logo">
-                        <img src="../../../admin_area/images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+                        <img src="../../../admin_area/images/8dots-logo.png" alt="8Dots">
                     </div>
                     <h2 class="welcome-text">Forgot Password</h2>
                     <p class="subtitle">Enter your email to receive an OTP</p>
@@ -258,7 +257,7 @@ if (isset($_POST['reset_password'])) {
             <?php } else { ?>
                 <form action="" method="POST">
                     <div class="brand-logo">
-                        <img src="../../../admin_area/images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+                        <img src="../../../admin_area/images/8dots-logo.png" alt="8Dots">
                     </div>
                     <h2 class="welcome-text">Reset Password</h2>
                     <p class="subtitle">Create a new secure password</p>
