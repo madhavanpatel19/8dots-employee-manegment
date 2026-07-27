@@ -581,7 +581,7 @@ $current_date = date("d F Y");
                         <div style="display: flex; align-items: flex-end; margin-bottom: 15px;">
                             <div>Releasor's Signature</div>
                             <div style="position: relative; flex: 0 0 220px; border-bottom: 1px dashed #888; margin: 0 10px;">
-                                <img src="../../images/K_logo_sign.png" alt="Signature" style="position: absolute; bottom: -5px; left: 10px; height: 80px; object-fit: contain;">
+                                <img src="../../images/k_logo_sign.png" alt="Signature" style="position: absolute; bottom: -5px; left: 10px; height: 80px; object-fit: contain;">
                             </div>
                             <div>Date</div>
                             <div style="flex: 0 0 140px; border-bottom: 1px dashed #888; margin-left: 10px;"></div>

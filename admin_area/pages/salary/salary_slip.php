@@ -490,7 +490,7 @@ if ($print_all_mode) {
                         </div>
                         <div class="sign-right" style="width: 40%; float: none; text-align: right;">
                             <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
-                                <img src="images/K_logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                                <img src="images/k_logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
                                 <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
                             </div>
                         </div>
@@ -783,7 +783,7 @@ if ($print_all_mode) {
                 </div>
                 <div class="sign-right" style="width: 40%; float: none; text-align: right;">
                     <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 0;">
-                        <img src="images/K_logo_sign.png" alt="Signature" style="height: 90px; width: auto; object-fit: contain; display: block;">
+                        <img src="images/k_logo_sign.png" alt="Signature" style="height: 90px; width: auto; object-fit: contain; display: block;">
                         <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; font-weight: 600; text-align: center;">Authorized Signatory</p>
                     </div>
                 </div>

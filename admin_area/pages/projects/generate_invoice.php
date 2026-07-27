@@ -800,7 +800,7 @@ $current_date   = date("d F Y");
                 <div class="sign-block">
                     <div class="for-label">For, 8Dots</div>
                     <div class="sign-logo">
-                        <img src="../../images/K_logo_sign.png" alt="8Dots sign">
+                        <img src="../../images/k_logo_sign.png" alt="8Dots sign">
                     </div>
                     <div class="auth-label">Authorised Signatory</div>
                 </div>

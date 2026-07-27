@@ -241,7 +241,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             </div>
             <div class="sign-right" style="width: 40%; float: none; text-align: right;">
                 <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 0;">
-                    <img src="../admin_area/images/K_logo_sign.png" alt="Signature" style="height: 90px; width: auto; object-fit: contain; display: block;">
+                    <img src="../admin_area/images/k_logo_sign.png" alt="Signature" style="height: 90px; width: auto; object-fit: contain; display: block;">
                     <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; font-weight: 600; text-align: center;">Authorized Signatory</p>
                 </div>
             </div>

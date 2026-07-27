@@ -554,7 +554,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/K_logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
                         <div class="name">kamal parmar</div>
                         <div class="role">Founder &amp; CEO</div>

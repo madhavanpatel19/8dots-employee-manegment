@@ -479,7 +479,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/K_logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
                         <div class="name">kamal parmar</div>
                         <div class="role">CEO & Director </div>
@@ -560,7 +560,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/K_logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
                         <div class="name">kamal parmar</div>
                         <div class="role">CEO & Director </div>
