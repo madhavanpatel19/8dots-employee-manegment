@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (!isset($con)) {
     if (!isset($con)) {
         include(__DIR__ . '/../../includes/db.php');
@@ -1733,6 +1733,12 @@ $run_projects = mysqli_query($con, $get_projects);
     $('#budget_currency').on('change', function() {
         updateSummarySymbols();
         calculateTotals();
+    });
+
+    $('#phaseEditModal').on('hidden.bs.modal', function() {
+        if ($('#projectBudgetModal').hasClass('in') || $('#projectBudgetModal').is(':visible')) {
+            $('body').addClass('modal-open');
+        }
     });
 
     $('#phase_edit_name').on('change', function() {
