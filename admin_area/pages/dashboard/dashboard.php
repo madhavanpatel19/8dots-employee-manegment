@@ -452,7 +452,7 @@ if ($res && mysqli_num_rows($res) > 0) {
             <tbody>
                 <?php
                 // We already have $today defined in dashboard.php around line 81
-                $q_worklog = "SELECT a.*, e.name, e.employee_image FROM attendance a JOIN emp_list e ON a.emp_id = e.id WHERE a.attendance_date = '$today' ORDER BY a.check_in_time DESC LIMIT 5";
+                $q_worklog = "SELECT a.*, e.name, e.employee_image FROM attendance a JOIN emp_list e ON a.emp_id = e.id WHERE a.attendance_date = '$today' ORDER BY a.check_in_time DESC";
                 $run_worklog = mysqli_query($con, $q_worklog);
                 if ($run_worklog && mysqli_num_rows($run_worklog) > 0) {
                     while ($att_row = mysqli_fetch_assoc($run_worklog)) {
