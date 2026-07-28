@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // =============================================================
 // emp_area/pages/worksheets/worksheet.php
 // Employee worksheet – supports partial render (via index.php)
@@ -206,7 +206,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
 
         .p-badge-primary {
             background: rgba(79, 70, 229, 0.05) !important;
-            color: #dd2127 !important;
+            color: var(--p-bg-color) !important;
         }
 
         .p-badge-danger {
@@ -312,7 +312,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                                     echo $display_out ?: '--:--';
                                                     ?>
                                                 </td>
-                                                <td style="text-align: center; color: #dd2127; font-weight: 700;">
+                                                <td style="text-align: center; color: var(--p-bg-color); font-weight: 700;">
                                                     <?php
                                                     $active_secs = $row['total_duration_secs'];
                                                     if ($row['attendance_date'] == date('Y-m-d') && $row['is_working']) {
@@ -379,13 +379,13 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
             <div class="modal fade" id="addWorksheetModal" tabindex="-1" role="dialog" aria-labelledby="addWorksheetModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                        <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:#ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                        <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: var(--p-bg-color); border-radius: 14px 14px 0 0; position: relative;">
                             <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                                <div style="width: 36px; height: 36px; background: #dd2127; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fa fa-pencil-square-o" style="color: #fff; font-size: 14px;"></i>
+                                <div style="width: 36px; height: 36px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-pencil-square-o" style="color: var(--p-bg-color); font-size: 14px;"></i>
                                 </div>
                                 <div>
-                                    <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Add New Worksheet</h5>
+                                    <h5 class="modal-title" style="font-weight: 800; color: #fff; font-size: 17px; margin: 0;">Add New Worksheet</h5>
                                 </div>
                             </div>
                             <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
@@ -411,7 +411,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                                     <label class="col-md-4 control-label" style="text-align: left; color: #64748b; font-weight: 600;">Check-out Time <span class="text-danger">*</span></label>
                                     <div class="col-md-8">
                                         <input type="time" name="end_time" id="ws_end_time" class="p-input-premium" style="background: #f8fafc;" value="<?php echo $prefill_out; ?>" readonly required>
-                                        <small style="color: #dd2127; font-size: 11px; margin-top: 5px; display: block;"><i class="fa fa-info-circle"></i> Times are automatically fetched from your real-time Check-In/Out.</small>
+                                        <small style="color: var(--p-bg-color); font-size: 11px; margin-top: 5px; display: block;"><i class="fa fa-info-circle"></i> Times are automatically fetched from your real-time Check-In/Out.</small>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -544,7 +544,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
         <div id="imagePreviewModal" class="modal fade" role="dialog" style="z-index: 999999;">
             <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
                 <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden; background: #fff;">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
@@ -649,7 +649,7 @@ $prefill_out = ($today_att && $today_att['check_out_time']) ? date('H:i', strtot
                 transform: translate(-50%, -50%) scale(0.5);
                 color: #fff;
                 font-size: 24px;
-                background: #dd2127;
+                background: var(--p-bg-color);
                 width: 48px;
                 height: 48px;
                 display: flex;

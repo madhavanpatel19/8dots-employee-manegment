@@ -246,13 +246,13 @@ $result = mysqli_query($con, $query);
                     <div class="modal fade" id="applyLeaveModal" tabindex="-1" role="dialog" aria-labelledby="applyLeaveModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: var(--p-bg-color); border-radius: 14px 14px 0 0; position: relative;">
                                     <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                                        <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
+                                        <div style="width: 36px; height: 36px; background:#FFF; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa fa-plus" style="color:var(--p-bg-color); font-size: 14px;"></i>
                                         </div>
                                         <div>
-                                            <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Apply for New Leave</h5>
+                                            <h5 class="modal-title" style="font-weight: 800; color:#FFF; font-size: 17px; margin: 0;">Apply for New Leave</h5>
                                         </div>
                                     </div>
                                     <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
@@ -345,15 +345,15 @@ $result = mysqli_query($con, $query);
                             <h3 style="margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff;">History of Requests</h3>
                         </div>
                         <div style="overflow-x: auto;">
-                            <table class="table-premium" style="width: 100%; border-collapse: collapse;">
+                            <table class="table-premium">
                                 <thead>
-                                    <tr style="background: #fcfdfe; border-bottom: 1.5px solid #f1f5f9;">
-                                        <th style="width: 60px; text-align: center; padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">#</th>
-                                        <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Applied On</th>
-                                        <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">From Date</th>
-                                        <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">To Date</th>
-                                        <th style="text-align: center; padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Status</th>
-                                        <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Reason</th>
+                                    <tr>
+                                        <th style="align-items: center; text-align: center;">#</th>
+                                        <th style="align-items: center; text-align: center;">Applied On</th>
+                                        <th style="align-items: center; text-align: center;">From Date</th>
+                                        <th style="align-items: center; text-align: center;">To Date</th>
+                                        <th style="align-items: center; text-align: center;">Status</th>
+                                        <th style="align-items: center; text-align: center;">Reason</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -367,16 +367,16 @@ $result = mysqli_query($con, $query);
                                         ?>
                                             <tr>
                                                 <td style="text-align: center; font-weight: 700; color: #64748b;"><?php echo $i++; ?></td>
-                                                <td style="font-weight: 500; color: #64748b; font-size: 13px;"><?php echo date('d M Y', strtotime($row['created_at'])); ?></td>
-                                                <td style="font-weight: 600; color: #1e293b;"><?php echo date('d M Y', strtotime($row['leave_from'])); ?></td>
-                                                <td style="font-weight: 600; color: #1e293b;"><?php echo date('d M Y', strtotime($row['leave_to'])); ?></td>
+                                                <td style="text-align: center;font-weight: 500; color: #64748b; font-size: 13px;"><?php echo date('d M Y', strtotime($row['created_at'])); ?></td>
+                                                <td style="text-align: center;font-weight: 600; color: #1e293b;"><?php echo date('d M Y', strtotime($row['leave_from'])); ?></td>
+                                                <td style="text-align: center;font-weight: 600; color: #1e293b;"><?php echo date('d M Y', strtotime($row['leave_to'])); ?></td>
                                                 <td style="text-align: center; padding: 15px;">
                                                     <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; <?php echo $badge_style; ?> display: inline-block; min-width: 90px;">
                                                         <?php echo ucfirst($st); ?>
                                                     </span>
                                                 </td>
                                                 <td class="p-cell-wrap">
-                                                    <div style="font-size: 13px; line-height: 1.6;">
+                                                    <div style="text-align: center;font-size: 13px; line-height: 1.6;">
                                                         <?php echo htmlspecialchars($row['reason']); ?>
                                                     </div>
                                                 </td>

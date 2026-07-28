@@ -1,4 +1,4 @@
-/* Modern Dashboard Styles */
+﻿/* Modern Dashboard Styles */
 /* Import Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -8,6 +8,11 @@
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border-light: #e2e8f0;
+
+  --p-bg: white;
+  --p-bg-color: #232223;
+  --p-bg-btn: var(--p-bg-color);
+  --p-bg-header: #5b5b5b;
 
   --purple: #8b5cf6;
   --purple-light: #f5f3ff;
@@ -59,7 +64,7 @@ body {
    TOP NAVBAR
    ======================================== */
 .modern-topbar {
-  background: #FFEAEB;
+  background: var(--p-bg-color);
   height: 70px;
   display: flex;
   align-items: center;
@@ -90,7 +95,8 @@ body {
 .topbar-title {
   font-size: 20px;
   font-weight: 700;
-  color: var(--text-main);
+  /* color: var(--text-main); */
+  color: white;
   margin: 0;
 }
 
@@ -135,7 +141,8 @@ body {
   font-size: 20px;
   cursor: pointer;
   color: white;
-  background: #DF2127;
+  /* background: var(--p-bg-color); */
+  background-color: black;
 
   /* Changes for a perfect circle */
   width: 30px;
@@ -914,7 +921,7 @@ input[type="time"]:active,
 
 .sc-blue {
   background: #eff6ff;
-  color: #DF2127;
+  color: var(--p-bg-color);
 }
 
 .stat-card-icon i {

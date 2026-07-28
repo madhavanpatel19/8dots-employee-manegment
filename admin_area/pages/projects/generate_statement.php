@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -379,7 +379,7 @@ $current_date = date("d F Y");
         }
 
         .btn-print {
-            background: #dd2127;
+            background: var(--p-bg-color);
             color: #fff;
             border: none;
             border-radius: 10px;

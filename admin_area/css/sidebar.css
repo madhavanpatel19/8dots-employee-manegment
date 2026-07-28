@@ -60,7 +60,7 @@ body {
 .menu-heading {
   font-size: 11px;
   text-transform: uppercase;
-  color: #DF2127;
+  color: var(--p-bg-color);
   letter-spacing: 1px;
   font-weight: 600;
   margin: 20px 0 10px 15px;

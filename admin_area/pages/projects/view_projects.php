@@ -96,18 +96,6 @@ if (!$client_data) {
         }
     }
 
-    .table-premium th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 13px;
-        text-transform: uppercase;
-        padding: 16px 25px;
-        text-align: left;
-        border-bottom: 1.5px solid #e2e8f0;
-        white-space: nowrap;
-    }
-
     .table-premium td {
         padding: 20px 25px !important;
         vertical-align: middle !important;

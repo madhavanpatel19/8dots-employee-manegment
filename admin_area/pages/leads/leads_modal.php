@@ -1,18 +1,18 @@
-<!-- Quick Follow-up Modal -->
+﻿<!-- Quick Follow-up Modal -->
 <div id="followupModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
             <form method="POST">
-                <div class="modal-header" style="background: #ffeaeb; color: #1e293b; padding: 25px 30px 20px 30px; border-bottom: 1px solid #f1f5f9; position: relative;">
-                    <button type="button" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 25px; top: 25px; background: #dd2127; color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; font-size: 14px;">
+                <div class="modal-header" style="background: var(--p-bg-color); color: var(--p-bg); padding: 25px 30px 20px 30px; border-bottom: 1px solid #f1f5f9; position: relative;">
+                    <button type="button" data-dismiss="modal" aria-label="Close" style="position: absolute; right: 25px; top: 25px; background: var(--p-bg-color); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; font-size: 14px;">
                         <i class="fa fa-times"></i>
                     </button>
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="background: #dd2127; color: white; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <div style="background:#fff; color:var(--p-bg-color); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                             <i class="fa fa-history" style="font-size: 18px;"></i>
                         </div>
                         <div>
-                            <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; color: #0f172a;">Add Follow-up</h4>
+                            <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; color: #fff;">Add Follow-up</h4>
                             <p style="margin: 4px 0 0 0; font-size: 14px; color: #94a3b8; font-weight: 500;">Record interaction for <span id="modalClientName" style="color: #64748b; font-weight: 700;"></span></p>
                         </div>
                     </div>

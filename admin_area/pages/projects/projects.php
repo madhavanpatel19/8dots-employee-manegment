@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!isset($con)) {
     if (!isset($con)) {
         include(__DIR__ . '/../../includes/db.php');
@@ -309,13 +309,13 @@ $run_projects = mysqli_query($con, $get_projects);
 <div id="viewDocumentsModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg" style="margin-top: 80px; max-width: 700px;">
         <div class="modal-content premium-modal-content" style="border: none; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
-            <div class="modal-header" style="background: #FFEAEB; color: #000; padding: 30px; border: none; position: relative;">
+            <div class="modal-header" style="background: var(--p-bg-color); color: var(--p-bg); padding: 30px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 50px; height: 50px; background: #dd2127; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;">
+                        <div style="width: 50px; height: 50px; background:#fff;color:var(--p-bg-color) ; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                             <i class="fa fa-folder-open"></i>
                         </div>
                         <div>
@@ -324,11 +324,11 @@ $run_projects = mysqli_query($con, $get_projects);
                         </div>
                     </div>
                     <div style="display: flex; gap: 12px; margin-right: 40px;">
-                        <button type="button" id="btn-add-artifact" class="btn-premium-add-inline" onclick="toggleAddResourceForm('document')" style="background: #DF2127; color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);">
+                        <button type="button" id="btn-add-artifact" class="btn-premium-add-inline" onclick="toggleAddResourceForm('document')" style="background: var(--p-bg-color); color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);">
                             <i class="fa fa-upload"></i>
                             <span class="btn-text">Add Document</span>
                         </button>
-                        <button type="button" id="btn-add-link" class="btn-premium-add-inline" onclick="toggleAddResourceForm('link')" style="background: #DF2127; color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: none; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);">
+                        <button type="button" id="btn-add-link" class="btn-premium-add-inline" onclick="toggleAddResourceForm('link')" style="background: var(--p-bg-color); color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: none; align-items: center; gap: 8px; transition: 0.3s; box-shadow:0 4px 10px rgba(166, 166, 167, 0.2);">
                             <i class="fa fa-globe"></i> <span class="btn-text">Add Link</span>
                         </button>
                     </div>
@@ -410,17 +410,17 @@ $run_projects = mysqli_query($con, $get_projects);
 <div id="projectBudgetModal" class="modal fade" role="dialog" style="z-index: 99999;">
     <div class="modal-dialog modal-lg" style="max-width: 1050px; overflow-y:auto; margin-top: 50px;">
         <div class="modal-content premium-modal-content" style="border: none; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close" style="z-index: 10;">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 15px; position: relative; z-index: 1;">
-                    <div style="width: 46px; height: 46px; background: #dd2127; border: 1px solid rgba(223, 33, 39, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-money" style="color: white; font-size: 22px;"></i>
+                    <div style="width: 46px; height: 46px; background: #fff; border: 1px solid rgba(67, 66, 66, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-money" style="color: var(--p-bg-color); font-size: 22px;"></i>
                     </div>
                     <div>
-                        <h4 class="modal-title" style="font-weight: 900; font-size: 20px; color: #000000; margin: 0; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Project Budget Control</h4>
-                        <p id="budget_project_name_title" style="margin: 4px 0 0 0; font-size: 11px; color: #000000; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">Architecting Financials</p>
+                        <h4 class="modal-title" style="font-weight: 900; font-size: 20px; color:#fff; margin: 0; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Project Budget Control</h4>
+                        <p id="budget_project_name_title" style="margin: 4px 0 0 0; font-size: 11px; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">Architecting Financials</p>
                     </div>
                     <input type="hidden" id="budget_currency">
                 </div>
@@ -453,7 +453,7 @@ $run_projects = mysqli_query($con, $get_projects);
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
                         <div>
                             <h5 style="font-weight: 900; font-size: 16px; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 10px;">
-                                <span style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6366f1;">
+                                <span style="width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--p-bg-color);">
                                     <i class="fa fa-money" style="font-size: 14px;"></i>
                                 </span>
                                 Payment History
@@ -502,7 +502,7 @@ $run_projects = mysqli_query($con, $get_projects);
             </div>
 
             <div class="modal-footer" style="background: #fff; padding: 25px 35px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 15px;">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="padding: 12px 30px; border-radius: 12px; font-weight: 700; color: #64748b; border: 1.5px solid #e2e8f0;">Discard Changes</button>
+                <button type="button" class="btn-premium-cancel" data-dismiss="modal">Discard Changes</button>
                 <?php if (canAdminAccess('budget_insert') || canAdminAccess('budget_update') || canAdminAccess('budget_delete')): ?>
                     <button type="button" onclick="saveBudget()" class="btn-premium-add" id="btn_save_budget">
                         <i class="fa fa-save"></i> Execute Synchronization
@@ -517,12 +517,12 @@ $run_projects = mysqli_query($con, $get_projects);
 <div class="modal fade" id="phaseEditModal" tabindex="-1" aria-hidden="true" style="z-index: 100005;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border-radius: 20px 20px 0 0; border: none; position: relative;">
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
-                <h5 class="modal-title" id="phaseModalTitle" style="font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 32px; height: 32px; background: #dd2127; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <h5 class="modal-title" id="phaseModalTitle" style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: #fff; color: var(--p-bg-color); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-list-ol"></i>
                     </div>
                     <span>Add Payment Phase</span>
@@ -814,18 +814,6 @@ $run_projects = mysqli_query($con, $get_projects);
         }
     }
 
-    .table-premium th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 13px;
-        text-transform: uppercase;
-        padding: 16px 25px;
-        text-align: left;
-        border-bottom: 1.5px solid #e2e8f0;
-        white-space: nowrap;
-    }
-
     .table-premium td {
         padding: 20px 25px !important;
         vertical-align: middle !important;
@@ -1089,15 +1077,15 @@ $run_projects = mysqli_query($con, $get_projects);
     }
 
     .page-link:hover:not(.disabled) {
-        background: #DF2127;
-        color: #FFEAEB;
-        border-color: #DF2127;
+        background: var(--p-bg-color);
+        color: black;
+        border-color: var(--p-bg-color);
     }
 
     .page-link.active {
-        background: #FFEAEB;
-        color: #DF2127;
-        border-color: #DF2127;
+        background: black;
+        color: var(--p-bg-color);
+        border-color: var(--p-bg-color);
         text-decoration: none !important;
     }
 

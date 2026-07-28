@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -136,9 +136,9 @@ if (mysqli_num_rows($run_projects) > 0) {
                 </div>
             </td>
             <?php if (canAdminAccess('project_source_view')): ?>
-            <td>
-                <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; width: 90px; display: inline-block; white-space: normal; word-wrap: break-word;"><?php echo htmlspecialchars($source ?: '-'); ?></span>
-            </td>
+                <td>
+                    <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; width: 90px; display: inline-block; white-space: normal; word-wrap: break-word;"><?php echo htmlspecialchars($source ?: '-'); ?></span>
+                </td>
             <?php endif; ?>
             <td style="color: #64748b; font-size: 13px; font-weight: 700;">
                 <i class="fa fa-calendar-o" style="margin-right: 5px;"></i> <?php echo $project_date; ?>
@@ -156,12 +156,12 @@ if (mysqli_num_rows($run_projects) > 0) {
             <td style="text-align: center;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <button class="btn-icon-premium" onclick="viewDocs(<?php echo $project_id; ?>, 'documents')"
-                        style="width: 38px; height: 38px; background: #FFEAEB;" title="Artifact Repository">
-                        <i class="fa fa-folder-open" style="color: #DF2127; font-size: 13px;"></i>
+                        style="width: 38px; height: 38px; background: black;" title="Artifact Repository">
+                        <i class="fa fa-folder-open" style="color: white; font-size: 13px;"></i><!-- color: var(--p-bg-color); -->
                     </button>
                     <button class="btn-icon-premium" onclick="viewDocs(<?php echo $project_id; ?>, 'links')"
-                        style="width: 38px; height: 38px; background: #FFEAEB;" title="Link Hub">
-                        <i class="fa fa-link" style="color: #DF2127; font-size: 13px;"></i>
+                        style="width: 38px; height: 38px; background: black;" title="Link Hub">
+                        <i class="fa fa-link" style="color: white; font-size: 13px;"></i><!-- color: var(--p-bg-color); -->
                     </button>
                 </div>
             </td>

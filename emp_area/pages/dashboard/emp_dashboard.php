@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // =============================================================
 // emp_area/pages/dashboard/emp_dashboard.php
 // Employee dashboard – real DB data
@@ -177,13 +177,13 @@ function getResourceTypePhp($url)
 
     /* ── Announcement ── */
     .dash-announce {
-        background: linear-gradient(90deg, #fff1f2, #fce7f3);
-        border-left: 4px solid #e11d48;
+        background: linear-gradient(90deg, #f0ececff, #6d6a6c);
+        border-left: 4px solid var(--p-bg-color);
         border-radius: 10px;
         padding: 11px 18px;
         font-size: 14px;
         font-weight: 600;
-        color: #1f2937;
+        color: var(--p-bg-color);
         margin-bottom: 22px;
         display: flex;
         align-items: center;
@@ -191,7 +191,7 @@ function getResourceTypePhp($url)
     }
 
     .dash-announce i {
-        color: #e11d48;
+        color: var(--p-bg-color);
         font-size: 16px;
     }
 
@@ -234,13 +234,13 @@ function getResourceTypePhp($url)
     }
 
     .dc-icon.red {
-        background: #ffe4e6;
-        color: #e11d48;
+        background: var(--p-bg-color);
+        color: #fff;
     }
 
     .dc-icon.blue {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: var(--p-bg-color);
+        color: #fff;
     }
 
     .dc-icon.green {
@@ -282,7 +282,7 @@ function getResourceTypePhp($url)
         right: 14px;
         font-size: 11px;
         font-weight: 700;
-        color: #e11d48;
+        color: var(--p-bg-color);
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -419,7 +419,7 @@ function getResourceTypePhp($url)
     .sec-hd a {
         font-size: 12px;
         font-weight: 700;
-        color: #e11d48;
+        color: var(--p-bg-color);
         text-decoration: none;
         outline: none;
     }
@@ -559,8 +559,8 @@ function getResourceTypePhp($url)
         width: 42px;
         height: 42px;
         border-radius: 10px;
-        background: #ffe4e6;
-        color: #e11d48;
+        background: var(--p-bg-color);
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -733,12 +733,12 @@ function getResourceTypePhp($url)
     }
 
     .bar-fill.today-bar {
-        background: #e11d48;
-        box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+        background: var(--p-bg-color);
+        box-shadow: 0 4px 12px rgba(var(--p-bg-color), 0.25);
     }
 
     .bar-col:hover .bar-fill.today-bar {
-        background: #be123c;
+        background: var(--p-bg-color);
     }
 
     .bar-fill.empty-bar {
@@ -758,7 +758,7 @@ function getResourceTypePhp($url)
     }
 
     .bar-col.today-lbl .bar-lbl {
-        color: #e11d48;
+        color: var(--p-bg-color);
     }
 
     /* ── Empty state ── */
@@ -797,7 +797,7 @@ function getResourceTypePhp($url)
     .bm-box:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border-color: #dd2127 !important;
+        border-color: var(--p-bg-color) !important;
     }
 
     .bm-box:hover .bm-rem {
@@ -805,18 +805,18 @@ function getResourceTypePhp($url)
     }
 
     .bm-box-empty:hover {
-        border-color: #dd2127 !important;
-        background: #ffeaeb !important;
+        border-color: var(--p-bg-color) !important;
+        background: #D0D0D0 !important;
     }
 
     .bm-box-empty:hover i {
-        color: #dd2127 !important;
+        color: var(--p-bg-color) !important;
     }
 
     /* ── SweetAlert Input ── */
     .swal2-input:focus {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: var(--p-bg-color) !important;
+        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2) !important;
     }
 
     /* ── Responsive ── */
@@ -932,7 +932,7 @@ function getResourceTypePhp($url)
         <!-- My Tasks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="taskSec">
-                <h3><i class="fa fa-tasks" style="color:#e11d48;"></i> My Tasks</h3>
+                <h3><i class="fa fa-tasks" style="color:var(--p-bg-color);"></i> My Tasks</h3>
                 <a href="index.php?todo">View All</a>
             </div>
             <div id="emptyTasksMsg" class="empty-s" style="<?php echo empty($tasks) ? '' : 'display:none;'; ?>">
@@ -962,7 +962,7 @@ function getResourceTypePhp($url)
         <!-- My Bookmarks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-bookmark" style="color:#e11d48;"></i> My Bookmarks</h3>
+                <h3><i class="fa fa-bookmark" style="color:var(--p-bg-color);"></i> My Bookmarks</h3>
                 <a href="#" onclick="clearBookmarks(); return false;" style="font-weight:normal; font-size:11px; color:#6b7280;"><i class="fa fa-trash"></i> Clear All</a>
             </div>
             <div id="bookmarksGrid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
@@ -973,7 +973,7 @@ function getResourceTypePhp($url)
         <!-- My Projects -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="projSec">
-                <h3><i class="fa fa-briefcase" style="color:#dd2127;"></i> My Projects</h3>
+                <h3><i class="fa fa-briefcase" style="color:var(--p-bg-color);"></i> My Projects</h3>
                 <a href="index.php?projects">View All</a>
             </div>
             <?php if (empty($projects)): ?>
@@ -1000,7 +1000,7 @@ function getResourceTypePhp($url)
         <!-- This Week's Time Log -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-bar-chart" style="color:#e11d48;"></i> Time Log <span style="font-size:11px;color:#9ca3af;font-weight:400;">(This Week)</span></h3>
+                <h3><i class="fa fa-bar-chart" style="color:var(--p-bg-color);"></i> Time Log <span style="font-size:11px;color:#9ca3af;font-weight:400;">(This Week)</span></h3>
                 <a href="index.php?worksheet">View All</a>
             </div>
             <p class="tl-total" id="weekTotalLabel"><?php echo fmtHM($displayed_week_secs); ?></p>
@@ -1225,9 +1225,9 @@ function getResourceTypePhp($url)
                     } catch (e) {
                         domain = bookmarks[i].url;
                     }
-                    html += `<div style="height:80px; border:1px solid #dd2127; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
+                    html += `<div style="height:80px; border:1px solid var(--p-bg-color); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
                         <div onclick="event.stopPropagation(); removeBookmark(${i})" style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; opacity:0; transition:0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.2);" class="bm-rem"><i class="fa fa-times"></i></div>
-                        <div style="width:36px; height:36px; border-radius:10px; background:#ffeaeb; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+                        <div style="width:36px; height:36px; border-radius:10px; background:#efefef; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
                             <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" style="width:18px; height:18px; border-radius:3px;" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                             <i class="fa fa-globe" style="color:#3b82f6; font-size:16px; display:none;"></i>
                         </div>
@@ -1357,13 +1357,13 @@ function getResourceTypePhp($url)
                     <i class="fa fa-pencil-square-o"></i> Submit Worksheet & Check Out
                 </h4>
             </div> -->
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:#ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:black; border-radius: 14px 14px 0 0; position: relative;">
                 <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-pencil-square-o" style="color: #fff; font-size: 14px;"></i>
+                    <div style="width: 36px; height: 36px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-pencil-square-o" style="color: var(--p-bg-color); font-size: 14px;"></i>
                     </div>
                     <div>
-                        <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Submit Worksheet & Check Out</h5>
+                        <h5 class="modal-title" style="font-weight: 800; color: #fff; font-size: 17px; margin: 0;">Submit Worksheet & Check Out</h5>
                     </div>
                 </div>
                 <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
@@ -1375,19 +1375,19 @@ function getResourceTypePhp($url)
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Date</label>
-                        <div class="col-md-8"><input type="date" class="form-control" style="border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;" value="<?php echo date('Y-m-d'); ?>" readonly></div>
+                        <div class="col-md-8"><input type="date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" value=" <?php echo date('Y-m-d'); ?>" readonly></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Check-in <span class="text-danger">*</span></label>
-                        <div class="col-md-8"><input type="time" id="modalCheckInTime" class="form-control" style="border-radius:10px;border:1px solid #e2e8f0;" required></div>
+                        <div class="col-md-8"><input type="time" id="modalCheckInTime" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" required></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Check-out <span class="text-danger">*</span></label>
-                        <div class="col-md-8"><input type="time" id="modalCheckOutTime" class="form-control" style="border-radius:10px;border:1px solid #e2e8f0;" required></div>
+                        <div class="col-md-8"><input type="time" id="modalCheckOutTime" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" required></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Details <span class="text-danger">*</span></label>
-                        <div class="col-md-8"><textarea id="workDetails" class="form-control" style="height:90px;border-radius:10px;border:1px solid #e2e8f0;resize:none;" placeholder="What did you accomplish today?" required></textarea></div>
+                        <div class="col-md-8"><textarea id="workDetails" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" placeholder="What did you accomplish today?" required></textarea></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos <span class="text-danger">*</span></label>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
     exit();
@@ -118,10 +118,10 @@ if ($run_stats) {
     <div id="manageLeavesModal" class="modal fade" role="dialog" style="z-index: 99999;">
         <div class="modal-dialog" style="margin-top: 80px; max-width: 550px;">
             <div class="modal-content premium-modal-content" style="border: none; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
-                <div class="modal-header" style="background: #ffeaeb; color: #000; padding: 25px; border: none; position: relative;">
+                <div class="modal-header" style="background: var(--p-bg-color); color: var(--p-bg); padding: 25px; border: none; position: relative;">
                     <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; background:#df2127; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
+                        <div style="width: 45px; height: 45px; background:var(--p-bg-color); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
                             <i class="fa fa-calendar-o"></i>
                         </div>
                         <div>
@@ -234,7 +234,7 @@ if ($run_stats) {
         }
 
         .filter-input:focus {
-            border-color: #DF2127;
+            border-color: var(--p-bg-color);
             box-shadow: 0 0 0 3px rgba(223, 33, 39, 0.1);
         }
 
@@ -252,7 +252,7 @@ if ($run_stats) {
         }
 
         .btn-filter {
-            background: #DF2127;
+            background: var(--p-bg-color);
             color: #fff;
             border: none;
             height: 42px;
@@ -383,16 +383,16 @@ if ($run_stats) {
             <table class="table-premium">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
-                        <th style="width: 200px;">Employee</th>
+                        <th>#</th>
+                        <th>Employee</th>
                         <th>Type</th>
-                        <th style="width: 110px;">Start Date</th>
-                        <th style="width: 110px;">End Date</th>
-                        <th style="width: 100px;">Days</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Days</th>
                         <th>Reason</th>
-                        <th style="width: 110px;">Request Date</th>
-                        <th style="width: 120px;">Status</th>
-                        <th style="width: 160px;">Manage</th>
+                        <th>Request Date</th>
+                        <th>Status</th>
+                        <th>Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -457,7 +457,7 @@ if ($run_stats) {
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="p-badge p-badge-secondary" style="background: #ffeaeb; color: #dd2127; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars($row['leave_name'] ?: 'N/A'); ?></span>
+                                    <span class="p-badge p-badge-secondary" style="background:var(--p-bg-color);color:#fff; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars($row['leave_name'] ?: 'N/A'); ?></span>
                                 </td>
                                 <td class="text-center" style="font-weight: 600; color: #475569; font-size: 13px;">
                                     <?php echo date('d-m-Y', strtotime($row['leave_from'])); ?>
@@ -468,7 +468,7 @@ if ($run_stats) {
                                 <td class="text-center" style="font-weight: 600; color: #1e293b; font-size: 13px;">
                                     <?php echo $duration_str; ?>
                                 </td>
-                                <td class="p-cell-wrap" style="font-size: 13px; color: #475569; font-weight: 500;"><?php echo htmlspecialchars($row['reason']); ?></td>
+                                <td class="p-cell-wrap" style="font-size: 13px; color: #475569; font-weight: 500;text-align:center"><?php echo htmlspecialchars($row['reason']); ?></td>
                                 <td class="text-center" style="font-size: 11px; color: #94a3b8;">
                                     <?php echo date('d-m-Y', strtotime($row['created_at'])); ?>
                                 </td>

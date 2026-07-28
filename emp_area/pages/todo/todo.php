@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
@@ -48,15 +48,15 @@ $result = mysqli_query($con, $query);
                     <h3 style="margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff;">Assigned Tasks</h3>
                 </div>
                 <div style="overflow-x: auto;">
-                    <table class="table-premium" style="width: 100%; border-collapse: collapse;">
+                    <table class="table-premium">
                         <thead>
-                            <tr style="background: #fcfdfe; border-bottom: 1.5px solid #f1f5f9;">
-                                <th style="width: 60px; text-align: center; padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ID</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Task Details</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Project</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Due Date</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Priority</th>
-                                <th style="text-align: center; padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Status</th>
+                            <tr>
+                                <th>ID</th>
+                                <th>Task Details</th>
+                                <th>Project</th>
+                                <th>Due Date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,41 +131,47 @@ $result = mysqli_query($con, $query);
 <div id="addTodoModal" class="modal fade" tabindex="-1" role="dialog" style="z-index: 99999;">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);">
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
-                <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa fa-tasks" style="color: #fff; font-size: 14px;"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title" style="font-weight: 800; color: #0f172a; font-size: 17px; margin: 0;">Add Personal Task</h5>
-                    </div>
-                </div>
-                <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close" style="background:transparent; border:none; color:#64748b; font-size:20px; cursor:pointer;">
+            <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
+                <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
+                <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
+                    <div style="width: 36px; height: 36px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-tasks" style="color:var(--p-bg-color); font-size: 14px;"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title" style="font-weight: 800; color: #fff; font-size: 17px; margin: 0;">Add Personal Task</h5>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-body" style="padding: 25px; background: #fff;">
                 <form id="add-todo-form">
                     <div style="margin-bottom: 15px;">
-                        <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Task Name <span style="color:#df2127;">*</span></label>
-                        <input type="text" name="task_name" required style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-size: 14px;" placeholder="What do you need to do?">
+                        <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Task Name <span style="color:var(--p-bg-color);">*</span></label>
+                        <input type="text" name="task_name" required placeholder="What do you need to do?" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;"
+                            onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';"
+                            onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Due Date</label>
-                        <input type="date" name="due_date" style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-size: 14px;">
+                        <input type="date" name="due_date" placeholder="What do you need to do?" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;"
+                            onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';"
+                            onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label style="font-weight: 700; color: #475569; font-size: 13px; margin-bottom: 8px; display: block;">Priority</label>
-                        <select name="priority" style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; background:#fff;">
+                        <select name="priority" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;"
+                            onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';"
+                            onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             <option value="Low">Low</option>
                             <option value="Medium" selected>Medium</option>
                             <option value="High">High</option>
                         </select>
                     </div>
                     <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                        <button type="button" data-dismiss="modal" style="background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; color: #64748b; font-weight: 600; padding: 10px 20px; cursor: pointer; font-size: 13px;">Cancel</button>
-                        <button type="submit" id="btn-save-todo" style="background: #df2127; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;">Save Task</button>
+                        <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
+                        <button type="submit" id="btn-save-todo" class="btn-premium-add">Save Task</button>
                     </div>
                 </form>
             </div>

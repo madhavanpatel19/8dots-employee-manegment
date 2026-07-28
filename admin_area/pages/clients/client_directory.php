@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!isset($con)) {
     if (!isset($con)) {
         include(__DIR__ . '/../../includes/db.php');
@@ -231,7 +231,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                 $client_active_proj = $proj_data['active_projects'];
                                 ?>
                                 <td style="text-align: center;">
-                                    <span style="font-weight: 800; color: #dd2127; background: #ffeaeb; padding: 4px 12px; border-radius: 8px; font-size: 13px;"><?php echo $client_total_proj; ?></span>
+                                    <span style="font-weight: 800; color: var(--p-bg-color); background: var(--p-bg); padding: 4px 12px; border-radius: 8px; font-size: 13px;"><?php echo $client_total_proj; ?></span>
                                 </td>
                                 <td style="text-align: center;">
                                     <?php if ($client_active_proj > 0): ?>
@@ -410,18 +410,6 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
         box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
     }
 
-    /* Table Premium Standard */
-    .table-premium th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 13px;
-        text-transform: uppercase;
-        padding: 16px 25px;
-        text-align: left;
-        border-bottom: 1.5px solid #e2e8f0;
-        white-space: nowrap;
-    }
 
     .table-premium td {
         padding: 20px 25px !important;
@@ -466,8 +454,8 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
 
     .client-table-img:hover {
         transform: scale(1.15) rotate(5deg);
-        border-color: #dd2127;
-        box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
+        border-color: var(--p-bg-color);
+        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2)
     }
 
     .p-input-premium {
@@ -484,7 +472,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
 
     .p-input-premium:focus {
         background: #fff;
-        border-color: #dd2127 !important;
+        border-color: var(--p-bg-color) !important;
         box-shadow: 0 0 0 4px rgba(221, 33, 39, 0.1) !important;
     }
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
@@ -283,16 +283,16 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                 vertical-align: middle !important;
             }
         </style>
-        <table class="table">
+        <table class="table-premium">
             <thead>
                 <tr>
-                    <th class="text-center" style="width: 60px; text-align: center;">ID</th>
-                    <th class="text-center" style="width: 80px; text-align: center;">Photo</th>
+                    <th style="text-align: center;">ID</th>
+                    <th style="text-align: center;">Photo</th>
                     <th> Name</th>
-                    <th class="text-center" style="text-align: center;">Details</th>
-                    <th class="text-center" style="text-align: center;">Rating</th>
-                    <th class="text-center" style="text-align: center;">Files</th>
-                    <th class="text-center" style="text-align: center;">Manage</th>
+                    <th style="text-align: center;">Details</th>
+                    <th style="text-align: center;">Rating</th>
+                    <th style="text-align: center;">Files</th>
+                    <th style="text-align: center;">Manage</th>
                 </tr>
             </thead>
             <tbody>
@@ -491,12 +491,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     <div class="modal-dialog" role="document" style="max-width: 650px; width: 100%;">
         <div class="modal-content premium-modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
             <form method="post" id="performanceForm">
-                <div class="modal-header" style="background: #ffeaeb; padding: 20px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
+                <div class="modal-header" style="background: var(--p-bg-color); padding: 20px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
                     <div>
-                        <h4 class="modal-title" id="performanceModalLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
-                            <i class="fa fa-line-chart" style="color: #DD2127; margin-right: 8px;"></i> Monthly Performance
+                        <h4 class="modal-title" id="performanceModalLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
+                            <i class="fa fa-line-chart" style="color: #fff; margin-right: 8px;"></i> Monthly Performance
                         </h4>
-                        <p style="margin: 6px 0 0 0; color: #64748b; font-size: 12px; font-weight: 500;">Set the monthly score for <strong id="perfEmpName" style="color: #0f172a;"></strong> (<span id="perfMonthYearLabel"><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></span>).</p>
+                        <p style="margin: 6px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 500;">Set the monthly score for <strong id="perfEmpName" style="color: #63666dff;"></strong> (<span id="perfMonthYearLabel"><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></span>).</p>
                     </div>
                 </div>
                 <div class="modal-body" style="padding: 30px; background: #ffffff;">
@@ -517,9 +517,9 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         }
 
                         .perf-input:focus {
-                            border-color: #4f46e5;
+                            border-color: var(--p-bg-color);
                             background: #ffffff;
-                            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+                            box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
                         }
 
                         .perf-input[readonly] {
@@ -641,12 +641,12 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 <div class="modal fade" id="performanceHistoryModal" tabindex="-1" role="dialog" aria-labelledby="performanceHistoryLabel">
     <div class="modal-dialog" role="document" style="max-width: 650px; width: 100%;">
         <div class="modal-content premium-modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
-            <div class="modal-header" style="background: #ffeaeb; padding: 19px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
+            <div class="modal-header" style="background:var(--p-bg-color); padding: 19px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
                 <div>
-                    <h4 class="modal-title" id="performanceHistoryLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
-                        <i class="fa fa-area-chart" style="color: #dd2127; margin-right: 8px;"></i> Performance History
+                    <h4 class="modal-title" id="performanceHistoryLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
+                        <i class="fa fa-area-chart" style="color:#fff; margin-right: 8px;"></i> Performance History
                     </h4>
-                    <p style="margin: 6px 0 0 0; color: #64748b; font-size: 12px; font-weight: 500;">Last 4 months performance for <strong id="historyEmpName" style="color: #0f172a;"></strong>.</p>
+                    <p style="margin: 6px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 500;">Last 4 months performance for <strong id="historyEmpName" style="color: #63666dff;"></strong>.</p>
                 </div>
             </div>
             <div class="modal-body" style="padding: 30px; background: #ffffff;">
@@ -656,8 +656,8 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                 <div class="history-table-wrap" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
                     <div class="history-table-title" style="padding: 16px 20px; background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-weight: 700; color: #0f172a; font-size: 14px;"><i class="fa fa-list-ul" style="color: #dd2127; margin-right: 6px;"></i> Breakdown</span>
-                        <span id="historyBreakdownTotal" class="history-total-pill" style="background: #dd2127; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">0 / 100</span>
+                        <span style="font-weight: 700; color: #0f172a; font-size: 14px;"><i class="fa fa-list-ul" style="color: var(--p-bg-color); margin-right: 6px;"></i> Breakdown</span>
+                        <span id="historyBreakdownTotal" class="history-total-pill" style="background: var(--p-bg-color); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">0 / 100</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover history-breakdown-table" style="margin-bottom: 0;">
@@ -691,7 +691,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         <img id="view_img" src="admin_images/default.png" class="view-image-large" style="width: 140px; height: 140px; border-radius: 20px; margin-bottom: 20px;" alt="Profile">
                         <h4 id="view_name" style="font-weight: 800; color: #0f172a; margin: 0 0 5px 0;">Employee Name</h4>
                         <p id="view_id_label" style="color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px;">ID: 001</p>
-                        <span id="view_gender_badge" class="label label-primary" style="background: #dd2127; padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
+                        <span id="view_gender_badge" class="label label-primary" style="background: var(--p-bg-color); padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
                         <div id="view_join_sidebar" style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 10px;">Joined: -</div>
                     </div>
 
@@ -735,7 +735,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     </button>
                     <!-- Personal Info Section -->
                     <div id="section_personal" class="profile-section active">
-                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: #dd2127;"></i> Personal Information</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: var(--p-bg-color);"></i> Personal Information</h3>
                         <div class="profile-data-grid">
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Date of Birth</span>
@@ -810,7 +810,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                     <!-- Education Section -->
                     <div id="section_education" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: #dd2127;"></i> Educational Background</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: var(--p-bg-color);"></i> Educational Background</h3>
                         <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
                             <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead style="background: #5b5b5b; color: #ffffff;">
@@ -828,7 +828,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                     <!-- History Section -->
                     <div id="section_history" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: #dd2127;"></i> Employment History</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: var(--p-bg-color);"></i> Employment History</h3>
                         <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
                             <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead style="background: #5b5b5b; color: #ffffff;">
@@ -846,7 +846,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                     <!-- Bank Details Section -->
                     <div id="section_bank" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: #dd2127;"></i> Bank Details</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: var(--p-bg-color);"></i> Bank Details</h3>
                         <div class="profile-data-grid">
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Account Holder Name</span>
@@ -1548,7 +1548,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     .doc-modal-header {
         position: relative;
         padding: 20px 25px;
-        background: #ffeaeb;
+        background: var(--p-bg-color);
         border-bottom: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
@@ -1563,14 +1563,14 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
     .doc-modal-title-group i {
         font-size: 20px;
-        color: #dd2127;
+        color: #fff;
     }
 
     .doc-modal-title-group h3 {
         margin: 0;
         font-size: 18px;
         font-weight: 700;
-        color: #0f172a;
+        color: #fff;
     }
 
     .doc-modal-body {
@@ -1662,10 +1662,10 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     .doc-modal-upload-section {
-        background: #ffeaeb;
+        background: var(--p-bg-color);
         border-radius: 16px;
         padding: 15px;
-        border: 1px dashed #dd2127;
+        border: 1px dashed var(--p-bg-color);
     }
 
     .upload-section-header {
@@ -1675,7 +1675,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         margin-bottom: 12px;
         font-size: 13px;
         font-weight: 700;
-        color: #dd2127;
+        color: #fff;
     }
 
     .upload-controls {
@@ -2111,8 +2111,8 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
     .emp-table-img:hover {
         transform: scale(1.15) rotate(5deg);
-        border-color: #dd2127;
-        box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
+        border-color: var(--p-bg-color);
+        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
     }
 
     /* Round Profile Modal & Preview Styles */
@@ -2201,14 +2201,14 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     .profile-nav-item:hover {
-        background: #FFEAEB;
-        color: #dd2127;
+        background: var(--p-bg-color);
+        color: #fff;
     }
 
     .profile-nav-item.active {
-        background: #FFEAEB;
-        color: #dd2127;
-        border-right-color: #dd2127;
+        background: var(--p-bg-color);
+        color: #fff;
+        border-right-color: var(--p-bg-color);
     }
 
     .profile-content {
@@ -2282,7 +2282,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         position: absolute;
         top: 20px;
         right: 20px;
-        background: #dd2127;
+        background: var(--p-bg-color);
         border: none;
         width: 36px;
         height: 36px;

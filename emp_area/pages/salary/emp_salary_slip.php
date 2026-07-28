@@ -451,8 +451,8 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 20px 25px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="border-radius: 10px; padding: 10px 20px; font-weight: 600; margin: 0;">Close</button>
-                    <button type="button" class="btn btn-success" id="modalDownloadBtn" style="border-radius: 10px; padding: 10px 20px; font-weight: 600; margin: 0;">
+                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn-premium-add" id="modalDownloadBtn">
                         <i class="fa fa-download"></i> Save as PDF
                     </button>
                 </div>

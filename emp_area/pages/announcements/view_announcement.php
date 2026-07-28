@@ -47,7 +47,7 @@ if (!isset($_SESSION['emp_id'])) {
                                     <i class="fa fa-clock-o"></i> Posted on: <?php echo date('d M Y, h:i A', strtotime($date)); ?>
                                 </div>
                             </div>
-                            <div style="font-size: 16px; line-height: 1.8; color: #334155; white-space: pre-wrap; font-family: 'Inter', sans-serif;">
+                            <div style="font-size: 16px; line-height: 1.8; color: #334155; font-family: 'Inter', sans-serif;">
                                 <?php echo htmlspecialchars($message); ?>
                             </div>
                         </div>

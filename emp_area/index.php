@@ -22,7 +22,7 @@ if (!isset($_SESSION['emp_id'])) {
     <html lang="en">
 
     <head>
-        <title> Cadlete- Employee Dashboard</title>
+        <title> 8dots-Employee Dashboard</title>
         <link href="../admin_area/css/bootstrap.min.css" rel="stylesheet">
         <link href="../admin_area/css/style.css" rel="stylesheet">
         <link href="../admin_area/css/dashboard.css" rel="stylesheet">
@@ -145,7 +145,7 @@ if (!isset($_SESSION['emp_id'])) {
                         <div class="topbar-profile dropdown">
                             <div data-toggle="dropdown" style="display:flex; align-items:center; gap:12px; padding:6px;background: white; border-radius:11px; cursor:pointer;">
                                 <div class="profile-avatar">
-                                    <img src="<?php echo !empty($header_emp_img) ? '../admin_area/uploads/' . $header_emp_img : 'https://ui-avatars.com/api/?name=' . urlencode($emp_name) . '&background=3b82f6&color=fff'; ?>" alt="Employee Avatar">
+                                    <img src="<?php echo !empty($header_emp_img) ? '../admin_area/uploads/' . $header_emp_img : 'https://ui-avatars.com/api/?name=' . urlencode($emp_name) . '&background=D0D0D0&color=white'; ?>" alt="Employee Avatar">
                                 </div>
                                 <div class="profile-info">
                                     <span class="profile-name"><?php echo htmlspecialchars($emp_name); ?></span>

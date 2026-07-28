@@ -374,7 +374,7 @@ $run_leads = mysqli_query($con, $get_leads);
                                             echo '</div>';
                                         } else {
                                             // Normal Future or other status
-                                            echo '<div style="color: #4f46e5;">' . $display_date . '</div>';
+                                            echo '<div style="color: var(--p-bg-color);">' . $display_date . '</div>';
                                         }
                                     } else {
                                         echo '<span style="color:#94a3b8;">N/A</span>';
@@ -413,9 +413,6 @@ $run_leads = mysqli_query($con, $get_leads);
                                 </div>
                                 <h3 style="color: #64748b; font-size: 18px; font-weight: 700; margin-bottom: 5px;">No leads found.</h3>
                                 <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">No leads match your search.</p>
-                                <?php if (!empty($source_filter) || !empty($status_filter) || !empty($search_query)): ?>
-                                    <a href="index.php?leads" class="btn btn-primary btn-sm" style="background: #4f46e5; border: none; border-radius: 8px; padding: 8px 20px;">Clear All Filters</a>
-                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -479,18 +476,6 @@ $run_leads = mysqli_query($con, $get_leads);
         }
     }
 
-    .table-premium th {
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 13px;
-        text-transform: uppercase;
-        padding: 16px 25px;
-        text-align: left;
-        border-bottom: 1.5px solid #e2e8f0;
-        white-space: nowrap;
-    }
-
     .table-premium td {
         padding: 20px 25px !important;
         vertical-align: middle !important;
@@ -534,16 +519,16 @@ $run_leads = mysqli_query($con, $get_leads);
     }
 
     .page-link:hover:not(.disabled) {
-        background: #DF2127;
-        color: #FFEAEB;
-        border-color: #DF2127;
+        background: var(--p-bg-color);
+        color: var(--p-bg);
+        border-color: var(--p-bg-color);
     }
 
 
     .page-link.active {
-        background: #FFEAEB;
-        color: #DF2127;
-        border-color: #DF2127;
+        background: var(--p-bg-color);
+        color: var(--p-bg);
+        border-color: var(--p-bg-color);
         text-decoration: none !important;
     }
 

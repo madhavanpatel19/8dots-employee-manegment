@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
     exit();
@@ -284,13 +284,13 @@ $result = mysqli_query($con, $sql);
 <div id="workGalleryModal" class="modal fade" role="dialog" style="z-index: 99999;">
     <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden;">
-            <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
+            <div class="modal-header" style="background: var(--p-bg-color); color: var(--p-bg); padding: 25px 35px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 40px;">
                     <div style="display: flex; align-items: center; gap: 18px;">
-                        <div style="width: 48px; height: 48px; background: #dd2127; color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 16px rgba(185, 81, 81, 0.3);">
+                        <div style="width: 48px; height: 48px; background: var(--p-bg-color); color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow:0 4px 10px rgba(166, 166, 167, 0.2)">
                             <i class="fa fa-th-large"></i>
                         </div>
                         <div>
@@ -324,17 +324,17 @@ $result = mysqli_query($con, $sql);
 <div id="imagePreviewModal" class="modal fade" role="dialog" style="z-index: 999999;">
     <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden; background: #fff;">
-            <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
+            <div class="modal-header" style="background:var(--p-bg-color); color:#fff; padding: 25px 35px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div style="width: 50px; height: 50px; border-radius: 16px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <i class="fa fa-picture-o" style="font-size: 24px; color: #f43f5e;"></i>
+                        <i class="fa fa-picture-o" style="font-size: 24px; color:var(--p-bg-color);"></i>
                     </div>
                     <div>
                         <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Work Details</h4>
-                        <div style="font-size: 13px; color: #64748b; margin-top: 4px; font-weight: 500;">View remarks and work photos</div>
+                        <div style="font-size: 13px; color: #94a3b8; margin-top: 4px; font-weight: 500;">View remarks and work photos</div>
                     </div>
                 </div>
             </div>
@@ -362,7 +362,7 @@ $result = mysqli_query($con, $sql);
 
     .p-badge-primary {
         background: rgba(79, 70, 229, 0.05);
-        color: #dd2127;
+        color: var(--p-bg-color);
     }
 
     .p-badge-danger {
@@ -410,16 +410,16 @@ $result = mysqli_query($con, $sql);
     }
 
     .page-link:hover:not(.disabled) {
-        background: #dd2127;
+        background: var(--p-bg-color);
         color: #FFF;
         border-color: #dd212d;
         text-decoration: none !important;
     }
 
     .page-link.active {
-        background: #ffeaeb;
-        color: #dd2127;
-        border-color: #dd2127;
+        background: black;
+        color: var(--p-bg-color);
+        border-color: var(--p-bg-color);
         text-decoration: none !important;
     }
 
@@ -465,14 +465,14 @@ $result = mysqli_query($con, $sql);
     }
 
     .btn-apply-filter:hover {
-        background: #dd2127;
+        background: var(--p-bg-color);
         transform: translateY(-2px);
         box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
     }
 
     .btn-clear-filter {
         background: #f1f5f9;
-        color: #dd2127;
+        color: var(--p-bg-color);
         padding: 10px 25px;
         border-radius: 10px;
         font-weight: 600;
@@ -499,7 +499,7 @@ $result = mysqli_query($con, $sql);
     }
 
     .p-input-premium:focus {
-        border-color: #dd2127;
+        border-color: var(--p-bg-color);
         box-shadow: 0 0 0 4px rgba(221, 33, 39, 0.1);
     }
 
@@ -640,17 +640,17 @@ $result = mysqli_query($con, $sql);
     .modal-header-filter {
         display: flex;
         align-items: center;
-        background: #dd2127;
+        background: var(--p-bg-color);
         padding: 8px 15px;
         border-radius: 14px;
-        border: 1px solid rgba(241, 99, 99, 0.3);
+        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
         gap: 10px;
         transition: all 0.3s;
     }
 
     .modal-header-filter:hover {
-        background: #dd2127;
-        border-color: rgba(241, 99, 99, 0.3);
+        background: var(--p-bg-color);
+        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
     }
 
     .modal-header-filter i {
@@ -678,16 +678,16 @@ $result = mysqli_query($con, $sql);
 <style>
     /* ── Log detail panel styles ── */
     .ws-emp-row:hover {
-        background: #fef9ff !important;
+        background: #f1f1f1 !important;
     }
 
     .ws-emp-row.row-open {
-        background: #fff5f5 !important;
+        background: #f1f1f1 !important;
     }
 
     .ws-emp-row.row-open .log-expand-icon {
         transform: rotate(90deg);
-        color: #dd2127;
+        color: var(--p-bg-color);
     }
 
     .log-detail-row td {
@@ -1232,7 +1232,7 @@ $result = mysqli_query($con, $sql);
         transform: translate(-50%, -50%) scale(0.5);
         color: #fff;
         font-size: 24px;
-        background: #dd2127;
+        background: var(--p-bg-color);
         width: 48px;
         height: 48px;
         display: flex;

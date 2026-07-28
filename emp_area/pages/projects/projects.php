@@ -102,15 +102,15 @@ $completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_
                     <h3 style="margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff;">Project Assignments</h3>
                 </div>
                 <div style="overflow-x: auto;">
-                    <table class="table-premium" style="width: 100%; border-collapse: collapse;">
+                    <table class="table-premium">
                         <thead>
-                            <tr style="background: #fcfdfe; border-bottom: 1.5px solid #f1f5f9;">
-                                <th style="width: 60px; text-align: center; padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ID</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Project Name</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Client</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Start Date</th>
-                                <th style="padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Deadline</th>
-                                <th style="text-align: center; padding: 18px 15px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Status</th>
+                            <tr>
+                                <th>ID</th>
+                                <th>Project Name</th>
+                                <th>Client</th>
+                                <th>Start Date</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,7 +145,7 @@ $completed_projects = mysqli_num_rows(mysqli_query($con, "SELECT id FROM client_
                                             <?php echo !empty($row['deadline']) ? date('d M Y', strtotime($row['deadline'])) : '--'; ?>
                                         </td>
                                         <td style="text-align: center; padding: 15px;">
-                                            <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #ffeaeb; color: #dd2127; display: inline-block; min-width: 90px;">
+                                            <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: var(--p-bg-color); color: var(--p-bg); display: inline-block; min-width: 90px;">
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </span>
                                         </td>

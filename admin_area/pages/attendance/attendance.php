@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -406,7 +406,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
         <div style="padding: 35px 30px; background: #fff;">
             <?php if ($message) : ?>
-                <div class="alert alert-info" style="border-radius: 10px; margin-bottom: 25px; font-weight: 600; border: none; background: #f0f9ff; color: #df2127;">
+                <div class="alert alert-info" style="border-radius: 10px; margin-bottom: 25px; font-weight: 600; border: none; background: #f0f9ff; color: var(--p-bg-color);">
                     <i class="fa fa-info-circle"></i> <?php echo $message; ?>
                 </div>
             <?php endif; ?>
@@ -701,7 +701,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
             <!-- MONTHLY VIEW -->
         <?php elseif ($selected_emp_id > 0 && $employee_data): ?>
-            <div style="margin: 15px 24px; padding: 15px 20px; background: #f8fafc; border-left: 4px solid #4338ca; border-radius: 6px;">
+            <div style="margin: 15px 24px; padding: 15px 20px; background: #f8fafc; border-left: 4px solid var(--p-bg-color); border-radius: 6px;">
                 <h3 style="margin: 0; font-size: 15px; color: #1e293b;"><i class="fa fa-user" style="color: #64748b; margin-right: 5px;"></i> <?php echo htmlspecialchars($employee_data['name']); ?> <span style="font-size: 13px; font-weight: normal; color: #475569; margin-left: 10px;">(ID: <?php echo $selected_emp_id; ?>)</span></h3>
             </div>
 

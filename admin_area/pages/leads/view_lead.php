@@ -245,13 +245,13 @@ include("leads_logic.php");
         left: -45px;
         width: 36px;
         height: 36px;
-        background: #fff;
+        background: var(--p-bg-color);
         border: 2px solid #f1f5f9;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #4f46e5;
+        color: #fff;
         z-index: 2;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
@@ -271,9 +271,9 @@ include("leads_logic.php");
     }
 
     .timeline-item-premium:hover .timeline-icon-premium {
-        border-color: #4f46e5;
-        background: #4f46e5;
-        color: #fff;
+
+        background: #fff;
+        color: var(--p-bg-color);
     }
 
     .p-badge-danger {

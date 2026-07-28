@@ -168,7 +168,7 @@ if (!isset($_SESSION['emp_id'])) {
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: var(--p-bg-color); border-radius: 14px 14px 0 0; position: relative;">
                     <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
                         <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                             <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>

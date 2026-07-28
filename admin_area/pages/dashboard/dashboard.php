@@ -287,7 +287,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                             <tr style="transition: all 0.2s ease;">
                                 <td style="padding: 12px 10px;">
                                     <div style="display:flex; align-items:center; gap:12px;">
-                                        <div style="width:40px; height:40px; border-radius:12px; background:#ffeaeb; display:flex; align-items:center; justify-content:center; font-size:16px; color:#dd2127; flex-shrink:0;">
+                                        <div style="width:40px; height:40px; border-radius:12px; background: var(--p-bg-color);; display:flex; align-items:center; justify-content:center; font-size:16px; color:white; flex-shrink:0;"> <!-- dd2127 -->
                                             <i class="fa fa-folder-open"></i>
                                         </div>
                                         <div>
@@ -430,7 +430,7 @@ if ($res && mysqli_num_rows($res) > 0) {
 <div class="bottom-panel">
     <div class="panel-title-row">
         <div style="display:flex; align-items:center; gap:10px;">
-            <div class="panel-header-icon" style="background: #ffeaeb; color: #dd2127; width:32px; height:32px; font-size:14px; display:flex; align-items:center; justify-content:center; border-radius:8px;"><i class="fa fa-user"></i></div>
+            <div class="panel-header-icon" style="background: black; color: white; width:32px; height:32px; font-size:14px; display:flex; align-items:center; justify-content:center; border-radius:8px;"><i class="fa fa-user"></i></div><!-- dd2127 -->
             <h3 style="font-size:18px;">Today's Attendance</h3>
         </div>
         <?php if (canAdminAccess('attendance_view')): ?>
@@ -457,7 +457,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                 if ($run_worklog && mysqli_num_rows($run_worklog) > 0) {
                     while ($att_row = mysqli_fetch_assoc($run_worklog)) {
                         $e_name = htmlspecialchars($att_row['name']);
-                        $e_img = !empty($att_row['employee_image']) ? 'uploads/' . $att_row['employee_image'] : 'https://ui-avatars.com/api/?name=' . urlencode($e_name) . '&background=3b82f6&color=fff';
+                        $e_img = !empty($att_row['employee_image']) ? 'uploads/' . $att_row['employee_image'] : 'https://ui-avatars.com/api/?name=' . urlencode($e_name) . '&background=232223&color=fff';
                         $check_in = !empty($att_row['check_in_time']) ? date('h:i A', strtotime($att_row['check_in_time'])) : '-';
                         $check_out = !empty($att_row['check_out_time']) ? date('h:i A', strtotime($att_row['check_out_time'])) : '-';
                         $status = htmlspecialchars($att_row['status']);
@@ -474,7 +474,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                         // Currently working = is_working is 1 (regardless of present/late status)
                         $currently_working = ($is_working_val == 1);
                         $dot_color = $currently_working ? '#10b981' : '#ef4444';
-                        
+
                         if ($currently_working) {
                             $start_time_calc = ($total_secs > 0 && !empty($att_row['last_resume_time'])) ? $att_row['last_resume_time'] : ($today . ' ' . $att_row['check_in_time']);
                             if (!empty($start_time_calc)) {

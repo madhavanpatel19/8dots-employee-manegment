@@ -568,15 +568,17 @@ if (!isset($_SESSION['admin_email'])) {
             }
 
             .page-link:hover:not(.disabled) {
-                background: #DF2127;
-                color: #FFEAEB;
-                border-color: #DF2127;
+                background: var(--p-bg-color);
+                color: var(--p-bg-color);
+                ;
+                border-color: var(--p-bg-color);
             }
 
             .page-link.active {
-                background: #FFEAEB;
-                color: #DF2127;
-                border-color: #DF2127;
+                background: var(--p-bg-color);
+                ;
+                color: var(--p-bg-color);
+                border-color: var(--p-bg-color);
                 text-decoration: none !important;
             }
 
@@ -586,140 +588,151 @@ if (!isset($_SESSION['admin_email'])) {
                 background: #f8fafc;
             }
         </style>
-
-        <div class="announcement-list-container">
+        <div class="premium-card">
             <div class="card-hdr" style="padding: 20px 24px; background:var(--p-bg-header);color:white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
                 <i class="fa fa-bullhorn"></i>
                 <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Announcements</h3>
             </div>
-            <div class="announcement-header-row">
-                <div style="padding-left: 64px;">Title</div>
-                <div style="text-align: center;">Posted On</div>
-                <div style="text-align: center;">Status</div>
-                <div style="text-align: center;">Manage</div>
-            </div>
 
-            <div class="announcement-list-body">
-                <?php
-                /* ==============================
-                   PAGINATION SETUP & QUERIES
-                ============================== */
-                $limit = 5; // Number of records per page
-                $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
-                $offset = ($page - 1) * $limit;
+            <div style="overflow-x: auto;">
+                <table class="table-premium">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px; text-align: center;">#</th>
+                            <th>Title</th>
+                            <th style="text-align: center; width: 200px;">Posted On</th>
+                            <th style="text-align: center; width: 140px;">Status</th>
+                            <th style="text-align: center; width: 160px;">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        /* ==============================
+                           PAGINATION SETUP & QUERIES
+                        ============================== */
+                        $limit = 5; // Number of records per page
+                        $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
+                        $offset = ($page - 1) * $limit;
 
-                // Count total records
-                $countSql = "SELECT COUNT(*) as total FROM announcements WHERE deleted_at IS NULL";
-                $countResult = mysqli_query($con, $countSql);
-                $totalRecords = 0;
-                if ($countResult) {
-                    $countRow = mysqli_fetch_assoc($countResult);
-                    $totalRecords = $countRow['total'];
-                }
-                $totalPages = ceil($totalRecords / $limit);
+                        // Count total records
+                        $countSql = "SELECT COUNT(*) as total FROM announcements WHERE deleted_at IS NULL";
+                        $countResult = mysqli_query($con, $countSql);
+                        $totalRecords = 0;
+                        if ($countResult) {
+                            $countRow = mysqli_fetch_assoc($countResult);
+                            $totalRecords = $countRow['total'];
+                        }
+                        $totalPages = ceil($totalRecords / $limit);
 
-                $i = $offset; // Adjust numbering
-                $get_announcements = "SELECT * FROM announcements WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT $offset, $limit";
-                $run_announcements = mysqli_query($con, $get_announcements);
+                        $i = $offset; // Adjust numbering
+                        $get_announcements = "SELECT * FROM announcements WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT $offset, $limit";
+                        $run_announcements = mysqli_query($con, $get_announcements);
 
-                $icon_classes = [
-                    ['bg' => '#eff6ff', 'color' => '#3b82f6', 'icon' => 'fa-bullhorn'],
-                    ['bg' => '#ecfdf5', 'color' => '#10b981', 'icon' => 'fa-rocket'],
-                    ['bg' => '#fff7ed', 'color' => '#f97316', 'icon' => 'fa-calendar-o'],
-                    ['bg' => '#f5f3ff', 'color' => '#8b5cf6', 'icon' => 'fa-graduation-cap'],
-                    ['bg' => '#fdf2f8', 'color' => '#ec4899', 'icon' => 'fa-gift'],
-                    ['bg' => '#f0fdf4', 'color' => '#22c55e', 'icon' => 'fa-shield']
-                ];
+                        $icon_classes = [
+                            ['bg' => '#eff6ff', 'color' => '#3b82f6', 'icon' => 'fa-bullhorn'],
+                            ['bg' => '#ecfdf5', 'color' => '#10b981', 'icon' => 'fa-rocket'],
+                            ['bg' => '#fff7ed', 'color' => '#f97316', 'icon' => 'fa-calendar-o'],
+                            ['bg' => '#f5f3ff', 'color' => '#8b5cf6', 'icon' => 'fa-graduation-cap'],
+                            ['bg' => '#fdf2f8', 'color' => '#ec4899', 'icon' => 'fa-gift'],
+                            ['bg' => '#f0fdf4', 'color' => '#22c55e', 'icon' => 'fa-shield']
+                        ];
 
-                while ($row_announcements = mysqli_fetch_array($run_announcements)) {
-                    $announcement_id = $row_announcements['id'];
-                    $announcement_title = $row_announcements['title'];
-                    $announcement_message = $row_announcements['message'];
-                    $announcement_date = !empty($row_announcements['publish_date']) ? $row_announcements['publish_date'] : $row_announcements['created_at'];
-                    $is_active = isset($row_announcements['is_active']) ? $row_announcements['is_active'] : 1;
-                    $end_date = !empty($row_announcements['end_date']) ? $row_announcements['end_date'] : null;
-                    $i++;
+                        while ($row_announcements = mysqli_fetch_array($run_announcements)) {
+                            $announcement_id = $row_announcements['id'];
+                            $announcement_title = $row_announcements['title'];
+                            $announcement_message = $row_announcements['message'];
+                            $announcement_date = !empty($row_announcements['publish_date']) ? $row_announcements['publish_date'] : $row_announcements['created_at'];
+                            $is_active = isset($row_announcements['is_active']) ? $row_announcements['is_active'] : 1;
+                            $end_date = !empty($row_announcements['end_date']) ? $row_announcements['end_date'] : null;
+                            $i++;
 
-                    $icon_data = $icon_classes[$i % 6];
+                            $icon_data = $icon_classes[$i % 6];
 
-                    $is_scheduled = strtotime($announcement_date) > time();
-                    $is_expired = $end_date && strtotime($end_date) <= time();
+                            $is_scheduled = strtotime($announcement_date) > time();
+                            $is_expired = $end_date && strtotime($end_date) <= time();
 
-                    if ($is_expired) {
-                        $badge_class = '';
-                        $badge_text = 'Expired';
-                        $dot_class = '';
-                        $is_grey = true;
-                    } else if ($is_active == 0) {
-                        $badge_class = '';
-                        $badge_text = 'Inactive';
-                        $dot_class = '';
-                        $is_grey = true;
-                    } else {
-                        $badge_class = $is_scheduled ? 'badge-scheduled' : '';
-                        $badge_text = $is_scheduled ? 'Scheduled' : 'Published';
-                        $dot_class = $is_scheduled ? 'dot-scheduled' : '';
-                        $is_grey = false;
-                    }
-                ?>
-                    <div class="announcement-item-row" data-announcement-row="<?php echo $announcement_id; ?>">
-                        <div class="announcement-left">
-                            <div class="announcement-icon-box" style="background: <?php echo $icon_data['bg']; ?>; color: <?php echo $icon_data['color']; ?>;">
-                                <i class="fa <?php echo $icon_data['icon']; ?>"></i>
-                            </div>
-                            <div class="announcement-info">
-                                <h4><?php echo htmlspecialchars($announcement_title); ?></h4>
-                                <p><?php echo htmlspecialchars($announcement_message); ?></p>
-                            </div>
-                        </div>
-                        <div class="announcement-date-col" style="align-items: center; text-align: center;">
-                            <div class="announcement-date-val"><?php echo date('d M Y, h:i A', strtotime($announcement_date)); ?></div>
-                            <div class="announcement-date-author">by Admin</div>
-                        </div>
-                        <div style="display: flex; justify-content: center;">
-                            <div class="announcement-status-badge <?php echo $badge_class; ?>" style="<?php echo $is_grey ? 'background: #f1f5f9; color: #64748b;' : ''; ?>">
-                                <span class="status-dot <?php echo $dot_class; ?>" style="<?php echo $is_grey ? 'background: #94a3b8;' : ''; ?>"></span> <?php echo $badge_text; ?>
-                            </div>
-                        </div>
-                        <div class="announcement-actions" style="justify-content: center;">
-                            <?php if (canAdminAccess('announcement_update')): ?>
-                                <button type="button" class="btn-icon-premium" style="color: <?php echo $is_active == 1 ? '#10b981' : '#94a3b8'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
-                                    <i class="fa <?php echo $is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
-                                </button>
-                            <?php endif; ?>
-                            <?php
-                            $edit_data = json_encode([
-                                "id" => $announcement_id,
-                                "title" => $announcement_title,
-                                "message" => $announcement_message,
-                                "publish_date" => date("Y-m-d\TH:i", strtotime($announcement_date)),
-                                "end_date" => !empty($row_announcements['end_date']) ? date("Y-m-d\TH:i", strtotime($row_announcements['end_date'])) : ""
-                            ]);
-                            $safe_edit_data = htmlspecialchars($edit_data, ENT_QUOTES, 'UTF-8');
-                            ?>
-                            <?php if (canAdminAccess('announcement_update')): ?>
-                                <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                            <?php endif; ?>
-                            <?php if (canAdminAccess('announcement_delete')): ?>
-                                <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
-                                    <i class="fa fa-trash-o"></i>
-                                </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php }
-                if (mysqli_num_rows($run_announcements) == 0) {
-                    echo "<div style='display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;'>
-                            <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
+                            if ($is_expired) {
+                                $badge_class = '';
+                                $badge_text = 'Expired';
+                                $dot_class = '';
+                                $is_grey = true;
+                            } else if ($is_active == 0) {
+                                $badge_class = '';
+                                $badge_text = 'Inactive';
+                                $dot_class = '';
+                                $is_grey = true;
+                            } else {
+                                $badge_class = $is_scheduled ? 'badge-scheduled' : '';
+                                $badge_text = $is_scheduled ? 'Scheduled' : 'Published';
+                                $dot_class = $is_scheduled ? 'dot-scheduled' : '';
+                                $is_grey = false;
+                            }
+                        ?>
+                            <tr data-announcement-row="<?php echo $announcement_id; ?>">
+                                <td style="text-align: center; font-weight: 700; color: #64748b; align-middle"><?php echo $i; ?></td>
+                                <td>
+                                    <div class="announcement-left">
+                                        <div class="announcement-icon-box" style="background: <?php echo $icon_data['bg']; ?>; color: <?php echo $icon_data['color']; ?>;">
+                                            <i class="fa <?php echo $icon_data['icon']; ?>"></i>
+                                        </div>
+                                        <div class="announcement-info">
+                                            <h4 style="margin: 0 0 4px 0; font-weight: 700; color: #0f172a; font-size: 14px;"><?php echo htmlspecialchars($announcement_title); ?></h4>
+                                            <p style="margin: 0; color: #64748b; font-size: 13px;"><?php echo htmlspecialchars($announcement_message); ?></p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div class="announcement-date-val" style="font-weight: 600; color: #0f172a; font-size: 13px;"><?php echo date('d M Y, h:i A', strtotime($announcement_date)); ?></div>
+                                    <div class="announcement-date-author" style="font-size: 12px; color: #94a3b8;">by Admin</div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div class="announcement-status-badge <?php echo $badge_class; ?>" style="<?php echo $is_grey ? 'background: #f1f5f9; color: #64748b;' : ''; ?> display: inline-flex; align-items: center; justify-content: center;">
+                                        <span class="status-dot <?php echo $dot_class; ?>" style="<?php echo $is_grey ? 'background: #94a3b8;' : ''; ?>"></span> <?php echo $badge_text; ?>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div class="announcement-actions" style="justify-content: center; display: inline-flex; gap: 8px;">
+                                        <?php if (canAdminAccess('announcement_update')): ?>
+                                            <button type="button" class="btn-icon-premium" style="color: <?php echo $is_active == 1 ? '#10b981' : '#94a3b8'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
+                                                <i class="fa <?php echo $is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                        <?php
+                                        $edit_data = json_encode([
+                                            "id" => $announcement_id,
+                                            "title" => $announcement_title,
+                                            "message" => $announcement_message,
+                                            "publish_date" => date("Y-m-d\TH:i", strtotime($announcement_date)),
+                                            "end_date" => !empty($row_announcements['end_date']) ? date("Y-m-d\TH:i", strtotime($row_announcements['end_date'])) : ""
+                                        ]);
+                                        $safe_edit_data = htmlspecialchars($edit_data, ENT_QUOTES, 'UTF-8');
+                                        ?>
+                                        <?php if (canAdminAccess('announcement_update')): ?>
+                                            <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                        <?php if (canAdminAccess('announcement_delete')): ?>
+                                            <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php }
+                        if (mysqli_num_rows($run_announcements) == 0) {
+                            echo "<tr><td colspan='5' style='text-align:center; padding: 60px 20px;'>
+                            <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;'>
                                 <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
                             </div>
                             <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No announcements.</div>
                             <div style='font-size: 13px; color: #94a3b8;'>No notices to show right now.</div>
-                        </div>";
-                }
-                ?>
+                        </td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
 
             <?php if ($totalPages > 1): ?>
@@ -754,249 +767,247 @@ if (!isset($_SESSION['admin_email'])) {
                 </div>
             <?php endif; ?>
         </div>
-    </div>
 
-    <div class="modal fade" id="addWorksheetModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
-                <form method="post" action="index.php?announcement">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
-                        <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
-                            <i class="fa fa-times"></i>
-                        </button>
-                        <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
+        <div class="modal fade" id="addWorksheetModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
+                    <form method="post" action="index.php?announcement">
+                        <div class="modal-header" style="background: var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
+                            <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
+                                <div style="background: #fff; color:var(--p-bg-color);width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
+                                </div>
+                                New Notice
+                            </h4>
+                        </div>
+
+                        <div class="modal-body" style="padding: 30px 25px; background: #fff;">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
+                                <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
-                            New Notice
-                        </h4>
-                    </div>
-
-                    <div class="modal-body" style="padding: 30px 25px; background: #fff;">
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 25px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
-                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="submit" name="submit_announcement" class="btn-premium-add">
-                            <i class="fa fa-paper-plane"></i> Post Announcement
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="editWorksheetModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
-                <form method="post" action="index.php?announcement">
-                    <input type="hidden" name="edit_id" id="edit_announcement_id">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
-                        <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
-                            <i class="fa fa-times"></i>
-                        </button>
-                        <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
+                                <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
-                            Edit Announcement
-                        </h4>
-                    </div>
 
-                    <div class="modal-body" style="padding: 30px 25px; background: #fff;">
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
+                                <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
+                                <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 25px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+                            <button type="button" class="btn-premium-cancel" data-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button type="submit" name="submit_announcement" class="btn-premium-add">
+                                <i class="fa fa-paper-plane"></i> Post Announcement
+                            </button>
                         </div>
-
-                        <div class="form-group" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 25px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
-                        <button type="button" class="btn-premium-cancel" data-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="submit" name="update_announcement" class="btn-premium-add">
-                            <i class="fa fa-save"></i> Save Changes
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="premium-confirm-overlay" id="deleteConfirmOverlay">
-        <div class="premium-confirm-modal">
-            <div class="confirm-icon-box">
-                <i class="fa fa-trash"></i>
-            </div>
-            <h3 style="margin: 0 0 10px 0; font-weight: 700; color: #0f172a;">Delete Announcement?</h3>
-            <p style="margin: 0 0 25px 0; font-size: 14px; color: #64748b;">This action will permanently remove this announcement. This cannot be undone.</p>
-            <div style="display: flex; gap: 12px;">
-                <button class="confirm-btn-cancel" onclick="closeDeleteConfirm()" type="button">Cancel</button>
-                <button class="confirm-btn-delete" id="confirmDeleteBtn" type="button">Delete Now</button>
+        <div class="modal fade" id="editWorksheetModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
+                    <form method="post" action="index.php?announcement">
+                        <input type="hidden" name="edit_id" id="edit_announcement_id">
+                        <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
+                            <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
+                                <div style="background: white; color:var(--p-bg-color);width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
+                                </div>
+                                Edit Announcement
+                            </h4>
+                        </div>
+
+                        <div class="modal-body" style="padding: 30px 25px; background: #fff;">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
+                                <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
+                                <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
+                                <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
+                                <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; padding: 20px 25px; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+                            <button type="button" class="btn-premium-cancel" data-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button type="submit" name="update_announcement" class="btn-premium-add">
+                                <i class="fa fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        window.announcementFlash = <?php echo json_encode($announcement_flash); ?>;
-        window.announcementFormError = <?php echo json_encode($announcement_error); ?>;
+        <div class="premium-confirm-overlay" id="deleteConfirmOverlay">
+            <div class="premium-confirm-modal">
+                <div class="confirm-icon-box">
+                    <i class="fa fa-trash"></i>
+                </div>
+                <h3 style="margin: 0 0 10px 0; font-weight: 700; color: #0f172a;">Delete Announcement?</h3>
+                <p style="margin: 0 0 25px 0; font-size: 14px; color: #64748b;">This action will permanently remove this announcement. This cannot be undone.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="confirm-btn-cancel" onclick="closeDeleteConfirm()" type="button">Cancel</button>
+                    <button class="confirm-btn-delete" id="confirmDeleteBtn" type="button">Delete Now</button>
+                </div>
+            </div>
+        </div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            window.showPremiumAlert = function(message, type = 'success') {
-                const toast = document.createElement('div');
-                toast.className = `premium-notification notification-${type}`;
+        <script>
+            window.announcementFlash = <?php echo json_encode($announcement_flash); ?>;
+            window.announcementFormError = <?php echo json_encode($announcement_error); ?>;
 
-                const icon = type === 'success' ?
-                    'fa-check-circle' :
-                    'fa-exclamation-circle';
+            document.addEventListener('DOMContentLoaded', function() {
+                window.showPremiumAlert = function(message, type = 'success') {
+                    const toast = document.createElement('div');
+                    toast.className = `premium-notification notification-${type}`;
 
-                toast.innerHTML = `<i class="fa ${icon}"></i> <span>${message}</span>`;
-                document.body.appendChild(toast);
+                    const icon = type === 'success' ?
+                        'fa-check-circle' :
+                        'fa-exclamation-circle';
 
-                setTimeout(() => toast.classList.add('active'), 10);
+                    toast.innerHTML = `<i class="fa ${icon}"></i> <span>${message}</span>`;
+                    document.body.appendChild(toast);
 
-                setTimeout(() => {
-                    toast.classList.remove('active');
-                    setTimeout(() => toast.remove(), 400);
-                }, 3500);
-            };
+                    setTimeout(() => toast.classList.add('active'), 10);
 
-            let currentDeleteId = null;
+                    setTimeout(() => {
+                        toast.classList.remove('active');
+                        setTimeout(() => toast.remove(), 400);
+                    }, 3500);
+                };
 
-            const deleteOverlay = document.getElementById('deleteConfirmOverlay');
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+                let currentDeleteId = null;
 
-            window.openEditModal = function(data) {
-                document.getElementById('edit_announcement_id').value = data.id;
-                document.getElementById('edit_announcement_title').value = data.title;
-                document.getElementById('edit_announcement_message').value = data.message;
-                document.getElementById('edit_publish_date').value = data.publish_date || '';
-                document.getElementById('edit_end_date').value = data.end_date || '';
+                const deleteOverlay = document.getElementById('deleteConfirmOverlay');
+                const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
-                $('#editWorksheetModal').modal('show');
-            };
+                window.openEditModal = function(data) {
+                    document.getElementById('edit_announcement_id').value = data.id;
+                    document.getElementById('edit_announcement_title').value = data.title;
+                    document.getElementById('edit_announcement_message').value = data.message;
+                    document.getElementById('edit_publish_date').value = data.publish_date || '';
+                    document.getElementById('edit_end_date').value = data.end_date || '';
 
-            window.toggleStatus = function(id, newStatus) {
-                fetch('pages/announcements/announcement.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                        },
-                        body: `ajax_toggle_status=${encodeURIComponent(id)}&is_active=${encodeURIComponent(newStatus)}`
-                    })
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.status === 'success') {
-                            showPremiumAlert(newStatus == 1 ? 'Announcement marked as Active' : 'Announcement marked as Inactive');
-                            setTimeout(() => location.reload(), 500);
-                        } else {
-                            throw new Error('Toggle failed');
-                        }
-                    })
-                    .catch(() => showPremiumAlert('Error updating status', 'error'));
-            };
+                    $('#editWorksheetModal').modal('show');
+                };
 
-            window.showDeleteConfirm = function(id) {
-                currentDeleteId = id;
-                deleteOverlay.classList.add('active');
-            };
+                window.toggleStatus = function(id, newStatus) {
+                    fetch('pages/announcements/announcement.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            },
+                            body: `ajax_toggle_status=${encodeURIComponent(id)}&is_active=${encodeURIComponent(newStatus)}`
+                        })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.status === 'success') {
+                                showPremiumAlert(newStatus == 1 ? 'Announcement marked as Active' : 'Announcement marked as Inactive');
+                                setTimeout(() => location.reload(), 500);
+                            } else {
+                                throw new Error('Toggle failed');
+                            }
+                        })
+                        .catch(() => showPremiumAlert('Error updating status', 'error'));
+                };
 
-            window.closeDeleteConfirm = function() {
-                deleteOverlay.classList.remove('active');
-                currentDeleteId = null;
-                confirmDeleteBtn.disabled = false;
-                confirmDeleteBtn.innerHTML = 'Delete Now';
-            };
+                window.showDeleteConfirm = function(id) {
+                    currentDeleteId = id;
+                    deleteOverlay.classList.add('active');
+                };
 
-            deleteOverlay.addEventListener('click', function(e) {
-                if (e.target === deleteOverlay) {
-                    closeDeleteConfirm();
-                }
-            });
+                window.closeDeleteConfirm = function() {
+                    deleteOverlay.classList.remove('active');
+                    currentDeleteId = null;
+                    confirmDeleteBtn.disabled = false;
+                    confirmDeleteBtn.innerHTML = 'Delete Now';
+                };
 
-            confirmDeleteBtn.addEventListener('click', function() {
-                if (!currentDeleteId) {
-                    return;
-                }
+                deleteOverlay.addEventListener('click', function(e) {
+                    if (e.target === deleteOverlay) {
+                        closeDeleteConfirm();
+                    }
+                });
 
-                confirmDeleteBtn.disabled = true;
-                confirmDeleteBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Deleting...';
+                confirmDeleteBtn.addEventListener('click', function() {
+                    if (!currentDeleteId) {
+                        return;
+                    }
 
-                fetch('pages/announcements/announcement.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                        },
-                        body: `ajax_delete_announcement=${encodeURIComponent(currentDeleteId)}`
-                    })
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.status === 'success') {
-                            const row = document.querySelector(`[data-announcement-row="${currentDeleteId}"]`);
+                    confirmDeleteBtn.disabled = true;
+                    confirmDeleteBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Deleting...';
 
-                            if (row) {
-                                row.remove();
+                    fetch('pages/announcements/announcement.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            },
+                            body: `ajax_delete_announcement=${encodeURIComponent(currentDeleteId)}`
+                        })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.status === 'success') {
+                                const row = document.querySelector(`[data-announcement-row="${currentDeleteId}"]`);
+
+                                if (row) {
+                                    row.remove();
+                                }
+
+                                closeDeleteConfirm();
+                                showPremiumAlert('Announcement deleted successfully');
+                                return;
                             }
 
-                            closeDeleteConfirm();
-                            showPremiumAlert('Announcement deleted successfully');
-                            return;
-                        }
+                            throw new Error('Delete failed');
+                        })
+                        .catch(() => {
+                            showPremiumAlert('Error deleting announcement', 'error');
+                            confirmDeleteBtn.disabled = false;
+                            confirmDeleteBtn.innerHTML = 'Delete Now';
+                        });
+                });
 
-                        throw new Error('Delete failed');
-                    })
-                    .catch(() => {
-                        showPremiumAlert('Error deleting announcement', 'error');
-                        confirmDeleteBtn.disabled = false;
-                        confirmDeleteBtn.innerHTML = 'Delete Now';
-                    });
+                if (window.announcementFlash && window.announcementFlash.message) {
+                    showPremiumAlert(window.announcementFlash.message, window.announcementFlash.type || 'success');
+                }
+
+                if (window.announcementFormError) {
+                    showPremiumAlert(window.announcementFormError, 'error');
+                    $('#addWorksheetModal').modal('show');
+                }
             });
+        </script>
 
-            if (window.announcementFlash && window.announcementFlash.message) {
-                showPremiumAlert(window.announcementFlash.message, window.announcementFlash.type || 'success');
-            }
-
-            if (window.announcementFormError) {
-                showPremiumAlert(window.announcementFormError, 'error');
-                $('#addWorksheetModal').modal('show');
-            }
-        });
-    </script>
-
-<?php } ?>
+    <?php } ?>

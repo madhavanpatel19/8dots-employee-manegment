@@ -111,7 +111,7 @@ if ($run_projs) {
 <div class="modal fade" id="globalAddTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document" style="max-width: 540px;">
         <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.18);">
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: var(--p-bg-color); border-radius: 14px 14px 0 0; position: relative;">
                 <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
                     <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
@@ -217,7 +217,8 @@ if ($run_projs) {
         justify-content: space-between;
         align-items: center;
         padding: 16px 20px;
-        border-left: 4px solid #dc2626;
+        /* border-left: 4px solid #dc2626; */
+        border-left: 4px solid black;
         background: #fff;
     }
 
@@ -234,14 +235,17 @@ if ($run_projs) {
         width: 44px;
         height: 44px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #fef2f2, #fee2e2);
-        color: #dc2626;
+        /* background: linear-gradient(135deg, #fef2f2, #fee2e2); */
+        background: black;
+        /* color: #dc2626; */
+        color: white;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 800;
         font-size: 16px;
-        border: 2px solid #fecaca;
+        /* border: 2px solid #fecaca; */
+        border: 2px solid black;
         flex-shrink: 0;
     }
 
@@ -315,11 +319,14 @@ if ($run_projs) {
     }
 
     .add-task-trigger:hover {
-        color: #dc2626;
+        /* color: #dc2626; */
+        color: black;
+
     }
 
     .add-task-trigger:hover i {
-        color: #dc2626 !important;
+        /* color: #dc2626 !important; */
+        color: black !important;
     }
 
     .add-task-form {
@@ -342,8 +349,8 @@ if ($run_projs) {
     }
 
     .task-input:focus {
-        border-color: #dc2626;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        border-color: var(--p-bg-color);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
     }
 
     .task-date-input,
@@ -485,13 +492,13 @@ if ($run_projs) {
     }
 
     .date-badge {
-        background: #fef2f2;
-        color: #dc2626;
+        background: var(--p-bg-color);
+        color: #fff;
         padding: 2px 7px;
         border-radius: 20px;
         font-size: 11px;
         font-weight: 700;
-        border: 1px solid #fecaca;
+        border: 1px solid var(--p-bg-color);
     }
 
     .priority-flag {

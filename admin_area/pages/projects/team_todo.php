@@ -28,8 +28,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 <div class="page-wrapper premium-ui-enabled" style="background: #f8fafc; min-height: calc(100vh - 60px);">
     <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
         <div style="display: flex; align-items: center; gap: 20px;">
-            <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px;">
-                <i class="fa fa-list-alt" style="color: #6366f1;"></i> Team To-Do
+            <h1><i class="fa fa-list-alt" style="color: var(--p-bg-color);"></i> Team To-Do
             </h1>
             <div style="padding: 8px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
                 <i class="fa fa-building-o" style="color: #64748b;"></i> <?php echo htmlspecialchars($project['project_name']); ?>
@@ -196,11 +195,13 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .add-task-trigger:hover {
-        color: #dc2626;
+        /* color: #dc2626; */
+        color: var(--p-bg-color);
     }
 
     .add-task-trigger:hover i {
-        color: #dc2626 !important;
+        /* color: #dc2626 !important; */
+        color: var(--p-bg-color);
     }
 
     .add-task-form {
@@ -223,8 +224,8 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-input:focus {
-        border-color: #dc2626;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        border-color: var(--p-bg-color);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
     }
 
     .task-date-input,
@@ -304,8 +305,8 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .date-badge {
-        background: #eff6ff;
-        color: #3b82f6;
+        background: var(--p-bg-color);
+        color: #fff;
         padding: 4px 10px;
         border-radius: 6px;
         font-size: 12px;
