@@ -247,8 +247,9 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                         while ($row_nda = mysqli_fetch_array($run_ndas)) {
                             $id = $row_nda['id'];
                             $name = $row_nda['name'];
-                            $email = $row_nda['email'];
-                            $position = $row_nda['position'];
+                            $employee_id = $row_nda['employee_id'];
+                            $department = $row_nda['department'];
+                            $designation = $row_nda['designation'];
                             $start_date = date("d M Y", strtotime($row_nda['start_date']));
                             $i++;
                     ?>
@@ -256,11 +257,11 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                                 <td style="padding: 15px; text-align: center; font-weight: 600; color: #94a3b8; border-bottom: 1px solid #f1f5f9;"><?php echo $i; ?></td>
                                 <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
                                     <div style="font-weight: 700; color: #1e293b;"><?php echo htmlspecialchars($name); ?></div>
-                                    <div style="font-size: 12px; color: #64748b;"><?php echo htmlspecialchars($email); ?></div>
+                                    <div style="font-size: 12px; color: #64748b;"><?php echo htmlspecialchars($designation); ?></div>
                                 </td>
                                 <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
                                     <span class="badge" style="background: var(--p-bg-color); color: var(--p-bg); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;"><!-- dd2127 -->
-                                        <?php echo htmlspecialchars($position); ?>
+                                        <?php echo htmlspecialchars($department); ?>
                                     </span>
                                 </td>
                                 <td style="padding: 15px; color: #475569; font-size: 14px; border-bottom: 1px solid #f1f5f9;">
@@ -316,7 +317,7 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" id="newNDAModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #fff; color:var(--p-bg-color); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-file-text-o" style="font-size: 14px;"></i>
                     </div>
                     Generate New NDA Form
@@ -326,28 +327,29 @@ if (isset($_POST['ajax_delete_nda']) || isset($_GET['ajax_delete_nda'])) {
                 <div class="modal-body" style="padding: 30px; background: #fff;">
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Party Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="Full Name" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Employee Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Full Name" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                         <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Job Position</label>
-                            <input type="text" name="position" class="form-control" placeholder="Job Position" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Employee ID</label>
+                            <input type="text" name="employee_id" class="form-control" placeholder="Employee ID" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Department</label>
+                            <input type="text" name="department" class="form-control" placeholder="Department Name" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                        <div class="col-md-6" style="margin-bottom: 20px;">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Designation</label>
+                            <input type="text" name="designation" class="form-control" placeholder="Designation" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Email Address</label>
-                            <input type="email" name="email" class="form-control" placeholder="email@example.com" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Phone Number</label>
-                            <input type="tel" name="number" class="form-control" maxlength="10" placeholder="10-digit mobile" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6" style="margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Agreement Date</label>
-                            <input type="date" name="start_date" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Joining Date</label>
+                            <input type="date" name="start_date" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                 </div>
