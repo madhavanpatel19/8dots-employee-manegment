@@ -163,7 +163,8 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                 <img src="../admin_area/images/favicon.png" alt="8Dots Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                 <div class="company-center">
                     <h3 class="company-name">8Dots</h3>
-                    <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
+                    <div class="company-address">516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                    </div>
                     <div class="company-meta-small">Phone: 8155816776 &nbsp;|&nbsp; Email: hr@8dots.in</div>
                 </div>
             </div>
@@ -241,7 +242,7 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             </div>
             <div class="sign-right" style="width: 40%; float: none; text-align: right;">
                 <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
-                    <img src="../admin_area/images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                    <img src="../admin_area/images/k_logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
                     <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
                 </div>
             </div>

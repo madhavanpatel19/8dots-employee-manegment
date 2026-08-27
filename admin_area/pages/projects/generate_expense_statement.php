@@ -597,8 +597,9 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Expense Statement - ' . $current_d
                             <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                         </div>
                         <div class="footer-col">
-                            <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                            <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                            <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                            </div>
+                            <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
                         </div>
                     </div>
                 </div>

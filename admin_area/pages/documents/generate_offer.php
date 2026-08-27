@@ -543,7 +543,7 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
                         <div class="name">Smit Ramani</div>
                         <div class="role">Founder &amp; CEO</div>
@@ -561,8 +561,9 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
                         <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                        </div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
                     </div>
                 </div>
             </div>

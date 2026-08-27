@@ -2776,8 +2776,9 @@ $run_projects = mysqli_query($con, $get_projects);
                             <div class="footer-item">✉ hr@8dots.in</div>
                         </div>
                         <div class="footer-col">
-                            <div class="footer-item">📍 A-106, Sun South Street, Ahmedabad</div>
-                            <div class="footer-item">🌐 www.cadletedesigns.com</div>
+                            <div class="footer-item">📍 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+</div>
+                            <div class="footer-item">🌐 https://8dots.in/</div>
                         </div>
                     </div>
                 </div>

@@ -463,8 +463,9 @@ $current_date = date("d-m-Y");
                         <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                        </div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
                     </div>
                 </div>
             </div>
@@ -536,8 +537,9 @@ $current_date = date("d-m-Y");
                         <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                        </div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
                     </div>
                 </div>
             </div>
@@ -573,7 +575,7 @@ $current_date = date("d-m-Y");
                         <div style="display: flex; align-items: flex-end; margin-bottom: 15px;">
                             <div>Releasor's Signature</div>
                             <div style="position: relative; flex: 0 0 220px; border-bottom: 1px dashed #888; margin: 0 10px;">
-                                <img src="../../images/logo_sign.png" alt="Signature" style="position: absolute; bottom: -10px; left: 10px; height: 65px; object-fit: contain;">
+                                <img src="../../images/k_logo_sign.png" alt="Signature" style="position: absolute; bottom: -10px; left: 10px; height: 65px; object-fit: contain;">
                             </div>
                             <div>Date</div>
                             <div style="flex: 0 0 140px; border-bottom: 1px dashed #888; margin-left: 10px;"></div>
@@ -606,8 +608,9 @@ $current_date = date("d-m-Y");
                         <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                        </div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
                     </div>
                 </div>
             </div>
