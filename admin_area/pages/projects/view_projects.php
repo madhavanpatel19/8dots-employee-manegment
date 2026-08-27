@@ -226,8 +226,9 @@ if (!$client_data) {
 
     .p-input-premium:focus {
         background: #fff;
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
     }
 
     .id-badge-premium {
@@ -365,7 +366,7 @@ if (!$client_data) {
     }
 
     .confirm-btn-delete:hover {
-        background: #dc2626;
+        background: #232223;
         transform: translateY(-1px);
         box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
     }
@@ -517,10 +518,10 @@ if (!$client_data) {
                         const posterName = response.posted_by || 'You';
                         const newRemark = $(`
                         <div class="timeline-remark-item" style="margin-bottom: 25px; position: relative; padding-left: 32px; display: none; width: 100%;">
-                            <div class="timeline-dot" style="left: 0; background: #dd2127; border-color: #dd2127; box-shadow: 0 0 0 4px rgba(221, 33, 39, 0.1);"></div>
-                            <div class="remark-content-box" style="border-left: 4px solid #dd2127; padding-left: 20px;">
+                            <div class="timeline-dot" style="left: 0; background: #232223; border-color: #232223; box-shadow: 0 0 0 4px rgba(221, 33, 39, 0.1);"></div>
+                            <div class="remark-content-box" style="border-left: 4px solid #232223; padding-left: 20px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                                    <span style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: #eff6ff; color: #dd2127; display: inline-flex; align-items: center; gap: 4px;">
+                                    <span style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: #eff6ff; color: #232223; display: inline-flex; align-items: center; gap: 4px;">
                                         <i class="fa fa-user"></i> ${posterName}
                                     </span>
                                     <div class="remark-time-premium" style="margin: 0; font-size: 11px;">

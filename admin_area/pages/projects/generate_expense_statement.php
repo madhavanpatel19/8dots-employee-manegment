@@ -358,7 +358,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Expense Statement - ' . $current_d
         }
 
         .stmt-table tfoot tr {
-            background: #ffedeb;
+            background: #ffffff;
             border-top: 2px solid #fecdd3;
         }
 
@@ -522,7 +522,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Expense Statement - ' . $current_d
                 <div class="red-bar"></div>
             </div>
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo%20Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo" alt="8Dots Logo">
             </div>
 
             <!-- TITLE -->
@@ -593,8 +593,8 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Expense Statement - ' . $current_d
                 <div class="footer-bar">
                     <div class="footer-inner">
                         <div class="footer-col">
-                            <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773</div>
-                            <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                            <div class="footer-item"><i class="fa fa-phone"></i>8155816776</div>
+                            <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                         </div>
                         <div class="footer-col">
                             <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>

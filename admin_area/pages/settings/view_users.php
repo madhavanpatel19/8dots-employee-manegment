@@ -117,7 +117,7 @@ if (!isset($_SESSION['admin_email'])) {
                 html: 'Are you sure you want to delete user <strong>' + name + '</strong>?<br><span style="font-size: 13px; color: #64748b;">This action is permanent and cannot be undone.</span>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete User',
                 cancelButtonText: 'Cancel',
@@ -164,7 +164,7 @@ if (!isset($_SESSION['admin_email'])) {
                                     title: 'Cannot Delete User',
                                     text: data.message || 'Error occurred while deleting user.',
                                     icon: 'error',
-                                    confirmButtonColor: '#dd2127'
+                                    confirmButtonColor: '#232223'
                                 });
                             }
                         })
@@ -174,7 +174,7 @@ if (!isset($_SESSION['admin_email'])) {
                                 title: 'Error',
                                 text: err.message || 'A network error occurred while communicating with the server.',
                                 icon: 'error',
-                                confirmButtonColor: '#dd2127'
+                                confirmButtonColor: '#232223'
                             });
                         });
                 }

@@ -115,7 +115,7 @@ sort($user_desigs);
         <!-- Card 1: Basic Account Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     1
                 </div>
                 <div>
@@ -130,13 +130,13 @@ sort($user_desigs);
                     <div class="col-md-4">
                         <label class="premium-label" style="font-size: 14px; color: #334155;">User Photo <span style="color: #64748b; font-weight: normal; font-size: 12px;">(Optional)</span></label>
                         <div class="upload-area" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; background: #f8fafc; position: relative; transition: 0.3s;">
-                            <div style="width: 100px; height: 100px; background: #eff6ff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #dd2127; font-size: 20px; margin-bottom: 15px; margin-left: auto; margin-right: auto;">
+                            <div style="width: 100px; height: 100px; background: #eff6ff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #232223; font-size: 20px; margin-bottom: 15px; margin-left: auto; margin-right: auto;">
                                 <img id="usr_preview" src="admin_images/default.png" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                             </div>
                             <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;">Upload user photo</h4>
                             <p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">JPG, PNG up to 5MB</p>
 
-                            <label for="admin_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #dd2127; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
+                            <label for="admin_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #232223; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
                                 Choose File
                             </label>
                             <input type="file" name="admin_image" id="admin_image" style="display: none;" accept="image/*" onchange="previewImg(this)">
@@ -193,7 +193,7 @@ sort($user_desigs);
                                 <?php if (!empty($user_depts)): ?>
                                     <?php foreach ($user_depts as $dept): ?>
                                         <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; font-weight: 500; margin-bottom: 6px; cursor: pointer; user-select: none;">
-                                            <input type="checkbox" name="department[]" value="<?php echo htmlspecialchars($dept); ?>" style="accent-color: #dd2127; width: 16px; height: 16px; cursor: pointer;">
+                                            <input type="checkbox" name="department[]" value="<?php echo htmlspecialchars($dept); ?>" style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;">
                                             <span><?php echo htmlspecialchars($dept); ?></span>
                                         </label>
                                     <?php endforeach; ?>
@@ -235,7 +235,7 @@ sort($user_desigs);
         <!-- Card 2: Access Permissions -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     2
                 </div>
                 <div>
@@ -334,7 +334,7 @@ sort($user_desigs);
     }
 
     .upload-area:hover {
-        border-color: #dd2127;
+        border-color: #232223;
     }
 
     /* Toggle Switch Styles */
@@ -378,7 +378,7 @@ sort($user_desigs);
     }
 
     input:checked+.toggle-slider {
-        background-color: #dd2127;
+        background-color: #232223;
     }
 
     input:checked+.toggle-slider:before {
@@ -442,7 +442,7 @@ sort($user_desigs);
                 inputPlaceholder: 'e.g. Quality Assurance',
                 showCancelButton: true,
                 confirmButtonText: 'Add Department',
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 inputValidator: (value) => {
                     if (!value || !value.trim()) {
                         return 'Please enter a department name!';
@@ -465,7 +465,7 @@ sort($user_desigs);
 
                         const label = document.createElement('label');
                         label.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; font-weight: 500; margin-bottom: 6px; cursor: pointer; user-select: none;';
-                        label.innerHTML = `<input type="checkbox" name="department[]" value="${newDept}" checked style="accent-color: #dd2127; width: 16px; height: 16px; cursor: pointer;"> <span>${newDept}</span>`;
+                        label.innerHTML = `<input type="checkbox" name="department[]" value="${newDept}" checked style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;"> <span>${newDept}</span>`;
                         container.appendChild(label);
                     }
                     Swal.fire({
@@ -495,7 +495,7 @@ sort($user_desigs);
 
                     const label = document.createElement('label');
                     label.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; font-weight: 500; margin-bottom: 6px; cursor: pointer; user-select: none;';
-                    label.innerHTML = `<input type="checkbox" name="department[]" value="${val}" checked style="accent-color: #dd2127; width: 16px; height: 16px; cursor: pointer;"> <span>${val}</span>`;
+                    label.innerHTML = `<input type="checkbox" name="department[]" value="${val}" checked style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;"> <span>${val}</span>`;
                     container.appendChild(label);
                 }
             }
@@ -518,7 +518,7 @@ sort($user_desigs);
                 inputPlaceholder: 'e.g. Lead Architect',
                 showCancelButton: true,
                 confirmButtonText: 'Add Designation',
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 inputValidator: (value) => {
                     if (!value || !value.trim()) {
                         return 'Please enter a designation / function name!';
@@ -576,23 +576,23 @@ sort($user_desigs);
 </script>
 
 <?php if (isset($insert_success) && $insert_success): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            title: 'User Created Successfully!',
-            text: 'The new admin user has been added to the system.',
-            icon: 'success',
-            confirmButtonColor: '#dd2127',
-            confirmButtonText: 'OK',
-            allowOutsideClick: false
-        }).then(() => {
-            window.location.href = 'index.php?view_users';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'User Created Successfully!',
+                    text: 'The new admin user has been added to the system.',
+                    icon: 'success',
+                    confirmButtonColor: '#232223',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = 'index.php?view_users';
+                });
+            } else {
+                alert('User Created Successfully!');
+                window.location.href = 'index.php?view_users';
+            }
         });
-    } else {
-        alert('User Created Successfully!');
-        window.location.href = 'index.php?view_users';
-    }
-});
-</script>
+    </script>
 <?php endif; ?>

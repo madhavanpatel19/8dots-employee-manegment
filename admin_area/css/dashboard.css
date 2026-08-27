@@ -18,8 +18,8 @@
   --green-light: #ecfdf5;
   --yellow: #f59e0b;
   --yellow-light: #fffbeb;
-  --red: #ef4444;
-  --red-light: #fef2f2;
+  --red: #232223;
+  --red-light: #f1f5f9;
   --blue: #3b82f6;
   --blue-light: #eff6ff;
 }
@@ -57,7 +57,7 @@ body {
    TOP NAVBAR
    ========================================================================== */
 .modern-topbar {
-  background: #FFEAEB;
+  background: #ffffff !important;
   height: 70px;
   display: flex;
   align-items: center;
@@ -133,7 +133,7 @@ body {
   font-size: 20px;
   cursor: pointer;
   color: white;
-  background: #DF2127;
+  background: #232223;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -146,7 +146,7 @@ body {
   position: absolute;
   top: -13px;
   right: -12px;
-  background: var(--red);
+  background: #232223;
   color: white;
   font-size: 10px;
   font-weight: bold;
@@ -189,8 +189,25 @@ body {
 .profile-avatar img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover !important;
+  object-position: top center !important;
   background-color: white;
+}
+
+/* Global Avatar & Profile Image Face Alignment */
+.profile-avatar img,
+.user-avatar img,
+.emp-avatar,
+.emp-avatar-img,
+.profile-img,
+.profile-preview,
+.avatar img,
+img.avatar,
+.emp-thumb,
+img[alt*="Avatar"],
+img[alt*="avatar"] {
+  object-fit: cover !important;
+  object-position: top center !important;
 }
 
 .profile-info {
@@ -321,8 +338,8 @@ body {
 }
 
 .sc-blue {
-  background: #eff6ff;
-  color: #DF2127;
+  background: #f1f5f9;
+  color: #232223;
 }
 
 .stat-card-icon i {
@@ -531,7 +548,7 @@ body {
 }
 
 .check-out {
-  color: var(--red);
+  color: #232223;
   font-weight: 600;
   font-size: 13px;
 }
@@ -545,7 +562,7 @@ body {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: var(--red);
+  background: #232223;
   flex-shrink: 0;
   animation: pulse-dot 1.5s ease-in-out infinite;
 }
@@ -554,12 +571,12 @@ body {
 
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 0 0 rgba(35, 34, 35, 0.5);
     opacity: 1;
   }
 
   50% {
-    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 5px rgba(35, 34, 35, 0);
     opacity: 0.7;
   }
 }

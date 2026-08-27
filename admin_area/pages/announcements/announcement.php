@@ -192,7 +192,7 @@ if (!isset($_SESSION['admin_email'])) {
                 z-index: 9999;
                 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
                 backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                border: 1px solid rgb(34 35 35 / 20%);
                 color: white;
                 font-weight: 600;
                 transform: translateX(120%);
@@ -303,7 +303,7 @@ if (!isset($_SESSION['admin_email'])) {
             }
 
             .confirm-btn-delete:hover {
-                background: #dc2626;
+                background: #232223;
                 transform: translateY(-1px);
             }
 
@@ -576,15 +576,17 @@ if (!isset($_SESSION['admin_email'])) {
             }
 
             .page-link:hover:not(.disabled) {
-                background: #DD2127;
-                color: #FFEAEB;
-                border-color: #DD2127;
+                background: #232223;
+                color: rgb(34 35 35 / 20%);
+                ;
+                border-color: #232223;
             }
 
             .page-link.active {
-                background: #FFEAEB;
-                color: #DD2127;
-                border-color: #DD2127;
+                background: rgb(34 35 35 / 20%);
+                ;
+                color: #232223;
+                border-color: #232223;
                 text-decoration: none !important;
             }
 
@@ -794,12 +796,12 @@ if (!isset($_SESSION['admin_email'])) {
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <form method="post" action="index.php?announcement">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
                         <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: #232223; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
                             </div>
                             New Notice
@@ -809,22 +811,22 @@ if (!isset($_SESSION['admin_email'])) {
                     <div class="modal-body" style="padding: 30px 25px; background: #fff;">
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
+                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
                         </div>
                     </div>
 
@@ -846,12 +848,12 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <form method="post" action="index.php?announcement">
                     <input type="hidden" name="edit_id" id="edit_announcement_id">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
                         <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: #232223; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
                             </div>
                             Edit Announcement
@@ -861,22 +863,22 @@ if (!isset($_SESSION['admin_email'])) {
                     <div class="modal-body" style="padding: 30px 25px; background: #fff;">
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
+                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
                         </div>
                     </div>
 

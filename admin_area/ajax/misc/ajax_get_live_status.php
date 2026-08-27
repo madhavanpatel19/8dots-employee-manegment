@@ -40,12 +40,12 @@ if ($res) {
                 $badge_color = '#16a34a';
                 $st_txt = 'Completed';
             } elseif (strtolower($row['status']) === 'late') {
-                $badge_bg = '#ffeaeb';
-                $badge_color = '#dd2127';
+                $badge_bg = 'rgb(34 35 35 / 20%);';
+                $badge_color = '#232223';
                 $st_txt = 'Late';
             } elseif (strtolower($row['status']) === 'absent') {
                 $badge_bg = '#fee2e2';
-                $badge_color = '#dc2626';
+                $badge_color = '#232223';
                 $st_txt = 'Absent';
             } elseif (strtolower($row['status']) === 'leave') {
                 $badge_bg = '#fef3c7';
@@ -85,4 +85,3 @@ if ($res) {
 }
 
 echo json_encode($response);
-?>

@@ -295,8 +295,9 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
 <style>
     .btn-leave-badge {
-        background: #FFEAEB;
-        color: #DD2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
         border: 1px solid #FCA5A5;
         padding: 5px 14px;
         border-radius: 20px;
@@ -311,9 +312,9 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .btn-leave-badge:hover {
-        background: #DD2127;
+        background: #232223;
         color: #ffffff;
-        border-color: #DD2127;
+        border-color: #232223;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(221, 33, 39, 0.25);
     }
@@ -373,7 +374,8 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     .doc-modal-header {
         position: relative;
         padding: 20px 25px;
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         border-bottom: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
@@ -388,7 +390,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
     .doc-modal-title-group i {
         font-size: 20px;
-        color: #dd2127;
+        color: #232223;
     }
 
     .doc-modal-title-group h3 {
@@ -439,7 +441,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         z-index: 9999;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgb(34 35 35 / 20%);
         color: white;
         font-weight: 600;
         transform: translateX(120%);
@@ -487,10 +489,11 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .doc-modal-upload-section {
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         border-radius: 16px;
         padding: 15px;
-        border: 1px dashed #dd2127;
+        border: 1px dashed #232223;
     }
 
     .upload-section-header {
@@ -500,7 +503,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         margin-bottom: 12px;
         font-size: 13px;
         font-weight: 700;
-        color: #dd2127;
+        color: #232223;
     }
 
     .upload-controls {
@@ -650,7 +653,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     .score-red {
         background: #ef4444;
         color: #fff;
-        border-color: #dc2626;
+        border-color: #232223;
     }
 
     .score-gray {
@@ -790,7 +793,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .confirm-btn-delete:hover {
-        background: #dc2626;
+        background: #232223;
         transform: translateY(-1px);
         box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
     }
@@ -938,7 +941,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
     .emp-table-img:hover {
         transform: scale(1.15) rotate(5deg);
-        border-color: #dd2127;
+        border-color: #232223;
         box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
     }
 
@@ -1036,14 +1039,16 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .profile-nav-item:hover {
-        background: #FFEAEB;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
     }
 
     .profile-nav-item.active {
-        background: #FFEAEB;
-        color: #dd2127;
-        border-right-color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
+        border-right-color: #232223;
     }
 
     .profile-content {
@@ -1117,7 +1122,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         position: absolute;
         top: 20px;
         right: 20px;
-        background: #dd2127;
+        background: #232223;
         border: none;
         width: 36px;
         height: 36px;
@@ -1250,7 +1255,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                                 </div>
                                 <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
                                     <span style="display:inline-flex; align-items:center; gap:4px; margin-right:10px;"><i class="fa fa-phone" style="color:#333; opacity:0.7;"></i> <?php echo $phone; ?></span>
-                                    <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa fa-envelope" style="color:#dd2127; opacity:0.8;"></i> <?php echo htmlspecialchars(!empty($row['company_email']) ? $row['company_email'] : $email); ?></span>
+                                    <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa fa-envelope" style="color:#232223; opacity:0.8;"></i> <?php echo htmlspecialchars(!empty($row['company_email']) ? $row['company_email'] : $email); ?></span>
                                 </div>
                                 <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;"><i class="fa fa-calendar-check-o"></i> Joined: <?php echo (!empty($row['join_date']) && $row['join_date'] !== '0000-00-00') ? date('d-m-Y', strtotime($row['join_date'])) : '-'; ?></div>
                             </td>
@@ -1412,10 +1417,10 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     <div class="modal-dialog" role="document" style="max-width: 650px; width: 100%;">
         <div class="modal-content premium-modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
             <form method="post" id="performanceForm">
-                <div class="modal-header" style="background: #ffeaeb; padding: 20px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
+                <div class="modal-header" style="background: rgb(34 35 35 / 20%);; padding: 20px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
                     <div>
                         <h4 class="modal-title" id="performanceModalLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
-                            <i class="fa fa-line-chart" style="color: #DD2127; margin-right: 8px;"></i> Monthly Performance
+                            <i class="fa fa-line-chart" style="color: #232223; margin-right: 8px;"></i> Monthly Performance
                         </h4>
                         <p style="margin: 6px 0 0 0; color: #64748b; font-size: 12px; font-weight: 500;">Set the monthly score for <strong id="perfEmpName" style="color: #0f172a;"></strong> (<span id="perfMonthYearLabel"><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></span>).</p>
                     </div>
@@ -1562,10 +1567,10 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 <div class="modal fade" id="performanceHistoryModal" tabindex="-1" role="dialog" aria-labelledby="performanceHistoryLabel" style="display: none;">
     <div class="modal-dialog" role="document" style="max-width: 650px; width: 100%;">
         <div class="modal-content premium-modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
-            <div class="modal-header" style="background: #ffeaeb; padding: 19px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
+            <div class="modal-header" style="background: rgb(34 35 35 / 20%);; padding: 19px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
                 <div>
                     <h4 class="modal-title" id="performanceHistoryLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
-                        <i class="fa fa-area-chart" style="color: #dd2127; margin-right: 8px;"></i> Performance History
+                        <i class="fa fa-area-chart" style="color: #232223; margin-right: 8px;"></i> Performance History
                     </h4>
                     <p style="margin: 6px 0 0 0; color: #64748b; font-size: 12px; font-weight: 500;">Last 4 months performance for <strong id="historyEmpName" style="color: #0f172a;"></strong>.</p>
                 </div>
@@ -1577,8 +1582,8 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
                 <div class="history-table-wrap" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
                     <div class="history-table-title" style="padding: 16px 20px; background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-weight: 700; color: #0f172a; font-size: 14px;"><i class="fa fa-list-ul" style="color: #dd2127; margin-right: 6px;"></i> Breakdown</span>
-                        <span id="historyBreakdownTotal" class="history-total-pill" style="background: #dd2127; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">0 / 100</span>
+                        <span style="font-weight: 700; color: #0f172a; font-size: 14px;"><i class="fa fa-list-ul" style="color: #232223; margin-right: 6px;"></i> Breakdown</span>
+                        <span id="historyBreakdownTotal" class="history-total-pill" style="background: #232223; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">0 / 100</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover history-breakdown-table" style="margin-bottom: 0;">
@@ -1611,10 +1616,10 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                     <div class="profile-sidebar-header">
                         <img id="view_img" src="admin_images/default.png" class="view-image-large" style="width: 140px; height: 140px; border-radius: 20px; margin-bottom: 20px;" alt="Profile">
                         <h4 id="view_name" style="font-weight: 800; color: #0f172a; margin: 0 0 5px 0;">Employee Name</h4>
-                        <div id="view_desig_sidebar" style="font-size: 13px; font-weight: 700; color: #dd2127; margin-bottom: 2px;">-</div>
+                        <div id="view_desig_sidebar" style="font-size: 13px; font-weight: 700; color: #232223; margin-bottom: 2px;">-</div>
                         <div id="view_dept_sidebar" style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 10px;">-</div>
                         <p id="view_id_label" style="color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px;">ID: 001</p>
-                        <span id="view_gender_badge" class="label label-primary" style="background: #dd2127; padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
+                        <span id="view_gender_badge" class="label label-primary" style="background: #232223; padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
                         <div id="view_join_sidebar" style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 10px;">Joined: -</div>
                     </div>
 
@@ -1658,7 +1663,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                     </button>
                     <!-- Personal Info Section -->
                     <div id="section_personal" class="profile-section active">
-                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: #dd2127;"></i> Personal Information</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: #232223;"></i> Personal Information</h3>
                         <div class="profile-data-grid">
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Department</span>
@@ -1690,7 +1695,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                             </div>
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Company Email (Login)</span>
-                                <span class="profile-data-value" id="view_company_email" style="color: #dd2127; font-weight: 700;">-</span>
+                                <span class="profile-data-value" id="view_company_email" style="color: #232223; font-weight: 700;">-</span>
                             </div>
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Personal Email Address</span>
@@ -1745,7 +1750,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
                     <!-- Education Section -->
                     <div id="section_education" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: #dd2127;"></i> Educational Background</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: #232223;"></i> Educational Background</h3>
                         <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
                             <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead style="background: #5b5b5b; color: #ffffff;">
@@ -1763,7 +1768,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
                     <!-- History Section -->
                     <div id="section_history" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: #dd2127;"></i> Employment History</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: #232223;"></i> Employment History</h3>
                         <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
                             <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead style="background: #5b5b5b; color: #ffffff;">
@@ -1781,7 +1786,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
                     <!-- Bank Details Section -->
                     <div id="section_bank" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: #dd2127;"></i> Bank Details</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: #232223;"></i> Bank Details</h3>
                         <div class="profile-data-grid">
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Account Holder Name</span>
@@ -1865,12 +1870,12 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 <div class="modal fade" id="empLeaveModal" tabindex="-1" role="dialog" aria-labelledby="empLeaveModalLabel" style="display: none;">
     <div class="modal-dialog modal-lg" role="document" style="width: 92%; max-width: 1050px;">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 70px rgba(0,0,0,0.3); overflow: hidden;">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 28px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 28px; border: none; position: relative;">
                 <button type="button" class="close-profile-btn" data-dismiss="modal" aria-label="Close" style="top: 18px; right: 20px;">
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" style="font-weight: 800; display: flex; align-items: center; gap: 12px; margin: 0; font-size: 18px;">
-                    <div style="background: #DD2127; color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                    <div style="background: #232223; color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
                         <i class="fa fa-calendar-check-o"></i>
                     </div>
                     <div>
@@ -1906,12 +1911,12 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                     </div>
 
                     <!-- Total Allowed Leaves Card -->
-                    <div class="leave-stat-card" style="border-left: 4.5px solid #dd2127; background: #fff5f5;">
+                    <div class="leave-stat-card" style="border-left: 4.5px solid #232223; background: #fff5f5;">
                         <div style="flex: 1;">
                             <div style="font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px;">Total Allowed Leaves</div>
                             <div style="font-size: 26px; font-weight: 900; color: #991b1b; margin-top: 4px;" id="modalAllowedLeaves">0 Days</div>
                         </div>
-                        <div style="width: 42px; height: 42px; border-radius: 12px; background: #ffe4e6; color: #dd2127; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: rgb(34 35 35 / 20%); color: #232223; display: flex; align-items: center; justify-content: center; font-size: 18px;">
                             <i class="fa fa-calendar"></i>
                         </div>
                     </div>
@@ -1921,7 +1926,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                 <div id="modalLeaveTypeBreakdown" style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; background: #f8fafc; padding: 14px 18px; border-radius: 14px; border: 1.5px solid #e2e8f0; align-items: center; justify-content: space-between;">
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; flex: 1;">
                         <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa fa-pie-chart" style="color: #dd2127; font-size: 14px;"></i> Policy Allowances:
+                            <i class="fa fa-pie-chart" style="color: #232223; font-size: 14px;"></i> Policy Allowances:
                         </div>
                         <div id="modalLeaveTypeBadges" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
                     </div>
@@ -1937,12 +1942,12 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
                         <div>
                             <span style="font-weight: 800; color: #991b1b; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa fa-user-plus" style="color: #dd2127; font-size: 16px;"></i> Personal Extra Leaves for Employee
+                                <i class="fa fa-user-plus" style="color: #232223; font-size: 16px;"></i> Personal Extra Leaves for Employee
                             </span>
                             <div style="font-size: 11.5px; color: #7f1d1d; margin-top: 3px; font-weight: 500;">Add extra custom leave days for this specific employee on top of the annual policy allowance</div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="number" id="inputExtraLeaves" min="0" max="365" placeholder="e.g. 3" class="form-control" style="height: 40px; font-size: 13px; font-weight: 700; width: 110px; border-radius: 10px; border: 1.5px solid #dd2127; background: #ffffff; text-align: center;">
+                            <input type="number" id="inputExtraLeaves" min="0" max="365" placeholder="e.g. 3" class="form-control" style="height: 40px; font-size: 13px; font-weight: 700; width: 110px; border-radius: 10px; border: 1.5px solid #232223; background: #ffffff; text-align: center;">
                             <button type="button" class="btn-premium-add" onclick="saveExtraLeaves()">
                                 Save Extra Leaves
                             </button>
@@ -1956,7 +1961,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                 <!-- Section Header & Add Button -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1.5px solid #f1f5f9; padding-bottom: 14px;">
                     <h4 style="font-weight: 800; color: #1e293b; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa fa-list-alt" style="color: #dd2127;"></i> Leave Applications & Record History
+                        <i class="fa fa-list-alt" style="color: #232223;"></i> Leave Applications & Record History
                     </h4>
                     <button type="button" class="btn-premium-add" onclick="toggleAddLeaveForm()">
                         <i class="fa fa-plus-circle"></i> Add Leave Entry
@@ -1966,7 +1971,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                 <!-- Admin Add Leave Entry Form -->
                 <div id="addLeaveFormBox" style="display: none; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 22px 24px; margin-bottom: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
                     <h5 style="font-weight: 800; color: #0f172a; margin-top: 0; margin-bottom: 18px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa fa-plus-circle" style="color: #dd2127; font-size: 16px;"></i> Add Leave Entry For Employee
+                        <i class="fa fa-plus-circle" style="color: #232223; font-size: 16px;"></i> Add Leave Entry For Employee
                     </h5>
                     <div class="row">
                         <div class="col-md-3 col-sm-6" style="margin-bottom: 14px;">
@@ -2079,7 +2084,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         $('#leaveModalEmpName').text(empName);
         $('#extraLeaveFormBox').hide();
         $('#addLeaveFormBox').hide();
-        $('#empLeaveHistoryBody').html('<tr><td colspan="5" class="text-center" style="padding: 25px;"><i class="fa fa-spinner fa-spin fa-2x" style="color: #dd2127;"></i><br><span style="color: #64748b; font-weight: 600; font-size: 13px; margin-top: 8px; display: inline-block;">Loading leave details...</span></td></tr>');
+        $('#empLeaveHistoryBody').html('<tr><td colspan="5" class="text-center" style="padding: 25px;"><i class="fa fa-spinner fa-spin fa-2x" style="color: #232223;"></i><br><span style="color: #64748b; font-weight: 600; font-size: 13px; margin-top: 8px; display: inline-block;">Loading leave details...</span></td></tr>');
 
         $('#empLeaveModal').modal('show');
 
@@ -2109,7 +2114,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                             let total = lt.num_of_leave || 0;
                             breakdownHtml += `
                                 <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                                    <span style="color: #dd2127;">${lt.leave_name}:</span>
+                                    <span style="color: #232223;">${lt.leave_name}:</span>
                                     <span style="color: #0f172a;">${used} / ${total} Days</span>
                                 </div>
                             `;
@@ -2122,7 +2127,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                         let extraUsed = res.emp.extra_leaves_used || 0;
                         breakdownHtml += `
                             <div style="background: #fff5f5; border: 1px solid #fca5a5; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #991b1b; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                                <span style="color: #dd2127;"><i class="fa fa-star"></i> Extra Leaves:</span>
+                                <span style="color: #232223;"><i class="fa fa-star"></i> Extra Leaves:</span>
                                 <span style="color: #7f1d1d;">${extraUsed} / ${res.emp.extra_leaves} Days</span>
                             </div>
                         `;
@@ -2163,7 +2168,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
                             rows += `
                                 <tr>
                                     <td style="font-weight: 700; color: #1e293b;">
-                                        <i class="fa fa-tag" style="color: #dd2127; margin-right: 6px;"></i> ${app.leave_name}
+                                        <i class="fa fa-tag" style="color: #232223; margin-right: 6px;"></i> ${app.leave_name}
                                     </td>
                                     <td>
                                         <span style="font-weight: 600; color: #334155;">${app.leave_from}</span> 
@@ -2920,7 +2925,8 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     .doc-modal-header {
         position: relative;
         padding: 20px 25px;
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         border-bottom: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
@@ -2935,7 +2941,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
     .doc-modal-title-group i {
         font-size: 20px;
-        color: #dd2127;
+        color: #232223;
     }
 
     .doc-modal-title-group h3 {
@@ -2986,7 +2992,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         z-index: 9999;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgb(34 35 35 / 20%);
         color: white;
         font-weight: 600;
         transform: translateX(120%);
@@ -3034,10 +3040,11 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .doc-modal-upload-section {
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         border-radius: 16px;
         padding: 15px;
-        border: 1px dashed #dd2127;
+        border: 1px dashed #232223;
     }
 
     .upload-section-header {
@@ -3047,7 +3054,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         margin-bottom: 12px;
         font-size: 13px;
         font-weight: 700;
-        color: #dd2127;
+        color: #232223;
     }
 
     .upload-controls {
@@ -3197,7 +3204,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     .score-red {
         background: #ef4444;
         color: #fff;
-        border-color: #dc2626;
+        border-color: #232223;
     }
 
     .score-gray {
@@ -3337,7 +3344,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .confirm-btn-delete:hover {
-        background: #dc2626;
+        background: #232223;
         transform: translateY(-1px);
         box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
     }
@@ -3485,7 +3492,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
 
     .emp-table-img:hover {
         transform: scale(1.08);
-        border-color: #dd2127;
+        border-color: #232223;
         box-shadow: 0 6px 12px -2px rgba(221, 33, 39, 0.25);
     }
 
@@ -3583,14 +3590,16 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
     }
 
     .profile-nav-item:hover {
-        background: #FFEAEB;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
     }
 
     .profile-nav-item.active {
-        background: #FFEAEB;
-        color: #dd2127;
-        border-right-color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
+        border-right-color: #232223;
     }
 
     .profile-content {
@@ -3664,7 +3673,7 @@ if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
         position: absolute;
         top: 20px;
         right: 20px;
-        background: #dd2127;
+        background: #232223;
         border: none;
         width: 36px;
         height: 36px;

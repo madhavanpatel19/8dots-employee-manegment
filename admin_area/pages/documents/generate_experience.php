@@ -404,7 +404,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">EXPERIENCE LETTER</div>
@@ -433,7 +433,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
 
                 <p>
                     This is to certify that <strong><?php echo htmlspecialchars($name); ?></strong>
-                    was employed with <strong>CADLETE Designs</strong> As a
+                    was employed with <strong>8Dots</strong> As a
                     <strong><?php echo htmlspecialchars($designation); ?></strong>
                     from
                     <strong><?php echo htmlspecialchars($formatted_join); ?></strong> to
@@ -451,7 +451,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                     professional throughout the tenure.
                 </p>
                 <p>
-                    We appreciate her contributions to CADLETE Designs and thank her for the services
+                    We appreciate her contributions to 8Dots and thank her for the services
                     rendered. We wish her every success and prosperity in all future professional
                     endeavors.
                 </p>
@@ -466,7 +466,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                     <div class="sign-text">
                         <div class="name">Smit Ramani</div>
                         <div class="role">CEO & Chief Design Engineer</div>
-                        <div class="company">CADLETE DESIGNS</div>
+                        <div class="company">8Dots</div>
                     </div>
                 </div>
             </div>
@@ -474,9 +474,9 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
@@ -498,7 +498,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">RELIEVING LETTER</div>
@@ -529,7 +529,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                 <p>Dear <?php echo htmlspecialchars($name); ?>,</p>
                 <p>
                     This letter is to confirm that you have been relieved from your duties as <strong><?php echo htmlspecialchars($designation); ?></strong>
-                    at <strong>CADLETE Designs</strong>, effective <?php echo htmlspecialchars($formatted_rel); ?>, following your
+                    at <strong>8Dots</strong>, effective <?php echo htmlspecialchars($formatted_rel); ?>, following your
                     resignation and completion of the required notice period and handover formalities.
                 </p>
                 <p>During your tenure with the company, you fulfilled your responsibilities with
@@ -553,7 +553,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                     <div class="sign-text">
                         <div class="name">Smit Ramani</div>
                         <div class="role">CEO & Chief Design Engineer</div>
-                        <div class="company">CADLETE DESIGNS</div>
+                        <div class="company">8Dots</div>
                     </div>
                 </div>
             </div>
@@ -561,9 +561,9 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>

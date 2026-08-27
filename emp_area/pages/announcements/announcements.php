@@ -81,12 +81,12 @@ $result = mysqli_query($con, $query);
 <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" style="z-index: 99999;">
     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px; width: 90%; margin: 0 auto; display: flex; align-items: center; min-height: calc(100vh - 60px);">
         <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%;">
-            <div class="modal-header" style="background: #ffeaeb; color: #0f172a; padding: 22px 30px; border: none; position: relative;">
+            <div class="modal-header" style="background: rgb(34 35 35 / 20%);; color: #0f172a; padding: 22px 30px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 14px; width: calc(100% - 40px);">
-                    <div style="width: 40px; height: 40px; background: #dd2127; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <div style="width: 40px; height: 40px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="fa fa-bullhorn" style="color: #fff; font-size: 16px;"></i>
                     </div>
                     <div>

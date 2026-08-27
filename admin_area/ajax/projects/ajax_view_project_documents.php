@@ -111,13 +111,13 @@ if (isset($_GET['project_id'])) {
 
             $badge_html = '';
             if ($is_proposal) {
-                $badge_html = '<span style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa fa-lock"></i> PROPOSAL (SUPER ADMIN & ASSIGNED ADMIN)</span>';
+                $badge_html = '<span style="background: #fef2f2; color: #232223; border: 1px solid #fecaca; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa fa-lock"></i> PROPOSAL (SUPER ADMIN & ASSIGNED ADMIN)</span>';
             }
 
             echo '
             <div class="artifact-card-premium" style="background: #fff; border: 1.5px solid #f1f5f9; border-radius: 20px; padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);" onmouseover="this.style.borderColor=\'#e2e8f0\'; this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 10px 15px -3px rgba(0, 0, 0, 0.05)\'" onmouseout="this.style.borderColor=\'#f1f5f9\'; this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 6px -1px rgba(0, 0, 0, 0.02)\'">
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <div style="width: 54px; height: 54px; background:#ffeaeb; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; color:#dd2127">
+                    <div style="width: 54px; height: 54px; background:rgb(34 35 35 / 20%);; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; color:#232223">
                         <i class="fa ' . $icon . '"></i>
                     </div>
                     <div>

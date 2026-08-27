@@ -75,7 +75,7 @@
     }
 
     .upload-area:hover {
-        border-color: #dd2127;
+        border-color: #232223;
     }
 
     /* Common Unified Focus Styles for All Inputs, Selects, Textareas, Phase Inputs & Budget Wrapper */
@@ -90,8 +90,9 @@
     select:focus,
     textarea:focus,
     .budget-input-wrapper:focus-within {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
         outline: none !important;
     }
 
@@ -110,8 +111,9 @@
     .select2-container--default.select2-container--focus .select2-selection--multiple,
     .select2-container--default.select2-container--open .select2-selection--single,
     .select2-container--default.select2-container--open .select2-selection--multiple {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
         outline: none !important;
     }
 </style>
@@ -396,7 +398,7 @@ $run_admins = mysqli_query($con, $get_admins);
 
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     1
                 </div>
                 <div>
@@ -412,13 +414,13 @@ $run_admins = mysqli_query($con, $get_admins);
                     <div class="col-md-4">
                         <label class="premium-label" style="font-size: 14px; color: #334155;">Project Image</label>
                         <div class="upload-area" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; background: #f8fafc; position: relative; transition: 0.3s;">
-                            <div style="width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; color: #dd2127; font-size: 20px; margin-bottom: 15px;">
+                            <div style="width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; color: #232223; font-size: 20px; margin-bottom: 15px;">
                                 <i class="fa fa-image"></i>
                             </div>
                             <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;">Upload project image</h4>
                             <p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">JPG, PNG up to 5MB</p>
 
-                            <label for="project_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #dd2127; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
+                            <label for="project_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #232223; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
                                 Choose File
                             </label>
                             <input type="file" name="project_image" id="project_image" style="display: none;" accept="image/*" onchange="previewImage(this)">
@@ -566,7 +568,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                     ?>
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                             <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
-                                                <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $s_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> <?php echo htmlspecialchars($s_name); ?>
+                                                <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $s_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #232223;"> <?php echo htmlspecialchars($s_name); ?>
                                             </label>
                                             <?php if (canAdminAccess('project_source_delete')): ?>
                                                 <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
@@ -587,7 +589,7 @@ $run_admins = mysqli_query($con, $get_admins);
         <?php if (canAdminAccess('budget_view')): ?>
             <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
                 <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                    <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                         2
                     </div>
                     <div>
@@ -692,7 +694,7 @@ $run_admins = mysqli_query($con, $get_admins);
                         </div>
 
                         <div style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: #fff; display: flex; justify-content: space-between; align-items: center;">
-                            <button type="button" id="add_phase_btn" style="background: #FFEAEB; color: #dd2127; border: 1px solid #FFEAEB; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <button type="button" id="add_phase_btn" style="background: rgb(34 35 35 / 20%);; color: #232223; border: 1px solid rgb(34 35 35 / 20%);; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
                                 <i class="fa fa-plus"></i> Add New Phase
                             </button>
 
@@ -709,7 +711,7 @@ $run_admins = mysqli_query($con, $get_admins);
         <!-- Third Card: Project Documents & Links -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     3
                 </div>
                 <div>
@@ -724,7 +726,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 <div style="margin-bottom: 40px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b;">Files</h4>
-                        <!-- <button type="button" id="add_doc_btn" style="background: #f8fafc; color: #dd2127; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;">
+                        <!-- <button type="button" id="add_doc_btn" style="background: #f8fafc; color: #232223; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;">
                             <i class="fa fa-plus"></i> Add Document
                         </button> -->
                     </div>
@@ -769,9 +771,9 @@ $run_admins = mysqli_query($con, $get_admins);
                         </table>
                     </div>
                     <div style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: #fff; display: flex; justify-content: space-between; align-items: center;">
-                        <button type="button" id="add_doc_btn" style="background: #FFEAEB;
-                                color: #dd2127;
-                                border: 1px solid #FFEAEB;
+                        <button type="button" id="add_doc_btn" style="background: rgb(34 35 35 / 20%);;
+                                color: #232223;
+                                border: 1px solid rgb(34 35 35 / 20%);;
                                 padding: 8px 16px;
                                 border-radius: 6px;
                                 font-weight: 600;
@@ -833,9 +835,9 @@ $run_admins = mysqli_query($con, $get_admins);
                         </div>
                     </div>
                     <div style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: #fff; display: flex; justify-content: space-between; align-items: center;">
-                        <button type="button" id="add_link_btn" style="background: #FFEAEB;
-                                color: #dd2127;
-                                border: 1px solid #FFEAEB;
+                        <button type="button" id="add_link_btn" style="background: rgb(34 35 35 / 20%);;
+                                color: #232223;
+                                border: 1px solid rgb(34 35 35 / 20%);;
                                 padding: 8px 16px;
                                 border-radius: 6px;
                                 font-weight: 600;
@@ -857,8 +859,8 @@ $run_admins = mysqli_query($con, $get_admins);
                         <div style="margin-top: 40px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                 <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #991b1b; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa fa-lock" style="color: #dc2626;"></i> Project Proposal
-                                    <span style="font-size: 10px; font-weight: 800; background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Super Admin & Assigned Admin</span>
+                                    <i class="fa fa-lock" style="color: #232223;"></i> Project Proposal
+                                    <span style="font-size: 10px; font-weight: 800; background: #fee2e2; color: #232223; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Super Admin & Assigned Admin</span>
                                 </h4>
                             </div>
 
@@ -891,7 +893,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                                             $p_url = 'project_docs/' . $p_basename;
                                                         }
                                                         ?>
-                                                        <a href="<?php echo htmlspecialchars($p_url); ?>" target="_blank" style="font-size: 13px; color: #dc2626; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                                                        <a href="<?php echo htmlspecialchars($p_url); ?>" target="_blank" style="font-size: 13px; color: #232223; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
                                                             <i class="fa fa-file-text-o"></i> View Proposal File (<?php echo htmlspecialchars($p_basename); ?>)
                                                         </a>
                                                     </td>
@@ -913,7 +915,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                 </table>
                             </div>
                             <div style="padding: 15px 20px; border-top: 1px solid #fee2e2; background: #fff; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 8px 8px;">
-                                <button type="button" id="add_proposal_btn" class="btn btn-danger btn-sm" style="background: #dc2626; border-color: #dc2626;">
+                                <button type="button" id="add_proposal_btn" class="btn btn-danger btn-sm" style="background: #232223; border-color: #232223;">
                                     <i class="fa fa-plus"></i> Add Proposal
                                 </button>
                             </div>
@@ -945,7 +947,7 @@ $run_admins = mysqli_query($con, $get_admins);
     }
 
     .upload-area:hover {
-        border-color: #dd2127;
+        border-color: #232223;
     }
 
     /* Common Unified Focus Styles for All Inputs, Selects, Textareas, Phase Inputs & Budget Wrapper */
@@ -961,8 +963,9 @@ $run_admins = mysqli_query($con, $get_admins);
     select:focus,
     textarea:focus,
     .budget-input-wrapper:focus-within {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
         outline: none !important;
     }
 
@@ -971,8 +974,9 @@ $run_admins = mysqli_query($con, $get_admins);
     .select2-container--default.select2-container--focus .select2-selection--multiple,
     .select2-container--default.select2-container--open .select2-selection--single,
     .select2-container--default.select2-container--open .select2-selection--multiple {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
         outline: none !important;
     }
 </style>
@@ -1234,12 +1238,12 @@ $run_admins = mysqli_query($con, $get_admins);
 <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="addSourceModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #232223; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Source
@@ -1249,7 +1253,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 <form id="add-source-form-main" onsubmit="event.preventDefault();">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Source Name</label>
-                        <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
                         <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
@@ -1297,7 +1301,7 @@ $run_admins = mysqli_query($con, $get_admins);
                         } else {
                             var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
                                 '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">' +
-                                '<input type="checkbox" name="project_source[]" value="' + data.name + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> ' + data.name +
+                                '<input type="checkbox" name="project_source[]" value="' + data.name + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #232223;"> ' + data.name +
                                 '</label>' +
                                 '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(' + data.id + ', this)"></i>' +
                                 '</div>';
@@ -1331,7 +1335,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 title: 'Error',
                 text: 'Invalid Source ID.',
                 icon: 'error',
-                confirmButtonColor: '#dd2127'
+                confirmButtonColor: '#232223'
             });
             return;
         }
@@ -1341,7 +1345,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 html: 'Are you sure you want to delete this source?<br><span style="font-size: 13px; color: #64748b;">This action cannot be undone.</span>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete',
                 cancelButtonText: 'Cancel',
@@ -1364,7 +1368,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                     title: 'Source Deleted Successfully!',
                                     text: 'The source has been removed.',
                                     icon: 'success',
-                                    confirmButtonColor: '#dd2127',
+                                    confirmButtonColor: '#232223',
                                     confirmButtonText: 'OK',
                                     timer: 1800,
                                     showConfirmButton: false
@@ -1374,7 +1378,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                     title: 'Error',
                                     text: data.message || 'Could not delete source.',
                                     icon: 'error',
-                                    confirmButtonColor: '#dd2127'
+                                    confirmButtonColor: '#232223'
                                 });
                             }
                         },
@@ -1384,7 +1388,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                 title: 'Error',
                                 text: errMsg,
                                 icon: 'error',
-                                confirmButtonColor: '#dd2127'
+                                confirmButtonColor: '#232223'
                             });
                         }
                     });

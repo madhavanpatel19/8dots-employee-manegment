@@ -14,7 +14,7 @@ if (!isset($con)) {
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../css/login.css">
-    <link rel="shortcut icon" href="../../images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+    <link rel="shortcut icon" href="../../images/favicon.png?v=<?php echo time(); ?>" type="image/png">
 
     <style>
         .premium-notification {
@@ -29,7 +29,7 @@ if (!isset($con)) {
             z-index: 9999;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgb(34 35 35 / 20%);
             color: white;
             font-weight: 600;
             font-family: inherit;
@@ -87,10 +87,10 @@ if (!isset($con)) {
         <div class="login-card">
             <form action="" method="post">
                 <div class="brand-logo">
-                    <img src="../../images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+                    <img src="../../images/logo.png" alt="8Dots">
                 </div>
                 <h2 class="welcome-text">Welcome Back!</h2>
-                <p class="subtitle">Sign in to continue to Cadlete Designs Portal</p>
+                <p class="subtitle">Sign in to continue to 8Dots Portal</p>
 
                 <div class="login-input-wrap">
                     <i class="fa fa-envelope-o input-icon"></i>
@@ -118,7 +118,7 @@ if (!isset($con)) {
                 </button>
 
 
-                <!-- <p class="copyright">&copy; 2026 Cadlete Designs. All rights reserved.</p> -->
+                <!-- <p class="copyright">&copy; 2026 8Dots. All rights reserved.</p> -->
             </form>
         </div>
     </div>

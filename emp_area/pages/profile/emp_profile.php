@@ -53,7 +53,7 @@ if (!isset($_SESSION['emp_id'])) {
                     <div style="height: 100px; background: var(--p-bg-header)"></div>
                     <div style="padding: 0 30px 30px 30px; margin-top: -50px; text-align: center;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="../admin_area/uploads/<?php echo !empty($emp_image) ? $emp_image : '../admin_images/default.png'; ?>" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: #fff;">
+                            <img src="../admin_area/uploads/<?php echo !empty($emp_image) ? $emp_image : '../admin_images/default.png'; ?>" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; object-position: top center; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: #fff;">
                             <div style="position: absolute; bottom: 5px; right: 5px; width: 22px; height: 22px; background: #10b981; border: 3px solid #fff; border-radius: 50%;"></div>
                         </div>
                         <h2 style="margin: 15px 0 5px 0; font-size: 20px; font-weight: 800; color: #1e293b;"><?php echo htmlspecialchars($emp_name); ?></h2>
@@ -61,12 +61,12 @@ if (!isset($_SESSION['emp_id'])) {
 
                         <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; display: flex; flex-direction: column; gap: 15px; text-align: left;">
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="width: 32px; height: 32px; border-radius: 10px; background: #fee2e2; color: #dd2127; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                                <div style="width: 32px; height: 32px; border-radius: 10px; background: #fee2e2; color: #232223; display: flex; align-items: center; justify-content: center; font-size: 14px;">
                                     <i class="fa fa-building"></i>
                                 </div>
                                 <div>
                                     <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Company Email (Login)</div>
-                                    <div style="font-size: 13px; font-weight: 700; color: #dd2127;"><?php echo htmlspecialchars($emp_company_email); ?></div>
+                                    <div style="font-size: 13px; font-weight: 700; color: #232223;"><?php echo htmlspecialchars($emp_company_email); ?></div>
                                 </div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
@@ -195,9 +195,9 @@ if (!isset($_SESSION['emp_id'])) {
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: rgb(34 35 35 / 20%);; border-radius: 14px 14px 0 0; position: relative;">
                     <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                        <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                             <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
                         </div>
                         <div>
@@ -213,7 +213,7 @@ if (!isset($_SESSION['emp_id'])) {
                     <form class="form-horizontal" method="POST" enctype="multipart/form-data">
                         <div style="text-align: center; margin-bottom: 25px;">
                             <div style="position: relative; display: inline-block;">
-                                <img id="edit_profile_preview" src="../admin_area/uploads/<?php echo !empty($emp_image) ? $emp_image : '../admin_images/default.png'; ?>" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #f1f5f9;">
+                                <img id="edit_profile_preview" src="../admin_area/uploads/<?php echo !empty($emp_image) ? $emp_image : '../admin_images/default.png'; ?>" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; object-position: top center; border: 3px solid #f1f5f9;">
                                 <label for="edit_employee_image" style="position: absolute; bottom: 0; right: 0; background: #334155; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff;">
                                     <i class="fa fa-camera" style="font-size: 12px;"></i>
                                 </label>

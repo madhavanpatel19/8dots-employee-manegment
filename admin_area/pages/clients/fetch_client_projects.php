@@ -87,10 +87,10 @@ if (isset($_POST['client_id'])) {
                                 <div class="timeline-container-premium" style="background: transparent; border: none; padding: 0; margin-bottom: 0;">
                                     <div class="timeline-header-premium" style="margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;">
                                         <div style="display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
-                                            <i class="fa fa-history" style="color: #dd2127; font-size: 14px;"></i>
+                                            <i class="fa fa-history" style="color: #232223; font-size: 14px;"></i>
                                             <span>Project Activity Timeline</span>
                                         </div>
-                                        <a href="download_progress_report.php?project_id=<?php echo $project_id; ?>" target="_blank" style="background: #ffeaeb; color: #dd2127; border: 1px solid #ffeaeb; border-radius: 8px; padding: 6px 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                        <a href="download_progress_report.php?project_id=<?php echo $project_id; ?>" target="_blank" style="background: rgb(34 35 35 / 20%);; color: #232223; border: 1px solid rgb(34 35 35 / 20%);; border-radius: 8px; padding: 6px 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                             <i class="fa fa-download"></i> Download Progress Report
                                         </a>
                                     </div>
@@ -107,8 +107,8 @@ if (isset($_POST['client_id'])) {
                                                         $poster = (strpos($r['remark'], 'System:') === 0) ? 'System' : 'Team Member';
                                                     }
                                                     $is_sys = (strtolower($poster) === 'system');
-                                                    $poster_badge_bg = $is_sys ? '#f1f5f9' : '#ffeaeb';
-                                                    $poster_badge_color = $is_sys ? '#64748b' : '#dd2127';
+                                                    $poster_badge_bg = $is_sys ? '#f1f5f9' : 'rgb(34 35 35 / 20%);';
+                                                    $poster_badge_color = $is_sys ? '#64748b' : '#232223';
                                                     $poster_icon = $is_sys ? 'fa-cog' : 'fa-user';
                                             ?>
                                                     <div class="timeline-remark-item" style="margin-bottom: 25px; position: relative; padding-left: 32px; width: 100%;">
@@ -141,12 +141,12 @@ if (isset($_POST['client_id'])) {
                             <div class="col-md-5">
                                 <div class="remark-action-premium glass-card-premium" style="padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.08);">
                                     <h4 style="font-size: 11px; font-weight: 950; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-                                        <div style="width: 8px; height: 8px; background: #dd2127; border-radius: 50%;"></div>
+                                        <div style="width: 8px; height: 8px; background: #232223; border-radius: 50%;"></div>
                                         Post Progress Update
                                     </h4>
                                     <div class="action-input-wrapper" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
                                         <textarea class="remark-textarea p-input-premium" style="width: 100%; height: 120px; resize: none; font-size: 14px; box-sizing: border-box;" placeholder="What milestone was achieved today?"></textarea>
-                                        <button type="button" class="add-remark-btn" data-project-id="<?php echo $project_id; ?>" style="width: 100%; height: 48px; font-size: 14px; background: #dd2127; color: #ffffff; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-weight: 700; gap: 8px; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.2); box-sizing: border-box;">
+                                        <button type="button" class="add-remark-btn" data-project-id="<?php echo $project_id; ?>" style="width: 100%; height: 48px; font-size: 14px; background: #232223; color: #ffffff; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-weight: 700; gap: 8px; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.2); box-sizing: border-box;">
                                             <i class="fa fa-send"></i> Post Update
                                         </button>
                                     </div>

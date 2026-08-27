@@ -160,11 +160,11 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
         <div class="slip-top-decor"></div>
         <div class="slip-header">
             <div class="company-left">
-                <img src="../admin_area/images/cadlete_Black_logo_favicon.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
+                <img src="../admin_area/images/favicon.png" alt="8Dots Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                 <div class="company-center">
-                    <h3 class="company-name">CADLETE DESIGNS</h3>
+                    <h3 class="company-name">8Dots</h3>
                     <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
-                    <div class="company-meta-small">Phone: 091 83202 11773 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
+                    <div class="company-meta-small">Phone: 8155816776 &nbsp;|&nbsp; Email: hr@8dots.in</div>
                 </div>
             </div>
             <div class="slip-meta">

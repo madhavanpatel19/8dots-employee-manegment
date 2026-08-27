@@ -396,7 +396,7 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
         }
 
         .btn-print {
-            background: #dd2127;
+            background: #232223;
             color: #fff;
             border: none;
         }
@@ -471,7 +471,7 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
             <!-- TITLE -->
@@ -511,7 +511,7 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
 
                 <p>
                     We are pleased to offer you the position of <strong><?php echo htmlspecialchars($position); ?></strong>
-                    at <strong>CADLETE DESIGNS</strong>. We are confident that your skills and experience will be
+                    at <strong>8Dots</strong>. We are confident that your skills and experience will be
                     an excellent addition to our team.
                 </p>
 
@@ -527,7 +527,7 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
 
                 <p>
                     We believe that you will thrive in this role and contribute significantly to the success of
-                    <strong>CADLETE DESIGNS</strong>.<br>
+                    <strong>8Dots</strong>.<br>
                     <br>
 
                     Please confirm your acceptance of this offer by replying to this email. If you have any
@@ -547,7 +547,7 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
                     <div class="sign-text">
                         <div class="name">Smit Ramani</div>
                         <div class="role">Founder &amp; CEO</div>
-                        <div class="company">CADLETE DESIGNS</div>
+                        <div class="company">8Dots</div>
                     </div>
                 </div>
             </div>
@@ -556,9 +556,9 @@ $formatted_start       = date("d-m-Y", strtotime($start_date));
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>

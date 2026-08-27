@@ -206,7 +206,7 @@ if (isset($_POST['reset_password'])) {
             <?php if ($currentState === 'email') { ?>
                 <form action="" method="POST">
                     <div class="brand-logo">
-                        <img src="../../images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+                        <img src="../../images/logo.png" alt="8Dots">
                     </div>
                     <h2 class="welcome-text">Forgot Password</h2>
                     <p class="subtitle">Enter your email to receive an OTP</p>
@@ -233,7 +233,7 @@ if (isset($_POST['reset_password'])) {
             <?php } else { ?>
                 <form action="" method="POST">
                     <div class="brand-logo">
-                        <img src="images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+                        <img src="images/logo.png" alt="8Dots">
                     </div>
                     <h2 class="welcome-text">Reset Password</h2>
                     <p class="subtitle">Create a new secure password</p>

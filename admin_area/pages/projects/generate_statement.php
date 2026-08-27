@@ -406,7 +406,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Project Statement - ' . $current_d
         }
 
         .btn-print {
-            background: #dd2127;
+            background: #232223;
             color: #fff;
             border: none;
             border-radius: 10px;
@@ -477,7 +477,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Project Statement - ' . $current_d
                 <div class="red-bar"></div>
             </div>
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo%20Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo" alt="8Dots Logo">
             </div>
 
             <!-- ── TITLE ── -->
@@ -580,7 +580,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Project Statement - ' . $current_d
                                     ?>
                                         <tr style="background: #f8fafc; font-size: 11px; color: #475569;">
                                             <td></td>
-                                            <td style="padding-left: 12px; font-weight: 600; color: #dd2127; text-align: left; word-break: break-word; white-space: normal;">
+                                            <td style="padding-left: 12px; font-weight: 600; color: #232223; text-align: left; word-break: break-word; white-space: normal;">
                                                 Payment #<?php echo $p_idx + 1; ?>
                                             </td>
                                             <td style="color: #64748b; font-size: 11px; text-align: left; word-break: break-word;"><?php echo $p_note; ?></td>
@@ -604,9 +604,9 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Project Statement - ' . $current_d
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>

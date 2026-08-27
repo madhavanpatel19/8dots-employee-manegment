@@ -76,8 +76,8 @@
     .select2-container--default.select2-container--focus .select2-selection--multiple,
     .select2-container--default.select2-container--open .select2-selection--single,
     .select2-container--default.select2-container--open .select2-selection--multiple {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%) !important;
         outline: none !important;
     }
 </style>
@@ -315,7 +315,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                         ?>
                                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                                 <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
-                                                    <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> <?php echo htmlspecialchars($s_name); ?>
+                                                    <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #232223;"> <?php echo htmlspecialchars($s_name); ?>
                                                 </label>
                                                 <?php if (canAdminAccess('project_source_delete')): ?>
                                                     <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
@@ -412,12 +412,12 @@ $run_admins = mysqli_query($con, $get_admins);
 <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="addSourceModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #232223; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Source
@@ -427,7 +427,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 <form id="add-source-form-main" onsubmit="event.preventDefault();">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Source Name</label>
-                        <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
                         <button type="button" class="btn-premium-cancel" data-dismiss="modal">Cancel</button>
@@ -496,7 +496,7 @@ $run_admins = mysqli_query($con, $get_admins);
                         } else {
                             var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
                                 '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">' +
-                                '<input type="checkbox" name="lead_source[]" value="' + data.name + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> ' + data.name +
+                                '<input type="checkbox" name="lead_source[]" value="' + data.name + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #232223;"> ' + data.name +
                                 '</label>' +
                                 '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(' + data.id + ', this)"></i>' +
                                 '</div>';
@@ -516,7 +516,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                 title: 'Source Selected!',
                                 text: 'The source has been checked and selected.',
                                 icon: 'success',
-                                confirmButtonColor: '#dd2127',
+                                confirmButtonColor: '#232223',
                                 timer: 1500,
                                 showConfirmButton: false
                             });
@@ -539,7 +539,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 title: 'Error',
                 text: 'Invalid Source ID.',
                 icon: 'error',
-                confirmButtonColor: '#dd2127'
+                confirmButtonColor: '#232223'
             });
             return;
         }
@@ -549,7 +549,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 html: 'Are you sure you want to delete this source?<br><span style="font-size: 13px; color: #64748b;">This action cannot be undone.</span>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete',
                 cancelButtonText: 'Cancel',
@@ -572,7 +572,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                     title: 'Source Deleted Successfully!',
                                     text: 'The source has been removed.',
                                     icon: 'success',
-                                    confirmButtonColor: '#dd2127',
+                                    confirmButtonColor: '#232223',
                                     confirmButtonText: 'OK',
                                     timer: 1800,
                                     showConfirmButton: false
@@ -582,7 +582,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                     title: 'Error',
                                     text: data.message || 'Could not delete source.',
                                     icon: 'error',
-                                    confirmButtonColor: '#dd2127'
+                                    confirmButtonColor: '#232223'
                                 });
                             }
                         },
@@ -592,7 +592,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                 title: 'Error',
                                 text: errMsg,
                                 icon: 'error',
-                                confirmButtonColor: '#dd2127'
+                                confirmButtonColor: '#232223'
                             });
                         }
                     });

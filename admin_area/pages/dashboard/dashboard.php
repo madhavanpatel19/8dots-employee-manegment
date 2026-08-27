@@ -314,7 +314,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                             <tr style="transition: all 0.2s ease;">
                                 <td style="padding: 12px 10px;">
                                     <div style="display:flex; align-items:center; gap:12px;">
-                                        <div style="width:40px; height:40px; border-radius:12px; background:#ffeaeb; display:flex; align-items:center; justify-content:center; font-size:16px; color:#dd2127; flex-shrink:0;">
+                                        <div style="width:40px; height:40px; border-radius:12px; background:rgb(34 35 35 / 20%);; display:flex; align-items:center; justify-content:center; font-size:16px; color:#232223; flex-shrink:0;">
                                             <i class="fa fa-folder-open"></i>
                                         </div>
                                         <div>
@@ -329,7 +329,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                                     <span style="font-size:13px; font-weight:600; color:var(--text-muted);"><i class="fa fa-calendar-o" style="margin-right:4px; opacity: 0.7;"></i><?php echo $date_formatted; ?></span>
                                 </td>
                                 <td style="text-align:center; padding: 12px 10px;">
-                                    <span class="status-badge" style="background:#ffeaeb; color:#dd2127; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.3px;">
+                                    <span class="status-badge" style="background:rgb(34 35 35 / 20%);; color:#232223; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.3px;">
                                         <?php echo $status; ?>
                                     </span>
                                 </td>
@@ -399,7 +399,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                                 $badge_color = '#2563eb';
                             } elseif ($status === 'expired') {
                                 $badge_bg = '#fee2e2';
-                                $badge_color = '#dc2626';
+                                $badge_color = '#232223';
                             }
 
                             $followup_formatted = !empty($followup_date) ? date('d-m-Y', strtotime($followup_date)) : '-';
@@ -423,7 +423,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                                     <span style="font-size:12px; font-weight:600; color:var(--text-muted);"><?php echo $followup_formatted; ?></span>
                                 </td>
                                 <td style="text-align:center;">
-                                    <span class="status-badge" style="background:#ffeaeb; color:#dd2127;">
+                                    <span class="status-badge" style="background:rgb(34 35 35 / 20%);; color:#232223;">
                                         <?php echo ucfirst($status); ?>
                                     </span>
                                 </td>
@@ -457,7 +457,7 @@ if ($res && mysqli_num_rows($res) > 0) {
 <div class="bottom-panel">
     <div class="panel-title-row">
         <div style="display:flex; align-items:center; gap:10px;">
-            <div class="panel-header-icon" style="background: #ffeaeb; color: #dd2127; width:32px; height:32px; font-size:14px; display:flex; align-items:center; justify-content:center; border-radius:8px;"><i class="fa fa-user"></i></div>
+            <div class="panel-header-icon" style="background: rgb(34 35 35 / 20%);; color: #232223; width:32px; height:32px; font-size:14px; display:flex; align-items:center; justify-content:center; border-radius:8px;"><i class="fa fa-user"></i></div>
             <h3 style="font-size:18px;">Today's Attendance</h3>
         </div>
         <?php if (canAdminAccess('attendance_view')): ?>
@@ -541,7 +541,7 @@ if ($res && mysqli_num_rows($res) > 0) {
                         $has_checked_in = !empty($att_row['check_in_time']) && $att_row['check_in_time'] !== '00:00:00';
 
                         $badge_bg = '#fee2e2';
-                        $badge_color = '#dc2626';
+                        $badge_color = '#232223';
                         $badge_text = 'Not Checked In';
 
                         if ($has_checked_in) {
@@ -554,12 +554,12 @@ if ($res && mysqli_num_rows($res) > 0) {
                                 $badge_color = '#16a34a';
                                 $badge_text = 'Completed';
                             } elseif (strtolower($status) === 'late') {
-                                $badge_bg = '#ffeaeb';
-                                $badge_color = '#dd2127';
+                                $badge_bg = 'rgb(34 35 35 / 20%);';
+                                $badge_color = '#232223';
                                 $badge_text = 'Late';
                             } elseif (strtolower($status) === 'absent') {
                                 $badge_bg = '#fee2e2';
-                                $badge_color = '#dc2626';
+                                $badge_color = '#232223';
                                 $badge_text = 'Absent';
                             } elseif (strtolower($status) === 'leave') {
                                 $badge_bg = '#fef3c7';
@@ -577,9 +577,9 @@ if ($res && mysqli_num_rows($res) > 0) {
                                 <div class="emp-info" style="justify-content: left; display: flex; align-items: center; gap: 10px;">
                                     <?php if ($has_img): ?>
                                         <img src="<?php echo $e_img; ?>" alt="<?php echo $e_name; ?>" style="width:34px; height:34px; border-radius:50%; object-fit:cover; border:1px solid #cbd5e1;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div style="display:none; width:34px; height:34px; border-radius:50%; background:#ffeaeb; align-items:center; justify-content:center; font-size:13px; color:#dd2127; font-weight:800; flex-shrink:0; border: 1px solid #fca5a5;"><?php echo $first_letter; ?></div>
+                                        <div style="display:none; width:34px; height:34px; border-radius:50%; background:rgb(34 35 35 / 20%);; align-items:center; justify-content:center; font-size:13px; color:#232223; font-weight:800; flex-shrink:0; border: 1px solid #fca5a5;"><?php echo $first_letter; ?></div>
                                     <?php else: ?>
-                                        <div style="width:34px; height:34px; border-radius:50%; background:#ffeaeb; display:flex; align-items:center; justify-content:center; font-size:13px; color:#dd2127; font-weight:800; flex-shrink:0; border: 1px solid #fca5a5;"><?php echo $first_letter; ?></div>
+                                        <div style="width:34px; height:34px; border-radius:50%; background:rgb(34 35 35 / 20%);; display:flex; align-items:center; justify-content:center; font-size:13px; color:#232223; font-weight:800; flex-shrink:0; border: 1px solid #fca5a5;"><?php echo $first_letter; ?></div>
                                     <?php endif; ?>
                                     <span><?php echo $e_name; ?></span>
                                 </div>

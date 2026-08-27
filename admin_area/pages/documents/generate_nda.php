@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name'])) {
 
 $date_formatted =
     date("d-m-Y", strtotime($start_date));
-    $current_date = date("d-m-Y");
+$current_date = date("d-m-Y");
 
 ?>
 
@@ -353,7 +353,7 @@ $date_formatted =
         }
 
         .btn-print {
-            background: #dd2127;
+            background: #232223;
             color: #fff;
             border: none;
         }
@@ -408,7 +408,7 @@ $date_formatted =
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">NON-DISCLOSURE AGREEMENT</div>
@@ -418,7 +418,7 @@ $date_formatted =
                 <div class="right"></div>
             </div>
             <div class="content">
-                <p>This Non-Disclosure Agreement (the "Agreement") is made and entered into as of <strong>DATE: <?php echo htmlspecialchars($date_formatted); ?></strong>, by and between CADLETE Designs ("Disclosing Party") and <strong><?php echo htmlspecialchars($name); ?></strong> ("Receiving Party").
+                <p>This Non-Disclosure Agreement (the "Agreement") is made and entered into as of <strong>DATE: <?php echo htmlspecialchars($date_formatted); ?></strong>, by and between 8Dots ("Disclosing Party") and <strong><?php echo htmlspecialchars($name); ?></strong> ("Receiving Party").
                 </p>
                 <p>
                     <strong>1. Definition of Confidential Information</strong><br>
@@ -458,9 +458,9 @@ $date_formatted =
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
@@ -481,7 +481,7 @@ $date_formatted =
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">NON-DISCLOSURE AGREEMENT</div>
@@ -531,9 +531,9 @@ $date_formatted =
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
@@ -553,7 +553,7 @@ $date_formatted =
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
             <div class="title">NON-DISCLOSURE AGREEMENT</div>
@@ -578,7 +578,7 @@ $date_formatted =
                             <div>Date</div>
                             <div style="flex: 0 0 140px; border-bottom: 1px dashed #888; margin-left: 10px;"></div>
                         </div>
-                        <div>Print Name: Smit Ramani, CADLETE DESIGNS, India</div>
+                        <div>Print Name: Smit Ramani, 8Dots, India</div>
                     </div>
                     <br>
 
@@ -601,9 +601,9 @@ $date_formatted =
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
                         <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>

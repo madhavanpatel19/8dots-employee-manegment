@@ -99,7 +99,7 @@ if (!isset($_SESSION['admin_email'])) {
     <!-- MODERN SIDEBAR -->
     <aside class="modern-sidebar">
         <div class="sidebar-logo">
-            <img src="images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
+            <img src="images/logo.png" alt="8Dots">
         </div>
 
         <div class="sidebar-menu">

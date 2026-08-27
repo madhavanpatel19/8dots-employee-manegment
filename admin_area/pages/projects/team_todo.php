@@ -99,8 +99,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         width: 40px !important;
         height: 40px !important;
         border-radius: 50% !important;
-        background: #ffeaeb !important;
-        color: #dd2127 !important;
+        background: rgb(34 35 35 / 20%);
+        !important;
+        color: #232223 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -133,7 +134,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .icon-btn:hover {
-        color: #dd2127 !important;
+        color: #232223 !important;
     }
 
     .add-task-trigger {
@@ -153,9 +154,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .add-task-trigger:hover {
-        color: #dd2127 !important;
+        color: #232223 !important;
         border-color: #fca5a5 !important;
-        background: #ffeaeb !important;
+        background: rgb(34 35 35 / 20%);
+        !important;
     }
 
     .add-task-form {
@@ -179,8 +181,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-input:focus {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
     }
 
     .task-date-input,
@@ -221,8 +224,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-checkbox:hover {
-        border-color: #dd2127 !important;
-        background: #ffeaeb !important;
+        border-color: #232223 !important;
+        background: rgb(34 35 35 / 20%);
+        !important;
     }
 
     .task-checkbox i {
@@ -232,8 +236,8 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-item.completed .task-checkbox {
-        background: #dd2127 !important;
-        border-color: #dd2127 !important;
+        background: #232223 !important;
+        border-color: #232223 !important;
     }
 
     .task-item.completed .task-checkbox i {
@@ -253,7 +257,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .task-name-clickable:hover {
-        color: #dd2127 !important;
+        color: #232223 !important;
         text-decoration: underline !important;
     }
 
@@ -269,8 +273,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .date-badge {
-        background: #ffeaeb !important;
-        color: #dd2127 !important;
+        background: rgb(34 35 35 / 20%);
+        !important;
+        color: #232223 !important;
         padding: 3px 8px !important;
         border-radius: 6px !important;
         font-size: 11px !important;
@@ -345,8 +350,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .tdm-list-tag:hover {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
     }
 
     .tdm-top-actions {
@@ -370,8 +376,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .tdm-icon-btn:hover {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
         border-color: #fca5a5;
     }
 
@@ -386,8 +393,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
     #taskDetailModal .btn-modal-close:hover,
     #commonTaskModal .btn-modal-close:hover {
-        background: #ffeaeb !important;
-        color: #dd2127 !important;
+        background: rgb(34 35 35 / 20%);
+        !important;
+        color: #232223 !important;
         transform: rotate(90deg) !important;
     }
 
@@ -416,13 +424,14 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .tdm-check:hover {
-        border-color: #dd2127;
-        background: #ffeaeb;
+        border-color: #232223;
+        background: rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-check.td-completed {
-        background: #dd2127;
-        border-color: #dd2127;
+        background: #232223;
+        border-color: #232223;
         color: #fff;
     }
 
@@ -511,8 +520,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
     .tdm-date-input:focus,
     .tdm-select:focus {
-        border-color: #dd2127;
-        box-shadow: 0 0 0 3px #ffeaeb;
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-section {
@@ -535,7 +545,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .tdm-section-title i {
-        color: #dd2127;
+        color: #232223;
         font-size: 15px;
     }
 
@@ -560,8 +570,9 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
     .tdm-desc:focus,
     .tdm-desc.focused {
-        border-color: #dd2127;
-        box-shadow: 0 0 0 3px #ffeaeb;
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-comment-add {
@@ -576,7 +587,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         display: flex;
         align-items: center;
@@ -604,12 +615,13 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
     .tdm-comment-textarea:focus,
     .tdm-comment-textarea.focused {
-        border-color: #dd2127;
-        box-shadow: 0 0 0 3px #ffeaeb;
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-save-btn {
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -646,12 +658,13 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         width: 26px;
         height: 26px;
         border-radius: 50%;
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 11px;
-        color: #dd2127;
+        color: #232223;
         flex-shrink: 0;
     }
 
@@ -665,7 +678,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         display: flex;
         align-items: center;
@@ -721,7 +734,8 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .td-comment-attachment-pill:hover {
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         border-color: #fca5a5;
     }
 
@@ -753,7 +767,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     }
 
     .td-act-link:hover {
-        color: #dd2127;
+        color: #232223;
         text-decoration: underline;
     }
 
@@ -789,10 +803,10 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
         <div style="display: flex; align-items: center; gap: 16px;">
             <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px;">
-                <i class="fa fa-list-alt" style="color: #dd2127;"></i> Team To-Do
+                <i class="fa fa-list-alt" style="color: #232223;"></i> Team To-Do
             </h1>
-            <div style="padding: 6px 14px; background: #ffeaeb; border: 1px solid #fca5a5; border-radius: 8px; font-size: 13px; font-weight: 700; color: #dd2127; display: flex; align-items: center; gap: 8px;">
-                <i class="fa fa-building-o" style="color: #dd2127;"></i> <?php echo htmlspecialchars($project['project_name']); ?>
+            <div style="padding: 6px 14px; background: rgb(34 35 35 / 20%);; border: 1px solid #fca5a5; border-radius: 8px; font-size: 13px; font-weight: 700; color: #232223; display: flex; align-items: center; gap: 8px;">
+                <i class="fa fa-building-o" style="color: #232223;"></i> <?php echo htmlspecialchars($project['project_name']); ?>
             </div>
         </div>
         <div class="header-actions-premium" style="display: flex; gap: 14px; align-items: center;">
@@ -817,7 +831,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             ['primary' => '#4f46e5', 'border' => '#6366f1', 'bg' => '#e0e7ff', 'color' => '#3730a3', 'badge_border' => '#c7d2fe'],
             ['primary' => '#059669', 'border' => '#10b981', 'bg' => '#d1fae5', 'color' => '#065f46', 'badge_border' => '#a7f3d0'],
             ['primary' => '#d97706', 'border' => '#f59e0b', 'bg' => '#fef3c7', 'color' => '#92400e', 'badge_border' => '#fde68a'],
-            ['primary' => '#e11d48', 'border' => '#f43f5e', 'bg' => '#ffe4e6', 'color' => '#9f1239', 'badge_border' => '#fecdd3'],
+            ['primary' => '#232223', 'border' => '#f43f5e', 'bg' => 'rgb(34 35 35 / 20%)', 'color' => '#9f1239', 'badge_border' => '#fecdd3'],
             ['primary' => '#7c3aed', 'border' => '#8b5cf6', 'bg' => '#ede9fe', 'color' => '#5b21b6', 'badge_border' => '#ddd6fe'],
             ['primary' => '#0891b2', 'border' => '#06b6d4', 'bg' => '#cffaff', 'color' => '#155e75', 'badge_border' => '#a5f3fc'],
             ['primary' => '#db2777', 'border' => '#ec4899', 'bg' => '#fce7f3', 'color' => '#9d174d', 'badge_border' => '#fbcfe8'],
@@ -860,7 +874,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                     ?>
                     <?php if ($can_add_task_here) : ?>
                         <div class="add-task-trigger" onclick="showAddTask(<?php echo $emp_id; ?>)">
-                            <i class="fa fa-plus-circle" style="font-size: 16px; color: #dd2127;"></i>
+                            <i class="fa fa-plus-circle" style="font-size: 16px; color: #232223;"></i>
                             <span>Add a task</span>
                         </div>
 
@@ -907,7 +921,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
         <!-- 2-Column Split Layout (Matching Reference Photo EXACTLY) -->
         <div class="tdm-body">
- 
+
             <!-- LEFT COLUMN (54% Width): Title, Pills & Description -->
             <div class="tdm-left">
                 <!-- Title Row: Check Circle + Large Bold Title Input -->
@@ -916,7 +930,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                         <i class="fa fa-check"></i>
                     </div>
                     <textarea id="td-title" class="tdm-title-input" rows="1" placeholder="Task title..."
-                        onfocus="this.style.borderBottomColor='#dd2127'"
+                        onfocus="this.style.borderBottomColor='#232223'"
                         onblur="this.style.borderBottomColor='transparent'; saveTdField('task_name', this.value)"></textarea>
                 </div>
 
@@ -944,7 +958,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                     <div class="tdm-section-title" style="display: flex; justify-content: space-between; align-items: center;">
                         <span><i class="fa fa-align-left"></i> Description</span>
                         <div id="td-desc-upload-btn-wrap" style="display: none;">
-                            <label style="margin: 0; padding: 4px 10px; background: #ffeaeb; color: #dd2127; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.15s;" title="Upload Document for Description">
+                            <label style="margin: 0; padding: 4px 10px; background: rgb(34 35 35 / 20%);; color: #232223; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.15s;" title="Upload Document for Description">
                                 <i class="fa fa-paperclip"></i> Attach Document
                                 <input type="file" id="td-desc-file-input" style="display: none;" onchange="uploadTdDescAttachment(this)">
                             </label>
@@ -979,14 +993,14 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                             onfocus="document.getElementById('td-comment-actions').style.display='flex'; this.classList.add('focused')"
                             onkeydown="if(event.ctrlKey && event.key==='Enter'){tdSubmitComment();}"></textarea>
 
-                        <div id="td-comment-file-preview" style="display:none; font-size:11.5px; color:#dd2127; font-weight:600; margin-top:6px; background:#ffeaeb; padding:4px 8px; border-radius:6px; width:fit-content; align-items:center; gap:6px;">
+                        <div id="td-comment-file-preview" style="display:none; font-size:11.5px; color:#232223; font-weight:600; margin-top:6px; background:rgb(34 35 35 / 20%);; padding:4px 8px; border-radius:6px; width:fit-content; align-items:center; gap:6px;">
                             <i class="fa fa-paperclip"></i> <span id="td-comment-file-name">file.pdf</span>
                             <i class="fa fa-times" onclick="clearTdCommentFile()" style="cursor:pointer; margin-left:4px;"></i>
                         </div>
 
                         <div id="td-comment-actions" style="display:none; margin-top:8px; justify-content:space-between; align-items:center;">
                             <label style="margin:0; font-size:12px; color:#64748b; cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-weight:600;" title="Attach Document to Comment">
-                                <i class="fa fa-paperclip" style="color:#dd2127; font-size:14px;"></i> Attach File
+                                <i class="fa fa-paperclip" style="color:#232223; font-size:14px;"></i> Attach File
                                 <input type="file" id="td-comment-file" style="display:none;" onchange="handleTdCommentFileSelect(this)">
                             </label>
                             <div style="display:flex; align-items:center; gap:8px;">
@@ -1010,7 +1024,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
     <div id="commonTaskModal" style="background: #ffffff; border-radius: 16px; max-width: 650px; width: 100%; margin: 0 auto; padding: 24px 28px; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25); position: relative; box-sizing: border-box; animation: tdSlideIn .2s ease;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: #ffeaeb; color: #dd2127; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: rgb(34 35 35 / 20%);; color: #232223; display: flex; align-items: center; justify-content: center; font-size: 18px;">
                     <i class="fa fa-users"></i>
                 </div>
                 <div>
@@ -1025,13 +1039,13 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             <!-- Task Name -->
             <div style="margin-bottom: 16px;">
                 <label style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px; letter-spacing: 0.5px;">TASK NAME / ACTIVITY TITLE <span style="color: #ef4444;">*</span></label>
-                <input type="text" id="ct-task-name" placeholder="What needs to be done across team?" required style="width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 3px #ffeaeb';" onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';">
+                <input type="text" id="ct-task-name" placeholder="What needs to be done across team?" required style="width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: 600; color: #0f172a; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgb(34 35 35 / 20%);';" onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';">
             </div>
 
             <!-- Description -->
             <div style="margin-bottom: 16px;">
                 <label style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px; letter-spacing: 0.5px;">ACTIVITY DESCRIPTION / INSTRUCTIONS</label>
-                <textarea id="ct-description" rows="3" placeholder="Add detailed instructions or task description for all assigned employees..." style="width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 13.5px; color: #334155; outline: none; transition: 0.2s; resize: vertical;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 3px #ffeaeb';" onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"></textarea>
+                <textarea id="ct-description" rows="3" placeholder="Add detailed instructions or task description for all assigned employees..." style="width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 13.5px; color: #334155; outline: none; transition: 0.2s; resize: vertical;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgb(34 35 35 / 20%);';" onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"></textarea>
             </div>
 
             <!-- Due Date & Priority -->
@@ -1054,8 +1068,8 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             <div style="margin-bottom: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <label style="font-size: 12px; font-weight: 800; color: #334155; letter-spacing: 0.5px; margin: 0;">ASSIGN TO EMPLOYEES</label>
-                    <label style="font-size: 12px; font-weight: 700; color: #dd2127; cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
-                        <input type="checkbox" id="ct-select-all" checked onchange="toggleSelectAllEmployees(this.checked)" style="accent-color: #dd2127; width: 15px; height: 15px; cursor: pointer;"> Select All
+                    <label style="font-size: 12px; font-weight: 700; color: #232223; cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
+                        <input type="checkbox" id="ct-select-all" checked onchange="toggleSelectAllEmployees(this.checked)" style="accent-color: #232223; width: 15px; height: 15px; cursor: pointer;"> Select All
                     </label>
                 </div>
                 <div id="ct-employee-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; max-height: 160px; overflow-y: auto; padding-right: 4px;">
@@ -1066,7 +1080,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                             $get_e = mysqli_query($con, "SELECT id, name, designation FROM emp_list WHERE id = $emp_id");
                             if ($e_row = mysqli_fetch_assoc($get_e)) {
                                 echo '<label style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: 0.15s; user-select: none;">';
-                                echo '<input type="checkbox" class="ct-emp-checkbox" value="' . $e_row['id'] . '" checked style="accent-color: #dd2127; width: 16px; height: 16px; cursor: pointer;">';
+                                echo '<input type="checkbox" class="ct-emp-checkbox" value="' . $e_row['id'] . '" checked style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;">';
                                 echo '<div>';
                                 echo '<div style="font-size: 13px; font-weight: 700; color: #0f172a;">' . htmlspecialchars($e_row['name']) . '</div>';
                                 echo '<div style="font-size: 11px; color: #64748b;">' . htmlspecialchars($e_row['designation'] ?? 'Employee') . '</div>';
@@ -1084,7 +1098,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             <!-- Initial Comment / Activity Stream Note -->
             <div style="margin-bottom: 22px;">
                 <label style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px; letter-spacing: 0.5px;">INITIAL COMMENT / ACTIVITY NOTE</label>
-                <textarea id="ct-comment" rows="2" placeholder="Add an initial comment to all created tasks (e.g. Please update status before EOD)..." style="width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #334155; outline: none; transition: 0.2s; resize: vertical;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 3px #ffeaeb';" onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"></textarea>
+                <textarea id="ct-comment" rows="2" placeholder="Add an initial comment to all created tasks (e.g. Please update status before EOD)..." style="width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #334155; outline: none; transition: 0.2s; resize: vertical;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgb(34 35 35 / 20%);';" onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"></textarea>
             </div>
 
             <!-- Footer Actions -->
@@ -1132,7 +1146,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
 
     function loadTasks(empId) {
         const list = $('#task-list-' + empId);
-        list.html('<div style="text-align:center;padding:20px;"><i class="fa fa-spinner fa-spin" style="color:#dd2127;font-size:18px;"></i></div>');
+        list.html('<div style="text-align:center;padding:20px;"><i class="fa fa-spinner fa-spin" style="color:#232223;font-size:18px;"></i></div>');
         $.ajax({
             url: _ajaxBaseUrl + 'ajax_get_team_todos.php',
             method: 'POST',
@@ -1284,7 +1298,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             text: "This cannot be undone.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dd2127',
+            confirmButtonColor: '#232223',
             confirmButtonText: 'Yes, delete it'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -1414,7 +1428,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             list.append(`
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; font-size:12.5px; width:100%; box-sizing:border-box;">
                     <a href="${filePath}" target="_blank" style="color:#0f172a; font-weight:600; text-decoration:none; display:flex; align-items:center; gap:8px; flex:1; min-width:0; overflow:hidden;" title="${fileName}">
-                        <i class="fa fa-file-text-o" style="color:#dd2127; flex-shrink:0;"></i>
+                        <i class="fa fa-file-text-o" style="color:#232223; flex-shrink:0;"></i>
                         <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; min-width:0;">${fileName}</span>
                         ${sizeHtml}
                     </a>
@@ -1546,7 +1560,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             text: 'This cannot be undone.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dd2127',
+            confirmButtonColor: '#232223',
             confirmButtonText: 'Yes, delete it'
         }).then(r => {
             if (r.isConfirmed) {
@@ -1649,7 +1663,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
             const authorName = c.author_name || c.admin_name || c.comment_author_emp_name || 'User';
             const init = authorName.charAt(0).toUpperCase();
             const empTag = c.emp_name ?
-                `<span style="display:inline-block; background:#ffeaeb; color:#dd2127; font-size:10px; font-weight:700; border-radius:4px; padding:1px 7px; margin-left:8px; vertical-align:middle;">${escapeHtml(c.emp_name)}</span>` :
+                `<span style="display:inline-block; background:rgb(34 35 35 / 20%);; color:#232223; font-size:10px; font-weight:700; border-radius:4px; padding:1px 7px; margin-left:8px; vertical-align:middle;">${escapeHtml(c.emp_name)}</span>` :
                 '';
 
             let commentTextHtml = '';
@@ -1665,7 +1679,7 @@ $assigned_employees = array_filter(explode(',', $project['assigned_employees']),
                 const attPath = _isEmpPortal && rawAtt && !rawAtt.startsWith('../') ? '../admin_area/' + escapeHtml(rawAtt) : escapeHtml(rawAtt);
                 attachmentHtml = `
                     <div class="td-comment-attachment-pill">
-                        <i class="fa fa-paperclip" style="color:#dd2127; flex-shrink:0;"></i>
+                        <i class="fa fa-paperclip" style="color:#232223; flex-shrink:0;"></i>
                         <a href="${attPath}" target="_blank" class="td-comment-attachment-link" title="${attName}">${attName}</a>
                         <a href="${attPath}" download style="color:#64748b; font-size:11px; flex-shrink:0; margin-left:auto;" title="Download"><i class="fa fa-download"></i></a>
                     </div>

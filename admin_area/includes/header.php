@@ -7,7 +7,7 @@
   <meta http-equiv="x-ua-compatible" content="IE=edge, chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="shortcut icon" href="images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+  <link rel="shortcut icon" href="images/favicon.png?v=<?php echo time(); ?>" type="image/png">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
   <link href="css/date-modal.css" rel="stylesheet">

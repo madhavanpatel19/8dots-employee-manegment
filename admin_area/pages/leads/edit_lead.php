@@ -76,8 +76,9 @@
     .select2-container--default.select2-container--focus .select2-selection--multiple,
     .select2-container--default.select2-container--open .select2-selection--single,
     .select2-container--default.select2-container--open .select2-selection--multiple {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
         outline: none !important;
     }
 </style>
@@ -380,7 +381,7 @@ if (isset($_POST['update_lead'])) {
                                         ?>
                                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                                 <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
-                                                    <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $is_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> <?php echo htmlspecialchars($s_name); ?>
+                                                    <input type="checkbox" name="lead_source[]" value="<?php echo htmlspecialchars($s_name); ?>" <?php echo $is_checked; ?> style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #232223;"> <?php echo htmlspecialchars($s_name); ?>
                                                 </label>
                                                 <?php if (canAdminAccess('project_source_delete')): ?>
                                                     <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
@@ -605,7 +606,7 @@ if (isset($_POST['update_lead'])) {
                 title: 'Error',
                 text: 'Invalid Source ID.',
                 icon: 'error',
-                confirmButtonColor: '#dd2127'
+                confirmButtonColor: '#232223'
             });
             return;
         }
@@ -615,7 +616,7 @@ if (isset($_POST['update_lead'])) {
                 html: 'Are you sure you want to delete this source?<br><span style="font-size: 13px; color: #64748b;">This action cannot be undone.</span>',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete',
                 cancelButtonText: 'Cancel',
@@ -638,7 +639,7 @@ if (isset($_POST['update_lead'])) {
                                     title: 'Source Deleted Successfully!',
                                     text: 'The source has been removed.',
                                     icon: 'success',
-                                    confirmButtonColor: '#dd2127',
+                                    confirmButtonColor: '#232223',
                                     confirmButtonText: 'OK',
                                     timer: 1800,
                                     showConfirmButton: false
@@ -648,7 +649,7 @@ if (isset($_POST['update_lead'])) {
                                     title: 'Error',
                                     text: data.message || 'Could not delete source.',
                                     icon: 'error',
-                                    confirmButtonColor: '#dd2127'
+                                    confirmButtonColor: '#232223'
                                 });
                             }
                         },
@@ -658,7 +659,7 @@ if (isset($_POST['update_lead'])) {
                                 title: 'Error',
                                 text: errMsg,
                                 icon: 'error',
-                                confirmButtonColor: '#dd2127'
+                                confirmButtonColor: '#232223'
                             });
                         }
                     });
@@ -734,7 +735,7 @@ if (isset($_POST['update_lead'])) {
                 templateSelection: formatSelectionWithImage
             });
 
-            $('#employeeSelect, #adminSelect').on('select2:select', function (e) {
+            $('#employeeSelect, #adminSelect').on('select2:select', function(e) {
                 var self = this;
                 setTimeout(function() {
                     var $search = $(self).data('select2').$container.find('.select2-search__field');

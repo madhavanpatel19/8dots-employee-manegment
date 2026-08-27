@@ -169,7 +169,7 @@ if ($run_projs) {
     }
 
     .todo-column:hover {
-        box-shadow: 0 4px 16px rgba(220, 38, 38, 0.1);
+        box-shadow: 0 4px 16px rgba(35, 34, 35, 0.1);
         transform: translateY(-2px);
     }
 
@@ -186,6 +186,7 @@ if ($run_projs) {
         height: 44px;
         border-radius: 50%;
         object-fit: cover;
+        object-position: top center;
         border: 2px solid #fff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -194,14 +195,14 @@ if ($run_projs) {
         width: 44px;
         height: 44px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #fef2f2, #fee2e2);
-        color: #dc2626;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        color: #232223;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 800;
         font-size: 16px;
-        border: 2px solid #fecaca;
+        border: 2px solid #cbd5e1;
         flex-shrink: 0;
     }
 
@@ -275,11 +276,11 @@ if ($run_projs) {
     }
 
     .add-task-trigger:hover {
-        color: #dc2626;
+        color: #232223;
     }
 
     .add-task-trigger:hover i {
-        color: #dc2626 !important;
+        color: #232223 !important;
     }
 
     .add-task-form {
@@ -302,8 +303,8 @@ if ($run_projs) {
     }
 
     .task-input:focus {
-        border-color: #dc2626;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgba(35, 34, 35, 0.1);
     }
 
     .task-date-input,
@@ -323,7 +324,7 @@ if ($run_projs) {
     }
 
     .save-task-btn {
-        background: #dc2626;
+        background: #232223;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -395,8 +396,8 @@ if ($run_projs) {
     }
 
     .task-checkbox:hover {
-        border-color: #dc2626;
-        background: #fef2f2;
+        border-color: #232223;
+        background: #f1f5f9;
     }
 
     .task-checkbox i {
@@ -406,8 +407,8 @@ if ($run_projs) {
     }
 
     .task-item.completed .task-checkbox {
-        background: #dc2626;
-        border-color: #dc2626;
+        background: #232223;
+        border-color: #232223;
     }
 
     .task-item.completed .task-checkbox i {
@@ -456,13 +457,13 @@ if ($run_projs) {
     }
 
     .date-badge {
-        background: #fef2f2;
-        color: #dc2626;
+        background: #f1f5f9;
+        color: #232223;
         padding: 2px 8px;
         border-radius: 20px;
         font-size: 11px;
         font-weight: 700;
-        border: 1px solid #fecaca;
+        border: 1px solid #e2e8f0;
         white-space: nowrap;
         flex-shrink: 0;
         display: inline-block;
@@ -483,8 +484,8 @@ if ($run_projs) {
     }
 
     .priority-High {
-        color: #dc2626;
-        background: #fef2f2;
+        color: #232223;
+        background: #f1f5f9;
     }
 
     .priority-Medium {
@@ -516,8 +517,8 @@ if ($run_projs) {
     }
 
     .premium-modal-input:focus {
-        border-color: #dc2626 !important;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08) !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgba(35, 34, 35, 0.1) !important;
     }
 
     .premium-modal-input:disabled {
@@ -527,7 +528,7 @@ if ($run_projs) {
     }
 
     .premium-btn-save {
-        background: #dc2626 !important;
+        background: #232223 !important;
         color: #fff !important;
         border: none !important;
         font-weight: 600 !important;
@@ -536,19 +537,19 @@ if ($run_projs) {
         font-size: 14px !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25) !important;
+        box-shadow: 0 2px 4px rgba(35, 34, 35, 0.2) !important;
         letter-spacing: 0.2px !important;
     }
 
     .premium-btn-save:hover {
-        background: #b91c1c !important;
-        box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3) !important;
+        background: #000000 !important;
+        box-shadow: 0 4px 8px rgba(35, 34, 35, 0.25) !important;
         transform: translateY(-1px) !important;
     }
 
     .premium-btn-save:active {
         transform: translateY(0) !important;
-        box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2) !important;
+        box-shadow: 0 1px 2px rgba(35, 34, 35, 0.15) !important;
     }
 
     .premium-btn-cancel {
@@ -621,8 +622,9 @@ if ($run_projs) {
     }
 
     .tdm-list-tag:hover {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
     }
 
     .tdm-top-actions {
@@ -646,8 +648,9 @@ if ($run_projs) {
     }
 
     .tdm-icon-btn:hover {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
         border-color: #fca5a5;
     }
 
@@ -660,8 +663,8 @@ if ($run_projs) {
     }
 
     #taskDetailModal .btn-modal-close:hover {
-        background: #ffeaeb !important;
-        color: #dd2127 !important;
+        background: rgb(34 35 35 / 20%) !important;
+        color: #232223 !important;
         transform: rotate(90deg) !important;
     }
 
@@ -690,13 +693,14 @@ if ($run_projs) {
     }
 
     .tdm-check:hover {
-        border-color: #dd2127;
-        background: #ffeaeb;
+        border-color: #232223;
+        background: rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-check.td-completed {
-        background: #dd2127;
-        border-color: #dd2127;
+        background: #232223;
+        border-color: #232223;
         color: #fff;
     }
 
@@ -785,8 +789,9 @@ if ($run_projs) {
 
     .tdm-date-input:focus,
     .tdm-select:focus {
-        border-color: #dd2127;
-        box-shadow: 0 0 0 3px #ffeaeb;
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-section {
@@ -809,7 +814,7 @@ if ($run_projs) {
     }
 
     .tdm-section-title i {
-        color: #dd2127;
+        color: #232223;
         font-size: 15px;
     }
 
@@ -834,8 +839,9 @@ if ($run_projs) {
 
     .tdm-desc:focus,
     .tdm-desc.focused {
-        border-color: #dd2127;
-        box-shadow: 0 0 0 3px #ffeaeb;
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-comment-add {
@@ -850,7 +856,7 @@ if ($run_projs) {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         display: flex;
         align-items: center;
@@ -878,12 +884,13 @@ if ($run_projs) {
 
     .tdm-comment-textarea:focus,
     .tdm-comment-textarea.focused {
-        border-color: #dd2127;
-        box-shadow: 0 0 0 3px #ffeaeb;
+        border-color: #232223;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        ;
     }
 
     .tdm-save-btn {
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -895,7 +902,7 @@ if ($run_projs) {
     }
 
     .tdm-save-btn:hover {
-        background: #b91c1c;
+        background: #000000;
     }
 
     .tdm-activity {
@@ -920,12 +927,13 @@ if ($run_projs) {
         width: 26px;
         height: 26px;
         border-radius: 50%;
-        background: #ffeaeb;
+        background: rgb(34 35 35 / 20%);
+        ;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 11px;
-        color: #dd2127;
+        color: #232223;
         flex-shrink: 0;
     }
 
@@ -939,7 +947,7 @@ if ($run_projs) {
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         display: flex;
         align-items: center;
@@ -1043,7 +1051,7 @@ if ($run_projs) {
             // 2: Amber / Golden Orange
             ['primary' => '#d97706', 'border' => '#f59e0b', 'bg' => '#fef3c7', 'color' => '#92400e', 'icon' => 'fa-folder-open', 'badge_bg' => '#fef3c7', 'badge_border' => '#fde68a'],
             // 3: Rose / Coral Pink
-            ['primary' => '#e11d48', 'border' => '#f43f5e', 'bg' => '#ffe4e6', 'color' => '#9f1239', 'icon' => 'fa-rocket', 'badge_bg' => '#ffe4e6', 'badge_border' => '#fecdd3'],
+            ['primary' => '#232223', 'border' => '#f43f5e', 'bg' => 'rgb(34 35 35 / 20%)', 'color' => '#9f1239', 'icon' => 'fa-rocket', 'badge_bg' => 'rgb(34 35 35 / 20%)', 'badge_border' => '#fecdd3'],
             // 4: Purple / Violet
             ['primary' => '#7c3aed', 'border' => '#8b5cf6', 'bg' => '#ede9fe', 'color' => '#5b21b6', 'icon' => 'fa-layer-group', 'badge_bg' => '#ede9fe', 'badge_border' => '#ddd6fe'],
             // 5: Cyan / Sky Blue
@@ -1174,9 +1182,9 @@ if ($run_projs) {
 <div class="modal fade" id="globalAddTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document" style="max-width: 540px;">
         <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.18);">
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffffff; border-radius: 14px 14px 0 0; position: relative;">
                 <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
                     </div>
                     <div>
@@ -1191,7 +1199,7 @@ if ($run_projs) {
             <div class="modal-body" style="padding: 24px;">
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa fa-briefcase" style="color: #dc2626; font-size: 11px;"></i> Project
+                        <i class="fa fa-briefcase" style="color: #232223; font-size: 11px;"></i> Project
                     </label>
                     <select class="form-control premium-modal-input" id="global-task-project" onchange="fetchProjectEmployees(this.value)">
                         <option value="">-- Select a Project --</option>
@@ -1203,7 +1211,7 @@ if ($run_projs) {
 
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa fa-user" style="color: #dc2626; font-size: 11px;"></i> Assign To
+                        <i class="fa fa-user" style="color: #232223; font-size: 11px;"></i> Assign To
                     </label>
                     <select class="form-control premium-modal-input" id="global-task-employee" disabled>
                         <option value="">-- Select Project First --</option>
@@ -1212,7 +1220,7 @@ if ($run_projs) {
 
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa fa-tasks" style="color: #dc2626; font-size: 11px;"></i> Task Name
+                        <i class="fa fa-tasks" style="color: #232223; font-size: 11px;"></i> Task Name
                     </label>
                     <input type="text" class="form-control premium-modal-input" id="global-task-input" placeholder="e.g. Prepare monthly report...">
                 </div>
@@ -1220,13 +1228,13 @@ if ($run_projs) {
                 <div class="row" style="margin: 0 -6px;">
                     <div class="col-md-6 form-group" style="padding: 0 6px; margin-bottom: 8px;">
                         <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa fa-calendar" style="color: #dc2626; font-size: 11px;"></i> Due Date
+                            <i class="fa fa-calendar" style="color: #232223; font-size: 11px;"></i> Due Date
                         </label>
                         <input type="date" class="form-control premium-modal-input" id="global-task-date">
                     </div>
                     <div class="col-md-6 form-group" style="padding: 0 6px; margin-bottom: 8px;">
                         <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa fa-flag" style="color: #dc2626; font-size: 11px;"></i> Priority
+                            <i class="fa fa-flag" style="color: #232223; font-size: 11px;"></i> Priority
                         </label>
                         <select class="form-control premium-modal-input" id="global-task-priority">
                             <option value="Low">🟢 Low Priority</option>
@@ -1269,7 +1277,7 @@ if ($run_projs) {
                         <i class="fa fa-check"></i>
                     </div>
                     <textarea id="td-title" class="tdm-title-input" rows="1" placeholder="Task title..."
-                        onfocus="this.style.borderBottomColor='#dd2127'"
+                        onfocus="this.style.borderBottomColor='#232223'"
                         onblur="this.style.borderBottomColor='transparent'; saveTdField('task_name', this.value)"></textarea>
                 </div>
 
@@ -1278,7 +1286,7 @@ if ($run_projs) {
                         <div class="tdm-meta-label">DUE DATE</div>
                         <input type="date" id="td-due-date" class="tdm-date-input no-global-flatpickr"
                             onchange="saveTdField('due_date', this.value)">
-                        <div id="td-due-date-display" style="display:none; padding:7px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#0f172a; min-width:130px; user-select:none;"><i class="fa fa-calendar" style="color:#dd2127; margin-right:6px;"></i><span id="td-due-date-text">--</span></div>
+                        <div id="td-due-date-display" style="display:none; padding:7px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#0f172a; min-width:130px; user-select:none;"><i class="fa fa-calendar" style="color:#232223; margin-right:6px;"></i><span id="td-due-date-text">--</span></div>
                     </div>
                     <div class="tdm-meta-group">
                         <div class="tdm-meta-label">PRIORITY</div>
@@ -1296,7 +1304,7 @@ if ($run_projs) {
                     <div class="tdm-section-title" style="display: flex; justify-content: space-between; align-items: center;">
                         <span><i class="fa fa-align-left"></i> Description</span>
                         <div id="td-desc-upload-btn-wrap" style="display: none;">
-                            <label style="margin: 0; padding: 4px 10px; background: #ffeaeb; color: #dd2127; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.15s;" title="Upload Document for Description">
+                            <label style="margin: 0; padding: 4px 10px; background: rgb(34 35 35 / 20%);; color: #232223; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.15s;" title="Upload Document for Description">
                                 <i class="fa fa-paperclip"></i> Attach Document
                                 <input type="file" id="td-desc-file-input" style="display: none;" onchange="uploadTdDescAttachment(this)">
                             </label>
@@ -1328,14 +1336,14 @@ if ($run_projs) {
                             onfocus="document.getElementById('td-comment-actions').style.display='flex'; this.classList.add('focused')"
                             onkeydown="if(event.ctrlKey && event.key==='Enter'){tdSubmitComment();}"></textarea>
 
-                        <div id="td-comment-file-preview" style="display:none; font-size:11.5px; color:#dd2127; font-weight:600; margin-top:6px; background:#ffeaeb; padding:4px 8px; border-radius:6px; width:fit-content; align-items:center; gap:6px;">
+                        <div id="td-comment-file-preview" style="display:none; font-size:11.5px; color:#232223; font-weight:600; margin-top:6px; background:rgb(34 35 35 / 20%);; padding:4px 8px; border-radius:6px; width:fit-content; align-items:center; gap:6px;">
                             <i class="fa fa-paperclip"></i> <span id="td-comment-file-name">file.pdf</span>
                             <i class="fa fa-times" onclick="clearTdCommentFile()" style="cursor:pointer; margin-left:4px;"></i>
                         </div>
 
                         <div id="td-comment-actions" style="display:none; margin-top:8px; justify-content:space-between; align-items:center;">
                             <label style="margin:0; font-size:12px; color:#64748b; cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-weight:600;" title="Attach Document to Comment">
-                                <i class="fa fa-paperclip" style="color:#dd2127; font-size:14px;"></i> Attach File
+                                <i class="fa fa-paperclip" style="color:#232223; font-size:14px;"></i> Attach File
                                 <input type="file" id="td-comment-file" style="display:none;" onchange="handleTdCommentFileSelect(this)">
                             </label>
                             <div style="display:flex; align-items:center; gap:8px;">
@@ -1606,15 +1614,54 @@ if ($run_projs) {
     }
 
     function getProjectColorBadge(projName) {
-        const palettes = [
-            { bg: '#e0e7ff', color: '#3730a3', border: '#c7d2fe', icon: 'fa-tasks' },        // Indigo (General Tasks)
-            { bg: '#d1fae5', color: '#065f46', border: '#a7f3d0', icon: 'fa-briefcase' },    // Emerald
-            { bg: '#fef3c7', color: '#92400e', border: '#fde68a', icon: 'fa-folder-open' },  // Amber
-            { bg: '#ffe4e6', color: '#9f1239', border: '#fecdd3', icon: 'fa-rocket' },       // Rose
-            { bg: '#ede9fe', color: '#5b21b6', border: '#ddd6fe', icon: 'fa-layer-group' },  // Violet
-            { bg: '#cffaff', color: '#155e75', border: '#a5f3fc', icon: 'fa-cube' },         // Cyan
-            { bg: '#fce7f3', color: '#9d174d', border: '#fbcfe8', icon: 'fa-chart-pie' },    // Pink
-            { bg: '#dbeafe', color: '#1e40af', border: '#bfdbfe', icon: 'fa-code' },         // Blue
+        const palettes = [{
+                bg: '#e0e7ff',
+                color: '#3730a3',
+                border: '#c7d2fe',
+                icon: 'fa-tasks'
+            }, // Indigo (General Tasks)
+            {
+                bg: '#d1fae5',
+                color: '#065f46',
+                border: '#a7f3d0',
+                icon: 'fa-briefcase'
+            }, // Emerald
+            {
+                bg: '#fef3c7',
+                color: '#92400e',
+                border: '#fde68a',
+                icon: 'fa-folder-open'
+            }, // Amber
+            {
+                bg: 'rgb(34 35 35 / 20%)',
+                color: '#9f1239',
+                border: '#fecdd3',
+                icon: 'fa-rocket'
+            }, // Rose
+            {
+                bg: '#ede9fe',
+                color: '#5b21b6',
+                border: '#ddd6fe',
+                icon: 'fa-layer-group'
+            }, // Violet
+            {
+                bg: '#cffaff',
+                color: '#155e75',
+                border: '#a5f3fc',
+                icon: 'fa-cube'
+            }, // Cyan
+            {
+                bg: '#fce7f3',
+                color: '#9d174d',
+                border: '#fbcfe8',
+                icon: 'fa-chart-pie'
+            }, // Pink
+            {
+                bg: '#dbeafe',
+                color: '#1e40af',
+                border: '#bfdbfe',
+                icon: 'fa-code'
+            }, // Blue
         ];
         if (!projName || projName.toLowerCase().includes('general')) {
             return palettes[0];
@@ -1982,7 +2029,7 @@ if ($run_projs) {
                 $('#td-priority').val(prioVal);
                 let prioBadgeHtml = '--';
                 if (prioVal.toLowerCase() === 'high') {
-                    prioBadgeHtml = '<span style="color:#dc2626;"><i class="fa fa-flag"></i> High Priority</span>';
+                    prioBadgeHtml = '<span style="color:#232223;"><i class="fa fa-flag"></i> High Priority</span>';
                 } else if (prioVal.toLowerCase() === 'medium') {
                     prioBadgeHtml = '<span style="color:#d97706;"><i class="fa fa-flag"></i> Medium Priority</span>';
                 } else if (prioVal.toLowerCase() === 'low') {
@@ -2032,7 +2079,7 @@ if ($run_projs) {
             list.append(`
                 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; font-size:12.5px; width:100%; box-sizing:border-box;">
                     <a href="${filePath}" target="_blank" style="color:#0f172a; font-weight:600; text-decoration:none; display:flex; align-items:center; gap:8px; flex:1; min-width:0; overflow:hidden;" title="${fileName}">
-                        <i class="fa fa-file-text-o" style="color:#dd2127; flex-shrink:0;"></i>
+                        <i class="fa fa-file-text-o" style="color:#232223; flex-shrink:0;"></i>
                         <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; min-width:0;">${fileName}</span>
                         ${sizeHtml}
                     </a>
@@ -2256,7 +2303,7 @@ if ($run_projs) {
             const authorName = c.author_name || c.admin_name || c.comment_author_emp_name || 'User';
             const init = authorName.charAt(0).toUpperCase();
             const empTag = c.emp_name ?
-                `<span style="display:inline-block; background:#ffeaeb; color:#dd2127; font-size:10px; font-weight:700; border-radius:4px; padding:1px 7px; margin-left:8px; vertical-align:middle;">${escapeHtml(c.emp_name)}</span>` :
+                `<span style="display:inline-block; background:rgb(34 35 35 / 20%);; color:#232223; font-size:10px; font-weight:700; border-radius:4px; padding:1px 7px; margin-left:8px; vertical-align:middle;">${escapeHtml(c.emp_name)}</span>` :
                 '';
 
             let commentTextHtml = '';
@@ -2272,7 +2319,7 @@ if ($run_projs) {
                 const attPath = isEmp && rawAtt && !rawAtt.startsWith('../') ? '../admin_area/' + escapeHtml(rawAtt) : escapeHtml(rawAtt);
                 attachmentHtml = `
                     <div class="td-comment-attachment-pill">
-                        <i class="fa fa-paperclip" style="color:#dd2127; flex-shrink:0;"></i>
+                        <i class="fa fa-paperclip" style="color:#232223; flex-shrink:0;"></i>
                         <a href="${attPath}" target="_blank" class="td-comment-attachment-link" title="${attName}">${attName}</a>
                         <a href="${attPath}" download style="color:#64748b; font-size:11px; flex-shrink:0; margin-left:auto;" title="Download"><i class="fa fa-download"></i></a>
                     </div>

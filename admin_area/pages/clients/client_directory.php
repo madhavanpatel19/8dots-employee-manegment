@@ -231,7 +231,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
                                 $client_active_proj = $proj_data['active_projects'];
                                 ?>
                                 <td style="text-align: center;">
-                                    <span style="font-weight: 800; color: #dd2127; background: #ffeaeb; padding: 4px 12px; border-radius: 8px; font-size: 13px;"><?php echo $client_total_proj; ?></span>
+                                    <span style="font-weight: 800; color: #232223; background: rgb(34 35 35 / 20%);; padding: 4px 12px; border-radius: 8px; font-size: 13px;"><?php echo $client_total_proj; ?></span>
                                 </td>
                                 <td style="text-align: center;">
                                     <?php if ($client_active_proj > 0): ?>
@@ -405,7 +405,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
     }
 
     .confirm-btn-delete:hover {
-        background: #dc2626;
+        background: #232223;
         transform: translateY(-1px);
         box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
     }
@@ -433,7 +433,7 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
 
     .client-table-img:hover {
         transform: scale(1.15) rotate(5deg);
-        border-color: #dd2127;
+        border-color: #232223;
         box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
     }
 
@@ -451,8 +451,9 @@ $industries_q = mysqli_query($con, "SELECT industry_name as industry FROM client
 
     .p-input-premium:focus {
         background: #fff;
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
 
     }
 

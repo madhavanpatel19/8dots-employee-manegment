@@ -410,7 +410,7 @@ input[type="time"]:active {
 }
 
 .btn-primary {
-    background: #dd2127;
+    background: #232223;
     border: none;
     border-radius: 3px;
     color: #fff;
@@ -419,7 +419,7 @@ input[type="time"]:active {
 }
 
 .btn-primary:hover {
-    background: #dd2127d9;
+    background: #232223d9;
 }
 
 .btn-secondary {

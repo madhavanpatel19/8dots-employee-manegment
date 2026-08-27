@@ -222,7 +222,7 @@ $run_leads = mysqli_query($con, $get_leads);
         bottom: calc(100% + 8px);
         left: 50%;
         transform: translateX(-50%) translateY(4px);
-        background: #dd2127;
+        background: #232223;
         color: #fff;
         padding: 4px 8px;
         border-radius: 6px;
@@ -245,7 +245,7 @@ $run_leads = mysqli_query($con, $get_leads);
         transform: translateX(-50%) translateY(4px);
         border-width: 5px 5px 0 5px;
         border-style: solid;
-        border-color: #dd2127 transparent transparent transparent;
+        border-color: #232223 transparent transparent transparent;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -783,16 +783,18 @@ $run_leads = mysqli_query($con, $get_leads);
     }
 
     .page-link:hover:not(.disabled) {
-        background: #dd2127;
-        color: #FFEAEB;
-        border-color: #dd2127;
+        background: #232223;
+        color: rgb(34 35 35 / 20%);
+        ;
+        border-color: #232223;
     }
 
 
     .page-link.active {
-        background: #FFEAEB;
-        color: #dd2127;
-        border-color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
+        border-color: #232223;
         text-decoration: none !important;
     }
 
@@ -928,7 +930,7 @@ $run_leads = mysqli_query($con, $get_leads);
     }
 
     .confirm-btn-delete:hover {
-        background: #dc2626;
+        background: #232223;
         transform: translateY(-2px);
         box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.4);
     }

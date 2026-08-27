@@ -23,13 +23,13 @@ if (!isset($_SESSION['emp_id'])) {
     <html lang="en">
 
     <head>
-        <title> Cadlete- Employee Dashboard</title>
+        <title> 8dots- Employee Dashboard</title>
         <link href="../admin_area/css/bootstrap.min.css" rel="stylesheet">
-        <link href="../admin_area/css/style.css" rel="stylesheet">
-        <link href="../admin_area/css/dashboard.css" rel="stylesheet">
-        <link href="../admin_area/css/sidebar.css" rel="stylesheet">
+        <link href="../admin_area/css/style.css?v=<?php echo time(); ?>" rel="stylesheet">
+        <link href="../admin_area/css/dashboard.css?v=<?php echo time(); ?>" rel="stylesheet">
+        <link href="../admin_area/css/sidebar.css?v=<?php echo time(); ?>" rel="stylesheet">
         <link href="../admin_area/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="shortcut icon" href="../admin_area/images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+        <link rel="shortcut icon" href="../admin_area/images/favicon.png?v=<?php echo time(); ?>" type="image/png">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -58,8 +58,8 @@ if (!isset($_SESSION['emp_id'])) {
             .flatpickr-day.selected,
             .flatpickr-day.startRange,
             .flatpickr-day.endRange {
-                background: #dd2127 !important;
-                border-color: #dd2127 !important;
+                background: #232223 !important;
+                border-color: #232223 !important;
             }
         </style>
     </head>
@@ -308,7 +308,7 @@ if (!isset($_SESSION['emp_id'])) {
                         list.append(`
                             <li style="padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #0f172a;">
                                 <span>Notifications</span>
-                                <a href="#" onclick="markAllNotificationsRead(event, '${markReadEndpoint}')" style="color: #dd2127; text-decoration: none; font-size: 11px;">Mark all read</a>
+                                <a href="#" onclick="markAllNotificationsRead(event, '${markReadEndpoint}')" style="color: #232223; text-decoration: none; font-size: 11px;">Mark all read</a>
                             </li>
                         `);
 
@@ -325,7 +325,7 @@ if (!isset($_SESSION['emp_id'])) {
                             list.append(`
                                 <li style="background:${bg}; border-bottom:1px solid #f1f5f9; transition:0.15s;">
                                     <a href="${targetUrl}" onclick="handleNotifClick(event, ${n.id}, '${targetUrl}', '${markReadEndpoint}')" style="display:flex; gap:10px; padding:10px 14px; text-decoration:none; color:#334155; font-size:12.5px;">
-                                        <div style="width:28px; height:28px; border-radius:50%; background:#ffeaeb; color:#dd2127; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px;">
+                                        <div style="width:28px; height:28px; border-radius:50%; background:rgb(34 35 35 / 20%);; color:#232223; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px;">
                                             <i class="fa ${icon}"></i>
                                         </div>
                                         <div style="flex:1; min-width:0;">
@@ -434,7 +434,7 @@ if (!isset($_SESSION['emp_id'])) {
                     right: 24px;
                     z-index: 999999;
                     background: #ffffff;
-                    border-left: 4px solid #dd2127;
+                    border-left: 4px solid #232223;
                     box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 4px 12px rgba(221, 33, 39, 0.12);
                     border-radius: 12px;
                     padding: 14px 18px;
@@ -449,13 +449,13 @@ if (!isset($_SESSION['emp_id'])) {
                 `;
 
                 toast.innerHTML = `
-                    <div style="width:34px; height:34px; border-radius:50%; background:#ffeaeb; color:#dd2127; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px; margin-top:2px;">
+                    <div style="width:34px; height:34px; border-radius:50%; background:rgb(34 35 35 / 20%);; color:#232223; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px; margin-top:2px;">
                         <i class="fa fa-bell"></i>
                     </div>
                     <div style="flex:1; min-width:0;">
                         <div style="font-weight:700; color:#0f172a; font-size:13.5px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtmlNotif(title)}</div>
                         <div style="font-size:12px; color:#475569; margin-top:3px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${escapeHtmlNotif(message)}</div>
-                        <div style="font-size:11px; color:#dd2127; font-weight:700; margin-top:6px; display:inline-flex; align-items:center; gap:4px;">
+                        <div style="font-size:11px; color:#232223; font-weight:700; margin-top:6px; display:inline-flex; align-items:center; gap:4px;">
                             View Details <i class="fa fa-arrow-right" style="font-size:9px;"></i>
                         </div>
                     </div>

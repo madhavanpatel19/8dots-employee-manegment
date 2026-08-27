@@ -306,13 +306,13 @@ $result = mysqli_query($con, $query);
                                     <i class="fa <?php echo $icon; ?>"></i>
                                 </div>
                             </div>
-                    <?php
+                        <?php
                         }
                     }
 
                     if ($extra_leaves > 0) :
-                    ?>
-                        <div class="premium-stat-card" style="border-left: 3.5px solid #dd2127; min-width: 170px; flex-shrink: 0; background: #fff5f5; border-radius: 18px; box-shadow: 0 4px 20px -2px rgba(221,33,39,0.08); display: flex; align-items: center; gap: 12px; padding: 12px 18px; border: 1px solid #fca5a5;">
+                        ?>
+                        <div class="premium-stat-card" style="border-left: 3.5px solid #232223; min-width: 170px; flex-shrink: 0; background: #fff5f5; border-radius: 18px; box-shadow: 0 4px 20px -2px rgba(221,33,39,0.08); display: flex; align-items: center; gap: 12px; padding: 12px 18px; border: 1px solid #fca5a5;">
                             <div style="flex: 1;">
                                 <div style="font-size: 9px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px;">
                                     Extra Leaves <span style="opacity: 0.7; font-size: 8px;">(+<?php echo $extra_leaves; ?>)</span>
@@ -322,7 +322,7 @@ $result = mysqli_query($con, $query);
                                     <span style="font-size: 10px; font-weight: 700; color: #991b1b; text-transform: uppercase;">Left</span>
                                 </div>
                             </div>
-                            <div style="width: 34px; height: 34px; border-radius: 10px; background: #fee2e2; color: #dd2127; display: flex; align-items: center; justify-content: center; font-size: 15px;">
+                            <div style="width: 34px; height: 34px; border-radius: 10px; background: #fee2e2; color: #232223; display: flex; align-items: center; justify-content: center; font-size: 15px;">
                                 <i class="fa fa-star"></i>
                             </div>
                         </div>
@@ -347,9 +347,9 @@ $result = mysqli_query($con, $query);
                     <div class="modal fade" id="applyLeaveModal" tabindex="-1" role="dialog" aria-labelledby="applyLeaveModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: rgb(34 35 35 / 20%);; border-radius: 14px 14px 0 0; position: relative;">
                                     <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                                        <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                             <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
                                         </div>
                                         <div>
@@ -464,7 +464,11 @@ $result = mysqli_query($con, $query);
                                 var typeName = selectedOption.text.split('(')[0].trim();
                                 var msg = 'You are applying for ' + requestedDays + ' day(s) of ' + typeName + ', but you only have ' + remaining + ' day(s) remaining.';
                                 if (typeof Swal !== 'undefined') {
-                                    Swal.fire({ icon: 'error', title: 'Leave Limit Exceeded', text: msg });
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Leave Limit Exceeded',
+                                        text: msg
+                                    });
                                 } else {
                                     alert(msg);
                                 }
@@ -503,14 +507,14 @@ $result = mysqli_query($con, $query);
                                             $st = strtolower($row['status']);
                                             $badge_style = 'background: #f1f5f9; color: #64748b;';
                                             if ($st == 'approved') $badge_style = 'background: #ecfdf5; color: #059669;';
-                                            elseif ($st == 'rejected') $badge_style = 'background: #fef2f2; color: #dc2626;';
+                                            elseif ($st == 'rejected') $badge_style = 'background: #fef2f2; color: #232223;';
                                             elseif ($st == 'pending') $badge_style = 'background: #eff6ff; color: #2563eb;';
                                         ?>
                                             <tr>
                                                 <td style="text-align: center; font-weight: 700; color: #64748b;"><?php echo $i++; ?></td>
                                                 <td style="text-align: center; font-weight: 500; color: #64748b; font-size: 13px;"><?php echo date('d-m-Y', strtotime($row['created_at'])); ?></td>
                                                 <td style="text-align: center; padding: 12px;">
-                                                    <span style="background: #ffeaeb; color: #dc2626; font-weight: 700; padding: 4px 12px; border-radius: 8px; font-size: 11px; display: inline-block;">
+                                                    <span style="background: rgb(34 35 35 / 20%);; color: #232223; font-weight: 700; padding: 4px 12px; border-radius: 8px; font-size: 11px; display: inline-block;">
                                                         <?php echo !empty($row['leave_name']) ? htmlspecialchars($row['leave_name']) : 'Extra Leaves'; ?>
                                                     </span>
                                                 </td>

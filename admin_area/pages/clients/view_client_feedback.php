@@ -23,12 +23,12 @@ if (!isset($_SESSION['admin_email'])) {
 
         .p-badge-primary {
             background: rgba(79, 70, 229, 0.05);
-            color: #dd2127;
+            color: #232223;
         }
 
         .p-badge-info {
             background: rgba(14, 165, 233, 0.1);
-            color: #dd2127;
+            color: #232223;
         }
 
         .p-badge-danger {

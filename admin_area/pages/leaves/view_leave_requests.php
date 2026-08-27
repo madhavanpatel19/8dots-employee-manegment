@@ -66,7 +66,7 @@ if (isset($_GET['approve']) || isset($_GET['reject'])) {
                         $current_date = $date->format('Y-m-d');
                         mysqli_query($con, "DELETE FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date' AND status = 'leave' AND (check_in_time IS NULL OR check_in_time = '')");
                     }
-                }   
+                }
 
                 // Send notification to employee
                 if ($emp_id > 0 && !empty($from) && !empty($to) && file_exists(__DIR__ . '/../../includes/notification_helper.php')) {
@@ -151,10 +151,10 @@ if ($run_stats) {
     <div id="manageLeavesModal" class="modal fade" role="dialog" style="z-index: 99999;">
         <div class="modal-dialog" style="margin-top: 80px; max-width: 550px;">
             <div class="modal-content premium-modal-content" style="border: none; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
-                <div class="modal-header" style="background: #ffeaeb; color: #000; padding: 25px; border: none; position: relative;">
+                <div class="modal-header" style="background: rgb(34 35 35 / 20%);; color: #000; padding: 25px; border: none; position: relative;">
                     <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; background:#dd2127; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
+                        <div style="width: 45px; height: 45px; background:#232223; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
                             <i class="fa fa-calendar-o"></i>
                         </div>
                         <div>
@@ -267,8 +267,8 @@ if ($run_stats) {
         }
 
         .filter-input:focus {
-            border-color: #dd2127;
-            box-shadow: 0 0 0 3px rgba(223, 33, 39, 0.1);
+            border-color: #232223;
+            box-shadow: 0 0 0 3px rgba(35, 34, 35, 0.15);
         }
 
         .filter-select {
@@ -285,7 +285,7 @@ if ($run_stats) {
         }
 
         .btn-filter {
-            background: #dd2127;
+            background: #232223;
             color: #fff;
             border: none;
             height: 42px;
@@ -446,7 +446,7 @@ if ($run_stats) {
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="p-badge p-badge-secondary" style="background: #ffeaeb; color: #dd2127; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars(!empty($row['leave_name']) ? $row['leave_name'] : 'Extra Leaves'); ?></span>
+                                    <span class="p-badge p-badge-secondary" style="background: rgb(34 35 35 / 20%);; color: #232223; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars(!empty($row['leave_name']) ? $row['leave_name'] : 'Extra Leaves'); ?></span>
                                 </td>
                                 <td class="text-center" style="font-weight: 600; color: #475569; font-size: 13px;">
                                     <?php echo date('d-m-Y', strtotime($row['leave_from'])); ?>

@@ -302,7 +302,7 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
 
         .p-badge-primary {
             background: rgba(79, 70, 229, 0.05) !important;
-            color: #dd2127 !important;
+            color: #232223 !important;
         }
 
         .p-badge-danger {
@@ -408,7 +408,7 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
                                                     echo $display_out ?: '--:--';
                                                     ?>
                                                 </td>
-                                                <td style="text-align: center; color: #dd2127; font-weight: 700;">
+                                                <td style="text-align: center; color: #232223; font-weight: 700;">
                                                     <?php
                                                     $active_secs = $row['total_duration_secs'];
                                                     if ($row['attendance_date'] == date('Y-m-d') && $row['is_working']) {
@@ -448,7 +448,7 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
                                                         $date_js = htmlspecialchars(date('d-m-Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
                                                         $emp_img_js = htmlspecialchars($emp_img_path, ENT_QUOTES, 'UTF-8');
                                                         $remark_js = htmlspecialchars(json_encode(nl2br(htmlspecialchars($row['remarks'] ?? ''))), ENT_QUOTES, 'UTF-8');
-                                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name_js . '\', \'' . $date_js . '\', \'' . $emp_img_js . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #dd2127; margin-right: 4px;"></i> View Details</button>';
+                                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name_js . '\', \'' . $date_js . '\', \'' . $emp_img_js . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #232223; margin-right: 4px;"></i> View Details</button>';
                                                     } else {
                                                         echo '<span style="color: #cbd5e1;">-</span>';
                                                     }
@@ -475,9 +475,9 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
             <div class="modal fade" id="addWorksheetModal" tabindex="-1" role="dialog" aria-labelledby="addWorksheetModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                        <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:#ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+                        <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:rgb(34 35 35 / 20%);; border-radius: 14px 14px 0 0; position: relative;">
                             <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                                <div style="width: 36px; height: 36px; background: #dd2127; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fa fa-pencil-square-o" style="color: #fff; font-size: 14px;"></i>
                                 </div>
                                 <div>
@@ -507,7 +507,7 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
                                     <label class="col-md-4 control-label" style="text-align: left; color: #64748b; font-weight: 600;">Check-out Time <span class="text-danger">*</span></label>
                                     <div class="col-md-8">
                                         <input type="time" name="end_time" id="ws_end_time" class="p-input-premium" style="background: #f8fafc;" value="<?php echo $prefill_out; ?>" readonly required>
-                                        <small style="color: #dd2127; font-size: 11px; margin-top: 5px; display: block;"><i class="fa fa-info-circle"></i> Times are automatically fetched from your real-time Check-In/Out.</small>
+                                        <small style="color: #232223; font-size: 11px; margin-top: 5px; display: block;"><i class="fa fa-info-circle"></i> Times are automatically fetched from your real-time Check-In/Out.</small>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -644,7 +644,7 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
                 var html = '';
                 if (remarkHtml && remarkHtml !== '-') {
                     var formattedRemark = remarkHtml
-                        .replace(/(Today[’']s Progress:)/gi, '<strong style="color:#0f172a; display:block; margin-top:6px; margin-bottom:2px; font-weight:700;"><i class="fa fa-tasks" style="color:#dd2127; margin-right:5px;"></i>$1</strong>')
+                        .replace(/(Today[’']s Progress:)/gi, '<strong style="color:#0f172a; display:block; margin-top:6px; margin-bottom:2px; font-weight:700;"><i class="fa fa-tasks" style="color:#232223; margin-right:5px;"></i>$1</strong>')
                         .replace(/(Planning for Tomorrow:)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-calendar-check-o" style="color:#2563eb; margin-right:5px;"></i>$1</strong>')
                         .replace(/(Issues:)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-exclamation-triangle" style="color:#eab308; margin-right:5px;"></i>$1</strong>')
                         .replace(/(Need any Help\s*\?:?)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-question-circle" style="color:#8b5cf6; margin-right:5px;"></i>$1</strong>');
@@ -674,13 +674,13 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
         <div id="imagePreviewModal" class="modal fade" role="dialog" style="z-index: 999999;">
             <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
                 <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden; background: #fff;">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 50px; height: 50px; border-radius: 16px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                <i class="fa fa-picture-o" style="font-size: 24px; color: #f43f5e;"></i>
+                                <i class="fa fa-picture-o" style="font-size: 24px; color: #232223;"></i>
                             </div>
                             <div>
                                 <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Work Details</h4>
@@ -798,7 +798,7 @@ if (!is_array($prefill_photos)) $prefill_photos = [];
                 transform: translate(-50%, -50%) scale(0.5);
                 color: #fff;
                 font-size: 24px;
-                background: #dd2127;
+                background: #232223;
                 width: 48px;
                 height: 48px;
                 display: flex;

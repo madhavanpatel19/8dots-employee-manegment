@@ -93,7 +93,7 @@ function edit_user($con, $employee)
     // -- Show loading spinner while processing --
     echo '
     <div id="php_server_loader" style="width: 100%; min-height: 80vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
-        <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #dd2127; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #232223; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         <h3 style="margin-top: 20px; color: #1e293b;">Updating Profile...</h3>
         <p style="color: #64748b; margin-top: 5px;">Please wait while we save the changes and upload new documents.</p>
         <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
@@ -119,7 +119,7 @@ function edit_user($con, $employee)
                     icon: 'error',
                     title: 'Validation Error',
                     text: 'Contact must be 10 digits!',
-                    confirmButtonColor: '#dd2127'
+                    confirmButtonColor: '#232223'
                 }).then((result) => {
                     window.history.back();
                 });
@@ -270,7 +270,7 @@ function edit_user($con, $employee)
         //         $mail->Subject = 'Your Cadlete Login Password Has Been Updated';
         //         $mail->Body    = "
         //             <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #eee;border-radius:10px;'>
-        //                 <h2 style='color:#dd2127;'>Password Updated</h2>
+        //                 <h2 style='color:#232223;'>Password Updated</h2>
         //                 <p>Dear <strong>$name</strong>,</p>
         //                 <p>Your employee portal password has been updated by an administrator.</p>
         //                 <table style='background:#f8fafc;padding:15px;border-radius:8px;width:100%;'>
@@ -313,7 +313,7 @@ function edit_user($con, $employee)
                     icon: 'error',
                     title: 'Error updating',
                     text: '{$dbError}',
-                    confirmButtonColor: '#dd2127'
+                    confirmButtonColor: '#232223'
                 }).then(() => {
                     window.history.back();
                 });
@@ -390,7 +390,7 @@ sort($existing_desigs);
         <!-- 1. Personal Information -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Personal Information</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Basic details and identity</p>
@@ -484,7 +484,7 @@ sort($existing_desigs);
         <!-- 2. Contact Information -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Contact Information</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">How to reach the employee</p>
@@ -505,7 +505,7 @@ sort($existing_desigs);
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Company Email (For Login) *</label>
                             <div style="position: relative;">
-                                <i class="fa fa-building" style="position: absolute; left: 15px; top: 16px; color: #dd2127; font-size: 14px;"></i>
+                                <i class="fa fa-building" style="position: absolute; left: 15px; top: 16px; color: #232223; font-size: 14px;"></i>
                                 <input type="email" name="company_email" class="p-input-premium" value="<?php echo htmlspecialchars($employee['company_email'] ?? ''); ?>" placeholder="work@company.com" required style="padding-left: 40px;">
                             </div>
                         </div>
@@ -535,7 +535,7 @@ sort($existing_desigs);
                     <div class="col-md-12">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">
-                                <i class="fa fa-key" style="color:#dd2127;"></i> Login Password
+                                <i class="fa fa-key" style="color:#232223;"></i> Login Password
                                 <span style="font-weight:400; color:#64748b; font-size:12px; margin-left:8px;">(Current password shown — edit to change, or click Generate New Password)</span>
                             </label>
                             <div style="display: flex; gap: 10px; align-items: center;">
@@ -548,7 +548,7 @@ sort($existing_desigs);
                                         style="padding-left: 40px; font-family: monospace; letter-spacing: 1px;">
                                 </div>
                                 <button type="button" onclick="generateEditPassword()"
-                                    style="white-space:nowrap; background: linear-gradient(135deg,#dd2127,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
+                                    style="white-space:nowrap; background: linear-gradient(135deg,#232223,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
                                     <i class="fa fa-refresh"></i> Generate New Password
                                 </button>
                                 <button type="button" onclick="toggleEditPassword()"
@@ -570,7 +570,7 @@ sort($existing_desigs);
         <!-- 3. Employee Documents -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Employee Documents</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Upload important files</p>
@@ -615,7 +615,7 @@ sort($existing_desigs);
         <!-- 4. Emergency Contact Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Emergency Contact Details</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Who to call in an emergency</p>
@@ -658,7 +658,7 @@ sort($existing_desigs);
         <!-- 5. Educational Background -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">5</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">5</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Educational Background</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Academic history</p>
@@ -702,7 +702,7 @@ sort($existing_desigs);
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">6</div>
+                    <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">6</div>
                     <div>
                         <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Employment History</h3>
                         <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Previous work experience</p>
@@ -755,7 +755,7 @@ sort($existing_desigs);
         <!-- 7. Bank Account Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">7</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">7</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Bank Account Details</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Financial information</p>
@@ -798,7 +798,7 @@ sort($existing_desigs);
         <!-- 8. Professional & Salary Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">8</div>
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">8</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Professional & Salary Details</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Compensation structure</p>
@@ -970,7 +970,7 @@ sort($existing_desigs);
         </div>
 
         <div style="margin: 0 30px 40px 30px; text-align: right;">
-            <button type="submit" name="update" class="btn-premium-add" style="padding: 14px 40px !important; font-size: 16px !important; background: #dd2127 !important; border: none; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.3);" onclick="serializeTables()">
+            <button type="submit" name="update" class="btn-premium-add" style="padding: 14px 40px !important; font-size: 16px !important; background: #232223 !important; border: none; box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.3);" onclick="serializeTables()">
                 <i class="fa fa-save"></i> Update Employee Profile
             </button>
         </div>
@@ -1223,7 +1223,7 @@ sort($existing_desigs);
                 inputPlaceholder: 'e.g. Quality Assurance',
                 showCancelButton: true,
                 confirmButtonText: 'Add Department',
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 inputValidator: (value) => {
                     if (!value || !value.trim()) {
                         return 'Please enter a department name!';
@@ -1291,7 +1291,7 @@ sort($existing_desigs);
                 inputPlaceholder: 'e.g. Lead Architect',
                 showCancelButton: true,
                 confirmButtonText: 'Add Designation',
-                confirmButtonColor: '#dd2127',
+                confirmButtonColor: '#232223',
                 inputValidator: (value) => {
                     if (!value || !value.trim()) {
                         return 'Please enter a designation / function name!';

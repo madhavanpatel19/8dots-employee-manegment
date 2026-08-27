@@ -166,7 +166,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
     }
 
     .repo-tab.active {
-        color: #dd2127;
+        color: #232223;
     }
 
     .repo-tab.active::after {
@@ -176,7 +176,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
         left: 0;
         right: 0;
         height: 3px;
-        background: #dd2127;
+        background: #232223;
         border-radius: 3px 3px 0 0;
     }
 
@@ -262,7 +262,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                                     if ($st == 'completed') $badge_style = 'background: #ecfdf5; color: #059669;';
                                     elseif ($st == 'active' || $st == 'in progress') $badge_style = 'background: #eff6ff; color: #2563eb;';
                                     elseif ($st == 'pending') $badge_style = 'background: #fff7ed; color: #ea580c;';
-                                    elseif ($st == 'cancelled') $badge_style = 'background: #fef2f2; color: #dc2626;';
+                                    elseif ($st == 'cancelled') $badge_style = 'background: #fef2f2; color: #232223;';
                                 ?>
                                     <tr style="border-bottom: 1px solid #f1f5f9;">
                                         <td style="text-align:center; font-weight: 700; color: #64748b;">
@@ -281,7 +281,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                                         </td>
                                         <td style="text-align: center;">
                                             <button type="button" onclick="openExpenseModal(<?php echo $row['id']; ?>, '<?php echo addslashes($row['project_name']); ?>')"
-                                                style="font-weight: 800; color: #dd2127; font-size: 12px; cursor: pointer; background: #fff1f2; padding: 6px 14px; border-radius: 10px; border: 1px solid #fecdd3; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 3px rgba(221, 33, 39, 0.06);" title="View Project Expenses">
+                                                style="font-weight: 800; color: #232223; font-size: 12px; cursor: pointer; background: #fff1f2; padding: 6px 14px; border-radius: 10px; border: 1px solid #fecdd3; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 3px rgba(221, 33, 39, 0.06);" title="View Project Expenses">
                                                 <span id="proj_exp_badge_<?php echo $row['id']; ?>">Expenses</span>
                                             </button>
                                         </td>
@@ -305,13 +305,13 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                                         </td>
                                         <td style="text-align: center;">
                                             <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                                <button type="button" class="btn-icon-premium btn-icon-folder" onclick="viewDocs(<?php echo $row['id']; ?>, 'documents')" title="Artifact Repository" style="background: #ffeaeb; color: #dd2127; border: 1px solid #ffeaeb; border-radius: 8px; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
+                                                <button type="button" class="btn-icon-premium btn-icon-folder" onclick="viewDocs(<?php echo $row['id']; ?>, 'documents')" title="Artifact Repository" style="background: rgb(34 35 35 / 20%);; color: #232223; border: 1px solid rgb(34 35 35 / 20%);; border-radius: 8px; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
                                                     <i class="fa fa-folder-open"></i>
                                                 </button>
                                             </div>
                                         </td>
                                         <td style="text-align: center; padding: 15px;">
-                                            <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #ffeaeb; color: #dd2127; display: inline-block; min-width: 90px;">
+                                            <span style="padding: 6px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: rgb(34 35 35 / 20%);; color: #232223; display: inline-block; min-width: 90px;">
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </span>
                                         </td>
@@ -331,10 +331,10 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                                                         <div class="timeline-container-premium" style="background: transparent; border: none; padding: 0; margin-bottom: 0;">
                                                             <div class="timeline-header-premium" style="margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;">
                                                                 <div style="display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
-                                                                    <i class="fa fa-history" style="color: #dd2127; font-size: 14px;"></i>
+                                                                    <i class="fa fa-history" style="color: #232223; font-size: 14px;"></i>
                                                                     <span>Project Activity Timeline</span>
                                                                 </div>
-                                                                <a href="download_progress_report.php?project_id=<?php echo $row['id']; ?>" target="_blank" style="background: #ffeaeb; color: #dd2127; border: 1px solid #ffeaeb; border-radius: 8px; padding: 6px 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                                                <a href="download_progress_report.php?project_id=<?php echo $row['id']; ?>" target="_blank" style="background: rgb(34 35 35 / 20%);; color: #232223; border: 1px solid rgb(34 35 35 / 20%);; border-radius: 8px; padding: 6px 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                                                     <i class="fa fa-download"></i> Download Progress Report
                                                                 </a>
                                                             </div>
@@ -357,8 +357,8 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                                                                                 $poster = (strpos($r['remark'], 'System:') === 0) ? 'System' : 'Team Member';
                                                                             }
                                                                             $is_sys = (strtolower($poster) === 'system');
-                                                                            $poster_badge_bg = $is_sys ? '#f1f5f9' : '#ffeaeb';
-                                                                            $poster_badge_color = $is_sys ? '#64748b' : '#dd2127';
+                                                                            $poster_badge_bg = $is_sys ? '#f1f5f9' : 'rgb(34 35 35 / 20%);';
+                                                                            $poster_badge_color = $is_sys ? '#64748b' : '#232223';
                                                                             $poster_icon = $is_sys ? 'fa-cog' : 'fa-user';
                                                                     ?>
                                                                             <div class="timeline-remark-item" style="margin-bottom: 25px; position: relative; padding-left: 32px; width: 100%;">
@@ -391,12 +391,12 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                                                     <div class="col-md-5">
                                                         <div class="remark-action-premium glass-card-premium" style="padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.08);">
                                                             <h4 style="font-size: 11px; font-weight: 950; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-                                                                <div style="width: 8px; height: 8px; background: #dd2127; border-radius: 50%;"></div>
+                                                                <div style="width: 8px; height: 8px; background: #232223; border-radius: 50%;"></div>
                                                                 Post Progress Update
                                                             </h4>
                                                             <div class="action-input-wrapper" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
                                                                 <textarea class="remark-textarea p-input-premium" style="width: 100%; height: 120px; resize: none; font-size: 14px; box-sizing: border-box;" placeholder="What milestone was achieved today?"></textarea>
-                                                                <button type="button" class="add-remark-btn" data-project-id="<?php echo $row['id']; ?>" style="width: 100%; height: 48px; font-size: 14px; background: #dd2127; color: #ffffff; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-weight: 700; gap: 8px; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.2); box-sizing: border-box;">
+                                                                <button type="button" class="add-remark-btn" data-project-id="<?php echo $row['id']; ?>" style="width: 100%; height: 48px; font-size: 14px; background: #232223; color: #ffffff; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-weight: 700; gap: 8px; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.2); box-sizing: border-box;">
                                                                     <i class="fa fa-send"></i> Post Update
                                                                 </button>
                                                             </div>
@@ -508,7 +508,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                             <div class="timeline-dot" style="left: 0;"></div>
                             <div class="remark-content-box" style="padding-left: 20px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                                    <span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: #ffeaeb; color: #dd2127; display: inline-flex; align-items: center; gap: 5px;">
+                                    <span style="font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: rgb(34 35 35 / 20%);; color: #232223; display: inline-flex; align-items: center; gap: 5px;">
                                         <i class="fa fa-user"></i> ${posterName}
                                     </span>
                                     <div class="remark-time-premium" style="margin: 0; font-size: 11px;">
@@ -741,7 +741,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                             <td style="font-weight:700; color:#334155; font-size:13px; padding:12px 14px;">${htmlEscapeExp(exp.item_name)}</td>
                             <td style="text-align:center; font-weight:600; color:#475569; font-size:13px; padding:12px 14px;">${exp.qty}</td>
                             <td style="text-align:center; font-weight:600; color:#475569; font-size:13px; padding:12px 14px;">${sym} ${exp.formatted_cost}</td>
-                            <td style="text-align:center; font-weight:700; color:#dd2127; font-size:13px; padding:12px 14px;">${sym} ${exp.formatted_total}</td>
+                            <td style="text-align:center; font-weight:700; color:#232223; font-size:13px; padding:12px 14px;">${sym} ${exp.formatted_total}</td>
                             <td style="text-align:center; font-size:12px; color:#334155; font-weight:600; padding:12px 14px;">${ordHtml}</td>
                             <td style="text-align:center; font-size:12px; color:#334155; font-weight:600; padding:12px 14px;">${exp.paid_by ? htmlEscapeExp(exp.paid_by) : '-'}</td>
                             <td style="text-align:center; font-size:12px; color:#334155; font-weight:600; padding:12px 14px;">${invHtml}</td>
@@ -941,13 +941,13 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
 <div id="viewDocumentsModal" class="modal fade" role="dialog" style="z-index: 1055;">
     <div class="modal-dialog modal-lg" style="margin-top: 80px; max-width: 700px;">
         <div class="modal-content premium-modal-content" style="border: none; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
-            <div class="modal-header" style="background: #FFEAEB; color: #000; padding: 30px; border: none; position: relative;">
+            <div class="modal-header" style="background: rgb(34 35 35 / 20%);; color: #000; padding: 30px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 50px; height: 50px; background: #dd2127; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;">
+                        <div style="width: 50px; height: 50px; background: #232223; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;">
                             <i class="fa fa-folder-open"></i>
                         </div>
                         <div>
@@ -956,11 +956,11 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                         </div>
                     </div>
                     <div style="display: flex; gap: 12px; margin-right: 40px;">
-                        <button type="button" id="btn-add-artifact" class="btn-premium-add-inline" onclick="toggleAddResourceForm('document')" style="background: #dd2127; color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(221, 33, 39, 0.2);">
+                        <button type="button" id="btn-add-artifact" class="btn-premium-add-inline" onclick="toggleAddResourceForm('document')" style="background: #232223; color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(221, 33, 39, 0.2);">
                             <i class="fa fa-upload"></i>
                             <span class="btn-text">Add Document</span>
                         </button>
-                        <button type="button" id="btn-add-link" class="btn-premium-add-inline" onclick="toggleAddResourceForm('link')" style="background: #dd2127; color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: none; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(221, 33, 39, 0.2);">
+                        <button type="button" id="btn-add-link" class="btn-premium-add-inline" onclick="toggleAddResourceForm('link')" style="background: #232223; color: #fff; border: none; border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 13px; display: none; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(221, 33, 39, 0.2);">
                             <i class="fa fa-globe"></i> <span class="btn-text">Add Link</span>
                         </button>
                     </div>
@@ -1002,7 +1002,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                         </div>
                         <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
                             <button type="button" class="btn-premium-cancel" onclick="toggleAddResourceForm()">Discard</button>
-                            <button type="submit" class="btn-premium-add" style="background: #dd2127; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700;">Add Document</button>
+                            <button type="submit" class="btn-premium-add" style="background: #232223; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700;">Add Document</button>
                         </div>
                     </form>
 
@@ -1025,7 +1025,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                         </div>
                         <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
                             <button type="button" class="btn-premium-cancel" onclick="toggleAddResourceForm()">Discard</button>
-                            <button type="submit" class="btn-premium-add" style="background: #dd2127; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700;">Add Link</button>
+                            <button type="submit" class="btn-premium-add" style="background: #232223; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700;">Add Link</button>
                         </div>
                     </form>
                 </div>
@@ -1043,12 +1043,12 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
 <div class="modal fade" id="projectExpensesModal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1055;">
     <div class="modal-dialog" role="document" style="width: 92% !important; max-width: 1300px !important; margin: 30px auto !important;">
         <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close" style="z-index: 10;">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 14px; text-align: left;">
-                    <div style="width: 42px; height: 42px; background: #dd2127; color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.3);">
+                    <div style="width: 42px; height: 42px; background: #232223; color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
                         <i class="fa fa-calculator"></i>
                     </div>
                     <div style="text-align: left;">
@@ -1066,7 +1066,7 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
                         <div>
                             <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa fa-receipt" style="color: #dd2127;"></i> Expense History
+                                <i class="fa fa-receipt" style="color: #232223;"></i> Expense History
                             </h3>
                             <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b; font-weight: 500;">Track all project purchases, expenses and attachments.</p>
                         </div>
@@ -1125,12 +1125,12 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
     <div class="modal-dialog" role="document" style="width: 580px !important; max-width: 95% !important; margin: 40px auto !important;">
         <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);">
             <!-- Header -->
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close" style="z-index: 10;">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: flex-start; gap: 14px;">
-                    <div style="width: 44px; height: 44px; background: #dd2127; color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.3);">
+                    <div style="width: 44px; height: 44px; background: #232223; color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
                         <i class="fa fa-calculator"></i>
                     </div>
                     <div>
@@ -1230,29 +1230,29 @@ $emp_sop_total = $emp_sop_total_res ? (int)mysqli_fetch_assoc($emp_sop_total_res
 <div class="modal fade" id="projectSopModal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1060;">
     <div class="modal-dialog" role="document" style="max-width: 700px; width: 96%; margin: 30px auto;">
         <div class="modal-content" style="border-radius: 24px; border: none; overflow: hidden; box-shadow: 0 25px 60px -12px rgba(0,0,0,0.35);">
-            <div class="modal-header" style="background: #FFEAEB; color: #000; padding: 22px 28px; border: none; position: relative;">
+            <div class="modal-header" style="background: rgb(34 35 35 / 20%);; color: #000; padding: 22px 28px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal" style="z-index: 10;">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 50px; height: 50px; background: #dd2127; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 4px 12px rgba(221, 33, 39, 0.3);">
+                        <div style="width: 50px; height: 50px; background: #232223; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;">
                             <i class="fa fa-check-square-o"></i>
                         </div>
                         <div>
                             <h4 class="modal-title" style="font-weight: 800; font-size: 20px; letter-spacing: -0.5px; margin: 0; color: #0f172a;">Project SOP Checklist</h4>
-                            <p id="sop_modal_project_name" style="margin: 4px 0 0 0; font-size: 12px; color: #dd2127; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;"></p>
+                            <p id="sop_modal_project_name" style="margin: 4px 0 0 0; font-size: 12px; color: #232223; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;"></p>
                         </div>
                     </div>
                     <div style="margin-left: auto; margin-right: 45px; text-align: center;">
                         <div id="sop_progress_ring_wrap" style="position: relative; width: 64px; height: 64px; margin: 0 auto;">
                             <svg width="64" height="64" style="transform: rotate(-90deg);">
                                 <circle cx="32" cy="32" r="26" fill="none" stroke="#fecdd3" stroke-width="6" />
-                                <circle id="sop_ring_fill" cx="32" cy="32" r="26" fill="none" stroke="#dd2127" stroke-width="6"
+                                <circle id="sop_ring_fill" cx="32" cy="32" r="26" fill="none" stroke="#232223" stroke-width="6"
                                     stroke-dasharray="163.4" stroke-dashoffset="163.4"
                                     style="transition: stroke-dashoffset 0.6s ease; stroke-linecap: round;" />
                             </svg>
-                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 13px; font-weight: 900; color: #dd2127;" id="sop_pct_label">0%</div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 13px; font-weight: 900; color: #232223;" id="sop_pct_label">0%</div>
                         </div>
                         <div id="sop_counter_label" style="font-size: 11px; font-weight: 700; color: #64748b; margin-top: 4px; white-space: nowrap;">0 / 0 done</div>
                     </div>

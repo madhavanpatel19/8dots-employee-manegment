@@ -221,7 +221,7 @@ $result = mysqli_query($con, $sql);
                                         $date = htmlspecialchars(date('d-m-Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
                                         $emp_img = htmlspecialchars($img, ENT_QUOTES, 'UTF-8');
                                         $remark_js = htmlspecialchars(json_encode(nl2br(htmlspecialchars($row['remarks'] ?: '-'))), ENT_QUOTES, 'UTF-8');
-                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name . '\', \'' . $date . '\', \'' . $emp_img . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #dd2127; margin-right: 4px;"></i> View Details</button>';
+                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name . '\', \'' . $date . '\', \'' . $emp_img . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #232223; margin-right: 4px;"></i> View Details</button>';
                                     } else {
                                         echo '<span style="color: #cbd5e1;">-</span>';
                                     }
@@ -294,13 +294,13 @@ $result = mysqli_query($con, $sql);
 <div id="workGalleryModal" class="modal fade" role="dialog" style="z-index: 99999;">
     <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 1150px; width: 95%;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden;">
-            <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff; color:black; padding: 25px 35px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 40px; flex-wrap: wrap; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 18px;">
-                        <div style="width: 48px; height: 48px; background: #dd2127; color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 16px rgba(185, 81, 81, 0.3);">
+                        <div style="width: 48px; height: 48px; background: #232223; color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 16px rgba(185, 81, 81, 0.3);">
                             <i class="fa fa-th-large"></i>
                         </div>
                         <div>
@@ -313,7 +313,7 @@ $result = mysqli_query($con, $sql);
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <!-- Employee Filter -->
                         <div class="modal-header-filter" style="display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 6px 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
-                            <i class="fa fa-user-circle" style="color: #dd2127; font-size: 15px;"></i>
+                            <i class="fa fa-user-circle" style="color: #232223; font-size: 15px;"></i>
                             <select id="modal_emp_filter" onchange="openWorkGallery(this.value, $('#modal_date_filter').val())" class="modal-select-premium" style="border: none; background: transparent; font-weight: 700; font-size: 13px; color: #1e293b; outline: none; cursor: pointer;">
                                 <option value="">All Employees</option>
                                 <?php foreach ($empList as $e): ?>
@@ -324,13 +324,13 @@ $result = mysqli_query($con, $sql);
 
                         <!-- Date Filter -->
                         <div style="display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 6px 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
-                            <i class="fa fa-calendar" style="color: #dd2127; font-size: 15px;"></i>
+                            <i class="fa fa-calendar" style="color: #232223; font-size: 15px;"></i>
                             <input type="date" id="modal_date_filter" onchange="openWorkGallery($('#modal_emp_filter').val(), this.value)" style="border: none; background: transparent; font-weight: 700; font-size: 13px; color: #1e293b; outline: none; cursor: pointer;" title="Filter photos by date">
                         </div>
 
                         <!-- Reset Date Filter -->
                         <button type="button" onclick="$('#modal_date_filter').val(''); openWorkGallery($('#modal_emp_filter').val(), '');" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 7px 14px; font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; transition: 0.2s;" title="Show all dates">
-                            <i class="fa fa-refresh" style="color: #dd2127;"></i> All Dates
+                            <i class="fa fa-refresh" style="color: #232223;"></i> All Dates
                         </button>
                     </div>
                 </div>
@@ -348,13 +348,13 @@ $result = mysqli_query($con, $sql);
 <div id="imagePreviewModal" class="modal fade" role="dialog" style="z-index: 999999;">
     <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden; background: #fff;">
-            <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
+            <div class="modal-header" style="background: rgb(34 35 35 / 20%);; color:black; padding: 25px 35px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div style="width: 50px; height: 50px; border-radius: 16px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <i class="fa fa-picture-o" style="font-size: 24px; color: #f43f5e;"></i>
+                        <i class="fa fa-picture-o" style="font-size: 24px; color: #232223;"></i>
                     </div>
                     <div>
                         <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Work Details</h4>
@@ -386,7 +386,7 @@ $result = mysqli_query($con, $sql);
 
     .p-badge-primary {
         background: rgba(79, 70, 229, 0.05);
-        color: #dd2127;
+        color: #232223;
     }
 
     .p-badge-danger {
@@ -434,16 +434,17 @@ $result = mysqli_query($con, $sql);
     }
 
     .page-link:hover:not(.disabled) {
-        background: #dd2127;
+        background: #232223;
         color: #FFF;
         border-color: #dd212d;
         text-decoration: none !important;
     }
 
     .page-link.active {
-        background: #ffeaeb;
-        color: #dd2127;
-        border-color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
+        border-color: #232223;
         text-decoration: none !important;
     }
 
@@ -479,7 +480,7 @@ $result = mysqli_query($con, $sql);
 
     .btn-clear-filter {
         background: #f1f5f9;
-        color: #dd2127;
+        color: #232223;
         padding: 10px 25px;
         border-radius: 10px;
         font-weight: 600;
@@ -506,8 +507,8 @@ $result = mysqli_query($con, $sql);
     }
 
     .p-input-premium:focus {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%) !important;
     }
 
     /* Premium Modal V2 */
@@ -604,7 +605,7 @@ $result = mysqli_query($con, $sql);
 
     .ws-emp-row.row-open .log-expand-icon {
         transform: rotate(90deg);
-        color: #dd2127;
+        color: #232223;
     }
 
     .log-detail-row td {
@@ -672,8 +673,8 @@ $result = mysqli_query($con, $sql);
     }
 
     .lic-red {
-        background: #ffe4e6;
-        color: #e11d48;
+        background: rgb(34 35 35 / 20%);
+        color: #232223;
     }
 
     .lic-blue {
@@ -904,7 +905,7 @@ $result = mysqli_query($con, $sql);
                     <div class="seg-summary-bar">
                         <div class="seg-summary-item">
                             <span class="seg-sum-label">Total Duration</span>
-                            <span class="seg-sum-val" id="live-dur-${attId}" style="color:#e11d48;">${d.duration_fmt}</span>
+                            <span class="seg-sum-val" id="live-dur-${attId}" style="color:#232223;">${d.duration_fmt}</span>
                         </div>
                         <div class="seg-summary-item">
                             <span class="seg-sum-label">Check In</span>
@@ -1035,7 +1036,7 @@ $result = mysqli_query($con, $sql);
         var html = '';
         if (remarkHtml && remarkHtml !== '-') {
             var formattedRemark = remarkHtml
-                .replace(/(Today[’']s Progress:)/gi, '<strong style="color:#0f172a; display:block; margin-top:6px; margin-bottom:2px; font-weight:700;"><i class="fa fa-tasks" style="color:#dd2127; margin-right:5px;"></i>$1</strong>')
+                .replace(/(Today[’']s Progress:)/gi, '<strong style="color:#0f172a; display:block; margin-top:6px; margin-bottom:2px; font-weight:700;"><i class="fa fa-tasks" style="color:#232223; margin-right:5px;"></i>$1</strong>')
                 .replace(/(Planning for Tomorrow:)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-calendar-check-o" style="color:#2563eb; margin-right:5px;"></i>$1</strong>')
                 .replace(/(Issues:)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-exclamation-triangle" style="color:#eab308; margin-right:5px;"></i>$1</strong>')
                 .replace(/(Need any Help\s*\?:?)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-question-circle" style="color:#8b5cf6; margin-right:5px;"></i>$1</strong>');
@@ -1171,7 +1172,7 @@ $result = mysqli_query($con, $sql);
         transform: translate(-50%, -50%) scale(0.5);
         color: #fff;
         font-size: 24px;
-        background: #dd2127;
+        background: #232223;
         width: 48px;
         height: 48px;
         display: flex;
@@ -1316,7 +1317,7 @@ $result = mysqli_query($con, $sql);
     }
 
     .seg-dur-live {
-        color: #e11d48;
+        color: #232223;
     }
 
     .seg-action {

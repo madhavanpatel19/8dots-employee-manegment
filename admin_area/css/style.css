@@ -24,6 +24,23 @@ Version : 1.0
 
 /* Global Styles */
 
+/* Ensure all avatar & profile images prioritize top alignment (face alignment) */
+.profile-avatar img,
+.user-avatar img,
+.emp-avatar,
+.emp-avatar-img,
+.profile-img,
+.profile-preview,
+.avatar img,
+img.avatar,
+.emp-thumb,
+img[alt*="Avatar"],
+img[alt*="avatar"],
+img[id*="preview"],
+img[src*="uploads/"] {
+    object-position: top center !important;
+}
+
 body {
 
     margin-top: 100px;
@@ -806,13 +823,13 @@ body {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --p-primary: #4f46e5;
+    --p-primary: #232223;
     --p-secondary: #64748b;
     --p-success: #10b981;
     --p-bg: #f8fafc;
-    --p-bg-color: #FFEAEB;
-    --p-bg-btn: #dd2127;
-    --p-bg-header: #5b5b5b;
+    --p-bg-color: rgba(35, 34, 35, 0.08);
+    --p-bg-btn: #232223;
+    --p-bg-header: #232223;
     --p-card-bg: #ffffff;
     --p-text: #0f172a;
     --p-border: #e2e8f0;
@@ -883,7 +900,7 @@ body {
 
 /* Black Premium Action Button */
 .btn-premium-add {
-    background: #DD2127 !important;
+    background: #232223 !important;
     color: #fff !important;
     padding: 12px 24px !important;
     border-radius: 12px !important;
@@ -927,7 +944,7 @@ body {
 }
 
 .btn-modal-close {
-    background: #dd2127;
+    background: #232223;
     border: none;
     width: 32px;
     height: 32px;
@@ -1108,7 +1125,7 @@ table.table-premium>tfoot>tr>td,
 }
 
 .p-radio-item input[type="radio"]:checked {
-    border-color: #DD2127;
+    border-color: #232223;
 }
 
 .p-radio-item input[type="radio"]:checked::after {
@@ -1119,16 +1136,16 @@ table.table-premium>tfoot>tr>td,
     transform: translate(-50%, -50%);
     width: 10px;
     height: 10px;
-    background: #DD2127;
+    background: #232223;
     border-radius: 50%;
 }
 
 .p-radio-item:hover {
-    color: #DD2127;
+    color: #232223;
 }
 
 .p-radio-item:hover input[type="radio"] {
-    border-color: #DD2127;
+    border-color: #232223;
 }
 
 .p-input-premium {
@@ -1146,8 +1163,8 @@ table.table-premium>tfoot>tr>td,
 
 .p-input-premium:focus {
     outline: none;
-    border-color: #dd2127 !important;
-    box-shadow: 0 0 0 3px #ffeaeb !important;
+    border-color: #232223 !important;
+    box-shadow: 0 0 0 3px rgba(35, 34, 35, 0.15) !important;
 }
 
 input[type="file"].p-input-premium {
@@ -1199,12 +1216,12 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
 }
 
 .p-btn-delete {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    background: rgba(35, 34, 35, 0.08);
+    color: #232223;
 }
 
 .p-btn-delete:hover {
-    background: #ef4444;
+    background: #232223;
     color: #fff;
 }
 
@@ -1227,7 +1244,7 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
 
 .p-badge-primary {
     background: rgba(79, 70, 229, 0.05);
-    color: #dd2127 !important;
+    color: #232223 !important;
 }
 
 .p-badge-success {
@@ -1263,7 +1280,7 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(221, 33, 39, 0.7);
+    background: rgba(35, 34, 35, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1386,7 +1403,7 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
     appearance: none;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgb(34 35 35 / 20%);
     border-radius: 4px;
     margin-top: 2px;
     cursor: pointer;
@@ -1429,7 +1446,7 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
     opacity: 0;
     background: transparent;
     border: none;
-    color: #ef4444;
+    color: #232223;
     cursor: pointer;
     font-size: 12px;
     transition: all 0.3s;
@@ -1441,7 +1458,7 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
 }
 
 .todo-delete-btn:hover {
-    color: #f87171;
+    color: #000000;
     transform: scale(1.1);
 }
 
@@ -1569,23 +1586,23 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
     color: #d97706 !important;
 }
 
-/* 3. Delete / Danger (Red / Crimson) */
+/* 3. Delete / Danger */
 .btn-icon-delete,
 .btn-icon-red,
 .btn-icon-premium.btn-icon-delete,
 .btn-icon-premium.btn-icon-red {
-    color: #ef4444 !important;
-    background: #fef2f2 !important;
-    border-color: #fee2e2 !important;
+    color: #232223 !important;
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
 }
 
 .btn-icon-delete:hover,
 .btn-icon-red:hover,
 .btn-icon-premium.btn-icon-delete:hover,
 .btn-icon-premium.btn-icon-red:hover {
-    background: #fee2e2 !important;
-    border-color: #fca5a5 !important;
-    color: #dc2626 !important;
+    background: #232223 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
 }
 
 /* 4. History / Download (Purple / Indigo) */
@@ -1628,38 +1645,38 @@ input[type="file"].p-input-premium::-webkit-file-upload-button:hover {
     color: #059669 !important;
 }
 
-/* 6. Reject / Rose (Rose / Coral) */
+/* 6. Reject / Action */
 .btn-icon-reject,
 .btn-icon-rose,
 .btn-icon-premium.btn-icon-reject {
-    color: #e11d48 !important;
-    background: #fff1f2 !important;
-    border-color: #ffe4e6 !important;
+    color: #232223 !important;
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
 }
 
 .btn-icon-reject:hover,
 .btn-icon-rose:hover,
 .btn-icon-premium.btn-icon-reject:hover {
-    background: #ffe4e6 !important;
-    border-color: #fecdd3 !important;
-    color: #be123c !important;
+    background: #232223 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
 }
 
-/* 7. Folder / Cadlete Brand Red */
+/* 7. Folder / 8dots Brand Accent */
 .btn-icon-folder,
 .btn-icon-brand,
 .btn-icon-premium.btn-icon-folder {
-    color: #DD2127 !important;
-    background: #ffeaeb !important;
-    border-color: #fecaca !important;
+    color: #ffffff !important;
+    background: #232223 !important;
+    border-color: #232223 !important;
 }
 
 .btn-icon-folder:hover,
 .btn-icon-brand:hover,
 .btn-icon-premium.btn-icon-folder:hover {
-    background: #fee2e2 !important;
-    border-color: #fca5a5 !important;
-    color: #b91c1c !important;
+    background: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
 }
 
 /* Remove focus outlines on click globally */

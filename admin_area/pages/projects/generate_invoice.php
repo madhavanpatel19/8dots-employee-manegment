@@ -550,7 +550,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Invoice - ' . $current_date;
         }
 
         .si-val.red {
-            color: #dc2626;
+            color: #232223;
         }
 
         /* ── ACTIONS ── */
@@ -564,7 +564,7 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Invoice - ' . $current_date;
         }
 
         .btn-print {
-            background: #dd2127;
+            background: #232223;
             color: #fff;
             border: none;
             border-radius: 10px;
@@ -639,10 +639,10 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Invoice - ' . $current_date;
 
             <!-- ── HEADER ── -->
             <div class="inv-header">
-                <div class="company-name">CADLETE DESIGNS</div>
+                <div class="company-name">8Dots</div>
                 <div class="company-addr">
                     A-106, Sun South Street, near Safal Parisar 1, South Bopal, Bopal, Ahmedabad, Gujarat 380058 &nbsp;|&nbsp;
-                    Phone: +91 83202 11773 &nbsp;|&nbsp; Email: info@cadletedesigns.com
+                    Phone: +91 83202 11773 &nbsp;|&nbsp; Email: hr@8dots.in
                 </div>
             </div>
 
@@ -814,9 +814,9 @@ $pdf_doc_title = trim($clean_proj_name) . ' - Invoice - ' . $current_date;
                     </div>
                 </div>
                 <div class="sign-block">
-                    <div class="for-label">For, CADLETE DESIGNS</div>
+                    <div class="for-label">For, 8Dots</div>
                     <div class="sign-logo">
-                        <img src="../../images/logo_sign.png" alt="CADLETE DESIGNS sign">
+                        <img src="../../images/logo_sign.png" alt="8Dots sign">
                     </div>
                     <div class="auth-label">Authorised Signatory</div>
                 </div>

@@ -46,7 +46,7 @@ if (isset($_GET['user_delete'])) {
 
     // Check if the user is attempting to delete their own active session user ID
     $current_admin_id = isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 0;
-    
+
     if ($current_admin_id > 0 && $current_admin_id === $delete_id) {
         $msg = 'You cannot delete your own logged-in user account.';
         if ($is_ajax) {
@@ -56,7 +56,7 @@ if (isset($_GET['user_delete'])) {
         }
         echo "<script>
             if (typeof Swal !== 'undefined') {
-                Swal.fire({ title: 'Action Prohibited', text: '$msg', icon: 'error', confirmButtonColor: '#dd2127' })
+                Swal.fire({ title: 'Action Prohibited', text: '$msg', icon: 'error', confirmButtonColor: '#232223' })
                     .then(() => { window.location.href = 'index.php?view_users'; });
             } else {
                 alert('$msg');
@@ -110,7 +110,7 @@ if (isset($_GET['user_delete'])) {
         }
         echo "<script>
             if (typeof Swal !== 'undefined') {
-                Swal.fire({ title: 'Delete Failed', text: '" . addslashes($error_msg) . "', icon: 'error', confirmButtonColor: '#dd2127' })
+                Swal.fire({ title: 'Delete Failed', text: '" . addslashes($error_msg) . "', icon: 'error', confirmButtonColor: '#232223' })
                     .then(() => { window.location.href = 'index.php?view_users'; });
             } else {
                 alert('Failed to delete user: " . addslashes($error_msg) . "');
@@ -128,4 +128,3 @@ if (isset($_GET['user_delete'])) {
     echo "<script>window.location.href = 'index.php?view_users';</script>";
     exit;
 }
-?>

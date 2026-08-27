@@ -10,6 +10,11 @@
   --row-zebra: #fafafa;
 }
 
+/* Ensure all photos & avatars align to the top to prevent cropped faces */
+img {
+  object-position: top center !important;
+}
+
 /* Page */
 html,
 body {
@@ -290,7 +295,7 @@ input[type="date"]:focus {
   font-size: 14px;
   color: white;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(34 35 35 / 20%);
   padding: 8px 16px;
   border-radius: 6px;
   transition: background 0.2s ease;

@@ -288,7 +288,7 @@ function getResourceTypePhp(string $url)
 
     .dash-announce {
         background: linear-gradient(90deg, #fff1f2, #fce7f3);
-        border-left: 4px solid #e11d48;
+        border-left: 4px solid #232223;
         border-radius: 10px;
         padding: 11px 18px;
         font-size: 14px;
@@ -301,7 +301,7 @@ function getResourceTypePhp(string $url)
     }
 
     .dash-announce i {
-        color: #e11d48;
+        color: #232223;
         font-size: 16px;
     }
 
@@ -345,13 +345,14 @@ function getResourceTypePhp(string $url)
     }
 
     .dc-icon.red {
-        background: #ffe4e6;
-        color: #e11d48;
+        background: rgb(34 35 35 / 20%);
+        color: #232223;
     }
 
     .dc-icon.blue {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
     }
 
     .dc-icon.green {
@@ -393,7 +394,7 @@ function getResourceTypePhp(string $url)
         right: 14px;
         font-size: 11px;
         font-weight: 700;
-        color: #e11d48;
+        color: #232223;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -530,7 +531,7 @@ function getResourceTypePhp(string $url)
     .sec-hd a {
         font-size: 12px;
         font-weight: 700;
-        color: #e11d48;
+        color: #232223;
         text-decoration: none;
         outline: none;
     }
@@ -621,7 +622,7 @@ function getResourceTypePhp(string $url)
 
     .t-proj {
         font-size: 11px;
-        color: #e11d48;
+        color: #232223;
         margin: 2px 0 0;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -640,7 +641,7 @@ function getResourceTypePhp(string $url)
 
     .tb-high {
         background: #fee2e2;
-        color: #dc2626;
+        color: #232223;
     }
 
     .tb-medium {
@@ -688,8 +689,8 @@ function getResourceTypePhp(string $url)
         width: 42px;
         height: 42px;
         border-radius: 10px;
-        background: #ffe4e6;
-        color: #e11d48;
+        background: rgb(34 35 35 / 20%);
+        color: #232223;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -756,14 +757,14 @@ function getResourceTypePhp(string $url)
     }
 
     .ql-item:hover {
-        color: #e11d48;
+        color: #232223;
     }
 
     .ql-ic {
         width: 50px;
         height: 50px;
         background: #fff1f2;
-        color: #e11d48;
+        color: #232223;
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -853,7 +854,7 @@ function getResourceTypePhp(string $url)
         max-width: 32px;
         border-radius: 8px;
         min-height: 4px;
-        background: #fda4af;
+        background: #232223;
         transition: height .6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
     }
 
@@ -862,7 +863,7 @@ function getResourceTypePhp(string $url)
     }
 
     .bar-fill.today-bar {
-        background: #e11d48;
+        background: #232223;
         box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
     }
 
@@ -887,7 +888,7 @@ function getResourceTypePhp(string $url)
     }
 
     .bar-col.today-lbl .bar-lbl {
-        color: #e11d48;
+        color: #232223;
     }
 
     /* ── Empty state ── */
@@ -935,7 +936,7 @@ function getResourceTypePhp(string $url)
     .bm-box:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border-color: #dd2127 !important;
+        border-color: #232223 !important;
     }
 
     .bm-box:hover .bm-rem {
@@ -943,18 +944,18 @@ function getResourceTypePhp(string $url)
     }
 
     .bm-box-empty:hover {
-        border-color: #dd2127 !important;
-        background: #ffeaeb !important;
+        border-color: #232223 !important;
+        background: rgb(34 35 35 / 20%) !important;
     }
 
     .bm-box-empty:hover i {
-        color: #dd2127 !important;
+        color: #232223 !important;
     }
 
     /* ── SweetAlert Input ── */
     .swal2-input:focus {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%) !important;
     }
 
     /* ── Responsive ── */
@@ -1070,7 +1071,7 @@ function getResourceTypePhp(string $url)
         <!-- My Tasks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="taskSec">
-                <h3><i class="fa fa-tasks" style="color:#e11d48;"></i> My Tasks</h3>
+                <h3><i class="fa fa-tasks" style="color:#232223;"></i> My Tasks</h3>
                 <a href="index.php?todo">View All</a>
             </div>
             <div id="emptyTasksMsg" class="empty-s" style="<?php echo empty($tasks) ? '' : 'display:none;'; ?>">
@@ -1100,7 +1101,7 @@ function getResourceTypePhp(string $url)
         <!-- My Bookmarks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-bookmark" style="color:#e11d48;"></i> My Bookmarks</h3>
+                <h3><i class="fa fa-bookmark" style="color:#232223;"></i> My Bookmarks</h3>
                 <a href="#" onclick="clearBookmarks(); return false;" style="font-weight:normal; font-size:11px; color:#6b7280;"><i class="fa fa-trash"></i> Clear All</a>
             </div>
             <div id="bookmarksGrid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
@@ -1111,7 +1112,7 @@ function getResourceTypePhp(string $url)
         <!-- My Projects -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="projSec">
-                <h3><i class="fa fa-briefcase" style="color:#dd2127;"></i> My Projects</h3>
+                <h3><i class="fa fa-briefcase" style="color:#232223;"></i> My Projects</h3>
                 <a href="index.php?projects">View All</a>
             </div>
             <?php if (empty($projects)): ?>
@@ -1138,7 +1139,7 @@ function getResourceTypePhp(string $url)
         <!-- This Week's Time Log -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-bar-chart" style="color:#e11d48;"></i> Time Log <span style="font-size:11px;color:#9ca3af;font-weight:400;">(This Week)</span></h3>
+                <h3><i class="fa fa-bar-chart" style="color:#232223;"></i> Time Log <span style="font-size:11px;color:#9ca3af;font-weight:400;">(This Week)</span></h3>
                 <a href="index.php?worksheet">View All</a>
             </div>
             <p class="tl-total" id="weekTotalLabel"><?php echo fmtHM($displayed_week_secs); ?></p>
@@ -1285,15 +1286,18 @@ function getResourceTypePhp(string $url)
 
         window.parseWorkDetails = function(text) {
             text = text || '';
-            var progress = '', planning = '', issues = '', help = '';
+            var progress = '',
+                planning = '',
+                issues = '',
+                help = '';
 
             function cleanHeaders(s) {
                 if (!s) return '';
                 return s.replace(/^Today[’']s Progress:\s*/gi, '')
-                        .replace(/^Planning for Tomorrow:\s*/gi, '')
-                        .replace(/^Issues:\s*/gi, '')
-                        .replace(/^Need any Help\??:\s*/gi, '')
-                        .trim();
+                    .replace(/^Planning for Tomorrow:\s*/gi, '')
+                    .replace(/^Issues:\s*/gi, '')
+                    .replace(/^Need any Help\??:\s*/gi, '')
+                    .trim();
             }
 
             var headersPattern = /(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:|Need any Help\?:?)/i;
@@ -1430,9 +1434,9 @@ function getResourceTypePhp(string $url)
                     } catch (e) {
                         domain = bookmarks[i].url;
                     }
-                    html += `<div style="height:80px; border:1px solid #dd2127; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
+                    html += `<div style="height:80px; border:1px solid #232223; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
                         <div onclick="event.stopPropagation(); removeBookmark(${i})" style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; opacity:0; transition:0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.2);" class="bm-rem"><i class="fa fa-times"></i></div>
-                        <div style="width:36px; height:36px; border-radius:10px; background:#ffeaeb; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+                        <div style="width:36px; height:36px; border-radius:10px; background:rgb(34 35 35 / 20%);; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
                             <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" style="width:18px; height:18px; border-radius:3px;" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                             <i class="fa fa-globe" style="color:#3b82f6; font-size:16px; display:none;"></i>
                         </div>
@@ -1451,22 +1455,22 @@ function getResourceTypePhp(string $url)
             Swal.fire({
                 html: `
                     <div style="padding: 10px 5px 5px 5px;">
-                        <div style="width: 48px; height: 48px; background: #ffeaeb; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
-                            <i class="fa fa-bookmark" style="color: #dc2626; font-size: 20px;"></i>
+                        <div style="width: 48px; height: 48px; background: #232223; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+                            <i class="fa fa-bookmark" style="color: #ffffff; font-size: 20px;"></i>
                         </div>
                         <h4 style="font-weight: 800; color: #0f172a; font-size: 19px; margin: 0 0 6px 0;">Add Bookmark</h4>                        
                         <div style="text-align: left; margin-bottom: 16px;">
                             <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa fa-tag" style="color: #dc2626; font-size: 11px;"></i> Bookmark Name <span style="color: #dc2626;">*</span>
+                                <i class="fa fa-tag" style="color: #232223; font-size: 11px;"></i> Bookmark Name <span style="color: #232223;">*</span>
                             </label>
-                            <input id="swal-input1" type="text" class="form-control" placeholder="e.g. Google, Figma, Portal..." style="height: 46px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #0f172a; width: 100%; outline: none; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='#dc2626'; this.style.boxShadow='0 0 0 3px rgba(220, 38, 38, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input id="swal-input1" type="text" class="form-control" placeholder="e.g. Google, Figma, Portal..." style="height: 46px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #0f172a; width: 100%; outline: none; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div style="text-align: left; margin-bottom: 10px;">
                             <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa fa-link" style="color: #dc2626; font-size: 11px;"></i> Website URL <span style="color: #dc2626;">*</span>
+                                <i class="fa fa-link" style="color: #232223; font-size: 11px;"></i> Website URL <span style="color: #232223;">*</span>
                             </label>
-                            <input id="swal-input2" type="text" class="form-control" placeholder="e.g. google.com, figma.com..." style="height: 46px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #0f172a; width: 100%; outline: none; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='#dc2626'; this.style.boxShadow='0 0 0 3px rgba(220, 38, 38, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input id="swal-input2" type="text" class="form-control" placeholder="e.g. google.com, figma.com..." style="height: 46px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #0f172a; width: 100%; outline: none; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                 `,
@@ -1474,7 +1478,7 @@ function getResourceTypePhp(string $url)
                 showCancelButton: true,
                 confirmButtonText: '<i class="fa fa-check" style="margin-right: 6px;"></i> Save Bookmark',
                 cancelButtonText: 'Cancel',
-                confirmButtonColor: '#dc2626',
+                confirmButtonColor: '#232223',
                 cancelButtonColor: '#94a3b8',
                 customClass: {
                     popup: 'premium-swal-popup',
@@ -1528,7 +1532,7 @@ function getResourceTypePhp(string $url)
                 html: `
                     <div style="padding: 10px 5px 5px 5px;">
                         <div style="width: 48px; height: 48px; background: #fef2f2; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
-                            <i class="fa fa-trash-o" style="color: #dc2626; font-size: 22px;"></i>
+                            <i class="fa fa-trash-o" style="color: #232223; font-size: 22px;"></i>
                         </div>
                         <h4 style="font-weight: 800; color: #0f172a; font-size: 19px; margin: 0 0 6px 0;">Clear All Bookmarks?</h4>
                         <p style="margin: 0; font-size: 13px; color: #64748b; font-weight: 500; line-height: 1.5;">Are you sure you want to remove all saved links? This action cannot be undone.</p>
@@ -1623,9 +1627,9 @@ function getResourceTypePhp(string $url)
                     <i class="fa fa-pencil-square-o"></i> Submit Worksheet & Check Out
                 </h4>
             </div> -->
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:#ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:rgb(34 35 35 / 20%);; border-radius: 14px 14px 0 0; position: relative;">
                 <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-pencil-square-o" style="color: #fff; font-size: 14px;"></i>
                     </div>
                     <div>
