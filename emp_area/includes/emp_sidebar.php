@@ -19,7 +19,7 @@ if (!isset($_SESSION['emp_id'])) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php?dashboard">8Dots (Employee)</a>
+            <a class="navbar-brand" href="index.php?dashboard">Cadlete Designs (Employee)</a>
         </div>
         <ul class="nav navbar-right top-nav">
             <?php
@@ -91,7 +91,7 @@ if (!isset($_SESSION['emp_id'])) {
     <!-- MODERN SIDEBAR -->
     <aside class="modern-sidebar">
         <div class="sidebar-logo">
-            <img src="../admin_area/images/8dots-logo.png" alt="8Dots">
+            <img src="../admin_area/images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
         </div>
 
         <div class="sidebar-menu">
@@ -102,7 +102,7 @@ if (!isset($_SESSION['emp_id'])) {
                             } ?>">
                     <a href="index.php?dashboard"><i class="fa fa-th-large"></i> Dashboard</a>
                 </li>
-                <li class="<?php if (isset($_GET['projects'])) {
+                <li class="<?php if (isset($_GET['projects']) || isset($_GET['team_todo'])) {
                                 echo "active";
                             } ?>">
                     <a href="index.php?projects"><i class="fa fa-sitemap"></i> Projects</a>

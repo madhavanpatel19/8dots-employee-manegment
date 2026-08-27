@@ -1,4 +1,9 @@
 <?php
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
+/** @var mysqli $con */
+
 if (!isset($_SESSION['emp_id'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
 } else {
@@ -15,7 +20,10 @@ if (!isset($_SESSION['emp_id'])) {
     }
 
     $emp_name = $employee['name'];
-    $emp_email = $employee['email'];
+    $emp_personal_email = $employee['email'];
+    $emp_company_email = !empty($employee['company_email']) ? $employee['company_email'] : $employee['email'];
+    $emp_email = $emp_company_email;
+    $emp_designation = !empty($employee['designation']) ? $employee['designation'] : 'Employee';
     $emp_contact = $employee['phone_number'];
     $emp_address = $employee['address'];
     $emp_image = $employee['employee_image'];
@@ -27,10 +35,20 @@ if (!isset($_SESSION['emp_id'])) {
 
 ?>
 
-    <div class="premium-ui-enabled">
+    <div class="page-wrapper">
+        <div class="page-header-premium">
+            <h1>My Profile</h1>
+            <div class="header-actions">
+                <button class="btn-premium-add" onclick="window.location.reload();">
+                    <i class="fa fa-refresh"></i> Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Container -->
         <div class="row">
-            <!-- Left Column: Profile Card -->
-            <div class="col-lg-4">
+            <!-- Left Profile Card -->
+            <div class="col-md-4">
                 <div class="premium-card" style="border: none; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.08); background: #fff; margin-bottom: 30px;">
                     <div style="height: 100px; background: var(--p-bg-header)"></div>
                     <div style="padding: 0 30px 30px 30px; margin-top: -50px; text-align: center;">
@@ -38,17 +56,26 @@ if (!isset($_SESSION['emp_id'])) {
                             <img src="../admin_area/uploads/<?php echo !empty($emp_image) ? $emp_image : '../admin_images/default.png'; ?>" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: #fff;">
                             <div style="position: absolute; bottom: 5px; right: 5px; width: 22px; height: 22px; background: #10b981; border: 3px solid #fff; border-radius: 50%;"></div>
                         </div>
-                        <h2 style="margin: 15px 0 5px 0; font-size: 20px; font-weight: 800; color: #1e293b;"><?php echo $emp_name; ?></h2>
-                        <p style="color: #64748b; font-size: 14px; margin-bottom: 20px; font-weight: 600;">Employee (ID: #<?php echo $emp_id; ?>)</p>
+                        <h2 style="margin: 15px 0 5px 0; font-size: 20px; font-weight: 800; color: #1e293b;"><?php echo htmlspecialchars($emp_name); ?></h2>
+                        <p style="color: #64748b; font-size: 14px; margin-bottom: 20px; font-weight: 600;"><?php echo htmlspecialchars($emp_designation); ?> (ID: #<?php echo $emp_id; ?>)</p>
 
                         <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; display: flex; flex-direction: column; gap: 15px; text-align: left;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 32px; height: 32px; border-radius: 10px; background: #fee2e2; color: #dd2127; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                                    <i class="fa fa-building"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Company Email (Login)</div>
+                                    <div style="font-size: 13px; font-weight: 700; color: #dd2127;"><?php echo htmlspecialchars($emp_company_email); ?></div>
+                                </div>
+                            </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <div style="width: 32px; height: 32px; border-radius: 10px; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 14px;">
                                     <i class="fa fa-envelope"></i>
                                 </div>
                                 <div>
-                                    <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Email Address</div>
-                                    <div style="font-size: 13px; font-weight: 600; color: #1e293b;"><?php echo $emp_email; ?></div>
+                                    <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Personal Email</div>
+                                    <div style="font-size: 13px; font-weight: 600; color: #1e293b;"><?php echo htmlspecialchars($emp_personal_email); ?></div>
                                 </div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
@@ -66,7 +93,7 @@ if (!isset($_SESSION['emp_id'])) {
                                 </div>
                                 <div>
                                     <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Joined On</div>
-                                    <div style="font-size: 13px; font-weight: 600; color: #1e293b;"><?php echo date('d M Y', strtotime($emp_join)); ?></div>
+                                    <div style="font-size: 13px; font-weight: 600; color: #1e293b;"><?php echo date('d-m-Y', strtotime($emp_join)); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +106,7 @@ if (!isset($_SESSION['emp_id'])) {
                 <div class="premium-card" style="border: none; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.08); background: #fff; margin-bottom: 30px;">
                     <div class="card-hdr" style="background: var(--p-bg-header); color: #fff; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <i class="fa fa-id-card-o" style="font-size: 18px;"></i>
+                            <i class="fa fa-user" style="font-size: 18px;"></i>
                             <h3 style="margin: 0; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff;">Employee Information</h3>
                         </div>
                         <button class="btn-premium-add" data-toggle="modal" data-target="#editProfileModal">
@@ -108,7 +135,7 @@ if (!isset($_SESSION['emp_id'])) {
                                 </div>
                                 <div class="col-md-4" style="margin-bottom: 25px;">
                                     <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Date of Birth</div>
-                                    <div style="font-size: 15px; font-weight: 700; color: #1e293b;"><?php echo date('d M Y', strtotime($emp_dob)); ?></div>
+                                    <div style="font-size: 15px; font-weight: 700; color: #1e293b;"><?php echo date('d-m-Y', strtotime($emp_dob)); ?></div>
                                 </div>
                                 <div class="col-md-8" style="margin-bottom: 25px;">
                                     <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Address</div>
@@ -168,7 +195,7 @@ if (!isset($_SESSION['emp_id'])) {
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: var(--p-bg-color); border-radius: 14px 14px 0 0; position: relative;">
+                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: #ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
                     <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
                         <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                             <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>

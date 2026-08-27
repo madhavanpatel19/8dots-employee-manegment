@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (!isset($con)) {
     include(__DIR__ . '/../../includes/db.php');
 }
@@ -190,11 +190,21 @@ if ($attendanceTable && mysqli_num_rows($attendanceTable) > 0) {
     }
 }
 
+/**
+ * @param int $m
+ * @return string
+ */
 function monthName($m)
 {
-    return date('F', mktime(0, 0, 0, $m, 10));
+    return date('F', mktime(0, 0, 0, (int)$m, 10));
 }
-// File Upload Function (Auto Remove PDF Password)
+
+/**
+ * File Upload Function (Auto Remove PDF Password)
+ * @param array $fileArray
+ * @param string $targetDir
+ * @return string|bool
+ */
 function handleFileUpload($fileArray, $targetDir = "../../uploads/")
 {
 
@@ -247,7 +257,891 @@ $yearOptions = array();
 for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     $yearOptions[] = $y;
 }
+
+// Check extra_leaves column in emp_list
+$checkExtraCol = @mysqli_query($con, "SHOW COLUMNS FROM emp_list LIKE 'extra_leaves'");
+if ($checkExtraCol && mysqli_num_rows($checkExtraCol) == 0) {
+    @mysqli_query($con, "ALTER TABLE emp_list ADD COLUMN extra_leaves INT(11) DEFAULT 0");
+}
+
+// Default system allowed leaves sum from leave_types (Annual Leave Policy sum)
+$defaultSystemAllowedLeaves = 0;
+$lt_sum_q = @mysqli_query($con, "SELECT SUM(num_of_leave) as total FROM leave_types WHERE deleted_at IS NULL");
+if ($lt_sum_q && $lt_sum_row = mysqli_fetch_assoc($lt_sum_q)) {
+    if ($lt_sum_row['total'] !== null && $lt_sum_row['total'] !== '') {
+        $defaultSystemAllowedLeaves = intval($lt_sum_row['total']);
+    }
+}
+
+// Pre-calculate used leaves per employee
+$empUsedLeavesMap = array();
+$usedLeavesQuery = @mysqli_query($con, "SELECT emp_id, leave_from, leave_to FROM leave_applications WHERE status = 'approved'");
+if ($usedLeavesQuery && mysqli_num_rows($usedLeavesQuery) > 0) {
+    while ($ul = mysqli_fetch_assoc($usedLeavesQuery)) {
+        $eId = (int)$ul['emp_id'];
+        $from = strtotime($ul['leave_from']);
+        $to = strtotime($ul['leave_to']);
+        $days = 1;
+        if ($from && $to && $to >= $from) {
+            $days = round(($to - $from) / (60 * 60 * 24)) + 1;
+        }
+        if (!isset($empUsedLeavesMap[$eId])) {
+            $empUsedLeavesMap[$eId] = 0;
+        }
+        $empUsedLeavesMap[$eId] += $days;
+    }
+}
 ?>
+
+<style>
+    .btn-leave-badge {
+        background: #FFEAEB;
+        color: #DD2127;
+        border: 1px solid #FCA5A5;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(221, 33, 39, 0.08);
+        outline: none !important;
+    }
+
+    .btn-leave-badge:hover {
+        background: #DD2127;
+        color: #ffffff;
+        border-color: #DD2127;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(221, 33, 39, 0.25);
+    }
+
+    .leave-stat-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 16px 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* Prevent Flash of Unstyled Content (FOUC) / profile picture flash on page refresh */
+    .modal:not(.in):not(.show) {
+        display: none !important;
+    }
+
+    /* Document Maintenance Modal Styles (Premium) */
+    .doc-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(8px);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .doc-modal-overlay.active {
+        opacity: 1;
+    }
+
+    .doc-modal-container {
+        background: #fff;
+        width: 90%;
+        max-width: 600px;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+
+    .doc-modal-overlay.active .doc-modal-container {
+        transform: translateY(0);
+    }
+
+    .doc-modal-header {
+        position: relative;
+        padding: 20px 25px;
+        background: #ffeaeb;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .doc-modal-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .doc-modal-title-group i {
+        font-size: 20px;
+        color: #dd2127;
+    }
+
+    .doc-modal-title-group h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .doc-modal-body {
+        padding: 25px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .doc-modal-list-view {
+        margin-bottom: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .doc-item {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+    }
+
+    .doc-item:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .premium-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 9999;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        font-weight: 600;
+        transform: translateX(120%);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .premium-notification.active {
+        transform: translateX(0);
+    }
+
+    .notification-success {
+        background: rgba(16, 185, 129, 0.92);
+    }
+
+    .notification-error {
+        background: rgba(239, 68, 68, 0.92);
+    }
+
+    .doc-item a {
+        color: #1e293b;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+    }
+
+    .delete-doc {
+        background: #fee2e2;
+        color: #ef4444;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .delete-doc:hover {
+        background: #ef4444;
+        color: #fff;
+    }
+
+    .doc-modal-upload-section {
+        background: #ffeaeb;
+        border-radius: 16px;
+        padding: 15px;
+        border: 1px dashed #dd2127;
+    }
+
+    .upload-section-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #dd2127;
+    }
+
+    .upload-controls {
+        display: flex;
+        gap: 10px;
+    }
+
+    .custom-file-input {
+        flex: 1;
+        position: relative;
+    }
+
+    .custom-file-input input {
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    .custom-file-input label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        padding: 12px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #64748b;
+        width: 100%;
+        margin: 0;
+    }
+
+    .btn-upload {
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .no-docs {
+        text-align: center;
+        padding: 30px;
+        color: #94a3b8;
+    }
+
+    .no-docs i {
+        font-size: 30px;
+        margin-bottom: 10px;
+        opacity: 0.5;
+    }
+
+    .no-docs p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    /* Performance history modal */
+    #performanceHistoryModal .modal-content {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 16px 44px rgba(15, 23, 42, 0.16);
+    }
+
+    #performanceHistoryModal .modal-header {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .history-chart-box {
+        background: linear-gradient(180deg, #f8fafc, #eef2ff);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .history-table-wrap {
+        margin-top: 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        background: #ffffff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .history-table-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .history-total-pill {
+        display: inline-block;
+        background: #0ea5e9;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.01em;
+    }
+
+    .history-breakdown-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .history-breakdown-table tbody td {
+        vertical-align: middle;
+        color: #0f172a;
+    }
+
+    .history-point-badge {
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 12px;
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .history-empty-row {
+        text-align: center;
+        color: #94a3b8;
+    }
+
+    .score-btn {
+        border-color: transparent;
+    }
+
+    .score-plain {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #e2e8f0;
+    }
+
+    .score-red {
+        background: #ef4444;
+        color: #fff;
+        border-color: #dc2626;
+    }
+
+    .score-gray {
+        background: #94a3b8;
+        color: #0f172a;
+        border-color: #94a3b8;
+    }
+
+    .score-amber {
+        background: #f59e0b;
+        color: #0f172a;
+        border-color: #d97706;
+    }
+
+    .score-green {
+        background: #22c55e;
+        color: #fff;
+        border-color: #16a34a;
+    }
+
+    /* Premium Delete Confirmation Modal */
+    .premium-confirm-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .premium-confirm-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .premium-confirm-modal {
+        background: #fff;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        transform: scale(0.9);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        padding: 30px;
+        text-align: center;
+    }
+
+    .premium-confirm-overlay.active .premium-confirm-modal {
+        transform: scale(1);
+    }
+
+    .confirm-icon-box {
+        width: 60px;
+        height: 60px;
+        background: #fee2e2;
+        color: #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin: 0 auto 20px auto;
+        animation: pulseDanger 2s infinite;
+    }
+
+    @keyframes pulseDanger {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+    }
+
+    .premium-confirm-header h3 {
+        margin: 0 0 10px 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .premium-confirm-header p {
+        margin: 0 0 25px 0;
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .premium-confirm-footer {
+        display: flex;
+        gap: 12px;
+    }
+
+    .confirm-btn-cancel {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        background: #f1f5f9;
+        color: #64748b;
+        border: none;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .confirm-btn-cancel:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .confirm-btn-delete {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        background: #ef4444;
+        color: #fff;
+        border: none;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+    }
+
+    .confirm-btn-delete:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Comprehensive Form Styles */
+    .form-section-title {
+        background: #f8fafc;
+        padding: 8px 12px;
+        border-left: 4px solid #3b82f6;
+        margin: 20px 0 15px 0;
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-section-title:first-child {
+        margin-top: 0;
+    }
+
+    .modal-lg-custom {
+        width: 90%;
+        max-width: 1000px;
+    }
+
+    .grid-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .grid-col {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .grid-col label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #475569;
+        font-size: 13px;
+    }
+
+    .table-input {
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    .dynamic-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    .dynamic-table th {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        font-size: 12px;
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #e2e8f0;
+    }
+
+    .dynamic-table td {
+        padding: 5px;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* View Modal Specific Styles */
+    .view-info-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 8px;
+    }
+
+    .view-info-label {
+        font-weight: 700;
+        color: #64748b;
+        font-size: 11px;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .view-info-value {
+        color: #1e293b;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .view-image-large {
+        width: 120px;
+        height: 120px;
+        border-radius: 20px;
+        object-fit: cover;
+        object-position: center 10%;
+        /* Ensures face focus in sidebar */
+        border: 3px solid #fff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+        transition: transform 0.3s;
+    }
+
+    .view-modal-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 15px 20px;
+    }
+
+    .table-view-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s;
+    }
+
+    .table-view-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .emp-table-img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center 10%;
+        /* Focus on the face (top portion) */
+        border: 2px solid #fff;
+        cursor: pointer;
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .emp-table-img:hover {
+        transform: scale(1.15) rotate(5deg);
+        border-color: #dd2127;
+        box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
+    }
+
+    .emp-table-img:focus,
+    .emp-table-img:focus-visible,
+    .emp-table-img:active {
+        outline: none !important;
+        border-color: #e2e8f0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Round Profile Modal & Preview Styles */
+    .view-image-round {
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center 10%;
+        /* Ensures the face is centered in the circle */
+        border: 8px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        background: #f8fafc;
+        padding: 5px;
+    }
+
+    .preview-circle-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-top: 10px;
+        padding: 10px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px dashed #e2e8f0;
+    }
+
+    .image-preview-circle {
+        width: 70px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center 10%;
+        /* Face-first preview */
+        border: 3px solid #fff;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        background: #eef2ff;
+    }
+
+    /* Professional Profile Modal Styles */
+    .profile-modal-body {
+        display: flex;
+        padding: 0 !important;
+        background: #f8fafc;
+        min-height: 500px;
+    }
+
+    .profile-sidebar {
+        width: 280px;
+        background: #ffffff;
+        border-right: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        padding: 30px 0;
+    }
+
+    .profile-sidebar-header {
+        padding: 0 25px 25px 25px;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 15px;
+    }
+
+    .profile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .profile-nav-item {
+        padding: 12px 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-right: 3px solid transparent;
+    }
+
+    .profile-nav-item i {
+        width: 20px;
+        font-size: 16px;
+    }
+
+    .profile-nav-item:hover {
+        background: #FFEAEB;
+        color: #dd2127;
+    }
+
+    .profile-nav-item.active {
+        background: #FFEAEB;
+        color: #dd2127;
+        border-right-color: #dd2127;
+    }
+
+    .profile-content {
+        flex: 1;
+        padding: 40px;
+        background: #ffffff;
+        overflow-y: auto;
+    }
+
+    .profile-section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-data-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .profile-data-card {
+        background: #f8fafc;
+        padding: 15px 20px;
+        border-radius: 10px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .profile-data-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #94a3b8;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .profile-data-value {
+        font-size: 15px;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .profile-section {
+        display: none;
+    }
+
+    .profile-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .close-profile-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #dd2127;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 100;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-profile-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: rotate(90deg);
+    }
+
+    .profile-content {
+        position: relative;
+    }
+</style>
 
 <div class="page-header-premium">
     <h1></h1>
@@ -277,22 +1171,20 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         <h3>All Employees</h3>
     </div>
 
-    <div class="table-premium">
-        <style>
-            .table-premium table tbody td {
-                vertical-align: middle !important;
-            }
-        </style>
-        <table class="table-premium">
+    <div class="table-premium" style="overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch;">
+        <table class="table table-premium" style="min-width: 950px; width: 100%;">
             <thead>
                 <tr>
-                    <th style="text-align: center;">ID</th>
-                    <th style="text-align: center;">Photo</th>
-                    <th> Name</th>
-                    <th style="text-align: center;">Details</th>
-                    <th style="text-align: center;">Rating</th>
-                    <th style="text-align: center;">Files</th>
-                    <th style="text-align: center;">Manage</th>
+                    <th class="text-center" style="width: 60px; text-align: center;">ID</th>
+                    <th class="text-center" style="width: 80px; text-align: center;">Photo</th>
+                    <th>Name</th>
+                    <th class="text-center" style="text-align: center;">Designation</th>
+                    <th class="text-center" style="text-align: center;">Department</th>
+                    <th class="text-center" style="text-align: center;">Leaves</th>
+                    <th class="text-center" style="text-align: center;">Details</th>
+                    <!-- <th class="text-center" style="text-align: center;">Rating</th> -->
+                    <th class="text-center" style="text-align: center;">Files</th>
+                    <th class="text-center" style="text-align: center;">Manage</th>
                 </tr>
             </thead>
             <tbody>
@@ -358,9 +1250,36 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                 </div>
                                 <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
                                     <span style="display:inline-flex; align-items:center; gap:4px; margin-right:10px;"><i class="fa fa-phone" style="color:#333; opacity:0.7;"></i> <?php echo $phone; ?></span>
-                                    <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa fa-envelope" style="color:#333; opacity:0.7;"></i> <?php echo $email; ?></span>
+                                    <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa fa-envelope" style="color:#dd2127; opacity:0.8;"></i> <?php echo htmlspecialchars(!empty($row['company_email']) ? $row['company_email'] : $email); ?></span>
                                 </div>
                                 <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;"><i class="fa fa-calendar-check-o"></i> Joined: <?php echo (!empty($row['join_date']) && $row['join_date'] !== '0000-00-00') ? date('d-m-Y', strtotime($row['join_date'])) : '-'; ?></div>
+                            </td>
+                            <td class="text-center" style="text-align: center;">
+                                <?php if (!empty($row['designation']) && $row['designation'] !== 'Not Assigned'): ?>
+                                    <span style="font-size: 12px; font-weight: 700; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 4px 10px; border-radius: 6px; display: inline-block;"><?php echo htmlspecialchars($row['designation']); ?></span>
+                                <?php else: ?>
+                                    <span style="font-size: 12px; color: #94a3b8; font-weight: 600;">Not Assigned</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center" style="text-align: center;">
+                                <?php if (!empty($row['department']) && $row['department'] !== 'Not Assigned'): ?>
+                                    <span style="font-size: 12px; font-weight: 700; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 6px; display: inline-block;"><?php echo htmlspecialchars($row['department']); ?></span>
+                                <?php else: ?>
+                                    <span style="font-size: 12px; color: #94a3b8; font-weight: 600;">Not Assigned</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center" style="text-align: center; vertical-align: middle;">
+                                <?php
+                                $empExtra = intval($row['extra_leaves'] ?? 0);
+                                $empAllowed = $defaultSystemAllowedLeaves + $empExtra;
+                                $empUsed = isset($empUsedLeavesMap[$pk]) ? intval($empUsedLeavesMap[$pk]) : 0;
+                                ?>
+                                <button type="button" class="btn-leave-badge"
+                                    onclick="openEmpLeaveModal(<?php echo $pk; ?>, '<?php echo addslashes($name); ?>')"
+                                    title="Click to view & edit leave details for <?php echo addslashes($name); ?>">
+                                    <i class="fa fa-calendar-check-o" style="margin-right: 5px;"></i>
+                                    <span><?php echo $empUsed; ?> / <?php echo $empAllowed; ?></span>
+                                </button>
                             </td>
                             <td class="text-center" style="text-align: center;">
                                 <button type="button" class="btn" style="padding: 6px 12px; border-radius: 8px; font-weight: 600; background: #f1f5f9; color: #475569; border: 1.5px solid #e2e8f0; font-size: 12px;"
@@ -369,6 +1288,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     <i class="fa fa-user-circle-o"></i> View Profile
                                 </button>
                             </td>
+                            <!-- Rating column commented out
                             <td class="text-center" style="text-align: center;">
                                 <?php
                                 $scoreClass = 'score-plain';
@@ -402,6 +1322,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     <i class="fa fa-line-chart"></i> Set
                                 </button>
                             </td>
+                            -->
                             <td class="text-center" style="text-align: center;">
                                 <?php if (function_exists('canAdminAccess') && canAdminAccess('employee_update')): ?>
                                     <a href="javascript:void(0)" onclick="openDocuments(<?php echo $pk; ?>)" class="btn" style="padding: 6px 14px; border-radius: 8px; background: #fff; border: 1.5px solid #e2e8f0; color: #64748b; font-weight: 600; font-size: 12px;" title="View Documents">
@@ -445,7 +1366,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
 
 <!-- Document Management Modal (Premium UI) -->
-<div class="doc-modal-overlay" id="docModalOverlay" aria-hidden="true" onclick="handleOverlayClick(event)">
+<div class="doc-modal-overlay" id="docModalOverlay" aria-hidden="true" onclick="handleOverlayClick(event)" style="display: none;">
     <div class="doc-modal-container" role="dialog" aria-modal="true" aria-labelledby="doc-modal-title">
         <div class="doc-modal-header">
             <button class="btn-modal-close" onclick="closeDocModal()" aria-label="Close">
@@ -487,16 +1408,16 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 </div>
 
 <!-- Performance Modal -->
-<div class="modal fade" id="performanceModal" tabindex="-1" role="dialog" aria-labelledby="performanceModalLabel">
+<div class="modal fade" id="performanceModal" tabindex="-1" role="dialog" aria-labelledby="performanceModalLabel" style="display: none;">
     <div class="modal-dialog" role="document" style="max-width: 650px; width: 100%;">
         <div class="modal-content premium-modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
             <form method="post" id="performanceForm">
-                <div class="modal-header" style="background: var(--p-bg-color); padding: 20px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
+                <div class="modal-header" style="background: #ffeaeb; padding: 20px 26px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
                     <div>
-                        <h4 class="modal-title" id="performanceModalLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
-                            <i class="fa fa-line-chart" style="color: #fff; margin-right: 8px;"></i> Monthly Performance
+                        <h4 class="modal-title" id="performanceModalLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
+                            <i class="fa fa-line-chart" style="color: #DD2127; margin-right: 8px;"></i> Monthly Performance
                         </h4>
-                        <p style="margin: 6px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 500;">Set the monthly score for <strong id="perfEmpName" style="color: #63666dff;"></strong> (<span id="perfMonthYearLabel"><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></span>).</p>
+                        <p style="margin: 6px 0 0 0; color: #64748b; font-size: 12px; font-weight: 500;">Set the monthly score for <strong id="perfEmpName" style="color: #0f172a;"></strong> (<span id="perfMonthYearLabel"><?php echo monthName($currentMonth) . ' ' . $currentYear; ?></span>).</p>
                     </div>
                 </div>
                 <div class="modal-body" style="padding: 30px; background: #ffffff;">
@@ -517,9 +1438,9 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                         }
 
                         .perf-input:focus {
-                            border-color: var(--p-bg-color);
+                            border-color: #4f46e5;
                             background: #ffffff;
-                            box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
+                            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
                         }
 
                         .perf-input[readonly] {
@@ -638,15 +1559,15 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 </div>
 
 <!-- Performance History Modal -->
-<div class="modal fade" id="performanceHistoryModal" tabindex="-1" role="dialog" aria-labelledby="performanceHistoryLabel">
+<div class="modal fade" id="performanceHistoryModal" tabindex="-1" role="dialog" aria-labelledby="performanceHistoryLabel" style="display: none;">
     <div class="modal-dialog" role="document" style="max-width: 650px; width: 100%;">
         <div class="modal-content premium-modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;">
-            <div class="modal-header" style="background:var(--p-bg-color); padding: 19px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
+            <div class="modal-header" style="background: #ffeaeb; padding: 19px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start;">
                 <div>
-                    <h4 class="modal-title" id="performanceHistoryLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
-                        <i class="fa fa-area-chart" style="color:#fff; margin-right: 8px;"></i> Performance History
+                    <h4 class="modal-title" id="performanceHistoryLabel" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
+                        <i class="fa fa-area-chart" style="color: #dd2127; margin-right: 8px;"></i> Performance History
                     </h4>
-                    <p style="margin: 6px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 500;">Last 4 months performance for <strong id="historyEmpName" style="color: #63666dff;"></strong>.</p>
+                    <p style="margin: 6px 0 0 0; color: #64748b; font-size: 12px; font-weight: 500;">Last 4 months performance for <strong id="historyEmpName" style="color: #0f172a;"></strong>.</p>
                 </div>
             </div>
             <div class="modal-body" style="padding: 30px; background: #ffffff;">
@@ -656,8 +1577,8 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                 <div class="history-table-wrap" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
                     <div class="history-table-title" style="padding: 16px 20px; background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="font-weight: 700; color: #0f172a; font-size: 14px;"><i class="fa fa-list-ul" style="color: var(--p-bg-color); margin-right: 6px;"></i> Breakdown</span>
-                        <span id="historyBreakdownTotal" class="history-total-pill" style="background: var(--p-bg-color); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">0 / 100</span>
+                        <span style="font-weight: 700; color: #0f172a; font-size: 14px;"><i class="fa fa-list-ul" style="color: #dd2127; margin-right: 6px;"></i> Breakdown</span>
+                        <span id="historyBreakdownTotal" class="history-total-pill" style="background: #dd2127; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">0 / 100</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover history-breakdown-table" style="margin-bottom: 0;">
@@ -681,7 +1602,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 </div>
 
 <!-- View Employee Modal -->
-<div class="modal fade" id="viewEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="viewEmployeeModalLabel">
+<div class="modal fade" id="viewEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="viewEmployeeModalLabel" style="display: none;">
     <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1100px;">
         <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 25px 70px rgba(0,0,0,0.3);">
             <div class="profile-modal-body">
@@ -690,8 +1611,10 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     <div class="profile-sidebar-header">
                         <img id="view_img" src="admin_images/default.png" class="view-image-large" style="width: 140px; height: 140px; border-radius: 20px; margin-bottom: 20px;" alt="Profile">
                         <h4 id="view_name" style="font-weight: 800; color: #0f172a; margin: 0 0 5px 0;">Employee Name</h4>
+                        <div id="view_desig_sidebar" style="font-size: 13px; font-weight: 700; color: #dd2127; margin-bottom: 2px;">-</div>
+                        <div id="view_dept_sidebar" style="font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 10px;">-</div>
                         <p id="view_id_label" style="color: #64748b; font-size: 13px; font-weight: 600; margin-bottom: 10px;">ID: 001</p>
-                        <span id="view_gender_badge" class="label label-primary" style="background: var(--p-bg-color); padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
+                        <span id="view_gender_badge" class="label label-primary" style="background: #dd2127; padding: 5px 12px; border-radius: 30px; font-size: 11px;">Male</span>
                         <div id="view_join_sidebar" style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 10px;">Joined: -</div>
                     </div>
 
@@ -735,8 +1658,16 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                     </button>
                     <!-- Personal Info Section -->
                     <div id="section_personal" class="profile-section active">
-                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: var(--p-bg-color);"></i> Personal Information</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-user" style="color: #dd2127;"></i> Personal Information</h3>
                         <div class="profile-data-grid">
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Department</span>
+                                <span class="profile-data-value" id="view_dept_personal">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Designation</span>
+                                <span class="profile-data-value" id="view_desig_personal">-</span>
+                            </div>
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Date of Birth</span>
                                 <span class="profile-data-value" id="view_dob">-</span>
@@ -758,7 +1689,11 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                 <span class="profile-data-value" id="view_phone">-</span>
                             </div>
                             <div class="profile-data-card">
-                                <span class="profile-data-label">Email Address</span>
+                                <span class="profile-data-label">Company Email (Login)</span>
+                                <span class="profile-data-value" id="view_company_email" style="color: #dd2127; font-weight: 700;">-</span>
+                            </div>
+                            <div class="profile-data-card">
+                                <span class="profile-data-label">Personal Email Address</span>
                                 <span class="profile-data-value" id="view_email">-</span>
                             </div>
                             <div class="profile-data-card">
@@ -810,7 +1745,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                     <!-- Education Section -->
                     <div id="section_education" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: var(--p-bg-color);"></i> Educational Background</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-graduation-cap" style="color: #dd2127;"></i> Educational Background</h3>
                         <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
                             <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead style="background: #5b5b5b; color: #ffffff;">
@@ -828,7 +1763,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                     <!-- History Section -->
                     <div id="section_history" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: var(--p-bg-color);"></i> Employment History</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-briefcase" style="color: #dd2127;"></i> Employment History</h3>
                         <div class="table-responsive" style="border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;">
                             <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead style="background: #5b5b5b; color: #ffffff;">
@@ -846,7 +1781,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
                     <!-- Bank Details Section -->
                     <div id="section_bank" class="profile-section">
-                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: var(--p-bg-color);"></i> Bank Details</h3>
+                        <h3 class="profile-section-title"><i class="fa fa-bank" style="color: #dd2127;"></i> Bank Details</h3>
                         <div class="profile-data-grid">
                             <div class="profile-data-card">
                                 <span class="profile-data-label">Account Holder Name</span>
@@ -881,6 +1816,14 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
                                     <span class="profile-data-value" id="view_join">-</span>
                                 </div>
                                 <div class="profile-data-card">
+                                    <span class="profile-data-label">Department</span>
+                                    <span class="profile-data-value" id="view_dept_salary">-</span>
+                                </div>
+                                <div class="profile-data-card">
+                                    <span class="profile-data-label">Designation</span>
+                                    <span class="profile-data-value" id="view_desig_salary">-</span>
+                                </div>
+                                <div class="profile-data-card">
                                     <span class="profile-data-label">Basic Salary</span>
                                     <span class="profile-data-value" id="view_basic">0.00</span>
                                 </div>
@@ -906,7 +1849,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 </div>
 
 <!-- Image Viewer Modal -->
-<div class="modal fade" id="imageViewerModal" tabindex="-1" role="dialog" style="background: rgba(15, 23, 42, 0.9);">
+<div class="modal fade" id="imageViewerModal" tabindex="-1" role="dialog" style="display: none; background: rgba(15, 23, 42, 0.9);">
     <div class="modal-dialog" role="document" style="width: fit-content; max-width: 90vw; margin: 10vh auto;">
         <div class="modal-content" style="background: transparent; border: none; box-shadow: none;">
             <div class="modal-body text-center" style="padding: 0; position: relative;">
@@ -918,8 +1861,179 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     </div>
 </div>
 
+<!-- Employee Leave Modal -->
+<div class="modal fade" id="empLeaveModal" tabindex="-1" role="dialog" aria-labelledby="empLeaveModalLabel" style="display: none;">
+    <div class="modal-dialog modal-lg" role="document" style="width: 92%; max-width: 1050px;">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 70px rgba(0,0,0,0.3); overflow: hidden;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 28px; border: none; position: relative;">
+                <button type="button" class="close-profile-btn" data-dismiss="modal" aria-label="Close" style="top: 18px; right: 20px;">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h4 class="modal-title" style="font-weight: 800; display: flex; align-items: center; gap: 12px; margin: 0; font-size: 18px;">
+                    <div style="background: #DD2127; color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                        <i class="fa fa-calendar-check-o"></i>
+                    </div>
+                    <div>
+                        <span id="leaveModalEmpName">Employee Name</span> - Leave Management
+                        <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-top: 2px;">View leave history, adjust allowed quota & manage leave applications</div>
+                    </div>
+                </h4>
+            </div>
+
+            <div class="modal-body" style="padding: 28px; background: #ffffff;">
+                <!-- Summary Cards Row -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 25px;">
+                    <!-- Used Leaves Card -->
+                    <div class="leave-stat-card" style="border-left: 4.5px solid #ef4444; background: #fef2f2;">
+                        <div>
+                            <div style="font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px;">Used Leaves</div>
+                            <div style="font-size: 26px; font-weight: 900; color: #7f1d1d; margin-top: 4px;" id="modalUsedLeaves">0 Days</div>
+                        </div>
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                            <i class="fa fa-calendar-minus-o"></i>
+                        </div>
+                    </div>
+
+                    <!-- Remaining Leaves Card -->
+                    <div class="leave-stat-card" style="border-left: 4.5px solid #10b981; background: #ecfdf5;">
+                        <div>
+                            <div style="font-size: 11px; font-weight: 800; color: #065f46; text-transform: uppercase; letter-spacing: 0.5px;">Remaining Balance</div>
+                            <div style="font-size: 26px; font-weight: 900; color: #047857; margin-top: 4px;" id="modalRemainingLeaves">0 Days</div>
+                        </div>
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: #d1fae5; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                            <i class="fa fa-calendar-check-o"></i>
+                        </div>
+                    </div>
+
+                    <!-- Total Allowed Leaves Card -->
+                    <div class="leave-stat-card" style="border-left: 4.5px solid #dd2127; background: #fff5f5;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px;">Total Allowed Leaves</div>
+                            <div style="font-size: 26px; font-weight: 900; color: #991b1b; margin-top: 4px;" id="modalAllowedLeaves">0 Days</div>
+                        </div>
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: #ffe4e6; color: #dd2127; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leave Policy Allowances & Extra Leaves Row -->
+                <div id="modalLeaveTypeBreakdown" style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; background: #f8fafc; padding: 14px 18px; border-radius: 14px; border: 1.5px solid #e2e8f0; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; flex: 1;">
+                        <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa fa-pie-chart" style="color: #dd2127; font-size: 14px;"></i> Policy Allowances:
+                        </div>
+                        <div id="modalLeaveTypeBadges" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-premium-add" onclick="toggleExtraLeaveForm()">
+                            <i class="fa fa-plus-circle"></i> Add Extra Leaves
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hidden Inline Form to Add / Edit Extra Leaves for this Employee -->
+                <div id="extraLeaveFormBox" style="display: none; background: #fff5f5; border: 1.5px solid #fca5a5; border-radius: 16px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 4px 15px rgba(221,33,39,0.05);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                        <div>
+                            <span style="font-weight: 800; color: #991b1b; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa fa-user-plus" style="color: #dd2127; font-size: 16px;"></i> Personal Extra Leaves for Employee
+                            </span>
+                            <div style="font-size: 11.5px; color: #7f1d1d; margin-top: 3px; font-weight: 500;">Add extra custom leave days for this specific employee on top of the annual policy allowance</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="number" id="inputExtraLeaves" min="0" max="365" placeholder="e.g. 3" class="form-control" style="height: 40px; font-size: 13px; font-weight: 700; width: 110px; border-radius: 10px; border: 1.5px solid #dd2127; background: #ffffff; text-align: center;">
+                            <button type="button" class="btn-premium-add" onclick="saveExtraLeaves()">
+                                Save Extra Leaves
+                            </button>
+                            <button type="button" class="btn-premium-cancel" onclick="toggleExtraLeaveForm()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Header & Add Button -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1.5px solid #f1f5f9; padding-bottom: 14px;">
+                    <h4 style="font-weight: 800; color: #1e293b; margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-list-alt" style="color: #dd2127;"></i> Leave Applications & Record History
+                    </h4>
+                    <button type="button" class="btn-premium-add" onclick="toggleAddLeaveForm()">
+                        <i class="fa fa-plus-circle"></i> Add Leave Entry
+                    </button>
+                </div>
+
+                <!-- Admin Add Leave Entry Form -->
+                <div id="addLeaveFormBox" style="display: none; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 22px 24px; margin-bottom: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <h5 style="font-weight: 800; color: #0f172a; margin-top: 0; margin-bottom: 18px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-plus-circle" style="color: #dd2127; font-size: 16px;"></i> Add Leave Entry For Employee
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6" style="margin-bottom: 14px;">
+                            <label style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;">Leave Type</label>
+                            <select id="add_leave_type_id" class="form-control" style="height: 40px; border-radius: 10px; font-weight: 600; font-size: 13px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #1e293b;"></select>
+                        </div>
+                        <div class="col-md-3 col-sm-6" style="margin-bottom: 14px;">
+                            <label style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;">From Date</label>
+                            <input type="date" id="add_leave_from" class="form-control" style="height: 40px; border-radius: 10px; font-weight: 600; font-size: 13px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #1e293b;">
+                        </div>
+                        <div class="col-md-3 col-sm-6" style="margin-bottom: 14px;">
+                            <label style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;">To Date</label>
+                            <input type="date" id="add_leave_to" class="form-control" style="height: 40px; border-radius: 10px; font-weight: 600; font-size: 13px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #1e293b;">
+                        </div>
+                        <div class="col-md-3 col-sm-6" style="margin-bottom: 14px;">
+                            <label style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;">Status</label>
+                            <select id="add_leave_status" class="form-control" style="height: 40px; border-radius: 10px; font-weight: 600; font-size: 13px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #1e293b;">
+                                <option value="approved" selected>Approved</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="margin-bottom: 16px;">
+                            <label style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block;">Reason / Notes</label>
+                            <input type="text" id="add_leave_reason" placeholder="e.g. Medical leave, Personal work" class="form-control" style="height: 40px; border-radius: 10px; font-weight: 600; font-size: 13px; border: 1.5px solid #cbd5e1; background: #ffffff; color: #1e293b;">
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 4px;">
+                        <button type="button" class="btn-premium-cancel" onclick="toggleAddLeaveForm()">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                        <button type="button" class="btn-premium-add" onclick="submitAdminEmpLeave()">
+                            <i class="fa fa-check"></i> Save Leave
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="table-responsive" style="border: 1.5px solid #e2e8f0; border-radius: 14px; overflow: hidden; background: #fff;">
+                    <table class="table table-hover" style="margin-bottom: 0;">
+                        <thead style="background: #1e293b; color: #ffffff;">
+                            <tr>
+                                <th style="padding: 12px 16px; border: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Type</th>
+                                <th style="padding: 12px 16px; border: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Dates & Duration</th>
+                                <th style="padding: 12px 16px; border: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">Days</th>
+                                <th style="padding: 12px 16px; border: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Reason</th>
+                                <th style="padding: 12px 16px; border: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="empLeaveHistoryBody">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 18px 28px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                <button type="button" class="btn-premium-cancel" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Premium Delete Confirmation Modal -->
-<div class="premium-confirm-overlay" id="deleteConfirmOverlay">
+<div class="premium-confirm-overlay" id="deleteConfirmOverlay" style="display: none;">
     <div class="premium-confirm-modal">
         <div class="premium-confirm-header">
             <div class="confirm-icon-box">
@@ -935,7 +2049,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     </div>
 </div>
 
-<div class="premium-confirm-overlay" id="docDeleteConfirmOverlay">
+<div class="premium-confirm-overlay" id="docDeleteConfirmOverlay" style="display: none;">
     <div class="premium-confirm-modal">
         <div class="premium-confirm-header">
             <div class="confirm-icon-box">
@@ -954,6 +2068,248 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
 
 <script>
+    // Employee Leave Management JS
+    let currentEmpLeaveId = 0;
+    let currentEmpLeaveName = '';
+
+    function openEmpLeaveModal(empId, empName) {
+        currentEmpLeaveId = empId;
+        currentEmpLeaveName = empName;
+
+        $('#leaveModalEmpName').text(empName);
+        $('#extraLeaveFormBox').hide();
+        $('#addLeaveFormBox').hide();
+        $('#empLeaveHistoryBody').html('<tr><td colspan="5" class="text-center" style="padding: 25px;"><i class="fa fa-spinner fa-spin fa-2x" style="color: #dd2127;"></i><br><span style="color: #64748b; font-weight: 600; font-size: 13px; margin-top: 8px; display: inline-block;">Loading leave details...</span></td></tr>');
+
+        $('#empLeaveModal').modal('show');
+
+        fetchLeaveDetails(empId);
+    }
+
+    function fetchLeaveDetails(empId) {
+        $.ajax({
+            url: 'ajax/leaves/ajax_get_emp_leave_details.php',
+            method: 'GET',
+            data: {
+                emp_id: empId
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    $('#modalUsedLeaves').text(res.emp.used_leaves + ' Days');
+                    $('#modalRemainingLeaves').text(res.emp.remaining_leaves + ' Days');
+                    $('#modalAllowedLeaves').text(res.emp.allowed_leaves + ' Days');
+                    $('#inputExtraLeaves').val(res.emp.extra_leaves || 0);
+
+                    // Populate Policy Allowance & Extra Leaves Badges
+                    let breakdownHtml = '';
+                    if (res.leave_types && res.leave_types.length > 0) {
+                        res.leave_types.forEach(function(lt) {
+                            let used = lt.used_leave || 0;
+                            let total = lt.num_of_leave || 0;
+                            breakdownHtml += `
+                                <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #1e293b; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                    <span style="color: #dd2127;">${lt.leave_name}:</span>
+                                    <span style="color: #0f172a;">${used} / ${total} Days</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        breakdownHtml = '<span style="font-size: 12px; color: #94a3b8;">No leave policy types configured.</span>';
+                    }
+
+                    if (res.emp.extra_leaves && res.emp.extra_leaves > 0) {
+                        let extraUsed = res.emp.extra_leaves_used || 0;
+                        breakdownHtml += `
+                            <div style="background: #fff5f5; border: 1px solid #fca5a5; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #991b1b; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                <span style="color: #dd2127;"><i class="fa fa-star"></i> Extra Leaves:</span>
+                                <span style="color: #7f1d1d;">${extraUsed} / ${res.emp.extra_leaves} Days</span>
+                            </div>
+                        `;
+                    }
+                    $('#modalLeaveTypeBadges').html(breakdownHtml);
+
+                    // Populate Leave Types Dropdown for Add Form
+                    let typeOptions = '<option value="">-- Select Leave Type --</option>';
+                    if (res.leave_types && res.leave_types.length > 0) {
+                        res.leave_types.forEach(function(lt) {
+                            typeOptions += `<option value="${lt.id}">${lt.leave_name} (${lt.num_of_leave} days)</option>`;
+                        });
+                    }
+                    if (res.emp.extra_leaves && res.emp.extra_leaves > 0) {
+                        typeOptions += `<option value="0">Extra Leaves (${res.emp.extra_leaves} days)</option>`;
+                    }
+                    $('#add_leave_type_id').html(typeOptions);
+
+                    // Render Applications History Table
+                    let rows = '';
+                    if (res.applications && res.applications.length > 0) {
+                        res.applications.forEach(function(app) {
+                            let badgeClass = 'label-warning';
+                            let badgeBg = '#fffbeb';
+                            let badgeColor = '#b45309';
+                            let badgeBorder = '#fde68a';
+
+                            if (app.status === 'approved') {
+                                badgeBg = '#ecfdf5';
+                                badgeColor = '#047857';
+                                badgeBorder = '#a7f3d0';
+                            } else if (app.status === 'rejected') {
+                                badgeBg = '#fef2f2';
+                                badgeColor = '#b91c1c';
+                                badgeBorder = '#fca5a5';
+                            }
+
+                            rows += `
+                                <tr>
+                                    <td style="font-weight: 700; color: #1e293b;">
+                                        <i class="fa fa-tag" style="color: #dd2127; margin-right: 6px;"></i> ${app.leave_name}
+                                    </td>
+                                    <td>
+                                        <span style="font-weight: 600; color: #334155;">${app.leave_from}</span> 
+                                        <i class="fa fa-arrow-right" style="font-size: 10px; color: #94a3b8; margin: 0 4px;"></i> 
+                                        <span style="font-weight: 600; color: #334155;">${app.leave_to}</span>
+                                    </td>
+                                    <td style="text-align: center; font-weight: 800; color: #0f172a;">
+                                        <span style="background: #f1f5f9; padding: 3px 8px; border-radius: 6px; border: 1px solid #e2e8f0;">${app.days} Day(s)</span>
+                                    </td>
+                                    <td style="color: #475569; font-size: 12px; max-width: 200px;">
+                                        ${app.reason ? app.reason : '-'}
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder}; padding: 3px 10px; border-radius: 20px; display: inline-block;">
+                                            ${app.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        rows = '<tr><td colspan="5" class="text-center" style="padding: 20px; color: #94a3b8; font-weight: 600;">No leave records found for this employee.</td></tr>';
+                    }
+                    $('#empLeaveHistoryBody').html(rows);
+                } else {
+                    $('#empLeaveHistoryBody').html(`<tr><td colspan="5" class="text-center text-danger">${res.message}</td></tr>`);
+                }
+            },
+            error: function() {
+                $('#empLeaveHistoryBody').html('<tr><td colspan="5" class="text-center text-danger">Connection error. Could not fetch details.</td></tr>');
+            }
+        });
+    }
+
+    function toggleExtraLeaveForm() {
+        $('#extraLeaveFormBox').slideToggle(200);
+    }
+
+    function saveExtraLeaves() {
+        let val = parseInt($('#inputExtraLeaves').val());
+        if (isNaN(val) || val < 0) val = 0;
+
+        $.ajax({
+            url: 'ajax/leaves/ajax_update_emp_leave_quota.php',
+            method: 'POST',
+            data: {
+                emp_id: currentEmpLeaveId,
+                extra_leaves: val
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    if (typeof showPremiumAlert === 'function') showPremiumAlert('Extra leaves updated!');
+                    $('#extraLeaveFormBox').slideUp(200);
+                    fetchLeaveDetails(currentEmpLeaveId);
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            }
+        });
+    }
+
+    function toggleAddLeaveForm() {
+        $('#addLeaveFormBox').slideToggle(200);
+    }
+
+    function submitAdminEmpLeave() {
+        let typeId = $('#add_leave_type_id').val();
+        let fromDate = $('#add_leave_from').val();
+        let toDate = $('#add_leave_to').val();
+        let reason = $('#add_leave_reason').val();
+        let status = $('#add_leave_status').val();
+
+        if (typeId === null || typeId === '' || typeId === undefined || !fromDate || !toDate) {
+            if (typeof showPremiumAlert === 'function') showPremiumAlert('Please fill in Leave Type, From Date and To Date', 'error');
+            return;
+        }
+
+        $.ajax({
+            url: 'ajax/leaves/ajax_add_emp_leave.php',
+            method: 'POST',
+            data: {
+                emp_id: currentEmpLeaveId,
+                leave_type_id: typeId,
+                leave_from: fromDate,
+                leave_to: toDate,
+                reason: reason,
+                status: status
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    if (typeof showPremiumAlert === 'function') showPremiumAlert('Leave record added!');
+                    $('#add_leave_from').val('');
+                    $('#add_leave_to').val('');
+                    $('#add_leave_reason').val('');
+                    $('#addLeaveFormBox').slideUp(200);
+                    fetchLeaveDetails(currentEmpLeaveId);
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            }
+        });
+    }
+
+    function updateLeaveAppStatus(appId, newStatus) {
+        $.ajax({
+            url: 'ajax/leaves/ajax_update_leave_app_status.php',
+            method: 'POST',
+            data: {
+                app_id: appId,
+                status: newStatus
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    if (typeof showPremiumAlert === 'function') showPremiumAlert('Leave status updated to ' + newStatus);
+                    fetchLeaveDetails(currentEmpLeaveId);
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            }
+        });
+    }
+
+    function deleteLeaveApp(appId) {
+        if (!confirm('Are you sure you want to delete this leave entry?')) return;
+
+        $.ajax({
+            url: 'ajax/leaves/ajax_delete_leave_app.php',
+            method: 'POST',
+            data: {
+                app_id: appId
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    if (typeof showPremiumAlert === 'function') showPremiumAlert('Leave entry deleted!');
+                    fetchLeaveDetails(currentEmpLeaveId);
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            }
+        });
+    }
+
     // Zoom/View Profile Image
     function viewImage(img, name) {
         var viewerImg = document.getElementById('viewer_img');
@@ -1034,6 +2390,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
             docId,
             empId
         };
+        docDeleteOverlay.style.display = 'flex';
         docDeleteOverlay.classList.add('active');
     }
 
@@ -1102,9 +2459,16 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         const data = JSON.parse(btn.dataset.emp);
         document.getElementById('view_img').src = data.employee_image ? 'uploads/' + data.employee_image : 'admin_images/default.png';
         document.getElementById('view_name').textContent = data.name || '-';
+        if (document.getElementById('view_desig_sidebar')) document.getElementById('view_desig_sidebar').textContent = data.designation || 'Not Assigned';
+        if (document.getElementById('view_dept_sidebar')) document.getElementById('view_dept_sidebar').textContent = data.department || 'Not Assigned';
+        if (document.getElementById('view_dept_personal')) document.getElementById('view_dept_personal').textContent = data.department || 'Not Assigned';
+        if (document.getElementById('view_desig_personal')) document.getElementById('view_desig_personal').textContent = data.designation || 'Not Assigned';
+        if (document.getElementById('view_dept_salary')) document.getElementById('view_dept_salary').textContent = data.department || 'Not Assigned';
+        if (document.getElementById('view_desig_salary')) document.getElementById('view_desig_salary').textContent = data.designation || 'Not Assigned';
         document.getElementById('view_id_label').textContent = 'ID: ' + data.id;
         document.getElementById('view_gender_badge').textContent = data.gender || 'Other';
         document.getElementById('view_phone').textContent = data.phone_number || '-';
+        if (document.getElementById('view_company_email')) document.getElementById('view_company_email').textContent = data.company_email || data.email || '-';
         document.getElementById('view_email').textContent = data.email || '-';
         document.getElementById('view_blood').textContent = data.blood_group || '-';
         document.getElementById('view_join_sidebar').innerHTML = '<i class="fa fa-calendar-check-o"></i> Joined: ' + (data.join_date || '-');
@@ -1179,11 +2543,13 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     function showDeleteConfirm(id, name) {
         currentDeleteId = id;
         deleteNameLabel.textContent = name;
+        deleteOverlay.style.display = 'flex';
         deleteOverlay.classList.add('active');
     }
 
     function closeDeleteConfirm() {
         deleteOverlay.classList.remove('active');
+        deleteOverlay.style.display = 'none';
         currentDeleteId = null;
         confirmDeleteBtn.disabled = false;
         confirmDeleteBtn.innerHTML = 'Delete Now';
@@ -1234,6 +2600,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
     function closeDocDeleteConfirm() {
         docDeleteOverlay.classList.remove('active');
+        docDeleteOverlay.style.display = 'none';
         currentDocDelete = null;
         confirmDocDeleteBtn.disabled = false;
         confirmDocDeleteBtn.innerHTML = 'Delete Document';
@@ -1509,6 +2876,11 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 </script>
 
 <style>
+    /* Prevent Flash of Unstyled Content (FOUC) / profile picture flash on page refresh */
+    .modal:not(.in):not(.show) {
+        display: none !important;
+    }
+
     /* Document Maintenance Modal Styles (Premium) */
     .doc-modal-overlay {
         display: none;
@@ -1548,7 +2920,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     .doc-modal-header {
         position: relative;
         padding: 20px 25px;
-        background: var(--p-bg-color);
+        background: #ffeaeb;
         border-bottom: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
@@ -1563,14 +2935,14 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
 
     .doc-modal-title-group i {
         font-size: 20px;
-        color: #fff;
+        color: #dd2127;
     }
 
     .doc-modal-title-group h3 {
         margin: 0;
         font-size: 18px;
         font-weight: 700;
-        color: #fff;
+        color: #0f172a;
     }
 
     .doc-modal-body {
@@ -1662,10 +3034,10 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     .doc-modal-upload-section {
-        background: var(--p-bg-color);
+        background: #ffeaeb;
         border-radius: 16px;
         padding: 15px;
-        border: 1px dashed var(--p-bg-color);
+        border: 1px dashed #dd2127;
     }
 
     .upload-section-header {
@@ -1675,7 +3047,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         margin-bottom: 12px;
         font-size: 13px;
         font-weight: 700;
-        color: #fff;
+        color: #dd2127;
     }
 
     .upload-controls {
@@ -2105,14 +3477,24 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         /* Focus on the face (top portion) */
         border: 2px solid #e2e8f0;
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        outline: none !important;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .emp-table-img:hover {
-        transform: scale(1.15) rotate(5deg);
-        border-color: var(--p-bg-color);
-        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
+        transform: scale(1.08);
+        border-color: #dd2127;
+        box-shadow: 0 6px 12px -2px rgba(221, 33, 39, 0.25);
+    }
+
+    .emp-table-img:focus,
+    .emp-table-img:focus-visible,
+    .emp-table-img:active {
+        outline: none !important;
+        border-color: #e2e8f0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     /* Round Profile Modal & Preview Styles */
@@ -2201,14 +3583,14 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
     }
 
     .profile-nav-item:hover {
-        background: var(--p-bg-color);
-        color: #fff;
+        background: #FFEAEB;
+        color: #dd2127;
     }
 
     .profile-nav-item.active {
-        background: var(--p-bg-color);
-        color: #fff;
-        border-right-color: var(--p-bg-color);
+        background: #FFEAEB;
+        color: #dd2127;
+        border-right-color: #dd2127;
     }
 
     .profile-content {
@@ -2282,7 +3664,7 @@ for ($y = $currentYear - 2; $y <= $currentYear + 1; $y++) {
         position: absolute;
         top: 20px;
         right: 20px;
-        background: var(--p-bg-color);
+        background: #dd2127;
         border: none;
         width: 36px;
         height: 36px;

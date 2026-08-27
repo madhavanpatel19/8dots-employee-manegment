@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
 } else {
@@ -23,12 +23,12 @@ if (!isset($_SESSION['admin_email'])) {
 
         .p-badge-primary {
             background: rgba(79, 70, 229, 0.05);
-            color: var(--p-bg-color);
+            color: #dd2127;
         }
 
         .p-badge-info {
             background: rgba(14, 165, 233, 0.1);
-            color: var(--p-bg-color);
+            color: #dd2127;
         }
 
         .p-badge-danger {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('pages/auth/login.php','_self')</script>";
     exit();
@@ -21,25 +21,25 @@ if (isset($_GET['edit_nda'])) {
 
     $id = $row_edit['id'];
     $name = $row_edit['name'];
-    $employee_id = $row_edit['employee_id'];
-    $department = $row_edit['department'];
-    $designation = $row_edit['designation'];
+    $email = $row_edit['email'];
+    $number = $row_edit['number'];
+    $position = $row_edit['position'];
     $start_date = $row_edit['start_date'];
 }
 
 if (isset($_POST['update_nda'])) {
     $update_id = mysqli_real_escape_string($con, $_POST['id']);
     $u_name = mysqli_real_escape_string($con, $_POST['name']);
-    $u_employee_id = mysqli_real_escape_string($con, $_POST['employee_id']);
-    $u_department = mysqli_real_escape_string($con, $_POST['department']);
-    $u_designation = mysqli_real_escape_string($con, $_POST['designation']);
+    $u_email = mysqli_real_escape_string($con, $_POST['email']);
+    $u_number = mysqli_real_escape_string($con, $_POST['number']);
+    $u_position = mysqli_real_escape_string($con, $_POST['position']);
     $u_start_date = mysqli_real_escape_string($con, $_POST['start_date']);
 
     $update_query = "UPDATE nda_forms SET 
         name='$u_name', 
-        employee_id='$u_employee_id', 
-        department='$u_department', 
-        designation='$u_designation', 
+        email='$u_email', 
+        number='$u_number', 
+        position='$u_position', 
         start_date='$u_start_date' 
         WHERE id='$update_id'";
 
@@ -58,7 +58,7 @@ if (isset($_POST['update_nda'])) {
     <form method="post" action="">
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #DD2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     1
                 </div>
                 <div>
@@ -72,30 +72,30 @@ if (isset($_POST['update_nda'])) {
 
                 <div class="row">
                     <div class="col-md-6" style="margin-bottom: 20px;">
-                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Employee Name</label>
-                        <input type="text" name="name" class="p-input-premium" value="<?php echo htmlspecialchars($name); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Party Name</label>
+                        <input type="text" name="name" class="p-input-premium" value="<?php echo htmlspecialchars($name); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div class="col-md-6" style="margin-bottom: 20px;">
-                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Employee ID</label>
-                        <input type="text" name="employee_id" class="p-input-premium" value="<?php echo htmlspecialchars($employee_id); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6" style="margin-bottom: 20px;">
-                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Department</label>
-                        <input type="text" name="department" class="p-input-premium" value="<?php echo htmlspecialchars($department); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
-                    </div>
-                    <div class="col-md-6" style="margin-bottom: 20px;">
-                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Designation</label>
-                        <input type="text" name="designation" class="p-input-premium" value="<?php echo htmlspecialchars($designation); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Job Position</label>
+                        <input type="text" name="position" class="p-input-premium" value="<?php echo htmlspecialchars($position); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6" style="margin-bottom: 20px;">
-                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Joining Date</label>
-                        <input type="date" name="start_date" class="p-input-premium" value="<?php echo $start_date; ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Email Address</label>
+                        <input type="email" name="email" class="p-input-premium" value="<?php echo htmlspecialchars($email); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    </div>
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Phone Number</label>
+                        <input type="tel" name="number" class="p-input-premium" maxlength="10" value="<?php echo htmlspecialchars($number); ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6" style="margin-bottom: 20px;">
+                        <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Agreement Date</label>
+                        <input type="date" name="start_date" class="p-input-premium" value="<?php echo $start_date; ?>" required style="height: 48px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; padding: 0 15px; transition: all 0.3s;" onfocus="this.style.borderColor='#DD2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                 </div>
 

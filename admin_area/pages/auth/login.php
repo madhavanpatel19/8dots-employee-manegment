@@ -14,7 +14,7 @@ if (!isset($con)) {
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../css/login.css">
-    <link rel="shortcut icon" href="../../images/8dots_favicon.png?v=<?php echo time(); ?>" type="image/png">
+    <link rel="shortcut icon" href="../../images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
 
     <style>
         .premium-notification {
@@ -87,10 +87,10 @@ if (!isset($con)) {
         <div class="login-card">
             <form action="" method="post">
                 <div class="brand-logo">
-                    <img src="../../images/8dots-logo.png" alt="8Dots">
+                    <img src="../../images/Cadlete_logo Landscape.png" alt="Cadlete Designs">
                 </div>
                 <h2 class="welcome-text">Welcome Back!</h2>
-                <p class="subtitle">Sign in to continue to 8Dots Portal</p>
+                <p class="subtitle">Sign in to continue to Cadlete Designs Portal</p>
 
                 <div class="login-input-wrap">
                     <i class="fa fa-envelope-o input-icon"></i>
@@ -118,7 +118,7 @@ if (!isset($con)) {
                 </button>
 
 
-                <!-- <p class="copyright">&copy; 2026 8Dots. All rights reserved.</p> -->
+                <!-- <p class="copyright">&copy; 2026 Cadlete Designs. All rights reserved.</p> -->
             </form>
         </div>
     </div>

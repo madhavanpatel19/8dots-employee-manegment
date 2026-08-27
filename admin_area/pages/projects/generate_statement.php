@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -24,7 +24,25 @@ if (!$project) {
 // Fetch budget phases from project_budget_phases
 $phases_q = mysqli_query($con, "SELECT * FROM project_budget_phases WHERE project_id = '$project_id' ORDER BY id ASC");
 $phases = [];
+$total_received = 0;
+
 while ($row = mysqli_fetch_assoc($phases_q)) {
+    $p_name_esc = mysqli_real_escape_string($con, $row['phase_name']);
+    $get_pmts = mysqli_query($con, "SELECT * FROM project_phase_payments WHERE project_id = '$project_id' AND phase_name = '$p_name_esc' ORDER BY id ASC");
+    $pmts = [];
+    $pmt_sum = 0;
+    if ($get_pmts && mysqli_num_rows($get_pmts) > 0) {
+        while ($pmt = mysqli_fetch_assoc($get_pmts)) {
+            $pmts[] = $pmt;
+            $pmt_sum += (float)$pmt['amount'];
+        }
+    } else {
+        $pmt_sum = (float)$row['received_amount'];
+    }
+
+    $row['received_amount'] = $pmt_sum;
+    $row['payments'] = $pmts;
+    $total_received += $pmt_sum;
     $phases[] = $row;
 }
 
@@ -41,10 +59,11 @@ $sym      = $currency_symbols[$currency] ?? '₹';
 
 // Totals
 $total_cost     = (float)($project['budget'] ?? 0);
-$total_received = array_sum(array_column($phases, 'received_amount'));
 $total_pending  = $total_cost - $total_received;
 
 $current_date = date("d F Y");
+$clean_proj_name = preg_replace('/[^\w\s\-]/', '', $project['project_name'] ?? 'Project');
+$pdf_doc_title = trim($clean_proj_name) . ' - Project Statement - ' . $current_date;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +71,7 @@ $current_date = date("d F Y");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Statement – <?php echo htmlspecialchars($project['project_name'] ?? ''); ?></title>
+    <title><?php echo htmlspecialchars($pdf_doc_title); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -127,7 +146,7 @@ $current_date = date("d F Y");
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding: 0 52px;
+            padding: 0 25px;
             margin-top: -65px;
         }
 
@@ -150,7 +169,7 @@ $current_date = date("d F Y");
         .title-underline {
             display: flex;
             align-items: center;
-            margin: 0 50px 24px;
+            margin: 0 25px 24px;
             height: 6px;
         }
 
@@ -171,7 +190,7 @@ $current_date = date("d F Y");
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 0 52px;
+            padding: 0 25px;
             margin-bottom: 20px;
             gap: 20px;
         }
@@ -202,7 +221,7 @@ $current_date = date("d F Y");
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 14px;
-            padding: 0 52px;
+            padding: 0 25px;
             margin-bottom: 22px;
         }
 
@@ -245,7 +264,7 @@ $current_date = date("d F Y");
 
         /* ── TABLE ── */
         .content {
-            padding: 0 52px;
+            padding: 0 25px;
         }
 
         .section-label {
@@ -260,7 +279,8 @@ $current_date = date("d F Y");
         .stmt-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 11px;
+            table-layout: fixed;
         }
 
         .stmt-table thead tr {
@@ -268,14 +288,18 @@ $current_date = date("d F Y");
         }
 
         .stmt-table thead th {
-            padding: 10px 12px;
+            padding: 10px 6px;
             color: #fff;
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.5px;
             text-align: center;
             border: none;
+            white-space: normal;
+            word-wrap: break-word;
+            vertical-align: middle;
+            line-height: 1.25;
         }
 
         .stmt-table tbody tr {
@@ -287,7 +311,7 @@ $current_date = date("d F Y");
         }
 
         .stmt-table tbody td {
-            padding: 10px 12px;
+            padding: 8px 7px;
             text-align: center;
             color: #334155;
             font-weight: 500;
@@ -298,6 +322,8 @@ $current_date = date("d F Y");
             font-weight: 700;
             color: #0f172a;
             text-align: left;
+            word-break: break-word;
+            white-space: normal;
         }
 
         .stmt-table tbody td.amount {
@@ -380,7 +406,7 @@ $current_date = date("d F Y");
         }
 
         .btn-print {
-            background: var(--p-bg-color);
+            background: #dd2127;
             color: #fff;
             border: none;
             border-radius: 10px;
@@ -437,7 +463,7 @@ $current_date = date("d F Y");
     <!-- Action Buttons -->
     <div class="actions">
         <button onclick="window.print()" class="btn-premium-add">
-            <i class="fa fa-print"></i> Print / Save PDF
+            <i class="fa fa-print"></i>Print / Save PDF
         </button>
         <a href="javascript:window.close();" class="btn-premium-cancel">Back</a>
     </div>
@@ -451,7 +477,7 @@ $current_date = date("d F Y");
                 <div class="red-bar"></div>
             </div>
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo%20Landscape.png" alt="8Dots Logo">
+                <img src="../../images/Cadlete_logo%20Landscape.png" alt="CADLETE DESIGNS Logo">
             </div>
 
             <!-- ── TITLE ── -->
@@ -485,7 +511,7 @@ $current_date = date("d F Y");
                 <div class="summary-box">
                     <div class="s-label">Outstanding Balance</div>
                     <div class="s-value" style="color:<?php echo $total_pending > 0 ? '#ef4444' : '#16a34a'; ?>">
-                        <?php echo $sym . ' ' . number_format(abs($total_pending), 0); ?>
+                        <?php echo ($total_pending < 0 ? '-' : '') . $sym . ' ' . number_format(abs($total_pending), 0); ?>
                     </div>
                     <div class="s-bar" style="background:<?php echo $total_pending > 0 ? '#ef4444' : '#22c55e'; ?>;"></div>
                 </div>
@@ -501,33 +527,73 @@ $current_date = date("d F Y");
                     <table class="stmt-table">
                         <thead>
                             <tr>
-                                <th style="text-align:center; width:30px;">#</th>
-                                <th style="text-align:left;">Phase</th>
-                                <th>Total Cost (<?php echo $sym; ?>)</th>
-                                <th>Received (<?php echo $sym; ?>)</th>
-                                <th>Payment Method</th>
-                                <th>Description</th>
-                                <th>Received Date</th>
+                                <th style="text-align:center; width:4%;">#</th>
+                                <th style="text-align:left; width:22%;">Phase</th>
+                                <th style="text-align:left; width:18%;">Description</th>
+                                <th style="width:12%;">Total Cost (<?php echo $sym; ?>)</th>
+                                <th style="width:11%;">Received (<?php echo $sym; ?>)</th>
+                                <th style="width:11%;">Pending (<?php echo $sym; ?>)</th>
+                                <th style="width:11%;">Payment Method</th>
+                                <th style="width:11%;">Received Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($phases as $i => $phase):
-                                $cost_fmt = number_format((float)$phase['cost'], 0);
-                                $rec_fmt  = number_format((float)$phase['received_amount'], 0);
+                                $cost_val = (float)$phase['cost'];
+                                $rec_val  = (float)$phase['received_amount'];
+                                $pnd_val  = $cost_val - $rec_val;
+                                $cost_fmt = number_format($cost_val, 0);
+                                $rec_fmt  = number_format($rec_val, 0);
+                                $pnd_fmt  = ($pnd_val < 0 ? '-' : '') . $sym . ' ' . number_format(abs($pnd_val), 0);
                                 $date_fmt = (!empty($phase['received_date']) && $phase['received_date'] !== '0000-00-00')
                                     ? date("d M Y", strtotime($phase['received_date'])) : '—';
-                                $method   = !empty($phase['remark'])      ? htmlspecialchars($phase['remark'])      : '—';
-                                $desc     = !empty($phase['description'])  ? htmlspecialchars($phase['description']) : '—';
+
+                                if (!empty($phase['payments'])) {
+                                    if (count($phase['payments']) > 1) {
+                                        $method = 'Multiple';
+                                    } else {
+                                        $method = htmlspecialchars($phase['payments'][0]['payment_method'] ?? $phase['remark'] ?? '—');
+                                    }
+                                } else {
+                                    $method = !empty($phase['remark']) ? htmlspecialchars($phase['remark']) : '—';
+                                }
+
+                                $desc = !empty($phase['description']) ? htmlspecialchars($phase['description']) : '—';
                             ?>
-                                <tr>
-                                    <td><?php echo $i + 1; ?></td>
-                                    <td class="phase-name"><?php echo htmlspecialchars($phase['phase_name']); ?></td>
-                                    <td class="amount"><?php echo $sym . ' ' . $cost_fmt; ?></td>
-                                    <td class="received-amt"><?php echo $sym . ' ' . $rec_fmt; ?></td>
-                                    <td><?php echo $method; ?></td>
-                                    <td><?php echo $desc; ?></td>
-                                    <td><?php echo $date_fmt; ?></td>
+                                <tr style="background: #ffffff; border-top: 1.5px solid #e2e8f0;">
+                                    <td style="font-weight: 700; text-align: center; color: #475569;"><?php echo $i + 1; ?></td>
+                                    <td class="phase-name" style="font-weight: 800; color: #0f172a; word-break: break-word; white-space: normal;"><?php echo htmlspecialchars($phase['phase_name']); ?></td>
+                                    <td style="color: #64748b; font-size: 11px; text-align: left; word-break: break-word; white-space: normal;"><?php echo $desc; ?></td>
+                                    <td class="amount" style="font-weight: 700;"><?php echo $sym . ' ' . $cost_fmt; ?></td>
+                                    <td class="received-amt" style="font-weight: 800; color: #16a34a;"><?php echo $sym . ' ' . $rec_fmt; ?></td>
+                                    <td style="font-weight: 800; color: <?php echo $pnd_val > 0 ? '#ef4444' : '#16a34a'; ?>; text-align: center;"><?php echo $pnd_fmt; ?></td>
+                                    <td style="font-weight: 600; color: #475569; text-align: center;"><?php echo $method; ?></td>
+                                    <td style="font-weight: 600; color: #475569; text-align: center;"><?php echo $date_fmt; ?></td>
                                 </tr>
+                                <?php if (!empty($phase['payments']) && count($phase['payments']) > 1): ?>
+                                    <?php foreach ($phase['payments'] as $p_idx => $pmt):
+                                        $p_amt_fmt = number_format((float)$pmt['amount'], 0);
+                                        $p_date_fmt = (!empty($pmt['payment_date']) && $pmt['payment_date'] !== '0000-00-00')
+                                            ? date("d M Y", strtotime($pmt['payment_date'])) : '—';
+                                        $p_method = !empty($pmt['payment_method']) ? htmlspecialchars($pmt['payment_method']) : '—';
+                                        $p_note   = !empty($pmt['note'])           ? htmlspecialchars($pmt['note'])           : '—';
+                                    ?>
+                                        <tr style="background: #f8fafc; font-size: 11px; color: #475569;">
+                                            <td></td>
+                                            <td style="padding-left: 12px; font-weight: 600; color: #dd2127; text-align: left; word-break: break-word; white-space: normal;">
+                                                Payment #<?php echo $p_idx + 1; ?>
+                                            </td>
+                                            <td style="color: #64748b; font-size: 11px; text-align: left; word-break: break-word;"><?php echo $p_note; ?></td>
+                                            <td style="text-align: center; color: #94a3b8;">—</td>
+                                            <td class="received-amt" style="color: #16a34a; font-weight: 700; text-align: center;">
+                                                <?php echo $sym . ' ' . $p_amt_fmt; ?>
+                                            </td>
+                                            <td style="text-align: center; color: #94a3b8;">—</td>
+                                            <td style="font-weight: 500; color: #475569; text-align: center;"><?php echo $p_method; ?></td>
+                                            <td style="font-weight: 500; color: #475569; text-align: center;"><?php echo $p_date_fmt; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
@@ -538,13 +604,13 @@ $current_date = date("d F Y");
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55
+                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
                         </div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
                     </div>
                 </div>
             </div>

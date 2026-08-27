@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // =============================================================
 // admin_area/pages/employees/add_emp.php
 // Admin: Add New Employee
@@ -26,8 +26,13 @@ if (!isset($con)) {
 // Handles single file upload, unlocks PDFs via qpdf if available.
 // Returns uploaded filename or empty string on failure.
 // =============================================================
+/**
+ * @param array $fileArray
+ * @param string $targetDir
+ * @return string
+ */
 if (!function_exists('handleFileUpload')) {
-    function handleFileUpload($fileArray, $targetDir = __DIR__ . "/../../uploads/")
+    function handleFileUpload(array $fileArray, string $targetDir = __DIR__ . "/../../uploads/"): string
     {
         if (isset($fileArray) && $fileArray['error'] == 0) {
             $file_name = $fileArray['name'];
@@ -65,6 +70,9 @@ if (!function_exists('handleFileUpload')) {
 //   - [OPTIONAL] Sends login credentials via PHPMailer (commented)
 // Called when: $_POST['submit'] is set
 // =============================================================
+/**
+ * @param mysqli|mixed $con
+ */
 function add_user($con)
 {
     global $name; // Make $name accessible for success message after function
@@ -72,7 +80,7 @@ function add_user($con)
     // -- Show loading spinner while processing --
     echo '
     <div id="php_server_loader" style="width: 100%; min-height: 80vh; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
-        <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid var(--p-bg-color); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div style="width: 50px; height: 50px; border: 4px solid #f1f5f9; border-top: 4px solid #dd2127; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         <h3 style="margin-top: 20px; color: #1e293b;">Saving Employee...</h3>
         <p style="color: #64748b; margin-top: 5px;">Please wait while we upload documents.</p>
         <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
@@ -82,9 +90,10 @@ function add_user($con)
     @flush();
 
     // -- Sanitize basic fields --
-    $name    = mysqli_real_escape_string($con, $_POST['name']);
-    $email   = mysqli_real_escape_string($con, $_POST['email']);
-    $contact = preg_replace('/\D+/', '', $_POST['number']);
+    $name          = mysqli_real_escape_string($con, $_POST['name']);
+    $email         = mysqli_real_escape_string($con, $_POST['email']);
+    $company_email = mysqli_real_escape_string($con, $_POST['company_email'] ?? '');
+    $contact       = preg_replace('/\D+/', '', $_POST['number']);
 
     // -- Validate phone number (must be exactly 10 digits) --
     if (strlen($contact) != 10) {
@@ -96,7 +105,7 @@ function add_user($con)
                     icon: 'error',
                     title: 'Validation Error',
                     text: 'Phone must be 10 digits!',
-                    confirmButtonColor: 'var(--p-bg-color)'
+                    confirmButtonColor: '#dd2127'
                 }).then((result) => {
                     window.history.back();
                 });
@@ -106,10 +115,12 @@ function add_user($con)
     }
 
     // -- Sanitize remaining fields --
-    $address  = mysqli_real_escape_string($con, $_POST['address']);
-    $blood    = mysqli_real_escape_string($con, $_POST['blood']);
-    $gender   = mysqli_real_escape_string($con, $_POST['gender']);
-    $joinDate = mysqli_real_escape_string($con, $_POST['joinDate']);
+    $address     = mysqli_real_escape_string($con, $_POST['address']);
+    $blood       = mysqli_real_escape_string($con, $_POST['blood']);
+    $gender      = mysqli_real_escape_string($con, $_POST['gender']);
+    $joinDate    = mysqli_real_escape_string($con, $_POST['joinDate']);
+    $department  = mysqli_real_escape_string($con, $_POST['department']  ?? 'Development');
+    $designation = mysqli_real_escape_string($con, $_POST['designation'] ?? 'Software Engineer');
 
     // -- Salary fields (only if admin has permission) --
     if (canAdminAccess('salary_insert')) {
@@ -175,11 +186,11 @@ function add_user($con)
 
     // -- Insert employee record into DB --
     $query = "INSERT INTO emp_list
-    (name, phone_number, address, email, blood_group, gender, join_date, basic_salary, hra, allowance, deductions, salary, password,
+    (name, phone_number, address, email, company_email, blood_group, gender, join_date, department, designation, basic_salary, hra, allowance, deductions, salary, password,
     age, dob, work_experience, marital_status, num_dependents, emergency_name, emergency_relationship, emergency_address, emergency_phone,
     education_json, employment_json, account_name, bank_branch, account_number, account_type_ifsc, employee_image, offer_latter, NDA, Aadhar_card, Pan_card, Passportsize_photo, old_company_slary_slip)
               VALUES
-    ('$name', '$contact', '$address', '$email', '$blood', '$gender', '$joinDate', '$basic', '$hra', '$allowance', '$deductions', '$salary', '$plainPassword',
+    ('$name', '$contact', '$address', '$email', '$company_email', '$blood', '$gender', '$joinDate', '$department', '$designation', '$basic', '$hra', '$allowance', '$deductions', '$salary', '$plainPassword',
     '$age', '$dob', '$work_exp', '$marital', '$dependents', '$e_name', '$e_rel', '$e_addr', '$e_phone',
     '$edu_json', '$emp_json', '$acc_name', '$bank_br', '$acc_num', '$acc_ifsc', '$employee_image', '$offer_letter', '$NDA', '$Aadhar_card', '$Pan_card', '$Passportsize_photo', '$old_company_slary_slip')";
 
@@ -229,7 +240,7 @@ function add_user($con)
         //     $mail->Subject = 'Welcome to Cadlete – Your Login Credentials';
         //     $mail->Body    = "
         //         <div style='font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #eee;border-radius:10px;'>
-        //             <h2 style='color:var(--p-bg-color);'>Welcome to 8Dots!</h2>
+        //             <h2 style='color:#dd2127;'>Welcome to Cadlete Designs!</h2>
         //             <p>Dear <strong>$name</strong>,</p>
         //             <p>Your employee account has been created. Here are your login credentials:</p>
         //             <table style='background:#f8fafc;padding:15px;border-radius:8px;width:100%;'>
@@ -264,7 +275,7 @@ function add_user($con)
                 <h2 class="success-title">Success!</h2>
                 <p class="success-message">
                     Employee <strong><?php echo htmlspecialchars($name); ?></strong> has been registered successfully.<br>
-                    <small style="color:#64748b;">Login Password: <strong style="color:var(--p-bg-color);"><?php echo htmlspecialchars($plainPassword); ?></strong></small>
+                    <small style="color:#64748b;">Login Password: <strong style="color:#dd2127;"><?php echo htmlspecialchars($plainPassword); ?></strong></small>
                 </p>
                 <div class="success-actions">
                     <a href="index.php?emp_directory" class="btn-success-go">
@@ -299,7 +310,7 @@ function add_user($con)
                     icon: 'error',
                     title: 'Database Error',
                     text: '{$dbError}',
-                    confirmButtonColor: 'var(--p-bg-color)'
+                    confirmButtonColor: '#dd2127'
                 }).then((result) => {
                     window.history.back();
                 });
@@ -313,6 +324,49 @@ function add_user($con)
 if (isset($_POST['submit'])) {
     add_user($con);
 }
+
+// Fetch distinct departments & designations for dropdowns (only assigned & user added)
+$existing_depts = [];
+$dept_q = mysqli_query($con, "SELECT DISTINCT department FROM emp_list WHERE department IS NOT NULL AND TRIM(department) != '' AND LOWER(TRIM(department)) != 'not assigned'");
+if ($dept_q) {
+    while ($dr = mysqli_fetch_assoc($dept_q)) {
+        $dv = trim($dr['department']);
+        if ($dv && !in_array($dv, $existing_depts)) {
+            $existing_depts[] = $dv;
+        }
+    }
+}
+$admin_dept_q = @mysqli_query($con, "SELECT DISTINCT department FROM admins WHERE department IS NOT NULL AND TRIM(department) != '' AND LOWER(TRIM(department)) != 'not assigned'");
+if ($admin_dept_q) {
+    while ($adr = mysqli_fetch_assoc($admin_dept_q)) {
+        $adv = trim($adr['department']);
+        if ($adv && !in_array($adv, $existing_depts)) {
+            $existing_depts[] = $adv;
+        }
+    }
+}
+sort($existing_depts);
+
+$existing_desigs = [];
+$desig_q = mysqli_query($con, "SELECT DISTINCT designation FROM emp_list WHERE designation IS NOT NULL AND TRIM(designation) != '' AND LOWER(TRIM(designation)) != 'not assigned'");
+if ($desig_q) {
+    while ($dsr = mysqli_fetch_assoc($desig_q)) {
+        $dsv = trim($dsr['designation']);
+        if ($dsv && !in_array($dsv, $existing_desigs)) {
+            $existing_desigs[] = $dsv;
+        }
+    }
+}
+$admin_job_q = mysqli_query($con, "SELECT DISTINCT admin_job FROM admins WHERE admin_job IS NOT NULL AND TRIM(admin_job) != '' AND LOWER(TRIM(admin_job)) != 'not assigned'");
+if ($admin_job_q) {
+    while ($ajr = mysqli_fetch_assoc($admin_job_q)) {
+        $ajv = trim($ajr['admin_job']);
+        if ($ajv && !in_array($ajv, $existing_desigs)) {
+            $existing_desigs[] = $ajv;
+        }
+    }
+}
+sort($existing_desigs);
 ?>
 
 <div class="page-wrapper premium-ui-enabled">
@@ -329,7 +383,7 @@ if (isset($_POST['submit'])) {
         <!-- 1. Personal Information -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Personal Information</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Basic details and identity</p>
@@ -431,7 +485,7 @@ if (isset($_POST['submit'])) {
         <!-- 2. Contact Information -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Contact Information</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">How to reach the employee</p>
@@ -439,7 +493,7 @@ if (isset($_POST['submit'])) {
             </div>
             <div style="padding: 30px;">
                 <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Contact Number *</label>
                             <div style="position: relative;">
@@ -448,16 +502,25 @@ if (isset($_POST['submit'])) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Email Address *</label>
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Company Email (For Login) *</label>
                             <div style="position: relative;">
-                                <i class="fa fa-envelope" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
-                                <input type="email" name="email" class="p-input-premium" placeholder="email@example.com" required style="padding-left: 40px;">
+                                <i class="fa fa-building" style="position: absolute; left: 15px; top: 16px; color: #dd2127; font-size: 14px;"></i>
+                                <input type="email" name="company_email" class="p-input-premium" placeholder="work@company.com" required style="padding-left: 40px;">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Personal Email Address *</label>
+                            <div style="position: relative;">
+                                <i class="fa fa-envelope" style="position: absolute; left: 15px; top: 16px; color: #64748b; font-size: 14px;"></i>
+                                <input type="email" name="email" class="p-input-premium" placeholder="personal@example.com" required style="padding-left: 40px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Residential Address *</label>
                             <div style="position: relative;">
@@ -473,7 +536,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-md-12">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">
-                                <i class="fa fa-key" style="color:var(--p-bg-color);"></i> Login Password
+                                <i class="fa fa-key" style="color:#dd2127;"></i> Login Password
                                 <span style="font-weight:400; color:#64748b; font-size:12px; margin-left:8px;">(Leave blank to auto-generate, or type a custom password)</span>
                             </label>
                             <div style="display: flex; gap: 10px; align-items: center;">
@@ -485,7 +548,7 @@ if (isset($_POST['submit'])) {
                                         style="padding-left: 40px; font-family: monospace; letter-spacing: 1px;">
                                 </div>
                                 <button type="button" onclick="generateAutoPassword()"
-                                    style="white-space:nowrap; background: linear-gradient(135deg,var(--p-bg-color),#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
+                                    style="white-space:nowrap; background: linear-gradient(135deg,#dd2127,#ff6b6b); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:600; cursor:pointer; font-size:13px; transition:0.3s;">
                                     <i class="fa fa-refresh"></i> Auto Generate
                                 </button>
                                 <button type="button" onclick="toggleAddPassword()"
@@ -507,7 +570,7 @@ if (isset($_POST['submit'])) {
         <!-- 3. Employee Documents -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Employee Documents</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Upload important files</p>
@@ -573,7 +636,7 @@ if (isset($_POST['submit'])) {
         <!-- 4. Emergency Contact Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Emergency Contact Details</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Who to call in an emergency</p>
@@ -616,7 +679,7 @@ if (isset($_POST['submit'])) {
         <!-- 5. Educational Background -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">5</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">5</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Educational Background</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Academic history</p>
@@ -624,25 +687,25 @@ if (isset($_POST['submit'])) {
             </div>
             <div style="padding: 30px;">
 
-                <div class="table-premium" style="overflow-x: auto; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 20px;">
-                    <table class="table" id="edu_table" style="margin-bottom: 0; min-width: 800px;">
+                <div class="table-premium" style="overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 20px;">
+                    <table class="table" id="edu_table" style="margin-bottom: 0; width: 100%; min-width: 750px;">
                         <thead>
                             <tr style="background: #f8fafc;">
-                                <th style="border: none;">Degree/Course</th>
-                                <th style="border: none;">University/Institute</th>
-                                <th style="border: none;">Year</th>
-                                <th style="border: none;">Grade</th>
-                                <th style="border: none;">City</th>
+                                <th style="border: none; white-space: nowrap; min-width: 160px;">Degree/Course</th>
+                                <th style="border: none; white-space: nowrap; min-width: 180px;">University/Institute</th>
+                                <th style="border: none; white-space: nowrap; min-width: 100px;">Year</th>
+                                <th style="border: none; white-space: nowrap; min-width: 100px;">Grade</th>
+                                <th style="border: none; white-space: nowrap; min-width: 120px;">City</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php for ($i = 0; $i < 2; $i++): ?>
                                 <tr>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium edu-degree" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium edu-univ" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium edu-year" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium edu-grade" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium edu-city" style="height: 38px; font-size: 13px;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium edu-degree" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium edu-univ" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium edu-year" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium edu-grade" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium edu-city" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
                                 </tr>
                             <?php endfor; ?>
                         </tbody>
@@ -657,7 +720,7 @@ if (isset($_POST['submit'])) {
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">6</div>
+                    <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">6</div>
                     <div>
                         <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Employment History</h3>
                         <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Previous work experience</p>
@@ -669,26 +732,26 @@ if (isset($_POST['submit'])) {
             </div>
             <div style="padding: 30px;">
 
-                <div class="table-premium" style="overflow-x: auto; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px;">
-                    <table class="table" id="emp_hist_table" style="margin-bottom: 0; min-width: 800px;">
+                <div class="table-premium" style="overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px;">
+                    <table class="table" id="emp_hist_table" style="margin-bottom: 0; width: 100%; min-width: 780px;">
                         <thead>
                             <tr style="background: #f8fafc;">
-                                <th style="border: none;">Company Name</th>
-                                <th style="border: none;">Position</th>
-                                <th style="border: none;">Duration/Year</th>
-                                <th style="border: none;">Reason for Leaving</th>
-                                <th style="border: none; width: 56px; text-align: center;">Action</th>
+                                <th style="border: none; white-space: nowrap; min-width: 170px;">Company Name</th>
+                                <th style="border: none; white-space: nowrap; min-width: 150px;">Position</th>
+                                <th style="border: none; white-space: nowrap; min-width: 120px;">Duration/Year</th>
+                                <th style="border: none; white-space: nowrap; min-width: 170px;">Reason for Leaving</th>
+                                <th style="border: none; width: 70px; min-width: 70px; text-align: center; white-space: nowrap;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="employment_body">
                             <?php for ($i = 0; $i < 2; $i++): ?>
                                 <tr>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium hist-company" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium hist-pos" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium hist-year" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="padding: 10px;"><input type="text" class="p-input-premium hist-reason" style="height: 38px; font-size: 13px;"></td>
-                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
-                                        <button type="button" class="employment-remove-row btn btn-danger btn-sm" title="Remove row" style="min-width: 36px; border-radius: 8px;">×</button>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium hist-company" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium hist-pos" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium hist-year" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="padding: 8px;"><input type="text" class="p-input-premium hist-reason" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>
+                                    <td style="text-align: center; vertical-align: middle; padding: 6px; width: 70px; min-width: 70px;">
+                                        <button type="button" class="employment-remove-row btn btn-danger btn-sm" title="Remove row" style="width: 32px; height: 32px; line-height: 1; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 16px; margin: 0 auto;">×</button>
                                     </td>
                                 </tr>
                             <?php endfor; ?>
@@ -703,7 +766,7 @@ if (isset($_POST['submit'])) {
         <!-- 7. Bank Account Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">7</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">7</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Bank Account Details</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Financial information</p>
@@ -746,7 +809,7 @@ if (isset($_POST['submit'])) {
         <!-- 8. Professional & Salary Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">8</div>
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">8</div>
                 <div>
                     <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1e293b;">Professional & Salary Details</h3>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Compensation structure</p>
@@ -757,10 +820,41 @@ if (isset($_POST['submit'])) {
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <label style="font-weight: 600; color: #475569; margin: 0;">Designation *</label>
+                                <button type="button" class="btn btn-sm btn-success" style="padding: 2px 10px; font-size: 11px; border-radius: 6px; font-weight: 700; background: #059669; border: none; cursor: pointer;" onclick="addNewDesignation()"><i class="fa fa-plus"></i> New</button>
+                            </div>
+                            <select name="designation" id="emp_designation" class="p-input-premium" required>
+                                <option value="">-- Select Designation --</option>
+                                <?php foreach ($existing_desigs as $desig): ?>
+                                    <option value="<?php echo htmlspecialchars($desig); ?>"><?php echo htmlspecialchars($desig); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <label style="font-weight: 600; color: #475569; margin: 0;">Department *</label>
+                                <button type="button" class="btn btn-sm btn-success" style="padding: 2px 10px; font-size: 11px; border-radius: 6px; font-weight: 700; background: #059669; border: none; cursor: pointer;" onclick="addNewDepartment()"><i class="fa fa-plus"></i> New</button>
+                            </div>
+                            <select name="department" id="emp_department" class="p-input-premium" required>
+                                <option value="">-- Select Department --</option>
+                                <?php foreach ($existing_depts as $dept): ?>
+                                    <option value="<?php echo htmlspecialchars($dept); ?>"><?php echo htmlspecialchars($dept); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Joining Date *</label>
                             <input type="date" name="joinDate" class="p-input-premium" max="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                     </div>
+                </div>
+
+                <div class="row" style="margin-top: 15px;">
                     <?php if (canAdminAccess('salary_insert')): ?>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -774,22 +868,22 @@ if (isset($_POST['submit'])) {
                                 <input type="number" id="add_hra" name="hra" class="p-input-premium" placeholder="Allowance">
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Other Allowance</label>
+                                <input type="number" id="add_allowance" name="allowance" class="p-input-premium" placeholder="Additional">
+                            </div>
+                        </div>
                 </div>
 
                 <div class="row" style="margin-top: 15px;">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Other Allowance</label>
-                            <input type="number" id="add_allowance" name="allowance" class="p-input-premium" placeholder="Additional">
-                        </div>
-                    </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Monthly Deductions</label>
                             <input type="number" id="add_deductions" name="deductions" class="p-input-premium" placeholder="Deductions">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <div class="form-group">
                             <label style="font-weight: 600; color: #475569; margin-bottom: 8px; display: block;">Net Monthly Salary</label>
                             <input type="text" id="add_salary" name="salary" class="p-input-premium" placeholder="0.00" readonly style="background: #f0fdf4; font-weight: 800; color: #059669; font-size: 18px; border-color: #bbf7d0;">
@@ -811,6 +905,74 @@ if (isset($_POST['submit'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function addNewDepartment() {
+        Swal.fire({
+            title: 'Add New Department',
+            input: 'text',
+            inputPlaceholder: 'e.g. Quality Assurance',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            confirmButtonText: '<i class="fa fa-plus"></i> Add Department',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value || !value.trim()) {
+                    return 'Please enter a department name!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                const newDept = result.value.trim();
+                const select = document.getElementById('emp_department');
+                let exists = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase() === newDept.toLowerCase()) {
+                        select.selectedIndex = i;
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    const opt = new Option(newDept, newDept, true, true);
+                    select.add(opt);
+                }
+            }
+        });
+    }
+
+    function addNewDesignation() {
+        Swal.fire({
+            title: 'Add New Designation',
+            input: 'text',
+            inputPlaceholder: 'e.g. Senior Tech Lead',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            confirmButtonText: '<i class="fa fa-plus"></i> Add Designation',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value || !value.trim()) {
+                    return 'Please enter a designation name!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                const newDesig = result.value.trim();
+                const select = document.getElementById('emp_designation');
+                let exists = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase() === newDesig.toLowerCase()) {
+                        select.selectedIndex = i;
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    const opt = new Option(newDesig, newDesig, true, true);
+                    select.add(opt);
+                }
+            }
+        });
+    }
+
     function handleImagePreview(input, previewId) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -864,12 +1026,12 @@ if (isset($_POST['submit'])) {
     }
 
     function employmentHistoryRowHtmlAdd() {
-        return '<td style="padding: 10px;"><input type="text" class="p-input-premium hist-company" style="height: 38px; font-size: 13px;"></td>' +
-            '<td style="padding: 10px;"><input type="text" class="p-input-premium hist-pos" style="height: 38px; font-size: 13px;"></td>' +
-            '<td style="padding: 10px;"><input type="text" class="p-input-premium hist-year" style="height: 38px; font-size: 13px;"></td>' +
-            '<td style="padding: 10px;"><input type="text" class="p-input-premium hist-reason" style="height: 38px; font-size: 13px;"></td>' +
-            '<td style="text-align: center; vertical-align: middle; padding: 10px;">' +
-            '<button type="button" class="employment-remove-row btn btn-danger btn-sm" title="Remove row" style="min-width: 36px; border-radius: 8px;">×</button></td>';
+        return '<td style="padding: 8px;"><input type="text" class="p-input-premium hist-company" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>' +
+            '<td style="padding: 8px;"><input type="text" class="p-input-premium hist-pos" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>' +
+            '<td style="padding: 8px;"><input type="text" class="p-input-premium hist-year" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>' +
+            '<td style="padding: 8px;"><input type="text" class="p-input-premium hist-reason" style="height: 38px; font-size: 13px; width: 100%; box-sizing: border-box;"></td>' +
+            '<td style="text-align: center; vertical-align: middle; padding: 6px; width: 70px; min-width: 70px;">' +
+            '<button type="button" class="employment-remove-row btn btn-danger btn-sm" title="Remove row" style="width: 32px; height: 32px; line-height: 1; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 16px; margin: 0 auto;">×</button></td>';
     }
 
     function addEmploymentRow() {
@@ -967,6 +1129,145 @@ if (isset($_POST['submit'])) {
             if (icon) {
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
+            }
+        }
+    }
+
+    /**
+     * Dynamic Department & Designation / Function Creation
+     */
+    function addNewDepartment(selectId = 'emp_department') {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Add New Department',
+                input: 'text',
+                inputLabel: 'Enter Department Name',
+                inputPlaceholder: 'e.g. Quality Assurance',
+                showCancelButton: true,
+                confirmButtonText: 'Add Department',
+                confirmButtonColor: '#dd2127',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Please enter a department name!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newDept = result.value.trim();
+                    let exists = false;
+                    for (let i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value.toLowerCase() === newDept.toLowerCase()) {
+                            select.selectedIndex = i;
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        const opt = document.createElement('option');
+                        opt.value = newDept;
+                        opt.textContent = newDept;
+                        opt.selected = true;
+                        select.appendChild(opt);
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Department Added',
+                        text: `"${newDept}" has been added and selected.`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        } else {
+            const newDept = prompt('Enter New Department Name:');
+            if (newDept && newDept.trim()) {
+                const val = newDept.trim();
+                let exists = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase() === val.toLowerCase()) {
+                        select.selectedIndex = i;
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = val;
+                    opt.textContent = val;
+                    opt.selected = true;
+                    select.appendChild(opt);
+                }
+            }
+        }
+    }
+
+    function addNewDesignation(selectId = 'emp_designation') {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Add New Function / Designation',
+                input: 'text',
+                inputLabel: 'Enter Function / Designation Name',
+                inputPlaceholder: 'e.g. Lead Architect',
+                showCancelButton: true,
+                confirmButtonText: 'Add Designation',
+                confirmButtonColor: '#dd2127',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Please enter a designation / function name!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newDesig = result.value.trim();
+                    let exists = false;
+                    for (let i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value.toLowerCase() === newDesig.toLowerCase()) {
+                            select.selectedIndex = i;
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        const opt = document.createElement('option');
+                        opt.value = newDesig;
+                        opt.textContent = newDesig;
+                        opt.selected = true;
+                        select.appendChild(opt);
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Function / Designation Added',
+                        text: `"${newDesig}" has been added and selected.`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        } else {
+            const newDesig = prompt('Enter New Function / Designation Name:');
+            if (newDesig && newDesig.trim()) {
+                const val = newDesig.trim();
+                let exists = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase() === val.toLowerCase()) {
+                        select.selectedIndex = i;
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = val;
+                    opt.textContent = val;
+                    opt.selected = true;
+                    select.appendChild(opt);
+                }
             }
         }
     }

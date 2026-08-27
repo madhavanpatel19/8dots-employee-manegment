@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -27,16 +27,27 @@ if (!$project) {
     die("Project not found.");
 }
 
-// Fetch ONLY phases that have been received (received_amount > 0)
-$phases_q = mysqli_query($con, "
-    SELECT * FROM project_budget_phases
-    WHERE project_id = '$project_id'
-    AND received_amount > 0
-    ORDER BY id ASC
-");
+$phases_q = mysqli_query($con, "SELECT * FROM project_budget_phases WHERE project_id = '$project_id' ORDER BY id ASC");
 $phases = [];
+$grand_total = 0;
+
 while ($row = mysqli_fetch_assoc($phases_q)) {
-    $phases[] = $row;
+    $p_name_esc = mysqli_real_escape_string($con, $row['phase_name']);
+    $get_pmts = mysqli_query($con, "SELECT * FROM project_phase_payments WHERE project_id = '$project_id' AND phase_name = '$p_name_esc' ORDER BY id ASC");
+    $pmt_sum = 0;
+    if ($get_pmts && mysqli_num_rows($get_pmts) > 0) {
+        while ($pmt = mysqli_fetch_assoc($get_pmts)) {
+            $pmt_sum += (float)$pmt['amount'];
+        }
+    } else {
+        $pmt_sum = (float)$row['received_amount'];
+    }
+
+    if ($pmt_sum > 0) {
+        $row['received_amount'] = $pmt_sum;
+        $grand_total += $pmt_sum;
+        $phases[] = $row;
+    }
 }
 
 // Currency symbols
@@ -58,6 +69,8 @@ $total_cost     = (float)($project['budget'] ?? 0);
 $invoice_no     = 'INV-' . str_pad($project_id, 4, '0', STR_PAD_LEFT);
 $invoice_date   = date("d/m/Y");
 $current_date   = date("d F Y");
+$clean_proj_name = preg_replace('/[^\w\s\-]/', '', $project['project_name'] ?? 'Project');
+$pdf_doc_title = trim($clean_proj_name) . ' - Invoice - ' . $current_date;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,10 +78,11 @@ $current_date   = date("d F Y");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tax Invoice – <?php echo htmlspecialchars($project['project_name'] ?? ''); ?></title>
+    <title><?php echo htmlspecialchars($pdf_doc_title); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="../../css/style.css" rel="stylesheet">
     <style>
         :root {
@@ -463,15 +477,15 @@ $current_date   = date("d F Y");
         }
 
         .sign-logo {
-            height: 120px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .sign-logo img {
-            max-width: 220px;
-            max-height: 110px;
+            max-width: 130px;
+            max-height: 60px;
             object-fit: contain;
         }
 
@@ -550,7 +564,7 @@ $current_date   = date("d F Y");
         }
 
         .btn-print {
-            background: var(--p-bg-color);
+            background: #dd2127;
             color: #fff;
             border: none;
             border-radius: 10px;
@@ -614,7 +628,9 @@ $current_date   = date("d F Y");
 
     <!-- Action Buttons -->
     <div class="actions">
-        <button onclick="window.print()" class="btn-premium-add">🖨️ Print / Save PDF</button>
+        <button onclick="window.print()" class="btn-premium-add">
+            <i class="fa fa-print"></i> Print / Save PDF
+        </button>
         <a href="javascript:window.close();" class="btn-premium-cancel">Back</a>
     </div>
 
@@ -623,10 +639,10 @@ $current_date   = date("d F Y");
 
             <!-- ── HEADER ── -->
             <div class="inv-header">
-                <div class="company-name">8Dots</div>
+                <div class="company-name">CADLETE DESIGNS</div>
                 <div class="company-addr">
                     A-106, Sun South Street, near Safal Parisar 1, South Bopal, Bopal, Ahmedabad, Gujarat 380058 &nbsp;|&nbsp;
-                    Phone: +91 83202 11773 &nbsp;|&nbsp; Email: Info@8dots.in
+                    Phone: +91 83202 11773 &nbsp;|&nbsp; Email: info@cadletedesigns.com
                 </div>
             </div>
 
@@ -740,7 +756,6 @@ $current_date   = date("d F Y");
                                         <?php if ($desc): ?>
                                             <div class="phase-desc"><?php echo $desc; ?></div>
                                         <?php endif; ?>
-                                        <div class="phase-method">Payment via: <?php echo $method; ?></div>
                                     </td>
                                     <td>—</td>
                                     <td style="font-size: 9.5px; font-weight: 600;"><?php echo $date_fmt; ?></td>
@@ -799,9 +814,9 @@ $current_date   = date("d F Y");
                     </div>
                 </div>
                 <div class="sign-block">
-                    <div class="for-label">For, 8Dots</div>
+                    <div class="for-label">For, CADLETE DESIGNS</div>
                     <div class="sign-logo">
-                        <img src="../../images/k_logo_sign.png" alt="8Dots sign">
+                        <img src="../../images/logo_sign.png" alt="CADLETE DESIGNS sign">
                     </div>
                     <div class="auth-label">Authorised Signatory</div>
                 </div>

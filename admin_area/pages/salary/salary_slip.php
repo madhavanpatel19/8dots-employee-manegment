@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // ---- Salary Slip fragment (include from index.php) ----
 // Assumes: $con (mysqli connection) and session already started in index.php
 // Also assumes Bootstrap + Font Awesome loaded in main layout
@@ -255,50 +255,6 @@ if ($print_all_mode) {
 ?>
 
 <style>
-    .btn-icon-premium {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 12px;
-        width: 38px;
-        height: 38px;
-        transition: 0.3s;
-        cursor: pointer;
-        color: #64748b;
-        text-decoration: none !important;
-    }
-
-    .btn-icon-premium:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-
-    .btn-icon-view {
-        color: #f59e0b !important;
-        background: #fffbeb !important;
-        border-color: #fde68a !important;
-    }
-
-    .btn-icon-view:hover {
-        background: #fef3c7 !important;
-        border-color: #fcd34d !important;
-        color: #d97706 !important;
-    }
-
-    .btn-icon-download {
-        color: #8b5cf6 !important;
-        background: #f5f3ff !important;
-        border-color: #ede9fe !important;
-    }
-
-    .btn-icon-download:hover {
-        background: #ede9fe !important;
-        border-color: #ddd6fe !important;
-        color: #7c3aed !important;
-    }
-
     .table-premium th,
     .table-premium td {
         text-align: center !important;
@@ -408,11 +364,11 @@ if ($print_all_mode) {
                     <div class="slip-top-decor"></div>
                     <div class="slip-header">
                         <div class="company-left">
-                            <img src="../admin_area/images/8dots_favicon.png" alt="8Dots Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
+                            <img src="../admin_area/images/cadlete_Black_logo_favicon.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                             <div class="company-center">
-                                <h3 class="company-name">8Dots</h3>
-                                <div class="company-address">516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
-                                <div class="company-meta-small">Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: Info@8dots.in</div>
+                                <h3 class="company-name">CADLETE DESIGNS</h3>
+                                <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
+                                <div class="company-meta-small">Phone: 091 83202 11773 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
                             </div>
                         </div>
                         <div class="slip-meta">
@@ -490,7 +446,7 @@ if ($print_all_mode) {
                         </div>
                         <div class="sign-right" style="width: 40%; float: none; text-align: right;">
                             <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
-                                <img src="images/k_logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                                <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
                                 <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
                             </div>
                         </div>
@@ -691,18 +647,18 @@ if ($print_all_mode) {
             <!-- HEADER -->
             <div class="slip-header">
                 <div class="company-left">
-                    <img src="images/8dots_favicon.png"
-                        alt="8Dots Logo"
+                    <img src="images/Cadlete_Black_logo_favicon.png"
+                        alt="CADLETE DESIGNS Logo"
                         class="company-logo"
                         style="max-height: 80px;"
                         onerror="this.style.display='none'">
                     <div class="company-center">
-                        <h3 class="company-name">8Dots</h3>
+                        <h3 class="company-name">CADLETE DESIGNS</h3>
                         <div class="company-address">
-                            516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .
+                            A-106, Sun South Street, Ahmedabad
                         </div>
                         <div class="company-meta-small">
-                            Phone: +91 8155 8133 55 &nbsp;|&nbsp; Email: Info@8dots.in
+                            Phone: 091 83202 11773 &nbsp;|&nbsp; Email: info@cadletedesigns.com
                         </div>
                     </div>
                 </div>
@@ -782,9 +738,9 @@ if ($print_all_mode) {
                     <p style="font-size: 11px; color: #666; border-top: none; margin: 0; padding: 0; margin-bottom: 5px; display: block; font-weight: normal;">This is a system generated payslip.</p>
                 </div>
                 <div class="sign-right" style="width: 40%; float: none; text-align: right;">
-                    <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 0;">
-                        <img src="images/k_logo_sign.png" alt="Signature" style="height: 90px; width: auto; object-fit: contain; display: block;">
-                        <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; font-weight: 600; text-align: center;">Authorized Signatory</p>
+                    <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
+                        <img src="images/logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                        <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
                     </div>
                 </div>
             </div>
@@ -834,12 +790,12 @@ if ($print_all_mode) {
                     <input type="hidden" name="emp_id" value="<?php echo (int)$selected_emp; ?>">
                     <input type="hidden" name="month" value="<?php echo htmlspecialchars($selected_month); ?>">
 
-                    <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
                         <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                            <div style="background: #fff; color:var(--p-bg-color);width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa fa-edit" style="font-size: 14px;"></i>
                             </div>
                             Edit Salary Amounts
@@ -850,33 +806,33 @@ if ($print_all_mode) {
                         <div class="row">
                             <div class="col-md-6" style="margin-bottom: 20px;">
                                 <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Basic Salary (₹)</label>
-                                <input type="number" step="0.01" name="basic" value="<?php echo $base_salary_val; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                                <input type="number" step="0.01" name="basic" value="<?php echo $base_salary_val; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                             <div class="col-md-6" style="margin-bottom: 20px;">
                                 <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">House Rent Allowance (HRA) (₹)</label>
-                                <input type="number" step="0.01" name="hra" value="<?php echo $hra; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                                <input type="number" step="0.01" name="hra" value="<?php echo $hra; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6" style="margin-bottom: 20px;">
                                 <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Provident Fund (PF) (₹)</label>
-                                <input type="number" step="0.01" name="pf" value="<?php echo $pf; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                                <input type="number" step="0.01" name="pf" value="<?php echo $pf; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                             <div class="col-md-6" style="margin-bottom: 20px;">
                                 <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Leave Without Pay (₹)</label>
-                                <input type="number" step="0.01" name="tax" value="<?php echo $tax; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                                <input type="number" step="0.01" name="tax" value="<?php echo $tax; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6" style="margin-bottom: 20px;">
                                 <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Other Allowances (₹)</label>
-                                <input type="number" step="0.01" name="other_allow" value="<?php echo $other_allow; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                                <input type="number" step="0.01" name="other_allow" value="<?php echo $other_allow; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                             <div class="col-md-6" style="margin-bottom: 20px;">
                                 <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Other Deductions (₹)</label>
-                                <input type="number" step="0.01" name="other_ded" value="<?php echo $other_ded; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                                <input type="number" step="0.01" name="other_ded" value="<?php echo $other_ded; ?>" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                             </div>
                         </div>
                     </div>

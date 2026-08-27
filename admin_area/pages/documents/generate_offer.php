@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -52,12 +52,12 @@ elseif (isset($_GET['id'])) {
     exit();
 }
 
-$date                  = date("d F Y");
+$date                  = date("d-m-Y");
 $annual_salary         = $salary * 12;
 $formatted_salary      = number_format($salary);
 $lpa_value             = $annual_salary / 100000;
 $formatted_annual      = rtrim(rtrim(number_format($lpa_value, 2, '.', ''), '0'), '.');
-$formatted_start       = date("d F Y", strtotime($start_date));
+$formatted_start       = date("d-m-Y", strtotime($start_date));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -227,7 +227,6 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             font-size: 17px;
             line-height: 1.8;
             color: #555;
-            padding-bottom: 10px;
         }
 
         .content .salutation {
@@ -294,14 +293,14 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 6px;
+            gap: 4px;
         }
 
         .sign-image {
-            width: 160px;
+            width: 120px;
             height: auto;
             object-fit: contain;
-            margin-left: 0;
+            margin-left: -5px;
         }
 
         .sign-text .name {
@@ -323,27 +322,24 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             right: 0;
             bottom: 0;
             background: #d1d1d1;
-            height: 80px;
-            padding: 0 52px;
-            display: flex;
-            align-items: center;
+            padding: 15px 52px;
         }
 
         .footer-inner {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: flex-start;
+            gap: 40px;
+            flex-wrap: nowrap;
             font-size: 13px;
             color: #222;
             font-weight: 600;
             padding-right: 160px;
-            width: 100%;
         }
 
-        .footer-row {
+        .footer-col {
             display: flex;
-            gap: 40px;
-            width: 100%;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .footer-item {
@@ -352,20 +348,11 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             gap: 10px;
         }
 
-        .footer-row .footer-item:first-child {
-            flex: 0 0 200px;
-        }
-
-        .footer-row .footer-item:last-child {
-            flex: 1;
-        }
-
         .footer-item i {
             color: #222;
             width: 18px;
             text-align: center;
             font-size: 16px;
-            flex-shrink: 0;
         }
 
         .corner-red {
@@ -395,6 +382,29 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             z-index: 999;
             display: flex;
             gap: 10px;
+        }
+
+        .actions .btn {
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-weight: 700;
+            display: inline-block;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-print {
+            background: #dd2127;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-back {
+            background: #fff;
+            border: 1px solid #ddd;
+            color: #333;
         }
 
         @media print {
@@ -461,7 +471,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             </div>
 
             <div class="brand-row">
-                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
+                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
             </div>
 
             <!-- TITLE -->
@@ -501,7 +511,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
 
                 <p>
                     We are pleased to offer you the position of <strong><?php echo htmlspecialchars($position); ?></strong>
-                    at <strong>8Dots</strong>. We are confident that your skills and experience will be
+                    at <strong>CADLETE DESIGNS</strong>. We are confident that your skills and experience will be
                     an excellent addition to our team.
                 </p>
 
@@ -517,7 +527,7 @@ $formatted_start       = date("d F Y", strtotime($start_date));
 
                 <p>
                     We believe that you will thrive in this role and contribute significantly to the success of
-                    <strong>8Dots</strong>.<br>
+                    <strong>CADLETE DESIGNS</strong>.<br>
                     <br>
 
                     Please confirm your acceptance of this offer by replying to this email. If you have any
@@ -527,16 +537,17 @@ $formatted_start       = date("d F Y", strtotime($start_date));
                     We look forward to welcoming you to our team.
                 </p>
             </div>
+            <br>
 
             <!-- SIGNATURE -->
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
-                        <div class="name">kamal parmar</div>
+                        <div class="name">Smit Ramani</div>
                         <div class="role">Founder &amp; CEO</div>
-                        <div class="company">8Dots</div>
+                        <div class="company">CADLETE DESIGNS</div>
                     </div>
                 </div>
             </div>
@@ -544,13 +555,14 @@ $formatted_start       = date("d F Y", strtotime($start_date));
             <!-- FOOTER -->
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-row">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        </div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
                     </div>
-                    <div class="footer-row">
-                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 ob_start();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'])) {
     exit();
 }
 
-$current_date    = date("d F Y");
+$current_date    = date("d-m-Y");
 $formatted_join  = date("d-m-Y", strtotime($join_date));
 $formatted_rel   = date("d-m-Y", strtotime($relieve_date));
 $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !== '' ? $row_exp['employee_id'] : 'CD011';
@@ -63,6 +63,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../../css/style.css" rel="stylesheet">
+
     <style>
         :root {
             --red: #e31e24;
@@ -216,7 +217,6 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             font-size: 17px;
             line-height: 1.8;
             color: #555;
-            padding-bottom: 10px;
         }
 
         .content .salutation {
@@ -261,15 +261,16 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 4px;
+            margin-top: 10px;
+            /* Added to push signature down from 'Sincerely,' */
         }
 
         .sign-image {
-            width: 160px;
+            width: 120px;
             height: auto;
             object-fit: contain;
-            margin-left: 0;
+            margin-left: -5px;
         }
 
         .sign-text {
@@ -294,27 +295,25 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             right: 0;
             bottom: 0;
             background: #d1d1d1;
-            height: 80px;
-            padding: 0 52px;
-            display: flex;
-            align-items: center;
+            padding: 15px 52px;
         }
 
         .footer-inner {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: flex-start;
+            gap: 40px;
+            flex-wrap: nowrap;
             font-size: 13px;
             color: #222;
             font-weight: 600;
             padding-right: 160px;
-            width: 100%;
+            /* Leave space for corner red */
         }
 
-        .footer-row {
+        .footer-col {
             display: flex;
-            gap: 40px;
-            width: 100%;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .footer-item {
@@ -323,20 +322,11 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             gap: 10px;
         }
 
-        .footer-row .footer-item:first-child {
-            flex: 0 0 200px;
-        }
-
-        .footer-row .footer-item:last-child {
-            flex: 1;
-        }
-
         .footer-item i {
             color: #222;
             width: 18px;
             text-align: center;
             font-size: 16px;
-            flex-shrink: 0;
         }
 
         .corner-red {
@@ -369,17 +359,6 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             font-size: 14px;
         }
 
-        .btn-print {
-            background: var(--p-bg-color);
-            color: #fff;
-            border: none;
-        }
-
-        .btn-back {
-            background: #fff;
-            border: 1px solid #ddd;
-            color: #333;
-        }
 
         @media print {
             body {
@@ -425,7 +404,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             </div>
 
             <div class="brand-row">
-                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
+                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
             </div>
 
             <div class="title">EXPERIENCE LETTER</div>
@@ -454,7 +433,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
 
                 <p>
                     This is to certify that <strong><?php echo htmlspecialchars($name); ?></strong>
-                    was employed with <strong>8Dots</strong> As a
+                    was employed with <strong>CADLETE Designs</strong> As a
                     <strong><?php echo htmlspecialchars($designation); ?></strong>
                     from
                     <strong><?php echo htmlspecialchars($formatted_join); ?></strong> to
@@ -472,32 +451,36 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                     professional throughout the tenure.
                 </p>
                 <p>
-                    We appreciate her contributions to 8Dots and thank her for the services
+                    We appreciate her contributions to CADLETE Designs and thank her for the services
                     rendered. We wish her every success and prosperity in all future professional
                     endeavors.
                 </p>
             </div>
+            </br>
+            </br>
+            </br>
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
-                        <div class="name">kamal parmar</div>
-                        <div class="role">CEO & Director </div>
-                        <div class="company">8Dots</div>
+                        <div class="name">Smit Ramani</div>
+                        <div class="role">CEO & Chief Design Engineer</div>
+                        <div class="company">CADLETE DESIGNS</div>
                     </div>
                 </div>
             </div>
 
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-row">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        </div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
                     </div>
-                    <div class="footer-row">
-                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
                     </div>
                 </div>
             </div>
@@ -515,7 +498,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             </div>
 
             <div class="brand-row">
-                <img src="../../images/8dots-logo.png" alt="8Dots Logo">
+                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
             </div>
 
             <div class="title">RELIEVING LETTER</div>
@@ -546,7 +529,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                 <p>Dear <?php echo htmlspecialchars($name); ?>,</p>
                 <p>
                     This letter is to confirm that you have been relieved from your duties as <strong><?php echo htmlspecialchars($designation); ?></strong>
-                    at <strong>8Dots</strong>, effective <?php echo htmlspecialchars($formatted_rel); ?>, following your
+                    at <strong>CADLETE Designs</strong>, effective <?php echo htmlspecialchars($formatted_rel); ?>, following your
                     resignation and completion of the required notice period and handover formalities.
                 </p>
                 <p>During your tenure with the company, you fulfilled your responsibilities with
@@ -558,27 +541,33 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
                     personal endeavors.
                 </p>
             </div>
+            </br>
+            </br>
+            </br>
+            </br>
+            </br>
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
-                        <div class="name">kamal parmar</div>
-                        <div class="role">CEO & Director </div>
-                        <div class="company">8Dots</div>
+                        <div class="name">Smit Ramani</div>
+                        <div class="role">CEO & Chief Design Engineer</div>
+                        <div class="company">CADLETE DESIGNS</div>
                     </div>
                 </div>
             </div>
 
             <div class="footer-bar">
                 <div class="footer-inner">
-                    <div class="footer-row">
-                        <div class="footer-item"><i class="fa fa-phone"></i>8155 8133 55</div>
-                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,Shivam Trade Centre(STC), Bopal, Ahmedabad, Gujarat 380058 .</div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa fa-phone"></i>091 83202 11773
+                        </div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
                     </div>
-                    <div class="footer-row">
-                        <div class="footer-item"><i class="fa fa-envelope"></i> Info@8dots.in</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.8dots.in</div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> A-106, Sun South Street, Ahmedabad</div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
                     </div>
                 </div>
             </div>

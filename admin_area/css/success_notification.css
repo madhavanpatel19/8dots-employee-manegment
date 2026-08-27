@@ -1,4 +1,4 @@
-﻿/* Success Notification Premium UI */
+/* Success Notification Premium UI */
 
 .success-modal-overlay {
     position: fixed;
@@ -102,7 +102,7 @@
 }
 
 .btn-success-go {
-    background: var(--p-bg-color);
+    background: #dd2127;
     color: #fff !important;
     padding: 12px 24px;
     border-radius: 12px;

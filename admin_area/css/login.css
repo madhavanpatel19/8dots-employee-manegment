@@ -12,9 +12,8 @@
   --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --input-bg: #ffffff;
-  --p-bg: white;
-  --p-bg-color: #232223;
-  --p-bg-btn: #232223;
+  --p-bg-color: #FFEAEB;
+  --p-bg-btn: #dd2127;
 }
 
 body {
@@ -153,7 +152,7 @@ body {
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--p-bg-color);
+  color: var(--p-bg-btn);
   font-size: 16px;
   z-index: 5;
 }
@@ -161,11 +160,11 @@ body {
 .form-control {
   width: 100%;
   height: 48px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--p-bg-btn);
   border-radius: 12px !important;
   padding: 0 45px !important;
   font-size: 14px;
-  background-color: #ffffff;
+  background-color: var(--p-bg-color);
   color: #0f172a;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -173,8 +172,8 @@ body {
 }
 
 .form-control:focus {
-  border-color: var(--p-bg-btn);
-  box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2); !important;
+  border-color: #dd2127 !important;
+  box-shadow: 0 0 0 3px #ffeaeb !important;
   outline: none;
 }
 
@@ -216,7 +215,7 @@ body {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  border: 2px solid var(--p-bg-color);
+  border: 2px solid var(--p-bg-btn);
   border-radius: 4px;
   background-color: transparent;
   position: relative;
@@ -264,7 +263,7 @@ body {
   height: 48px;
   border: none;
   border-radius: 12px;
-  background: var(--p-bg-color);
+  background: var(--p-bg-btn);
   color: white;
   font-size: 15px;
   font-weight: 600;
@@ -277,7 +276,7 @@ body {
 }
 
 .btn-login:hover {
-  background: #333333;
+  background: #e14449;
   transform: translateY(-1px);
 }
 

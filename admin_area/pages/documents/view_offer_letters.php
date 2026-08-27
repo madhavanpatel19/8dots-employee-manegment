@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() === PHP_SESSION_NONE) {
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
@@ -11,7 +11,7 @@ if (!isset($_SESSION['admin_email'])) {
 }
 
 if (!isset($con)) {
-    include(__DIR__ . "/includes/db.php");
+    include(__DIR__ . '/../../includes/db.php');
 }
 
 if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
@@ -19,7 +19,7 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
         ? $_POST['ajax_delete_offer']
         : $_GET['ajax_delete_offer'];
 
-    $delete_id = intval($delete_id);
+    $delete_id = intval($delete_id);    
     $now       = date('Y-m-d H:i:s');
 
     $deleted = mysqli_query($con, "UPDATE offer_letters SET deleted_at = '$now' WHERE id = $delete_id AND deleted_at IS NULL");
@@ -142,78 +142,6 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
             }
         }
 
-        .btn-icon-premium {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            width: 38px;
-            height: 38px;
-            transition: 0.3s;
-            cursor: pointer;
-            color: #64748b;
-            text-decoration: none !important;
-        }
-
-        .btn-icon-premium:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Edit (Blue) */
-        .btn-icon-edit {
-            color: #0ea5e9 !important;
-            background: #f0f9ff !important;
-            border-color: #bae6fd !important;
-        }
-
-        .btn-icon-edit:hover {
-            background: #e0f2fe !important;
-            border-color: #7dd3fc !important;
-            color: #0284c7 !important;
-        }
-
-        /* View (Orange) */
-        .btn-icon-view {
-            color: #f59e0b !important;
-            background: #fffbeb !important;
-            border-color: #fde68a !important;
-        }
-
-        .btn-icon-view:hover {
-            background: #fef3c7 !important;
-            border-color: #fcd34d !important;
-            color: #d97706 !important;
-        }
-
-        /* Download (Purple) */
-        .btn-icon-download {
-            color: #8b5cf6 !important;
-            background: #f5f3ff !important;
-            border-color: #ede9fe !important;
-        }
-
-        .btn-icon-download:hover {
-            background: #ede9fe !important;
-            border-color: #ddd6fe !important;
-            color: #7c3aed !important;
-        }
-
-        /* Delete (Red) */
-        .btn-icon-delete {
-            color: #ef4444 !important;
-            background: #fef2f2 !important;
-            border-color: #fecaca !important;
-        }
-
-        .btn-icon-delete:hover {
-            background: #fee2e2 !important;
-            border-color: #fca5a5 !important;
-            color: #dc2626 !important;
-        }
-
         .table-premium th,
         .table-premium td {
             text-align: center !important;
@@ -227,9 +155,9 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
             <h3 style="margin: 0; font-size: 16px; font-weight: 700;">All Offers</h3>
         </div>
         <div style="overflow-x: auto; padding: 0 10px 10px 10px;">
-            <table class="table-premium">
+            <table class="table-premium" style="width: 100%; border-collapse: separate; border-spacing: 0;">
                 <thead>
-                    <tr>
+                    <tr style="background: #fff;">
                         <th>#</th>
                         <th>Candidate</th>
                         <th>Job Role</th>
@@ -249,7 +177,7 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                             $name = $row_offer['name'];
                             $email = $row_offer['email'];
                             $position = $row_offer['position'];
-                            $start_date = date("d M Y", strtotime($row_offer['start_date']));
+                            $start_date = date("d-m-Y", strtotime($row_offer['start_date']));
                             $salary = $row_offer['salary'];
                             $i++;
                     ?>
@@ -260,7 +188,7 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                                     <div style="font-size: 12px; color: #64748b;"><?php echo htmlspecialchars($email); ?></div>
                                 </td>
                                 <td style="padding: 15px; border-bottom: 1px solid #f1f5f9;">
-                                    <span class="badge" style="background: var(--p-bg-color); color: var(--p-bg); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;"><!-- dd2127 -->
+                                    <span class="badge" style="background: #ffeaeb; color: #dd2127; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">
                                         <?php echo htmlspecialchars($position); ?>
                                     </span>
                                 </td>
@@ -312,12 +240,12 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
 <div class="modal fade" id="newOfferModal" tabindex="-1" role="dialog" aria-labelledby="newOfferModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" id="newOfferModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #fff; color:var(--p-bg-color);width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #c70039; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-file-text-o" style="font-size: 14px;"></i>
                     </div>
                     Generate New Offer Letter
@@ -328,37 +256,37 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Candidate Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="Candidate Name" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="name" class="form-control" placeholder="Candidate Name" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Job Position</label>
-                            <input type="text" name="position" class="form-control" placeholder="Job Position" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="position" class="form-control" placeholder="Job Position" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Email Address</label>
-                            <input type="email" name="email" class="form-control" placeholder="email@example.com" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="email" name="email" class="form-control" placeholder="email@example.com" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Phone Number</label>
-                            <input type="tel" name="number" class="form-control" maxlength="10" placeholder="10-digit mobile" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="tel" name="number" class="form-control" maxlength="10" placeholder="10-digit mobile" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Monthly Salary (INR)</label>
-                            <input type="number" name="salary" class="form-control" placeholder="Monthly Salary" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="number" name="salary" class="form-control" placeholder="Monthly Salary" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Start Date</label>
-                            <input type="date" name="start_date" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="date" name="start_date" class="form-control" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Notice Period</label>
-                            <input type="text" name="notice_period" class="form-control" placeholder="Notice Period" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2);';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="notice_period" class="form-control" placeholder="Notice Period" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
                     </div>
                 </div>
@@ -429,7 +357,7 @@ if (isset($_POST['ajax_delete_offer']) || isset($_GET['ajax_delete_offer'])) {
         confirmDeleteBtn.disabled = true;
         confirmDeleteBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Deleting...';
 
-        fetch('view_offer_letters.php', {
+        fetch('pages/documents/view_offer_letters.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

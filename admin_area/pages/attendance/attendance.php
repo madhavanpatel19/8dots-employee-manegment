@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -406,7 +406,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
         <div style="padding: 35px 30px; background: #fff;">
             <?php if ($message) : ?>
-                <div class="alert alert-info" style="border-radius: 10px; margin-bottom: 25px; font-weight: 600; border: none; background: #f0f9ff; color: var(--p-bg-color);">
+                <div class="alert alert-info" style="border-radius: 10px; margin-bottom: 25px; font-weight: 600; border: none; background: #f0f9ff; color: #DD2127;">
                     <i class="fa fa-info-circle"></i> <?php echo $message; ?>
                 </div>
             <?php endif; ?>
@@ -520,7 +520,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
             <div style="padding: 15px 24px; background: #fafafa; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa fa-clock-o" style="color: #64748b; font-size: 18px;"></i>
-                    <h3 style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">Daily Entries: <span style="color: #4338ca;"><?php echo date('d M Y', strtotime($selected_date)); ?></span></h3>
+                    <h3 style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">Daily Entries: <span style="color: #dd2127;"><?php echo date('d M Y', strtotime($selected_date)); ?></span></h3>
                 </div>
                 <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -701,7 +701,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
             <!-- MONTHLY VIEW -->
         <?php elseif ($selected_emp_id > 0 && $employee_data): ?>
-            <div style="margin: 15px 24px; padding: 15px 20px; background: #f8fafc; border-left: 4px solid var(--p-bg-color); border-radius: 6px;">
+            <div style="margin: 15px 24px; padding: 15px 20px; background: #f8fafc; border-left: 4px solid #4338ca; border-radius: 6px;">
                 <h3 style="margin: 0; font-size: 15px; color: #1e293b;"><i class="fa fa-user" style="color: #64748b; margin-right: 5px;"></i> <?php echo htmlspecialchars($employee_data['name']); ?> <span style="font-size: 13px; font-weight: normal; color: #475569; margin-left: 10px;">(ID: <?php echo $selected_emp_id; ?>)</span></h3>
             </div>
 
@@ -995,10 +995,10 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
             let inlineErr = document.createElement('div');
             inlineErr.id = 'modalLeaveError';
             inlineErr.style.display = 'none';
-            inlineErr.style.color = '#d9534f';
-            inlineErr.style.fontSize = '13px';
-            inlineErr.style.marginTop = '4px';
-            attendanceForm.querySelector('.form-group:last-child').appendChild(inlineErr);
+            const lastGroup = attendanceForm.querySelector('.form-group:last-child') || attendanceForm.querySelector('.modal-body') || attendanceForm;
+            if (lastGroup) {
+                lastGroup.appendChild(inlineErr);
+            }
 
             attendanceForm.addEventListener('submit', function(e) {
                 const status = document.getElementById('status').value;

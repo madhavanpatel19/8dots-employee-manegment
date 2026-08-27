@@ -48,7 +48,7 @@ body {
 }
 
 .sidebar-logo img {
-  max-width: 95px;
+  max-width: 130px;
   height: auto;
 }
 
@@ -60,7 +60,7 @@ body {
 .menu-heading {
   font-size: 11px;
   text-transform: uppercase;
-  color: var(--p-bg-color);
+  color: #DD2127;
   letter-spacing: 1px;
   font-weight: 600;
   margin: 20px 0 10px 15px;

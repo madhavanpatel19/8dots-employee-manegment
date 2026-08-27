@@ -1,4 +1,12 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
+global $con;
+
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
     exit;
@@ -26,10 +34,22 @@ $create_leads = "CREATE TABLE IF NOT EXISTS leads (
     currency VARCHAR(10) DEFAULT 'INR',
     lead_source VARCHAR(255),
     status ENUM('active', 'future', 'expired') DEFAULT 'active',
+    assigned_employees TEXT NULL,
+    assigned_admins TEXT NULL,
     followup_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 mysqli_query($con, $create_leads);
+
+// Auto-add assigned_employees and assigned_admins if missing
+$check_col = mysqli_query($con, "SHOW COLUMNS FROM leads LIKE 'assigned_employees'");
+if (mysqli_num_rows($check_col) == 0) {
+    mysqli_query($con, "ALTER TABLE leads ADD COLUMN assigned_employees TEXT NULL AFTER status");
+}
+$check_col_admin = mysqli_query($con, "SHOW COLUMNS FROM leads LIKE 'assigned_admins'");
+if (mysqli_num_rows($check_col_admin) == 0) {
+    mysqli_query($con, "ALTER TABLE leads ADD COLUMN assigned_admins TEXT NULL AFTER assigned_employees");
+}
 
 $create_followups = "CREATE TABLE IF NOT EXISTS lead_followups (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -61,7 +81,8 @@ include("leads_logic.php");
 // Filters & Search
 $status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, $_GET['status']) : '';
 $source_filter = isset($_GET['source']) ? mysqli_real_escape_string($con, $_GET['source']) : '';
-$search_query = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
+$cost_filter   = isset($_GET['cost']) ? mysqli_real_escape_string($con, $_GET['cost']) : '';
+$search_query  = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
 
 // Count Leads for Cards
 $total_leads  = mysqli_num_rows(mysqli_query($con, "SELECT id FROM leads WHERE deleted_at IS NULL"));
@@ -80,7 +101,25 @@ $start_from = $offset;
 $where_clause = " WHERE deleted_at IS NULL ";
 if ($status_filter) $where_clause .= " AND status='$status_filter' ";
 if ($source_filter) $where_clause .= " AND lead_source LIKE '%$source_filter%' ";
-if ($search_query) $where_clause .= " AND (client_name LIKE '%$search_query%' OR phone LIKE '%$search_query%') ";
+if ($search_query) {
+    $search_clean = trim($search_query);
+    $emp_id_matches = [];
+    $get_matching_emps = mysqli_query($con, "SELECT id FROM emp_list WHERE name LIKE '%$search_clean%'");
+    if ($get_matching_emps && mysqli_num_rows($get_matching_emps) > 0) {
+        while ($e_row = mysqli_fetch_assoc($get_matching_emps)) {
+            $emp_id_matches[] = (int)$e_row['id'];
+        }
+    }
+    $emp_where = "";
+    if (!empty($emp_id_matches)) {
+        $emp_conditions = [];
+        foreach ($emp_id_matches as $e_id) {
+            $emp_conditions[] = "FIND_IN_SET('$e_id', REPLACE(assigned_employees, ' ', '')) > 0";
+        }
+        $emp_where = " OR " . implode(" OR ", $emp_conditions);
+    }
+    $where_clause .= " AND (client_name LIKE '%$search_clean%' OR phone LIKE '%$search_clean%' OR company_name LIKE '%$search_clean%' OR project_name LIKE '%$search_clean%' $emp_where) ";
+}
 
 // Count total records with filters
 $countSql = "SELECT COUNT(*) as total FROM leads" . $where_clause;
@@ -93,11 +132,134 @@ if ($countResult) {
 $totalPages = ceil($totalRecords / $limit);
 $total_pages = $totalPages;
 
+$order_by = " ORDER BY id DESC ";
+if ($cost_filter === 'high_to_low') {
+    $order_by = " ORDER BY CAST(REPLACE(REPLACE(budget, ',', ''), ' ', '') AS DECIMAL(15,2)) DESC, id DESC ";
+} elseif ($cost_filter === 'low_to_high') {
+    $order_by = " ORDER BY CAST(REPLACE(REPLACE(budget, ',', ''), ' ', '') AS DECIMAL(15,2)) ASC, id DESC ";
+}
+
 // Get filtered records for current page
-$get_leads = "SELECT * FROM leads $where_clause ORDER BY id DESC LIMIT $offset, $limit";
+$get_leads = "SELECT * FROM leads $where_clause $order_by LIMIT $offset, $limit";
 $run_leads = mysqli_query($con, $get_leads);
 
 ?>
+
+<style>
+    .employee-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .emp-avatar-item {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: -10px;
+        transition: transform 0.2s ease, z-index 0.2s ease;
+    }
+
+    .emp-avatar-item:first-child {
+        margin-left: 0;
+    }
+
+    .emp-avatar-item:hover {
+        z-index: 10;
+        transform: translateY(-2px);
+    }
+
+    .emp-avatar-item img,
+    .emp-avatar-item .emp-initial {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .emp-avatar-item .emp-initial {
+        background: #dee2e6;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .employee-group .more {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        border: 2px solid #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        color: #475569;
+        margin-left: -10px;
+    }
+
+    .employee-group .more:hover {
+        background: #cbd5e1;
+    }
+
+    /* Fast Custom Tooltip */
+    .emp-avatar-item[data-tooltip] {
+        position: relative;
+    }
+
+    .emp-avatar-item[data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: #dd2127;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        z-index: 99999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .emp-avatar-item[data-tooltip]::before {
+        content: '';
+        position: absolute;
+        bottom: calc(100% + 3px);
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        border-width: 5px 5px 0 5px;
+        border-style: solid;
+        border-color: #dd2127 transparent transparent transparent;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        z-index: 99999;
+    }
+
+    .emp-avatar-item[data-tooltip]:hover::after,
+    .emp-avatar-item[data-tooltip]:hover::before {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+</style>
 
 <div class="page-wrapper premium-ui-enabled">
     <div class="page-header-premium">
@@ -260,15 +422,15 @@ $run_leads = mysqli_query($con, $get_leads);
                         <th style="width: 80px; text-align: center;">ID</th>
                         <th>Client Info</th>
                         <th>Project Type</th>
+                        <th style="text-align: center; min-width: 130px;">Assigned Emp</th>
                         <?php if (canAdminAccess('project_source_view')): ?>
-                            <th style="position: relative; overflow: visible; min-width: 100px; padding: 15px 10px !important;">
+                            <th style="position: relative; overflow: visible; min-width: 100px; text-align: center;">
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($source_filter) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
                                     <?php echo !empty($source_filter) ? $source_filter : 'Source'; ?>
                                     <i class="fa fa-filter" style="font-size: 11px; color: <?php echo !empty($source_filter) ? '#4f46e5' : '#94a3b8'; ?>;"></i>
                                 </div>
                                 <select id="sourceSelect" onchange="applySourceFilter(this.value)"
                                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
-                                    <option value="">Platform</option>
                                     <?php
                                     $get_all_sources = "SELECT * FROM lead_sources WHERE deleted_at IS NULL ORDER BY source_name ASC";
                                     $run_all_sources = mysqli_query($con, $get_all_sources);
@@ -281,7 +443,26 @@ $run_leads = mysqli_query($con, $get_leads);
                                 </select>
                             </th>
                         <?php endif; ?>
-                        <th style="text-align: center;">Cost</th>
+                        <th style="position: relative; overflow: visible; min-width: 110px; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 12px; color: <?php echo !empty($cost_filter) ? '#1e293b' : '#64748b'; ?>; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;">
+                                <?php
+                                if ($cost_filter == 'high_to_low') {
+                                    echo 'High to Low';
+                                } elseif ($cost_filter == 'low_to_high') {
+                                    echo 'Low to High';
+                                } else {
+                                    echo 'Cost';
+                                }
+                                ?>
+                                <i class="fa fa-filter" style="font-size: 11px; color: <?php echo !empty($cost_filter) ? '#4f46e5' : '#94a3b8'; ?>;"></i>
+                            </div>
+                            <select id="costSelect" onchange="applyCostFilter(this.value)"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
+                                <option value="" <?php if (empty($cost_filter) || $cost_filter == 'recent') echo 'selected'; ?>>Recent Leads (Default)</option>
+                                <option value="high_to_low" <?php if ($cost_filter == 'high_to_low') echo 'selected'; ?>>High to Low</option>
+                                <option value="low_to_high" <?php if ($cost_filter == 'low_to_high') echo 'selected'; ?>>Low to High</option>
+                            </select>
+                        </th>
                         <th style="text-align: center;">Status</th>
                         <th style="text-align: center;">Next Call</th>
                         <th style="text-align: center;">Manage</th>
@@ -315,6 +496,84 @@ $run_leads = mysqli_query($con, $get_leads);
                                     </div>
                                 </td>
                                 <td style="font-weight: 500; color: #475569;"><?php echo !empty($project_name) ? $project_name : '-'; ?></td>
+                                <td style="text-align: center;">
+                                    <div class="employee-wrap" style="display:flex; justify-content:center;">
+                                        <?php
+                                        $assigned_team = [];
+
+                                        // 1. Fetch assigned employees
+                                        $emp_ids_str = !empty($row['assigned_employees']) ? $row['assigned_employees'] : '';
+                                        if (!empty($emp_ids_str)) {
+                                            $emp_ids_arr = array_filter(array_map('intval', explode(',', $emp_ids_str)));
+                                            if (!empty($emp_ids_arr)) {
+                                                $ids_impl = implode(',', $emp_ids_arr);
+                                                $run_emps_list = mysqli_query($con, "SELECT name, employee_image FROM emp_list WHERE id IN ($ids_impl)");
+                                                if ($run_emps_list) {
+                                                    while ($e_info = mysqli_fetch_assoc($run_emps_list)) {
+                                                        $assigned_team[] = [
+                                                            'name'  => $e_info['name'],
+                                                            'image' => !empty($e_info['employee_image']) ? 'uploads/' . $e_info['employee_image'] : '',
+                                                            'type'  => 'employee'
+                                                        ];
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // 2. Fetch assigned admins
+                                        $adm_ids_str = !empty($row['assigned_admins']) ? $row['assigned_admins'] : '';
+                                        if (!empty($adm_ids_str)) {
+                                            $adm_ids_arr = array_filter(array_map('intval', explode(',', $adm_ids_str)));
+                                            if (!empty($adm_ids_arr)) {
+                                                $ids_adm_impl = implode(',', $adm_ids_arr);
+                                                $run_adms_list = mysqli_query($con, "SELECT admin_name, admin_image FROM admins WHERE admin_id IN ($ids_adm_impl)");
+                                                if ($run_adms_list) {
+                                                    while ($a_info = mysqli_fetch_assoc($run_adms_list)) {
+                                                        $assigned_team[] = [
+                                                            'name'  => $a_info['admin_name'],
+                                                            'image' => !empty($a_info['admin_image']) ? 'admin_images/' . $a_info['admin_image'] : '',
+                                                            'type'  => 'admin'
+                                                        ];
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if (!empty($assigned_team)) {
+                                            echo '<div class="employee-group">';
+                                            $team_limit = 3;
+                                            $t_count = 0;
+
+                                            foreach ($assigned_team as $member) {
+                                                $m_name = htmlspecialchars($member['name']);
+                                                $m_img = $member['image'];
+                                                $isHidden = $t_count >= $team_limit ? 'display: none;' : '';
+                                                $hiddenClass = $t_count >= $team_limit ? 'hidden-employee' : '';
+
+                                                if (!empty($m_img) && file_exists($m_img)) {
+                                                    echo '<span class="emp-avatar-item ' . $hiddenClass . '" data-tooltip="' . $m_name . '" style="' . $isHidden . '">';
+                                                    echo '<img src="' . htmlspecialchars($m_img) . '" alt="' . $m_name . '" onerror="this.src=\'admin_images/default.png\'">';
+                                                    echo '</span>';
+                                                } else {
+                                                    $initial = strtoupper(substr($member['name'], 0, 1));
+                                                    $bg_color = $member['type'] == 'admin' ? '#ef4444' : '#3b82f6';
+                                                    echo '<span class="emp-avatar-item ' . $hiddenClass . '" data-tooltip="' . $m_name . '" style="' . $isHidden . '">';
+                                                    echo '<div class="emp-initial" style="background:' . $bg_color . '; color:#fff;">' . $initial . '</div>';
+                                                    echo '</span>';
+                                                }
+                                                $t_count++;
+                                            }
+
+                                            if ($t_count > $team_limit) {
+                                                echo '<span class="more emp-avatar-item" data-tooltip="Show all" onclick="this.parentElement.querySelectorAll(\'.hidden-employee\').forEach(el => el.style.display = \'inline-flex\'); this.style.display = \'none\';">+' . ($t_count - $team_limit) . '</span>';
+                                            }
+                                            echo '</div>';
+                                        } else {
+                                            echo '<span style="color:#94a3b8; font-size:12px;">Unassigned</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                </td>
                                 <?php if (canAdminAccess('project_source_view')): ?>
                                     <td style="text-align: center;">
                                         <span style="font-size: 12px; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 6px;width: 90px;display: inline-block;white-space: normal;word-wrap: break-word;"><?php echo $source; ?></span>
@@ -357,7 +616,7 @@ $run_leads = mysqli_query($con, $get_leads);
                                 <td style="text-align: center; font-weight: 600;">
                                     <?php
                                     if (!empty($f_date)) {
-                                        $display_date = date('d M Y', strtotime($f_date));
+                                        $display_date = date('d-m-Y', strtotime($f_date));
                                         $today_str = date('Y-m-d');
 
                                         if ($f_date == $today_str && $status == 'active') {
@@ -374,7 +633,7 @@ $run_leads = mysqli_query($con, $get_leads);
                                             echo '</div>';
                                         } else {
                                             // Normal Future or other status
-                                            echo '<div style="color: var(--p-bg-color);">' . $display_date . '</div>';
+                                            echo '<div style="color: #4f46e5;">' . $display_date . '</div>';
                                         }
                                     } else {
                                         echo '<span style="color:#94a3b8;">N/A</span>';
@@ -413,6 +672,9 @@ $run_leads = mysqli_query($con, $get_leads);
                                 </div>
                                 <h3 style="color: #64748b; font-size: 18px; font-weight: 700; margin-bottom: 5px;">No leads found.</h3>
                                 <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">No leads match your search.</p>
+                                <?php if (!empty($source_filter) || !empty($status_filter) || !empty($search_query)): ?>
+                                    <a href="index.php?leads" class="btn btn-primary btn-sm" style="background: #4f46e5; border: none; border-radius: 8px; padding: 8px 20px;">Clear All Filters</a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -476,6 +738,8 @@ $run_leads = mysqli_query($con, $get_leads);
         }
     }
 
+
+
     .table-premium td {
         padding: 20px 25px !important;
         vertical-align: middle !important;
@@ -519,16 +783,16 @@ $run_leads = mysqli_query($con, $get_leads);
     }
 
     .page-link:hover:not(.disabled) {
-        background: var(--p-bg-color);
-        color: var(--p-bg);
-        border-color: var(--p-bg-color);
+        background: #dd2127;
+        color: #FFEAEB;
+        border-color: #dd2127;
     }
 
 
     .page-link.active {
-        background: var(--p-bg-color);
-        color: var(--p-bg);
-        border-color: var(--p-bg-color);
+        background: #FFEAEB;
+        color: #dd2127;
+        border-color: #dd2127;
         text-decoration: none !important;
     }
 
@@ -748,7 +1012,15 @@ $run_leads = mysqli_query($con, $get_leads);
     function applySourceFilter(value) {
         const status = "<?php echo $status_filter; ?>";
         const search = "<?php echo $search_query; ?>";
-        window.location.href = `index.php?leads&source=${encodeURIComponent(value)}&status=${status}&search=${search}`;
+        const cost = "<?php echo $cost_filter; ?>";
+        window.location.href = `index.php?leads&source=${encodeURIComponent(value)}&status=${status}&search=${search}&cost=${cost}`;
+    }
+
+    function applyCostFilter(value) {
+        const status = "<?php echo $status_filter; ?>";
+        const search = "<?php echo $search_query; ?>";
+        const source = "<?php echo $source_filter; ?>";
+        window.location.href = `index.php?leads&cost=${encodeURIComponent(value)}&status=${status}&search=${search}&source=${source}`;
     }
 
     function showPremiumAlert(message) {

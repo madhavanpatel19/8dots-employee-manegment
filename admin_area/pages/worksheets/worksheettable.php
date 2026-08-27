@@ -1,4 +1,8 @@
-﻿<?php
+<?php
+if (!isset($con)) {
+    include(__DIR__ . '/../../includes/db.php');
+}
+
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
     exit();
@@ -25,8 +29,14 @@ if (!empty($filter_status) && in_array($filter_status, ['present', 'absent', 'le
     $st_esc = mysqli_real_escape_string($con, $filter_status);
     $where[] = "a.status = '$st_esc'";
 }
-if (!empty($filter_from)) $where[] = "DATE(a.attendance_date) >= '" . mysqli_real_escape_string($con, $filter_from) . "'";
-if (!empty($filter_to))   $where[] = "DATE(a.attendance_date) <= '" . mysqli_real_escape_string($con, $filter_to) . "'";
+if (!empty($filter_from)) {
+    $from_db = date('Y-m-d', strtotime($filter_from));
+    $where[] = "DATE(a.attendance_date) >= '" . mysqli_real_escape_string($con, $from_db) . "'";
+}
+if (!empty($filter_to)) {
+    $to_db = date('Y-m-d', strtotime($filter_to));
+    $where[] = "DATE(a.attendance_date) <= '" . mysqli_real_escape_string($con, $to_db) . "'";
+}
 
 $whereSql = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
 
@@ -143,7 +153,7 @@ $result = mysqli_query($con, $sql);
                         <th>Team Member</th>
                         <th>Time Logged</th>
                         <th style="text-align: center;">Status</th>
-                        <th style="text-align: center;">Activity %</th>
+                        <!-- <th style="text-align: center;">Activity %</th> -->
                         <th>Tasks Done</th>
                         <th>Saved At</th>
                     </tr>
@@ -172,7 +182,7 @@ $result = mysqli_query($con, $sql);
                                     </div>
                                 </td>
                                 <td>
-                                    <div style="font-weight: 600; color: var(--p-text);"><?php echo date('d M Y', strtotime($row['attendance_date'])); ?></div>
+                                    <div style="font-weight: 600; color: var(--p-text);"><?php echo date('d-m-Y', strtotime($row['attendance_date'])); ?></div>
                                     <div style="font-size: 11px; color: var(--p-secondary);">
                                         <?php
                                         $display_out = $row['check_out_time'];
@@ -188,13 +198,13 @@ $result = mysqli_query($con, $sql);
                                         <?php echo ucfirst($st); ?>
                                     </span>
                                 </td>
-                                <td style="text-align: center;">
+                                <!-- <td style="text-align: center;">
                                     <?php if (isset($row['performance'])): ?>
                                         <div style="font-weight: 800; color: #4f46e5;"><?php echo $row['performance']; ?>%</div>
                                     <?php else: ?>
                                         <span style="color: #cbd5e1;">-</span>
                                     <?php endif; ?>
-                                </td>
+                                </td> -->
                                 <td>
                                     <?php
                                     $photos = [];
@@ -208,10 +218,10 @@ $result = mysqli_query($con, $sql);
                                     if (!empty($photos) || !empty(trim($row['remarks'] ?? ''))) {
                                         $json_photos = htmlspecialchars(json_encode($photos), ENT_QUOTES, 'UTF-8');
                                         $emp_name = htmlspecialchars($row['emp_name'], ENT_QUOTES, 'UTF-8');
-                                        $date = htmlspecialchars(date('d M Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
+                                        $date = htmlspecialchars(date('d-m-Y', strtotime($row['attendance_date'])), ENT_QUOTES, 'UTF-8');
                                         $emp_img = htmlspecialchars($img, ENT_QUOTES, 'UTF-8');
                                         $remark_js = htmlspecialchars(json_encode(nl2br(htmlspecialchars($row['remarks'] ?: '-'))), ENT_QUOTES, 'UTF-8');
-                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name . '\', \'' . $date . '\', \'' . $emp_img . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #4f46e5; margin-right: 4px;"></i> View Details</button>';
+                                        echo '<button type="button" class="btn btn-sm" style="border-radius: 6px; padding: 4px 12px; font-weight: 600; background: #fff; color: #1e293b; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onclick="openRowGallery(\'' . $json_photos . '\', \'' . $emp_name . '\', \'' . $date . '\', \'' . $emp_img . '\', ' . $remark_js . '); event.stopPropagation();"><i class="fa fa-eye" style="color: #dd2127; margin-right: 4px;"></i> View Details</button>';
                                     } else {
                                         echo '<span style="color: #cbd5e1;">-</span>';
                                     }
@@ -233,7 +243,7 @@ $result = mysqli_query($con, $sql);
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" style="padding: 100px 20px; text-align: center;">
+                            <td colspan="7" style="padding: 100px 20px; text-align: center;">
                                 <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
                                     <i class="fa fa-folder-open-o" style="font-size: 24px; color: #94a3b8;"></i>
                                 </div>
@@ -282,15 +292,15 @@ $result = mysqli_query($con, $sql);
 </div>
 
 <div id="workGalleryModal" class="modal fade" role="dialog" style="z-index: 99999;">
-    <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
+    <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 1150px; width: 95%;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden;">
-            <div class="modal-header" style="background: var(--p-bg-color); color: var(--p-bg); padding: 25px 35px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
-                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 40px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 40px; flex-wrap: wrap; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 18px;">
-                        <div style="width: 48px; height: 48px; background: var(--p-bg-color); color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow:0 4px 10px rgba(166, 166, 167, 0.2)">
+                        <div style="width: 48px; height: 48px; background: #dd2127; color:white;border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 16px rgba(185, 81, 81, 0.3);">
                             <i class="fa fa-th-large"></i>
                         </div>
                         <div>
@@ -299,19 +309,33 @@ $result = mysqli_query($con, $sql);
                         </div>
                     </div>
 
-                    <!-- Employee Filter Inside Modal -->
-                    <div class="modal-header-filter">
-                        <i class="fa fa-user-circle"></i>
-                        <select id="modal_emp_filter" onchange="openWorkGallery(this.value)" class="modal-select-premium">
-                            <option value="">All Employees</option>
-                            <?php foreach ($empList as $e): ?>
-                                <option value="<?php echo $e['id']; ?>"><?php echo htmlspecialchars($e['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                    <!-- Filters Inside Modal -->
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <!-- Employee Filter -->
+                        <div class="modal-header-filter" style="display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 6px 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                            <i class="fa fa-user-circle" style="color: #dd2127; font-size: 15px;"></i>
+                            <select id="modal_emp_filter" onchange="openWorkGallery(this.value, $('#modal_date_filter').val())" class="modal-select-premium" style="border: none; background: transparent; font-weight: 700; font-size: 13px; color: #1e293b; outline: none; cursor: pointer;">
+                                <option value="">All Employees</option>
+                                <?php foreach ($empList as $e): ?>
+                                    <option value="<?php echo $e['id']; ?>"><?php echo htmlspecialchars($e['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Date Filter -->
+                        <div style="display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 6px 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                            <i class="fa fa-calendar" style="color: #dd2127; font-size: 15px;"></i>
+                            <input type="date" id="modal_date_filter" onchange="openWorkGallery($('#modal_emp_filter').val(), this.value)" style="border: none; background: transparent; font-weight: 700; font-size: 13px; color: #1e293b; outline: none; cursor: pointer;" title="Filter photos by date">
+                        </div>
+
+                        <!-- Reset Date Filter -->
+                        <button type="button" onclick="$('#modal_date_filter').val(''); openWorkGallery($('#modal_emp_filter').val(), '');" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 7px 14px; font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; transition: 0.2s;" title="Show all dates">
+                            <i class="fa fa-refresh" style="color: #dd2127;"></i> All Dates
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="modal-body" style="padding: 0; background: #fff; min-height: 450px; max-height: 75vh; overflow-y: auto;">
+            <div class="modal-body" style="padding: 0; background: #fff; min-height: 450px; max-height: 78vh; overflow-y: auto;">
                 <div id="gallery-content-container">
                     <!-- Gallery Content -->
                 </div>
@@ -324,17 +348,17 @@ $result = mysqli_query($con, $sql);
 <div id="imagePreviewModal" class="modal fade" role="dialog" style="z-index: 999999;">
     <div class="modal-dialog modal-lg" style="margin-top: 40px; max-width: 900px;">
         <div class="modal-content premium-modal-content-v2" style="border: none; border-radius: 32px; box-shadow: 0 40px 100px -20px rgba(111, 50, 50, 0.4); overflow: hidden; background: #fff;">
-            <div class="modal-header" style="background:var(--p-bg-color); color:#fff; padding: 25px 35px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffeaeb; color:black; padding: 25px 35px; border: none; position: relative;">
                 <button type="button" class="btn-modal-close" data-dismiss="modal">
                     <i class="fa fa-times"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div style="width: 50px; height: 50px; border-radius: 16px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <i class="fa fa-picture-o" style="font-size: 24px; color:var(--p-bg-color);"></i>
+                        <i class="fa fa-picture-o" style="font-size: 24px; color: #f43f5e;"></i>
                     </div>
                     <div>
                         <h4 class="modal-title" style="font-weight: 800; font-size: 20px; margin: 0; letter-spacing: -0.5px;">Work Details</h4>
-                        <div style="font-size: 13px; color: #94a3b8; margin-top: 4px; font-weight: 500;">View remarks and work photos</div>
+                        <div style="font-size: 13px; color: #64748b; margin-top: 4px; font-weight: 500;">View remarks and work photos</div>
                     </div>
                 </div>
             </div>
@@ -362,7 +386,7 @@ $result = mysqli_query($con, $sql);
 
     .p-badge-primary {
         background: rgba(79, 70, 229, 0.05);
-        color: var(--p-bg-color);
+        color: #dd2127;
     }
 
     .p-badge-danger {
@@ -410,16 +434,16 @@ $result = mysqli_query($con, $sql);
     }
 
     .page-link:hover:not(.disabled) {
-        background: var(--p-bg-color);
+        background: #dd2127;
         color: #FFF;
         border-color: #dd212d;
         text-decoration: none !important;
     }
 
     .page-link.active {
-        background: black;
-        color: var(--p-bg-color);
-        border-color: var(--p-bg-color);
+        background: #ffeaeb;
+        color: #dd2127;
+        border-color: #dd2127;
         text-decoration: none !important;
     }
 
@@ -453,26 +477,9 @@ $result = mysqli_query($con, $sql);
         margin-bottom: 8px;
     }
 
-    .btn-apply-filter {
-        background: #4f46e5;
-        color: white;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 10px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .btn-apply-filter:hover {
-        background: var(--p-bg-color);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(221, 33, 39, 0.4);
-    }
-
     .btn-clear-filter {
         background: #f1f5f9;
-        color: var(--p-bg-color);
+        color: #dd2127;
         padding: 10px 25px;
         border-radius: 10px;
         font-weight: 600;
@@ -499,58 +506,8 @@ $result = mysqli_query($con, $sql);
     }
 
     .p-input-premium:focus {
-        border-color: var(--p-bg-color);
-        box-shadow: 0 0 0 4px rgba(221, 33, 39, 0.1);
-    }
-
-    /* Inline Mini Thumbnails */
-    .work-photo-container-premium {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .work-photo-item-mini {
-        width: 54px;
-        height: 54px;
-        border-radius: 12px;
-        overflow: hidden;
-        position: relative;
-        cursor: pointer;
-        border: 2.5px solid #fff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .work-photo-item-mini:hover {
-        transform: translateY(-5px) scale(1.1);
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-    }
-
-    .work-photo-item-mini img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .work-photo-overlay-mini {
-        position: absolute;
-        inset: 0;
-        background: rgba(221, 33, 39, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        opacity: 0;
-        transition: 0.3s;
-        font-size: 14px;
-    }
-
-    .work-photo-item-mini:hover .work-photo-overlay-mini {
-        opacity: 1;
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 3px #ffeaeb !important;
     }
 
     /* Premium Modal V2 */
@@ -636,58 +593,18 @@ $result = mysqli_query($con, $sql);
         }
     }
 
-    /* Modal Header Filter Styling */
-    .modal-header-filter {
-        display: flex;
-        align-items: center;
-        background: var(--p-bg-color);
-        padding: 8px 15px;
-        border-radius: 14px;
-        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
-        gap: 10px;
-        transition: all 0.3s;
-    }
-
-    .modal-header-filter:hover {
-        background: var(--p-bg-color);
-        box-shadow: 0 4px 10px rgba(166, 166, 167, 0.2);
-    }
-
-    .modal-header-filter i {
-        color: white;
-        font-size: 16px;
-    }
-
-    .modal-select-premium {
-        background: transparent;
-        border: none;
-        color: #fff;
-        font-weight: 700;
-        font-size: 13px;
-        outline: none;
-        cursor: pointer;
-        padding-right: 5px;
-    }
-
-    .modal-select-premium option {
-        background: #0f172a;
-        color: #fff;
-    }
-</style>
-
-<style>
     /* ── Log detail panel styles ── */
     .ws-emp-row:hover {
-        background: #f1f1f1 !important;
+        background: #fef9ff !important;
     }
 
     .ws-emp-row.row-open {
-        background: #f1f1f1 !important;
+        background: #fff5f5 !important;
     }
 
     .ws-emp-row.row-open .log-expand-icon {
         transform: rotate(90deg);
-        color: var(--p-bg-color);
+        color: #dd2127;
     }
 
     .log-detail-row td {
@@ -866,19 +783,22 @@ $result = mysqli_query($con, $sql);
         }
     };
 
-    window.openWorkGallery = function(forceEmpId = null) {
+    window.openWorkGallery = function(forceEmpId = null, forceDate = null) {
         const modal = $('#workGalleryModal');
         const container = $('#gallery-content-container');
 
-        // Get current filters
-        let empId = forceEmpId !== null ? forceEmpId : $('select[name="emp_id"]').val();
+        let empId = forceEmpId !== null ? forceEmpId : ($('#modal_emp_filter').val() || $('select[name="emp_id"]').val() || '');
+        let dateVal = forceDate !== null ? forceDate : ($('#modal_date_filter').val() || '');
+
         const status = $('select[name="status"]').val();
         const from = $('input[name="from"]').val();
         const to = $('input[name="to"]').val();
 
-        // Sync modal select if it exists
         if ($('#modal_emp_filter').length > 0 && forceEmpId === null) {
             $('#modal_emp_filter').val(empId);
+        }
+        if ($('#modal_date_filter').length > 0 && forceDate === null) {
+            $('#modal_date_filter').val(dateVal);
         }
 
         container.html(`
@@ -888,7 +808,6 @@ $result = mysqli_query($con, $sql);
             </div>
         `);
 
-        // Only show modal if it's not already shown
         if (!modal.is(':visible')) {
             modal.modal('show');
         }
@@ -898,20 +817,21 @@ $result = mysqli_query($con, $sql);
             method: 'GET',
             data: {
                 emp_id: empId,
+                date: dateVal,
                 status: status,
                 from: from,
                 to: to
             },
             success: function(response) {
-                container.hide().html(response).fadeIn(600);
+                container.hide().html(response).fadeIn(400);
             },
             error: function() {
                 container.html('<div style="padding: 100px; text-align: center; color: #ef4444; font-weight: 700;"><i class="fa fa-exclamation-triangle"></i> ARCHIVE TEMPORARILY OFFLINE</div>');
             }
         });
-    }
+    };
 
-    // ── Expandable Log Row Handler ─────────────────────────────────────────
+    // Expandable Log Row Handler
     var logLoaded = {};
 
     $(document).on('click', '.ws-emp-row', function(e) {
@@ -955,8 +875,7 @@ $result = mysqli_query($con, $sql);
                     return;
                 }
 
-                // ── Summary header bar ──────────────────────────────────────────────
-                // Determine correct status color & label based on record status
+                // Determine status color & label
                 var isLeave = (d.status === 'leave');
                 var isAbsent = (d.status === 'absent');
                 var statusColor, statusLabel;
@@ -976,11 +895,10 @@ $result = mysqli_query($con, $sql);
                     statusColor = '#64748b';
                     statusLabel = '✓ Completed';
                 }
+
                 var cinDisplay = d.check_in_time || '--';
-                // Show 'Still working' only if employee actually has a check-in but no checkout yet
                 var coutDisplay = d.check_out_time ? d.check_out_time :
-                    (d.check_in_time && !isLeave && !isAbsent) ? 'Still working' :
-                    '--';
+                    (d.check_in_time && !isLeave && !isAbsent) ? 'Still working' : '--';
 
                 var summaryBar = `
                     <div class="seg-summary-bar">
@@ -1006,7 +924,6 @@ $result = mysqli_query($con, $sql);
                         </div>
                     </div>`;
 
-                // ── Segment table ───────────────────────────────────────────────────
                 var segHtml = '';
                 if (d.segments && d.segments.length > 0) {
                     var rowsHtml = '';
@@ -1085,7 +1002,7 @@ $result = mysqli_query($con, $sql);
                 $content.html(summaryBar + segHtml).show();
                 logLoaded[attId] = true;
 
-                // ── Live counters ─────────────────────────────────────────────────
+                // Live counters
                 if (d.is_live) {
                     var totalSecs = parseInt(d.duration_secs);
                     var lastSeg = d.segments && d.segments.length > 0 ? d.segments[d.segments.length - 1] : null;
@@ -1117,7 +1034,12 @@ $result = mysqli_query($con, $sql);
         var photos = JSON.parse(photosJson);
         var html = '';
         if (remarkHtml && remarkHtml !== '-') {
-            html += '<div style="background: #fff; padding: 15px 20px; border-radius: 12px; text-align: left; margin-bottom: 20px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02); font-size: 14px; color: #475569; width: 100%;"><h5 style="margin-top:0; font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Remark</h5>' + remarkHtml + '</div>';
+            var formattedRemark = remarkHtml
+                .replace(/(Today[’']s Progress:)/gi, '<strong style="color:#0f172a; display:block; margin-top:6px; margin-bottom:2px; font-weight:700;"><i class="fa fa-tasks" style="color:#dd2127; margin-right:5px;"></i>$1</strong>')
+                .replace(/(Planning for Tomorrow:)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-calendar-check-o" style="color:#2563eb; margin-right:5px;"></i>$1</strong>')
+                .replace(/(Issues:)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-exclamation-triangle" style="color:#eab308; margin-right:5px;"></i>$1</strong>')
+                .replace(/(Need any Help\s*\?:?)/gi, '<strong style="color:#0f172a; display:block; margin-top:10px; margin-bottom:2px; font-weight:700;"><i class="fa fa-question-circle" style="color:#8b5cf6; margin-right:5px;"></i>$1</strong>');
+            html += '<div style="background: #fff; padding: 15px 20px; border-radius: 12px; text-align: left; margin-bottom: 20px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02); font-size: 14px; color: #475569; width: 100%;"><h5 style="margin-top:0; font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Remark</h5>' + formattedRemark + '</div>';
         }
         html += '<div class="work-gallery-grid" style="width: 100%;">';
         photos.forEach(function(url) {
@@ -1135,28 +1057,45 @@ $result = mysqli_query($con, $sql);
         html += '</div>';
         $('#previewModalImageContainer').html(html);
         $('#imagePreviewModal').modal('show');
-    }
+    };
 </script>
 
 <style>
-    /* ── Gallery Styles for Modal ── */
     .work-gallery-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 25px;
-        padding: 10px;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 10px;
+        padding: 15px;
+    }
+
+    @media (max-width: 1100px) {
+        .work-gallery-grid {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .work-gallery-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 480px) {
+        .work-gallery-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
     }
 
     .work-gallery-item {
         position: relative;
         aspect-ratio: 1;
-        border-radius: 24px;
+        border-radius: 12px;
         overflow: hidden;
         cursor: pointer;
         background: #fff;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        border: 1px solid rgba(241, 245, 249, 0.8);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.25s ease;
+        border: 1.5px solid #e2e8f0;
     }
 
     .work-gallery-item:hover {
@@ -1180,7 +1119,7 @@ $result = mysqli_query($con, $sql);
     .item-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0) 50%, rgba(15, 23, 42, 0.8) 100%);
+        background: linear-gradient(180deg, transparent 0%, rgba(100, 33, 33, 0) 50%, rgba(196, 116, 116, 0.8) 100%);
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -1232,7 +1171,7 @@ $result = mysqli_query($con, $sql);
         transform: translate(-50%, -50%) scale(0.5);
         color: #fff;
         font-size: 24px;
-        background: var(--p-bg-color);
+        background: #dd2127;
         width: 48px;
         height: 48px;
         display: flex;
@@ -1399,9 +1338,7 @@ $result = mysqli_query($con, $sql);
         align-items: center;
         gap: 5px;
     }
-</style>
 
-<style>
     @keyframes slideDown {
         from {
             opacity: 0;

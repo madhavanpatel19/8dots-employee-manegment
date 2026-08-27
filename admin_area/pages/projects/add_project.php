@@ -1,697 +1,9 @@
-﻿<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<style>
-    .select2-container {
-        box-sizing: border-box;
-        display: inline-block;
-        margin: 0;
-        position: relative;
-        vertical-align: middle
-    }
-
-    .select2-container .select2-selection--single {
-        box-sizing: border-box;
-        cursor: pointer;
-        display: block;
-        height: 28px;
-        user-select: none;
-        -webkit-user-select: none
-    }
-
-    .select2-container .select2-selection--single .select2-selection__rendered {
-        display: block;
-        padding-left: 8px;
-        padding-right: 20px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap
-    }
-
-    .select2-container .select2-selection--single .select2-selection__clear {
-        background-color: transparent;
-        border: none;
-        font-size: 1em
-    }
-
-    .select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
-        padding-right: 8px;
-        padding-left: 20px
-    }
-
-    .select2-container .select2-selection--multiple {
-        box-sizing: border-box;
-        cursor: pointer;
-        display: block;
-        min-height: 32px;
-        user-select: none;
-        -webkit-user-select: none
-    }
-
-    .select2-container .select2-selection--multiple .select2-selection__rendered {
-        display: inline;
-        list-style: none;
-        padding: 0
-    }
-
-    .select2-container .select2-selection--multiple .select2-selection__clear {
-        background-color: transparent;
-        border: none;
-        font-size: 1em
-    }
-
-    .select2-container .select2-search--inline .select2-search__field {
-        box-sizing: border-box;
-        border: none;
-        font-size: 100%;
-        margin-top: 5px;
-        margin-left: 5px;
-        padding: 0;
-        max-width: 100%;
-        resize: none;
-        height: 18px;
-        vertical-align: bottom;
-        font-family: sans-serif;
-        overflow: hidden;
-        word-break: keep-all
-    }
-
-    .select2-container .select2-search--inline .select2-search__field::-webkit-search-cancel-button {
-        -webkit-appearance: none
-    }
-
-    .select2-dropdown {
-        background-color: white;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        left: -100000px;
-        width: 100%;
-        z-index: 1051
-    }
-
-    .select2-results {
-        display: block
-    }
-
-    .select2-results__options {
-        list-style: none;
-        margin: 0;
-        padding: 0
-    }
-
-    .select2-results__option {
-        padding: 6px;
-        user-select: none;
-        -webkit-user-select: none
-    }
-
-    .select2-results__option--selectable {
-        cursor: pointer
-    }
-
-    .select2-container--open .select2-dropdown {
-        left: 0
-    }
-
-    .select2-container--open .select2-dropdown--above {
-        border-bottom: none;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0
-    }
-
-    .select2-container--open .select2-dropdown--below {
-        border-top: none;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0
-    }
-
-    .select2-search--dropdown {
-        display: block;
-        padding: 4px
-    }
-
-    .select2-search--dropdown .select2-search__field {
-        padding: 4px;
-        width: 100%;
-        box-sizing: border-box
-    }
-
-    .select2-search--dropdown .select2-search__field::-webkit-search-cancel-button {
-        -webkit-appearance: none
-    }
-
-    .select2-search--dropdown.select2-search--hide {
-        display: none
-    }
-
-    .select2-close-mask {
-        border: 0;
-        margin: 0;
-        padding: 0;
-        display: block;
-        position: fixed;
-        left: 0;
-        top: 0;
-        min-height: 100%;
-        min-width: 100%;
-        height: auto;
-        width: auto;
-        opacity: 0;
-        z-index: 99;
-        background-color: #fff;
-        filter: alpha(opacity=0)
-    }
-
-    .select2-hidden-accessible {
-        border: 0 !important;
-        clip: rect(0 0 0 0) !important;
-        -webkit-clip-path: inset(50%) !important;
-        clip-path: inset(50%) !important;
-        height: 1px !important;
-        overflow: hidden !important;
-        padding: 0 !important;
-        position: absolute !important;
-        width: 1px !important;
-        white-space: nowrap !important
-    }
-
-    .select2-container--default .select2-selection--single {
-        background-color: #fff;
-        border: 1px solid #aaa;
-        border-radius: 4px
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: #444;
-        line-height: 28px
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__clear {
-        cursor: pointer;
-        float: right;
-        font-weight: bold;
-        height: 26px;
-        margin-right: 20px;
-        padding-right: 0px
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__placeholder {
-        color: #999
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 26px;
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        width: 20px
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: #888 transparent transparent transparent;
-        border-style: solid;
-        border-width: 5px 4px 0 4px;
-        height: 0;
-        left: 50%;
-        margin-left: -4px;
-        margin-top: -2px;
-        position: absolute;
-        top: 50%;
-        width: 0
-    }
-
-    .select2-container--default[dir="rtl"] .select2-selection--single .select2-selection__clear {
-        float: left
-    }
-
-    .select2-container--default[dir="rtl"] .select2-selection--single .select2-selection__arrow {
-        left: 1px;
-        right: auto
-    }
-
-    .select2-container--default.select2-container--disabled .select2-selection--single {
-        background-color: #eee;
-        cursor: default
-    }
-
-    .select2-container--default.select2-container--disabled .select2-selection--single .select2-selection__clear {
-        display: none
-    }
-
-    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent transparent #888 transparent;
-        border-width: 0 4px 5px 4px
-    }
-
-    .select2-container--default .select2-selection--multiple {
-        background-color: white;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        cursor: text;
-        padding-bottom: 5px;
-        padding-right: 5px;
-        position: relative
-    }
-
-    .select2-container--default .select2-selection--multiple.select2-selection--clearable {
-        padding-right: 25px
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__clear {
-        cursor: pointer;
-        font-weight: bold;
-        height: 20px;
-        margin-right: 10px;
-        margin-top: 5px;
-        position: absolute;
-        right: 0;
-        padding: 1px
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background-color: #e4e4e4;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        box-sizing: border-box;
-        display: inline-flex;
-        margin-left: 5px;
-        margin-top: 5px;
-        padding: 0;
-        padding-left: 20px;
-        position: relative;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: bottom;
-        white-space: nowrap
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__display {
-        cursor: default;
-        padding-left: 2px;
-        padding-right: 5px
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        background-color: transparent;
-        border: none;
-        border-right: 1px solid #aaa;
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-        color: #999;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: bold;
-        padding: 0 4px;
-        position: absolute;
-        left: 0;
-        top: 0
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover,
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:focus {
-        background-color: #f1f1f1;
-        color: #333;
-        outline: none
-    }
-
-    .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice {
-        margin-left: 5px;
-        margin-right: auto
-    }
-
-    .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice__display {
-        padding-left: 5px;
-        padding-right: 2px
-    }
-
-    .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice__remove {
-        border-left: 1px solid #aaa;
-        border-right: none;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px
-    }
-
-    .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__clear {
-        float: left;
-        margin-left: 10px;
-        margin-right: auto
-    }
-
-    .select2-container--default.select2-container--focus .select2-selection--multiple {
-        border: solid black 1px;
-        outline: 0
-    }
-
-    .select2-container--default.select2-container--disabled .select2-selection--multiple {
-        background-color: #eee;
-        cursor: default
-    }
-
-    .select2-container--default.select2-container--disabled .select2-selection__choice__remove {
-        display: none
-    }
-
-    .select2-container--default.select2-container--open.select2-container--above .select2-selection--single,
-    .select2-container--default.select2-container--open.select2-container--above .select2-selection--multiple {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0
-    }
-
-    .select2-container--default.select2-container--open.select2-container--below .select2-selection--single,
-    .select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0
-    }
-
-    .select2-container--default .select2-search--dropdown .select2-search__field {
-        border: 1px solid #aaa
-    }
-
-    .select2-container--default .select2-search--inline .select2-search__field {
-        background: transparent;
-        border: none;
-        outline: 0;
-        box-shadow: none;
-        -webkit-appearance: textfield
-    }
-
-    .select2-container--default .select2-results>.select2-results__options {
-        max-height: 200px;
-        overflow-y: auto
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option {
-        padding-left: 1em
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option .select2-results__group {
-        padding-left: 0
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option .select2-results__option {
-        margin-left: -1em;
-        padding-left: 2em
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option .select2-results__option .select2-results__option {
-        margin-left: -2em;
-        padding-left: 3em
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option {
-        margin-left: -3em;
-        padding-left: 4em
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option {
-        margin-left: -4em;
-        padding-left: 5em
-    }
-
-    .select2-container--default .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option {
-        margin-left: -5em;
-        padding-left: 6em
-    }
-
-    .select2-container--default .select2-results__option--group {
-        padding: 0
-    }
-
-    .select2-container--default .select2-results__option--disabled {
-        color: #999
-    }
-
-    .select2-container--default .select2-results__option--selected {
-        background-color: #ddd
-    }
-
-    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-        background-color: #5897fb;
-        color: white
-    }
-
-    .select2-container--default .select2-results__group {
-        cursor: default;
-        display: block;
-        padding: 6px
-    }
-
-    .select2-container--classic .select2-selection--single {
-        background-color: #f7f7f7;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        outline: 0;
-        background-image: -webkit-linear-gradient(top, #fff 50%, #eee 100%);
-        background-image: -o-linear-gradient(top, #fff 50%, #eee 100%);
-        background-image: linear-gradient(to bottom, #fff 50%, #eee 100%);
-        background-repeat: repeat-x;
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0)
-    }
-
-    .select2-container--classic .select2-selection--single:focus {
-        border: 1px solid #5897fb
-    }
-
-    .select2-container--classic .select2-selection--single .select2-selection__rendered {
-        color: #444;
-        line-height: 28px
-    }
-
-    .select2-container--classic .select2-selection--single .select2-selection__clear {
-        cursor: pointer;
-        float: right;
-        font-weight: bold;
-        height: 26px;
-        margin-right: 20px
-    }
-
-    .select2-container--classic .select2-selection--single .select2-selection__placeholder {
-        color: #999
-    }
-
-    .select2-container--classic .select2-selection--single .select2-selection__arrow {
-        background-color: #ddd;
-        border: none;
-        border-left: 1px solid #aaa;
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-        height: 26px;
-        position: absolute;
-        top: 1px;
-        right: 1px;
-        width: 20px;
-        background-image: -webkit-linear-gradient(top, #eee 50%, #ccc 100%);
-        background-image: -o-linear-gradient(top, #eee 50%, #ccc 100%);
-        background-image: linear-gradient(to bottom, #eee 50%, #ccc 100%);
-        background-repeat: repeat-x;
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0)
-    }
-
-    .select2-container--classic .select2-selection--single .select2-selection__arrow b {
-        border-color: #888 transparent transparent transparent;
-        border-style: solid;
-        border-width: 5px 4px 0 4px;
-        height: 0;
-        left: 50%;
-        margin-left: -4px;
-        margin-top: -2px;
-        position: absolute;
-        top: 50%;
-        width: 0
-    }
-
-    .select2-container--classic[dir="rtl"] .select2-selection--single .select2-selection__clear {
-        float: left
-    }
-
-    .select2-container--classic[dir="rtl"] .select2-selection--single .select2-selection__arrow {
-        border: none;
-        border-right: 1px solid #aaa;
-        border-radius: 0;
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-        left: 1px;
-        right: auto
-    }
-
-    .select2-container--classic.select2-container--open .select2-selection--single {
-        border: 1px solid #5897fb
-    }
-
-    .select2-container--classic.select2-container--open .select2-selection--single .select2-selection__arrow {
-        background: transparent;
-        border: none
-    }
-
-    .select2-container--classic.select2-container--open .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent transparent #888 transparent;
-        border-width: 0 4px 5px 4px
-    }
-
-    .select2-container--classic.select2-container--open.select2-container--above .select2-selection--single {
-        border-top: none;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        background-image: -webkit-linear-gradient(top, #fff 0%, #eee 50%);
-        background-image: -o-linear-gradient(top, #fff 0%, #eee 50%);
-        background-image: linear-gradient(to bottom, #fff 0%, #eee 50%);
-        background-repeat: repeat-x;
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0)
-    }
-
-    .select2-container--classic.select2-container--open.select2-container--below .select2-selection--single {
-        border-bottom: none;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        background-image: -webkit-linear-gradient(top, #eee 50%, #fff 100%);
-        background-image: -o-linear-gradient(top, #eee 50%, #fff 100%);
-        background-image: linear-gradient(to bottom, #eee 50%, #fff 100%);
-        background-repeat: repeat-x;
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFFFFFFF', GradientType=0)
-    }
-
-    .select2-container--classic .select2-selection--multiple {
-        background-color: white;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        cursor: text;
-        outline: 0;
-        padding-bottom: 5px;
-        padding-right: 5px
-    }
-
-    .select2-container--classic .select2-selection--multiple:focus {
-        border: 1px solid #5897fb
-    }
-
-    .select2-container--classic .select2-selection--multiple .select2-selection__clear {
-        display: none
-    }
-
-    .select2-container--classic .select2-selection--multiple .select2-selection__choice {
-        background-color: #e4e4e4;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        display: inline-block;
-        margin-left: 5px;
-        margin-top: 5px;
-        padding: 0
-    }
-
-    .select2-container--classic .select2-selection--multiple .select2-selection__choice__display {
-        cursor: default;
-        padding-left: 2px;
-        padding-right: 5px
-    }
-
-    .select2-container--classic .select2-selection--multiple .select2-selection__choice__remove {
-        background-color: transparent;
-        border: none;
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-        color: #888;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: bold;
-        padding: 0 4px
-    }
-
-    .select2-container--classic .select2-selection--multiple .select2-selection__choice__remove:hover {
-        color: #555;
-        outline: none
-    }
-
-    .select2-container--classic[dir="rtl"] .select2-selection--multiple .select2-selection__choice {
-        margin-left: 5px;
-        margin-right: auto
-    }
-
-    .select2-container--classic[dir="rtl"] .select2-selection--multiple .select2-selection__choice__display {
-        padding-left: 5px;
-        padding-right: 2px
-    }
-
-    .select2-container--classic[dir="rtl"] .select2-selection--multiple .select2-selection__choice__remove {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px
-    }
-
-    .select2-container--classic.select2-container--open .select2-selection--multiple {
-        border: 1px solid #5897fb
-    }
-
-    .select2-container--classic.select2-container--open.select2-container--above .select2-selection--multiple {
-        border-top: none;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0
-    }
-
-    .select2-container--classic.select2-container--open.select2-container--below .select2-selection--multiple {
-        border-bottom: none;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0
-    }
-
-    .select2-container--classic .select2-search--dropdown .select2-search__field {
-        border: 1px solid #aaa;
-        outline: 0
-    }
-
-    .select2-container--classic .select2-search--inline .select2-search__field {
-        outline: 0;
-        box-shadow: none
-    }
-
-    .select2-container--classic .select2-dropdown {
-        background-color: #fff;
-        border: 1px solid transparent
-    }
-
-    .select2-container--classic .select2-dropdown--above {
-        border-bottom: none
-    }
-
-    .select2-container--classic .select2-dropdown--below {
-        border-top: none
-    }
-
-    .select2-container--classic .select2-results>.select2-results__options {
-        max-height: 200px;
-        overflow-y: auto
-    }
-
-    .select2-container--classic .select2-results__option--group {
-        padding: 0
-    }
-
-    .select2-container--classic .select2-results__option--disabled {
-        color: grey
-    }
-
-    .select2-container--classic .select2-results__option--highlighted.select2-results__option--selectable {
-        background-color: #3875d7;
-        color: #fff
-    }
-
-    .select2-container--classic .select2-results__group {
-        cursor: default;
-        display: block;
-        padding: 6px
-    }
-
-    .select2-container--classic.select2-container--open .select2-dropdown {
-        border-color: #5897fb
-    }
-</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
+    /* Select2 Custom Responsive & Design Styling */
     .select2-container {
         width: 100% !important;
     }
@@ -706,12 +18,6 @@
         align-items: center;
         padding: 0 8px;
         transition: all 0.3s ease;
-    }
-
-    .select2-container--default.select2-container--focus .select2-selection--single,
-    .select2-container--default.select2-container--focus .select2-selection--multiple {
-        border-color: var(--p-bg-color) !important;
-        box-shadow: 0 0 0 4px rgba(197, 197, 197, 0.1) !important;
     }
 
     .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -731,7 +37,6 @@
         border-radius: 6px !important;
         color: #1e3a8a !important;
         padding: 4px 8px 4px 24px !important;
-        /* Added space on the left for the X icon */
         margin-top: 6px !important;
         position: relative !important;
     }
@@ -739,7 +44,6 @@
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
         color: #1e3a8a !important;
         border-right: 1px solid rgba(30, 58, 138, 0.2) !important;
-        /* Subtle separator line */
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
@@ -754,13 +58,61 @@
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
         background-color: rgba(30, 58, 138, 0.1) !important;
         color: #ef4444 !important;
-        /* Turn red on hover */
     }
 
     .select2-search--inline .select2-search__field {
         margin-top: 8px !important;
         font-family: inherit !important;
         color: #334155 !important;
+    }
+
+    /* Premium Label Styling */
+    .premium-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .upload-area:hover {
+        border-color: #dd2127;
+    }
+
+    /* Common Unified Focus Styles for All Inputs, Selects, Textareas, Phase Inputs & Budget Wrapper */
+    .p-input-premium:focus,
+    .form-control:focus,
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="url"]:focus,
+    select:focus,
+    textarea:focus,
+    .budget-input-wrapper:focus-within {
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 3px #ffeaeb !important;
+        outline: none !important;
+    }
+
+    /* Reset inner Select2 search input box so no outline/border/pink box appears around cursor */
+    .select2-search__field,
+    .select2-search__field:focus,
+    .select2-search--inline .select2-search__field:focus {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        background: transparent !important;
+    }
+
+    /* Select2 Container Focus Styling */
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--multiple,
+    .select2-container--default.select2-container--open .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--multiple {
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 3px #ffeaeb !important;
+        outline: none !important;
     }
 </style>
 <?php
@@ -772,12 +124,17 @@ if (!isset($con)) {
 
 // File Upload Function for Projects
 if (!function_exists('handleProjectImageUpload')) {
-    function handleProjectImageUpload($fileArray, $targetDir = __DIR__ . "/../../uploads/project_images/")
+    /**
+     * @param array $fileArray
+     * @param string $targetDir
+     * @return string
+     */
+    function handleProjectImageUpload(array $fileArray, string $targetDir = __DIR__ . "/../../uploads/project_images/")
     {
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
-        if (isset($fileArray) && $fileArray['error'] == 0) {
+        if (isset($fileArray) && isset($fileArray['error']) && $fileArray['error'] == 0) {
             $file_name = $fileArray['name'];
             $tmp_name = $fileArray['tmp_name'];
             $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
@@ -794,14 +151,17 @@ if (!function_exists('handleProjectImageUpload')) {
 
 $success = false;
 $error = '';
+$project_name = '';
 
 if (isset($_POST['submit_project'])) {
     $project_name = mysqli_real_escape_string($con, $_POST['project_name']);
     $client_id = mysqli_real_escape_string($con, $_POST['client_id']);
     $project_desc = mysqli_real_escape_string($con, $_POST['project_desc']);
-    $start_date = mysqli_real_escape_string($con, $_POST['start_date']);
-    $deadline = mysqli_real_escape_string($con, $_POST['deadline']);
-    $status = mysqli_real_escape_string($con, $_POST['status']);
+    $start_date_raw = isset($_POST['start_date']) ? trim($_POST['start_date']) : '';
+    $start_date     = !empty($start_date_raw) ? date('Y-m-d', strtotime($start_date_raw)) : '';
+    $deadline_raw   = isset($_POST['deadline']) ? trim($_POST['deadline']) : '';
+    $deadline       = !empty($deadline_raw) ? date('Y-m-d', strtotime($deadline_raw)) : '';
+    $status         = mysqli_real_escape_string($con, $_POST['status']);
 
     // Budget Fields
     $currency = mysqli_real_escape_string($con, $_POST['currency']);
@@ -828,6 +188,16 @@ if (isset($_POST['submit_project'])) {
     if (mysqli_query($con, $insert_project)) {
         $project_id = mysqli_insert_id($con);
 
+        // Send notifications to assigned employees
+        require_once __DIR__ . '/../../includes/notification_helper.php';
+        $assigned_ids = array_filter(explode(',', $assigned_employees), function($id) { return !empty(trim($id)); });
+        foreach ($assigned_ids as $eid) {
+            $eid = intval($eid);
+            if ($eid > 0) {
+                addSystemNotification('employee', $eid, "Assigned to Project: $project_name", "You have been assigned to project '$project_name'.", "index.php?team_todo&project_id=$project_id", 'project_assigned');
+            }
+        }
+
         // Insert Phases
         if (isset($_POST['phase_name']) && is_array($_POST['phase_name'])) {
             foreach ($_POST['phase_name'] as $key => $p_name) {
@@ -844,7 +214,7 @@ if (isset($_POST['submit_project'])) {
             }
         }
 
-        // Insert Documents
+        // Insert General Documents
         if (isset($_FILES['doc_file']) && is_array($_FILES['doc_file']['name'])) {
             $docDir = __DIR__ . "/../../uploads/project_documents/";
             if (!is_dir($docDir)) mkdir($docDir, 0777, true);
@@ -857,7 +227,28 @@ if (isset($_POST['submit_project'])) {
                     $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
                     $newName = time() . '_' . rand(1000, 9999) . '.' . $ext;
                     if (move_uploaded_file($tmpName, $docDir . $newName)) {
-                        $q = "INSERT INTO project_documents (project_id, document_name, file_path) VALUES ('$project_id', '$docName', '$newName')";
+                        $q = "INSERT INTO project_documents (project_id, document_name, file_path, is_proposal) VALUES ('$project_id', '$docName', '$newName', 0)";
+                        mysqli_query($con, $q);
+                    }
+                }
+            }
+        }
+
+        // Insert Proposal Documents (Super Admin & Admin)
+        if ((isSuperAdmin() || isset($_SESSION['admin_email'])) && isset($_FILES['proposal_file']) && is_array($_FILES['proposal_file']['name'])) {
+            $docDir = __DIR__ . "/../../uploads/project_documents/";
+            if (!is_dir($docDir)) mkdir($docDir, 0777, true);
+            foreach ($_FILES['proposal_file']['name'] as $key => $fileName) {
+                $pName = isset($_POST['proposal_name'][$key]) ? trim(mysqli_real_escape_string($con, $_POST['proposal_name'][$key])) : '';
+                if (empty($pName)) $pName = "Project Proposal";
+                $tmpName = $_FILES['proposal_file']['tmp_name'][$key];
+                $error = $_FILES['proposal_file']['error'][$key];
+
+                if ($error == 0 && !empty($fileName)) {
+                    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                    $newName = time() . '_proposal_' . rand(1000, 9999) . '.' . $ext;
+                    if (move_uploaded_file($tmpName, $docDir . $newName)) {
+                        $q = "INSERT INTO project_documents (project_id, document_name, file_path, is_proposal) VALUES ('$project_id', '$pName', '$newName', 1)";
                         mysqli_query($con, $q);
                     }
                 }
@@ -955,7 +346,7 @@ $run_admins = mysqli_query($con, $get_admins);
 
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     1
                 </div>
                 <div>
@@ -971,13 +362,13 @@ $run_admins = mysqli_query($con, $get_admins);
                     <div class="col-md-4">
                         <label class="premium-label" style="font-size: 14px; color: #334155;">Project Image</label>
                         <div class="upload-area" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; background: #f8fafc; position: relative; transition: 0.3s;">
-                            <div style="width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; color: var(--p-bg-color); font-size: 20px; margin-bottom: 15px;">
+                            <div style="width: 48px; height: 48px; background: #eff6ff; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; color: #dd2127; font-size: 20px; margin-bottom: 15px;">
                                 <i class="fa fa-image"></i>
                             </div>
                             <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;">Upload project image</h4>
                             <p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">JPG, PNG up to 5MB</p>
 
-                            <label for="project_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: var(--p-bg-color); font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
+                            <label for="project_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #dd2127; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
                                 Choose File
                             </label>
                             <input type="file" name="project_image" id="project_image" style="display: none;" accept="image/*" onchange="previewImage(this)">
@@ -1123,7 +514,7 @@ $run_admins = mysqli_query($con, $get_admins);
                                     ?>
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                             <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">
-                                                <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: var(--p-bg-color);"> <?php echo htmlspecialchars($s_name); ?>
+                                                <input type="checkbox" name="project_source[]" value="<?php echo htmlspecialchars($s_name); ?>" style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> <?php echo htmlspecialchars($s_name); ?>
                                             </label>
                                             <?php if (canAdminAccess('project_source_delete')): ?>
                                                 <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(<?php echo $s_id; ?>, this)"></i>
@@ -1144,7 +535,7 @@ $run_admins = mysqli_query($con, $get_admins);
         <?php if (canAdminAccess('budget_view')): ?>
             <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
                 <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                    <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                         2
                     </div>
                     <div>
@@ -1169,7 +560,7 @@ $run_admins = mysqli_query($con, $get_admins);
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="premium-label">Total Project Budget <span style="color:#ef4444">*</span></label>
-                                <div style="display:flex; align-items:center; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+                                <div class="budget-input-wrapper" style="display:flex; align-items:center; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; transition: all 0.2s;">
                                     <div style="background:#f8fafc; padding:0 15px; height:48px; display:flex; align-items:center; border-right:1px solid #e2e8f0; color:#64748b; font-weight:600;" id="currency_symbol">₹</div>
                                     <input type="number" name="budget" id="total_budget" class="p-input-premium" style="height:48px; border:none; width:100%; outline:none; padding:0 15px;" placeholder="Enter total budget" required min="0" step="0.01">
                                 </div>
@@ -1236,7 +627,7 @@ $run_admins = mysqli_query($con, $get_admins);
         <!-- Third Card: Project Documents & Links -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: var(--p-bg-color); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #dd2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     3
                 </div>
                 <div>
@@ -1251,7 +642,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 <div style="margin-bottom: 40px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b;">Files</h4>
-                        <!-- <button type="button" id="add_doc_btn" style="background: #f8fafc; color: var(--p-bg-color); border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;">
+                        <!-- <button type="button" id="add_doc_btn" style="background: #f8fafc; color: #dd2127; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;">
                             <i class="fa fa-plus"></i> Add Document
                         </button> -->
                     </div>
@@ -1279,12 +670,9 @@ $run_admins = mysqli_query($con, $get_admins);
                     </div>
 
                     <!-- Links Section -->
-                    <div>
+                    <div style="margin-top: 30px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #1e293b;">Links</h4>
-                            <!-- <button type="button" id="add_link_btn" style="background: #f8fafc; color: var(--p-bg-color); border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s;">
-                                <i class="fa fa-plus"></i> Add Link
-                            </button> -->
                         </div>
 
                         <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
@@ -1309,6 +697,40 @@ $run_admins = mysqli_query($con, $get_admins);
                             <i class="fa fa-plus"></i> Add Link
                         </button>
                     </div>
+
+                    <?php if (isSuperAdmin() || isset($_SESSION['admin_email'])): ?>
+                        <!-- Project Proposal Section (Super Admin & Assigned Admin) -->
+                        <div style="margin-top: 40px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #991b1b; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa fa-lock" style="color: #dc2626;"></i> Project Proposal
+                                    <span style="font-size: 10px; font-weight: 800; background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Super Admin & Assigned Admin</span>
+                                </h4>
+                            </div>
+
+                            <div style="border: 1.5px dashed #fecaca; border-radius: 8px; overflow: hidden; background: #fff5f5;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead style="background: #fef2f2;">
+                                        <tr>
+                                            <th style="padding: 12px 20px; text-align: left; font-size: 12px; font-weight: 600; color: #991b1b; width: 45%;">Proposal Name</th>
+                                            <th style="padding: 12px 20px; text-align: left; font-size: 12px; font-weight: 600; color: #991b1b; width: 45%;">Select Proposal File</th>
+                                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; font-weight: 600; color: #991b1b; width: 10%;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="proposals_container">
+                                        <tr style="border-top: 1px solid #fee2e2;">
+                                            <td colspan="3" style="padding: 20px; text-align: center; color: #991b1b; font-size: 13px;" id="no_proposals_msg">No proposal files added yet. Click "+ Add Proposal" to add one.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="padding: 15px 20px; border-top: 1px solid #fee2e2; background: #fff; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 8px 8px;">
+                                <button type="button" id="add_proposal_btn" class="btn btn-danger btn-sm" style="background: #dc2626; border-color: #dc2626;">
+                                    <i class="fa fa-plus"></i> Add Proposal
+                                </button>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <?php if ($error): ?>
                         <div class="alert alert-danger" style="margin-top: 20px; border-radius: 8px;">
@@ -1339,7 +761,35 @@ $run_admins = mysqli_query($con, $get_admins);
     }
 
     .upload-area:hover {
-        border-color: var(--p-bg-color);
+        border-color: #dd2127;
+    }
+
+    /* Common Unified Focus Styles for All Inputs, Selects, Textareas, Phase Inputs & Budget Wrapper */
+    .p-input-premium:focus,
+    .form-control:focus,
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="url"]:focus,
+    input[type="search"]:focus,
+    select:focus,
+    textarea:focus,
+    .budget-input-wrapper:focus-within {
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 3px #ffeaeb !important;
+        outline: none !important;
+    }
+
+    /* Select2 container focus styling */
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--multiple,
+    .select2-container--default.select2-container--open .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--multiple {
+        border-color: #dd2127 !important;
+        box-shadow: 0 0 0 3px #ffeaeb !important;
+        outline: none !important;
     }
 </style>
 
@@ -1422,6 +872,14 @@ $run_admins = mysqli_query($con, $get_admins);
             templateSelection: formatSelectionWithImage
         });
 
+        $('#employeeSelect, #userSelect, #adminSelect').on('select2:select', function (e) {
+            var self = this;
+            setTimeout(function() {
+                var $search = $(self).data('select2').$container.find('.select2-search__field');
+                $search.val('').trigger('input');
+            }, 0);
+        });
+
         // Dynamic Phases Script
         const symbols = {
             'INR': '₹',
@@ -1439,12 +897,15 @@ $run_admins = mysqli_query($con, $get_admins);
         function calculateTotalCost() {
             let total = 0;
             $('.phase-cost').each(function() {
-                const val = parseFloat($(this).val());
-                if (!isNaN(val)) {
-                    total += val;
+                const rawVal = $(this).val();
+                if (rawVal) {
+                    const val = parseFloat(rawVal.toString().replace(/,/g, ''));
+                    if (!isNaN(val)) {
+                        total += val;
+                    }
                 }
             });
-            const sym = symbols[$('select[name="currency"]').val()] || '';
+            const sym = symbols[$('select[name="currency"]').val()] || '₹';
             $('#calculated_total_cost').text(sym + ' ' + total.toFixed(2));
 
             // Check if it matches total budget
@@ -1456,9 +917,12 @@ $run_admins = mysqli_query($con, $get_admins);
             }
         }
 
-        $(document).on('input', '.phase-cost, #total_budget', function() {
+        $(document).on('input change keyup', '.phase-cost, #total_budget', function() {
             calculateTotalCost();
         });
+
+        // Trigger initial calculation on page load
+        calculateTotalCost();
 
         $('#add_phase_btn').on('click', function() {
             const nextPhaseNum = $('.phase-row').length + 1;
@@ -1501,7 +965,7 @@ $run_admins = mysqli_query($con, $get_admins);
             const newDoc = `
                 <tr class="doc-row" style="border-top: 1px solid #e2e8f0;">
                     <td style="padding: 15px 20px;">
-                        <input type="text" name="doc_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="e.g. Project Proposal" required>
+                        <input type="text" name="doc_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%;" placeholder="e.g. Design Spec" required>
                     </td>
                     <td style="padding: 15px 20px;">
                         <input type="file" name="doc_file[]" style="width: 100%;" required>
@@ -1520,6 +984,34 @@ $run_admins = mysqli_query($con, $get_admins);
             $(this).closest('tr').remove();
             if ($('.doc-row').length === 0) {
                 $('#no_docs_msg').closest('tr').show();
+            }
+        });
+
+        // Add Proposal Row (Super Admin Only)
+        $('#add_proposal_btn').on('click', function() {
+            $('#no_proposals_msg').closest('tr').hide();
+            const newProp = `
+                <tr class="proposal-row" style="border-top: 1px solid #fee2e2;">
+                    <td style="padding: 15px 20px;">
+                        <input type="text" name="proposal_name[]" class="p-input-premium" style="height: 42px; border-radius: 6px; width: 100%; border-color: #fecaca;" value="Project Proposal" placeholder="Project Proposal">
+                    </td>
+                    <td style="padding: 15px 20px;">
+                        <input type="file" name="proposal_file[]" style="width: 100%;" required>
+                    </td>
+                    <td style="padding: 15px 20px; text-align: center;">
+                        <button type="button" class="btn btn-light text-danger delete-proposal-btn" style="width:36px; height:36px; border-radius:6px; border:none; background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            $('#proposals_container').append(newProp);
+        });
+
+        $(document).on('click', '.delete-proposal-btn', function() {
+            $(this).closest('tr').remove();
+            if ($('.proposal-row').length === 0) {
+                $('#no_proposals_msg').closest('tr').show();
             }
         });
 
@@ -1558,12 +1050,12 @@ $run_admins = mysqli_query($con, $get_admins);
 <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="addSourceModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background:var(--p-bg-color); color: #fff; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #fff; color:var(--p-bg-color) ; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Source
@@ -1573,7 +1065,7 @@ $run_admins = mysqli_query($con, $get_admins);
                 <form id="add-source-form-main" onsubmit="event.preventDefault();">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Source Name</label>
-                        <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1) !important'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <input type="text" name="source_name" id="new_source_name" placeholder="e.g. Website, LinkedIn" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#dd2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
                         <button type="button" data-dismiss="modal" class="btn-premium-cancel">
@@ -1593,7 +1085,8 @@ $run_admins = mysqli_query($con, $get_admins);
     $(document).ready(function() {
         $('#add-source-form-main').submit(function(e) {
             e.preventDefault();
-            var source = $('#new_source_name').val();
+            var source = $('#new_source_name').val().trim();
+            if (!source) return;
             var submitBtn = $(this).find('button[type="submit"]');
             submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
 
@@ -1613,49 +1106,33 @@ $run_admins = mysqli_query($con, $get_admins);
                         return;
                     }
                     if (data.status == "success") {
-                        var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
-                            '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">' +
-                            '<input type="checkbox" name="project_source[]" value="' + data.name + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: var(--p-bg-color);"> ' + data.name +
-                            '</label>' +
-                            '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(' + data.id + ', this)"></i>' +
-                            '</div>';
-                        $("#source_checkbox_container").append(newHtml);
-                        // Close modal by clicking the dismiss button
+                        var existingCheckbox = $("input[name='project_source[]']").filter(function() {
+                            return $(this).val().toLowerCase() === data.name.toLowerCase();
+                        });
+
+                        if (existingCheckbox.length > 0) {
+                            existingCheckbox.prop('checked', true);
+                        } else {
+                            var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
+                                '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">' +
+                                '<input type="checkbox" name="project_source[]" value="' + data.name + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: #dd2127;"> ' + data.name +
+                                '</label>' +
+                                '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(' + data.id + ', this)"></i>' +
+                                '</div>';
+                            $("#source_checkbox_container").append(newHtml);
+                        }
+
                         $('#addSourceModal [data-dismiss="modal"]').first().trigger('click');
-                        $('#addSourceModal').hide(); // Fallback for visibility
+                        $('#addSourceModal').modal('hide');
                         $('#new_source_name').val('');
                         $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open');
-                        $('body').css('padding-right', '');
-                    } else {
-                        if (data.message === "Source already exists") {
-                            // Find the existing checkbox and check it
-                            var existingCheckbox = $("input[name='project_source[]']").filter(function() {
-                                return $(this).val().toLowerCase() === source.toLowerCase();
-                            });
+                        $('body').removeClass('modal-open').css('padding-right', '');
 
-                            if (existingCheckbox.length > 0) {
-                                existingCheckbox.prop('checked', true);
-                            } else {
-                                // Fallback: append it if not found in DOM
-                                var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
-                                    '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0;">' +
-                                    '<input type="checkbox" name="project_source[]" value="' + source + '" checked style="margin-right: 8px; width: 16px; height: 16px; vertical-align: middle; accent-color: var(--p-bg-color);"> ' + source +
-                                    '</label>' +
-                                    '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteSource(' + data.id + ', this)"></i>' +
-                                    '</div>';
-                                $("#source_checkbox_container").append(newHtml);
-                            }
-                            // Close modal by clicking the dismiss button
-                            $('#addSourceModal [data-dismiss="modal"]').first().trigger('click');
-                            $('#addSourceModal').hide(); // Fallback for visibility
-                            $('#new_source_name').val('');
-                            $('.modal-backdrop').remove();
-                            $('body').removeClass('modal-open');
-                            $('body').css('padding-right', '');
-                        } else {
-                            Swal.fire('Notification', "Error: " + data.message, 'error');
+                        if (typeof showPremiumAlert === 'function') {
+                            showPremiumAlert("Source selected!");
                         }
+                    } else {
+                        Swal.fire('Notification', "Error: " + data.message, 'error');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -1667,19 +1144,72 @@ $run_admins = mysqli_query($con, $get_admins);
     });
 
     function deleteSource(sourceId, element) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you really want to delete this source?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, delete it!',
-            customClass: {
-                popup: 'premium-card swal2-premium'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
+        if (!sourceId || sourceId <= 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Invalid Source ID.',
+                icon: 'error',
+                confirmButtonColor: '#dd2127'
+            });
+            return;
+        }
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Delete Source?',
+                html: 'Are you sure you want to delete this source?<br><span style="font-size: 13px; color: #64748b;">This action cannot be undone.</span>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dd2127',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "ajax/misc/ajax_delete_source.php",
+                        method: "POST",
+                        data: {
+                            source_id: sourceId,
+                            id: sourceId
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.status === "success") {
+                                $(element).closest('div').remove();
+                                Swal.fire({
+                                    title: 'Source Deleted Successfully!',
+                                    text: 'The source has been removed.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#dd2127',
+                                    confirmButtonText: 'OK',
+                                    timer: 1800,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.message || 'Could not delete source.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#dd2127'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            var errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (xhr.responseText ? xhr.responseText : 'Failed to connect to the server.');
+                            Swal.fire({
+                                title: 'Error',
+                                text: errMsg,
+                                icon: 'error',
+                                confirmButtonColor: '#dd2127'
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            if (confirm("Do you really want to delete this source?")) {
                 $.ajax({
                     url: "ajax/misc/ajax_delete_source.php",
                     method: "POST",
@@ -1690,21 +1220,13 @@ $run_admins = mysqli_query($con, $get_admins);
                     success: function(data) {
                         if (data.status === "success") {
                             $(element).closest('div').remove();
-                            if (typeof showPremiumAlert === "function") {
-                                showPremiumAlert("Source deleted successfully!");
-                            } else {
-                                Swal.fire('Deleted!', 'Source deleted successfully.', 'success');
-                            }
                         } else {
-                            Swal.fire('Error', data.message, 'error');
+                            alert('Error: ' + data.message);
                         }
-                    },
-                    error: function() {
-                        Swal.fire('Connection Error', 'Failed to connect to the server.', 'error');
                     }
                 });
             }
-        });
+        }
     }
 
     function showPremiumAlert(message) {

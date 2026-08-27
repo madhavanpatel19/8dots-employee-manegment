@@ -1,10 +1,19 @@
-﻿<?php
+<?php
 if (!isset($_SESSION['admin_email'])) {
     echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
     exit();
 }
 
 $message = "";
+
+// Auto-migrate attendance status column from ENUM to VARCHAR(20) if needed
+$checkAttCol = @mysqli_query($con, "SHOW COLUMNS FROM attendance LIKE 'status'");
+if ($checkAttCol && $attCol = mysqli_fetch_assoc($checkAttCol)) {
+    if (strpos(strtolower($attCol['Type']), 'enum') !== false) {
+        @mysqli_query($con, "ALTER TABLE attendance MODIFY COLUMN status VARCHAR(20) DEFAULT 'present'");
+        @mysqli_query($con, "UPDATE attendance SET status = 'leave' WHERE (remarks LIKE 'Leave:%' OR remarks LIKE '%leave%') AND (check_in_time IS NULL OR check_in_time = '')");
+    }
+}
 
 // Handle Approval / Rejection
 if (isset($_GET['approve']) || isset($_GET['reject'])) {
@@ -14,41 +23,65 @@ if (isset($_GET['approve']) || isset($_GET['reject'])) {
         $request_id = isset($_GET['approve']) ? (int)$_GET['approve'] : (int)$_GET['reject'];
         $new_status = isset($_GET['approve']) ? 'approved' : 'rejected';
 
-        $update = "UPDATE leave_applications SET status = '$new_status' WHERE id = '$request_id'";
-        if (mysqli_query($con, $update)) {
-            if ($new_status === 'approved') {
-                // Get leave details to update attendance
-                $get_leave = mysqli_query($con, "SELECT * FROM leave_applications WHERE id = '$request_id'");
-                $leave_row = mysqli_fetch_assoc($get_leave);
-                $emp_id = $leave_row['emp_id'];
-                $from = $leave_row['leave_from'];
-                $to = $leave_row['leave_to'];
-                $reason = $leave_row['reason'];
+        $get_leave = mysqli_query($con, "SELECT * FROM leave_applications WHERE id = '$request_id' LIMIT 1");
+        $leave_row = ($get_leave && mysqli_num_rows($get_leave) > 0) ? mysqli_fetch_assoc($get_leave) : null;
 
-                // Loop through dates and update attendance
-                $start_date = new DateTime($from);
-                $end_date = new DateTime($to);
-                $interval = new DateInterval('P1D');
-                $period = new DatePeriod($start_date, $interval, $end_date->modify('+1 day'));
+        if ($leave_row) {
+            $emp_id = intval($leave_row['emp_id']);
+            $from   = $leave_row['leave_from'];
+            $to     = $leave_row['leave_to'];
+            $reason = mysqli_real_escape_string($con, $leave_row['reason'] ?? '');
 
-                foreach ($period as $date) {
-                    $current_date = $date->format('Y-m-d');
-                    // Check if record exists
-                    $check = mysqli_query($con, "SELECT id, check_in_time FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
-                    if (mysqli_num_rows($check) > 0) {
-                        $existing_att = mysqli_fetch_assoc($check);
-                        // If employee has already checked in on this day, they are on duty — do NOT override with leave
-                        if (!empty($existing_att['check_in_time'])) {
-                            continue; // Skip: employee is/was present on this day
+            $update = "UPDATE leave_applications SET status = '$new_status' WHERE id = '$request_id'";
+            if (mysqli_query($con, $update)) {
+                if ($new_status === 'approved') {
+                    // Loop through dates and update attendance
+                    $start_date = new DateTime($from);
+                    $end_date = new DateTime($to);
+                    $interval = new DateInterval('P1D');
+                    $period = new DatePeriod($start_date, $interval, $end_date->modify('+1 day'));
+
+                    foreach ($period as $date) {
+                        $current_date = $date->format('Y-m-d');
+                        // Check if record exists
+                        $check = mysqli_query($con, "SELECT id, check_in_time FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
+                        if (mysqli_num_rows($check) > 0) {
+                            $existing_att = mysqli_fetch_assoc($check);
+                            if (!empty($existing_att['check_in_time'])) {
+                                continue; // Skip: employee is/was present on this day
+                            }
+                            mysqli_query($con, "UPDATE attendance SET status = 'leave', remarks = 'Leave: $reason' WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
+                        } else {
+                            mysqli_query($con, "INSERT INTO attendance (emp_id, attendance_date, status, remarks) VALUES ('$emp_id', '$current_date', 'leave', 'Leave: $reason')");
                         }
-                        mysqli_query($con, "UPDATE attendance SET status = 'leave', remarks = 'Leave: $reason' WHERE emp_id = '$emp_id' AND attendance_date = '$current_date'");
-                    } else {
-                        // Only insert a leave record for future dates or dates with no activity
-                        mysqli_query($con, "INSERT INTO attendance (emp_id, attendance_date, status, remarks) VALUES ('$emp_id', '$current_date', 'leave', 'Leave: $reason')");
+                    }
+                } else {
+                    // If rejected, remove any leave attendance records for this period
+                    $start_date = new DateTime($from);
+                    $end_date = new DateTime($to);
+                    $interval = new DateInterval('P1D');
+                    $period = new DatePeriod($start_date, $interval, $end_date->modify('+1 day'));
+
+                    foreach ($period as $date) {
+                        $current_date = $date->format('Y-m-d');
+                        mysqli_query($con, "DELETE FROM attendance WHERE emp_id = '$emp_id' AND attendance_date = '$current_date' AND status = 'leave' AND (check_in_time IS NULL OR check_in_time = '')");
+                    }
+                }   
+
+                // Send notification to employee
+                if ($emp_id > 0 && !empty($from) && !empty($to) && file_exists(__DIR__ . '/../../includes/notification_helper.php')) {
+                    include_once(__DIR__ . '/../../includes/notification_helper.php');
+                    if (function_exists('addSystemNotification')) {
+                        $notif_title = "Leave Request " . ucfirst($new_status);
+                        $notif_msg = "Your leave request (" . date('d M Y', strtotime($from)) . " to " . date('d M Y', strtotime($to)) . ") has been " . $new_status . ".";
+                        $notif_url = "index.php?leave_application";
+                        $notif_type = ($new_status === 'approved' ? 'success' : 'danger');
+                        addSystemNotification('employee', intval($emp_id), $notif_title, $notif_msg, $notif_url, $notif_type);
                     }
                 }
+
+                $message = "Leave request " . ($new_status === 'approved' ? "approved" : "rejected") . " successfully!";
             }
-            $message = "Leave request " . ($new_status === 'approved' ? "approved" : "rejected") . " successfully!";
         }
     }
 }
@@ -118,10 +151,10 @@ if ($run_stats) {
     <div id="manageLeavesModal" class="modal fade" role="dialog" style="z-index: 99999;">
         <div class="modal-dialog" style="margin-top: 80px; max-width: 550px;">
             <div class="modal-content premium-modal-content" style="border: none; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); overflow: hidden;">
-                <div class="modal-header" style="background: var(--p-bg-color); color: var(--p-bg); padding: 25px; border: none; position: relative;">
+                <div class="modal-header" style="background: #ffeaeb; color: #000; padding: 25px; border: none; position: relative;">
                     <button type="button" class="btn-modal-close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 45px; height: 45px; background:var(--p-bg-color); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
+                        <div style="width: 45px; height: 45px; background:#dd2127; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff;">
                             <i class="fa fa-calendar-o"></i>
                         </div>
                         <div>
@@ -234,7 +267,7 @@ if ($run_stats) {
         }
 
         .filter-input:focus {
-            border-color: var(--p-bg-color);
+            border-color: #dd2127;
             box-shadow: 0 0 0 3px rgba(223, 33, 39, 0.1);
         }
 
@@ -252,7 +285,7 @@ if ($run_stats) {
         }
 
         .btn-filter {
-            background: var(--p-bg-color);
+            background: #dd2127;
             color: #fff;
             border: none;
             height: 42px;
@@ -269,50 +302,6 @@ if ($run_stats) {
         .btn-filter:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px -1px rgba(223, 33, 39, 0.3);
-        }
-
-        .btn-icon-premium {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            width: 38px;
-            height: 38px;
-            transition: 0.3s;
-            cursor: pointer;
-            color: #64748b;
-            text-decoration: none !important;
-        }
-
-        .btn-icon-premium:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-icon-approve {
-            color: #10b981 !important;
-            background: #ecfdf5 !important;
-            border-color: #d1fae5 !important;
-        }
-
-        .btn-icon-approve:hover {
-            background: #d1fae5 !important;
-            border-color: #a7f3d0 !important;
-            color: #059669 !important;
-        }
-
-        .btn-icon-reject {
-            color: #ef4444 !important;
-            background: #fef2f2 !important;
-            border-color: #fee2e2 !important;
-        }
-
-        .btn-icon-reject:hover {
-            background: #fee2e2 !important;
-            border-color: #fecaca !important;
-            color: #b91c1c !important;
         }
 
         .table-premium th,
@@ -383,16 +372,16 @@ if ($run_stats) {
             <table class="table-premium">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Employee</th>
+                        <th style="width: 50px;">#</th>
+                        <th style="width: 200px;">Employee</th>
                         <th>Type</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Days</th>
+                        <th style="width: 110px;">Start Date</th>
+                        <th style="width: 110px;">End Date</th>
+                        <th style="width: 100px;">Days</th>
                         <th>Reason</th>
-                        <th>Request Date</th>
-                        <th>Status</th>
-                        <th>Manage</th>
+                        <th style="width: 110px;">Request Date</th>
+                        <th style="width: 120px;">Status</th>
+                        <th style="width: 160px;">Manage</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -456,8 +445,8 @@ if ($run_stats) {
                                         </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <span class="p-badge p-badge-secondary" style="background:var(--p-bg-color);color:#fff; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars($row['leave_name'] ?: 'N/A'); ?></span>
+                                <td style="text-align: center;">
+                                    <span class="p-badge p-badge-secondary" style="background: #ffeaeb; color: #dd2127; border: none; font-weight: 600; padding: 4px 10px;"><?php echo htmlspecialchars(!empty($row['leave_name']) ? $row['leave_name'] : 'Extra Leaves'); ?></span>
                                 </td>
                                 <td class="text-center" style="font-weight: 600; color: #475569; font-size: 13px;">
                                     <?php echo date('d-m-Y', strtotime($row['leave_from'])); ?>
@@ -468,7 +457,11 @@ if ($run_stats) {
                                 <td class="text-center" style="font-weight: 600; color: #1e293b; font-size: 13px;">
                                     <?php echo $duration_str; ?>
                                 </td>
-                                <td class="p-cell-wrap" style="font-size: 13px; color: #475569; font-weight: 500;text-align:center"><?php echo htmlspecialchars($row['reason']); ?></td>
+                                <td style="padding: 12px 15px; text-align: center; vertical-align: middle;">
+                                    <div style="max-width: 350px; margin: 0 auto; font-size: 13px; line-height: 1.5; color: #475569; max-height: 70px; overflow-y: auto; text-align: center; word-break: break-word;">
+                                        <?php echo htmlspecialchars(preg_replace('/\s+/', ' ', trim($row['reason']))); ?>
+                                    </div>
+                                </td>
                                 <td class="text-center" style="font-size: 11px; color: #94a3b8;">
                                     <?php echo date('d-m-Y', strtotime($row['created_at'])); ?>
                                 </td>

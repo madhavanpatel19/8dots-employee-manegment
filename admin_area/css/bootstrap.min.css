@@ -1,4 +1,4 @@
-﻿/*!
+/*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -1429,7 +1429,8 @@ a {
 
 a:focus,
 a:hover {
-    color: var(--p-bg-color);
+    color: #23527c;
+    text-decoration: underline
 }
 
 a:focus {
@@ -3986,21 +3987,21 @@ fieldset[disabled] .btn-default:hover {
 
 .btn-primary {
     color: #fff;
-    background-color: #232223;
-    border-color: #232223
+    background-color: #dd2127;
+    border-color: #dd2127
 }
 
 .btn-primary.focus,
 .btn-primary:focus {
     color: #fff;
-    background-color: rgba(0, 0, 0, 0.85);
-    border-color: #232223
+    background-color: #dd2127d9;
+    border-color: #dd2127
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: rgba(0, 0, 0, 0.85);
-    border-color: #232223
+    background-color: #dd2127d9;
+    border-color: #dd2127
 }
 
 .btn-primary.active,
@@ -4115,31 +4116,30 @@ fieldset[disabled] .btn-success:hover {
 }
 
 .btn-info {
-    /* color: #232223; */
-    color: white;
-    background-color: #232223;
-    border-color: #232223
+    color: #dd2127;
+    background-color: #ffeaeb;
+    border-color: #ffeaeb
 }
 
 .btn-info.focus,
 .btn-info:focus {
     color: #fff;
-    background-color: #232223;
-    border-color: #232223;
+    background-color: #dd2127;
+    border-color: #dd2127;
 }
 
 .btn-info:hover {
     color: #fff;
-    background-color: #232223;
-    border-color: #232223;
+    background-color: #dd2127;
+    border-color: #dd2127;
 }
 
 .btn-info.active,
 .btn-info:active,
 .open>.dropdown-toggle.btn-info {
     color: #fff;
-    background-color: #232223;
-    border-color: #232223
+    background-color: #dd2127;
+    border-color: #dd2127
 }
 
 .btn-info.active.focus,
@@ -4152,8 +4152,8 @@ fieldset[disabled] .btn-success:hover {
 .open>.dropdown-toggle.btn-info:focus,
 .open>.dropdown-toggle.btn-info:hover {
     color: #fff;
-    background-color: #232223;
-    border-color: #232223
+    background-color: #dd2127;
+    border-color: #dd2127
 }
 
 .btn-info.active,
@@ -4171,12 +4171,12 @@ fieldset[disabled] .btn-success:hover {
 fieldset[disabled] .btn-info.focus,
 fieldset[disabled] .btn-info:focus,
 fieldset[disabled] .btn-info:hover {
-    background-color: #232223;
-    border-color: #232223
+    background-color: #dd2127;
+    border-color: #dd2127
 }
 
 .btn-info .badge {
-    color: #232223;
+    color: #dd2127;
     background-color: #fff
 }
 

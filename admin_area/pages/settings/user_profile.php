@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 if (!isset($_SESSION['admin_email'])) {
-    echo "<script>window.open('pages/auth/login.php','_self')</script>";
+    echo "<script>window.open('../../pages/auth/login.php','_self')</script>";
 } else {
     if (isset($_GET['user_profile'])) {
         $edit_id = $_GET['user_profile'];
