@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'])) {
     exit();
 }
 
-$current_date    = date("d F Y");
+$current_date    = date("d-m-Y");
 $formatted_join  = date("d-m-Y", strtotime($join_date));
 $formatted_rel   = date("d-m-Y", strtotime($relieve_date));
 $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !== '' ? $row_exp['employee_id'] : 'CD011';
@@ -62,6 +62,8 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+
     <style>
         :root {
             --red: #e31e24;
@@ -232,7 +234,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
 
         .content strong {
             color: #333;
-            font-weight: 800;
+            font-weight: 600;
         }
 
         .detail-block {
@@ -357,17 +359,6 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             font-size: 14px;
         }
 
-        .btn-print {
-            background: #dd2127;
-            color: #fff;
-            border: none;
-        }
-
-        .btn-back {
-            background: #fff;
-            border: 1px solid #ddd;
-            color: #333;
-        }
 
         @media print {
             body {
@@ -398,10 +389,10 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
 <body>
 
     <div class="actions no-print">
-        <button onclick="window.print()" class="btn btn-print">
+        <button onclick="window.print()" class="btn-premium-add">
             <i class="fa fa-print"></i> Print / Save PDF
         </button>
-        <a href="../../index.php?view_experience_letters" class="btn btn-back">Back</a>
+        <a href="../../index.php?view_experience_letters" class="btn-premium-cancel">Back</a>
     </div>
 
     <div class="page-wrap">
@@ -413,10 +404,10 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             </div>
 
             <div class="brand-row">
-                <img src="../../images/Cadlete_logo Landscape.png" alt="CADLETE DESIGNS Logo">
+                <img src="../../images/logo.png" alt="8Dots Logo">
             </div>
 
-            <div class="title">EXPERIENCE & RELIEVING LETTER</div>
+            <div class="title">EXPERIENCE LETTER</div>
 
             <div class="title-underline">
                 <div class="left"></div>
@@ -438,52 +429,44 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             </div>
 
             <div class="content">
-                <div class="salutation">Dear <?php echo htmlspecialchars(explode(' ', trim($name))[0]); ?>,</div>
+                <div class="salutation">To Whom It May Concern,</div>
 
                 <p>
-                    This is to certify that <strong><?php echo htmlspecialchars($name); ?></strong>,
-                    Employee ID <strong><?php echo htmlspecialchars($employee_id); ?></strong>,
-                    was employed with <strong>CADLETE Designs</strong> from
+                    This is to certify that <strong><?php echo htmlspecialchars($name); ?></strong>
+                    was employed with <strong>8Dots</strong> As a
+                    <strong><?php echo htmlspecialchars($designation); ?></strong>
+                    from
                     <strong><?php echo htmlspecialchars($formatted_join); ?></strong> to
                     <strong><?php echo htmlspecialchars($formatted_rel); ?></strong>.
-                    At the time of leaving, <strong>he</strong> held the position of
-                    <strong><?php echo htmlspecialchars($designation); ?></strong>.
                 </p>
-
-                <p>Service record is as follows:</p>
-
-                <div class="detail-block">
-                    <div class="item"><strong>Name:</strong> <?php echo htmlspecialchars($name); ?></div>
-                    <div class="item"><strong>Title:</strong> <?php echo htmlspecialchars($designation); ?></div>
-                    <div class="item"><strong>Date of Joining:</strong> <?php echo htmlspecialchars(date("F jS, Y", strtotime($join_date))); ?></div>
-                    <div class="item"><strong>Last Working Day:</strong> <?php echo htmlspecialchars(date("F jS, Y", strtotime($relieve_date))); ?></div>
-                </div>
-
                 <p>
-                    During his tenure with us for the above period, we found him efficient,
-                    his character and conduct were good.
+                    During the course of employment, she performed the assigned responsibilities with
+                    dedication, professionalism, and a positive attitude. She consistently demonstrated a
+                    willingness to learn, adapt, and contribute effectively as a valuable member of the
+                    team.
                 </p>
-
                 <p>
-                    We acknowledge the receipt of his resignation submitted, and we hereby relieve him
-                    from all duties effective from the close of business on
-                    <strong><?php echo htmlspecialchars(date("d F Y", strtotime($relieve_date))); ?></strong>.
+                    We found her to be sincere, responsible, and committed to delivering quality work.
+                    Her conduct and relationship with colleagues and management remained
+                    professional throughout the tenure.
                 </p>
-
                 <p>
-                    We at <strong>CADLETE Designs</strong> wish <strong><?php echo htmlspecialchars($name); ?></strong>
-                    all the best in future endeavors and are confident that he will excel in his career.
+                    We appreciate her contributions to 8Dots and thank her for the services
+                    rendered. We wish her every success and prosperity in all future professional
+                    endeavors.
                 </p>
             </div>
-
+            </br>
+            </br>
+            </br>
             <div class="signature-area">
                 <div class="sincerely">Sincerely,</div>
                 <div class="sign-wrap">
-                    <img src="../../images/S_Sign.png" alt="Signature" class="sign-image">
+                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
                     <div class="sign-text">
                         <div class="name">Smit Ramani</div>
-                        <div class="role">Founder &amp; CEO</div>
-                        <div class="company">CADLETE DESIGNS</div>
+                        <div class="role">CEO & Chief Design Engineer</div>
+                        <div class="company">8Dots</div>
                     </div>
                 </div>
             </div>
@@ -491,12 +474,102 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
             <div class="footer-bar">
                 <div class="footer-inner">
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-phone"></i> 091 95865 45430</div>
-                        <div class="footer-item"><i class="fa fa-envelope"></i> info@cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
+                        </div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
                     </div>
                     <div class="footer-col">
-                        <div class="footer-item"><i class="fa fa-map-marker"></i> A-106, Sun South Street, Ahmedabad</div>
-                        <div class="footer-item"><i class="fa fa-globe"></i> www.cadletedesigns.com</div>
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                        </div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="corner-red"></div>
+        </div>
+    </div>
+
+    <div class="page-wrap">
+        <div class="letter-sheet">
+
+            <div class="top-shape">
+                <div class="black-bar"></div>
+                <div class="red-bar"></div>
+            </div>
+
+            <div class="brand-row">
+                <img src="../../images/logo.png" alt="8Dots Logo">
+            </div>
+
+            <div class="title">RELIEVING LETTER</div>
+
+            <div class="title-underline">
+                <div class="left"></div>
+                <div class="right"></div>
+            </div>
+
+            <div class="meta">
+                <div class="left">
+                    <!-- <div class="row">
+                        <div class="label">Employee Name</div>
+                        <div class="value"><?php echo htmlspecialchars($name); ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="label">Employee ID</div>
+                        <div class="value"><?php echo htmlspecialchars($employee_id); ?></div>
+                    </div> -->
+                </div>
+                <div class="date"><?php echo htmlspecialchars($current_date); ?></div>
+            </div>
+
+            <div class="content">
+                <p>To,</p>
+                <p><strong><?php echo htmlspecialchars($name); ?></strong></p>
+                <p><strong>Subject: Relieving Letter</strong></p>
+                <p>Dear <?php echo htmlspecialchars($name); ?>,</p>
+                <p>
+                    This letter is to confirm that you have been relieved from your duties as <strong><?php echo htmlspecialchars($designation); ?></strong>
+                    at <strong>8Dots</strong>, effective <?php echo htmlspecialchars($formatted_rel); ?>, following your
+                    resignation and completion of the required notice period and handover formalities.
+                </p>
+                <p>During your tenure with the company, you fulfilled your responsibilities with
+                    professionalism and dedication. We appreciate your contributions and thank you for
+                    your services.
+                </p>
+                <p>
+                    We wish you continued success and all the very best in your future career and
+                    personal endeavors.
+                </p>
+            </div>
+            </br>
+            </br>
+            </br>
+            </br>
+            </br>
+            <div class="signature-area">
+                <div class="sincerely">Sincerely,</div>
+                <div class="sign-wrap">
+                    <img src="../../images/k_logo_sign.png" alt="Signature" class="sign-image">
+                    <div class="sign-text">
+                        <div class="name">Smit Ramani</div>
+                        <div class="role">CEO & Chief Design Engineer</div>
+                        <div class="company">8Dots</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bar">
+                <div class="footer-inner">
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa fa-phone"></i>8155816776
+                        </div>
+                        <div class="footer-item"><i class="fa fa-envelope"></i> hr@8dots.in</div>
+                    </div>
+                    <div class="footer-col">
+                        <div class="footer-item"><i class="fa-solid fa-location-dot"></i> 516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                        </div>
+                        <div class="footer-item"><i class="fa fa-globe"></i> https://8dots.in/</div>
                     </div>
                 </div>
             </div>
@@ -515,7 +588,7 @@ $employee_id     = isset($row_exp['employee_id']) && $row_exp['employee_id'] !==
         </script>
     <?php endif; ?>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 
 </html>

@@ -112,6 +112,13 @@ if ($action == 'check_in') {
     $safe_ip     = mysqli_real_escape_string($con, $visitor_ip);
     $safe_loc    = mysqli_real_escape_string($con, $visitor_loc);
 
+    $late_cutoff = strtotime('1970-01-01 10:15:00');
+    $tstamp = strtotime('1970-01-01 ' . $current_time);
+    $status = 'present';
+    if ($tstamp !== false && $tstamp > $late_cutoff) {
+        $status = 'late';
+    }
+
     if (mysqli_num_rows($check_res) > 0) {
         $row = mysqli_fetch_assoc($check_res);
         if (!empty($row['check_in_time'])) {
@@ -123,7 +130,7 @@ if ($action == 'check_in') {
                      last_resume_time = '$now_dt', 
                      is_working = 1, 
                      total_duration_secs = 0, 
-                     status = 'present',
+                     status = '$status',
                      ip_address = '$safe_ip',
                      location = '$safe_loc'
                      WHERE id = " . $row['id'];
@@ -135,7 +142,7 @@ if ($action == 'check_in') {
         }
     } else {
         $insert_q = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, last_resume_time, is_working, total_duration_secs, status, ip_address, location) 
-                     VALUES ('$emp_id', '$today', '$current_time', '$now_dt', 1, 0, 'present', '$safe_ip', '$safe_loc')";
+                     VALUES ('$emp_id', '$today', '$current_time', '$now_dt', 1, 0, '$status', '$safe_ip', '$safe_loc')";
         if (mysqli_query($con, $insert_q)) {
             $att_id = mysqli_insert_id($con);
             logAttendanceAction($con, $att_id, $emp_id, 'check_in', $now_dt, $visitor_ip, $visitor_loc);
@@ -222,7 +229,10 @@ if ($action == 'check_in') {
         $visitor_loc = geolocateIP($visitor_ip);
 
         // Handle Work Photos Upload
-        $uploaded_photos = [];
+        $existing_photos = !empty($row['work_photos']) ? json_decode($row['work_photos'], true) : [];
+        if (!is_array($existing_photos)) $existing_photos = [];
+
+        $uploaded_photos = $existing_photos;
         if (isset($_FILES['work_photos'])) {
             $files      = $_FILES['work_photos'];
             $upload_dir = '../../work_photos/';
@@ -237,25 +247,28 @@ if ($action == 'check_in') {
                 }
             }
         }
-        $photos_json = !empty($uploaded_photos) ? mysqli_real_escape_string($con, json_encode($uploaded_photos)) : '';
+        $photos_json = !empty($uploaded_photos) ? mysqli_real_escape_string($con, json_encode(array_values(array_unique($uploaded_photos)))) : '';
 
         if (!empty($manual_in) && !empty($manual_out)) {
-            $original_in      = $row['check_in_time'];
-            $last_resume      = $row['last_resume_time'];
-            $base_timer       = (int)$row['total_duration_secs'];
-            if ($row['is_working'] == 1) {
-                $manual_out_dt    = $today . ' ' . $manual_out;
-                $segment_duration = strtotime($manual_out_dt) - strtotime($last_resume);
-                $base_timer      += max(0, $segment_duration);
+            $last_resume      = !empty($row['last_resume_time']) ? $row['last_resume_time'] : ($today . ' ' . $row['check_in_time']);
+            $manual_out_dt    = $today . ' ' . $manual_out;
+            $segment_duration = max(0, strtotime($manual_out_dt) - strtotime($last_resume));
+            $base_timer       = ($row['is_working'] == 1) ? (int)$row['total_duration_secs'] : 0;
+            $new_duration     = $base_timer + $segment_duration;
+
+            $status = 'present';
+            $tstamp = strtotime('1970-01-01 ' . $manual_in);
+            $late_cutoff = strtotime('1970-01-01 10:15:00');
+            if ($tstamp !== false && $tstamp > $late_cutoff) {
+                $status = 'late';
             }
-            $in_diff      = strtotime($today . ' ' . $manual_in) - strtotime($today . ' ' . $original_in);
-            $new_duration = max(0, $base_timer - $in_diff);
 
             $update_q = "UPDATE attendance SET 
                          check_in_time = '$manual_in',
                          check_out_time = '$manual_out', 
                          is_working = 0,
                          total_duration_secs = '$new_duration',
+                         status = '$status',
                          remarks = '$work_details',
                          work_photos = '$photos_json'
                          WHERE id = " . $row['id'];

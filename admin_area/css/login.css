@@ -12,8 +12,9 @@
   --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --input-bg: #ffffff;
-  --p-bg-color: #FFEAEB;
-  --p-bg-btn: #DF2127;
+  --p-bg-color: rgb(34 35 35 / 20%);
+  ;
+  --p-bg-btn: #232223;
 }
 
 body {
@@ -172,8 +173,9 @@ body {
 }
 
 .form-control:focus {
-  border-color: var(--p-bg-btn);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  border-color: #232223 !important;
+  box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+  !important;
   outline: none;
 }
 
@@ -283,7 +285,7 @@ body {
 .btn-login .btn-icon-wrapper {
   position: absolute;
   right: 6px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(34 35 35 / 20%);
   width: 36px;
   height: 36px;
   border-radius: 8px;

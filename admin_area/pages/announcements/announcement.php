@@ -79,8 +79,8 @@ if (!isset($_SESSION['admin_email'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_announcement'])) {
         $announcement_title = trim($_POST['announcement_title']);
         $announcement_message = trim($_POST['announcement_message']);
-        $publish_date = !empty($_POST['publish_date']) ? $_POST['publish_date'] : date('Y-m-d H:i:s');
-        $end_date_val = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+        $publish_date = !empty($_POST['publish_date']) ? date('Y-m-d H:i:s', strtotime($_POST['publish_date'])) : date('Y-m-d H:i:s');
+        $end_date_val = !empty($_POST['end_date']) ? date('Y-m-d H:i:s', strtotime($_POST['end_date'])) : null;
 
         if ($announcement_title === '' || $announcement_message === '') {
             $announcement_error = 'Title and message are required.';
@@ -113,8 +113,8 @@ if (!isset($_SESSION['admin_email'])) {
         $edit_id = intval($_POST['edit_id']);
         $announcement_title = trim($_POST['announcement_title']);
         $announcement_message = trim($_POST['announcement_message']);
-        $publish_date = !empty($_POST['publish_date']) ? $_POST['publish_date'] : date('Y-m-d H:i:s');
-        $end_date_val = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
+        $publish_date = !empty($_POST['publish_date']) ? date('Y-m-d H:i:s', strtotime($_POST['publish_date'])) : date('Y-m-d H:i:s');
+        $end_date_val = !empty($_POST['end_date']) ? date('Y-m-d H:i:s', strtotime($_POST['end_date'])) : null;
 
         if ($announcement_title === '' || $announcement_message === '') {
             $announcement_error = 'Title and message are required.';
@@ -159,18 +159,25 @@ if (!isset($_SESSION['admin_email'])) {
         </div>
 
         <style>
-            .table-premium th {
+            .table-premium th,
+            .table-premium td {
+                vertical-align: middle !important;
                 text-align: center !important;
             }
 
-            .table-premium th:nth-child(2),
-            .table-premium td:nth-child(2) {
+            .table-premium th:first-child,
+            .table-premium td:first-child {
                 text-align: left !important;
+                padding-left: 24px !important;
             }
 
+            .table-premium th:nth-child(2),
+            .table-premium td:nth-child(2),
             .table-premium th:nth-child(3),
-            .table-premium td:nth-child(3) {
-                text-align: left !important;
+            .table-premium td:nth-child(3),
+            .table-premium th:nth-child(4),
+            .table-premium td:nth-child(4) {
+                text-align: center !important;
             }
 
             .premium-notification {
@@ -185,7 +192,7 @@ if (!isset($_SESSION['admin_email'])) {
                 z-index: 9999;
                 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
                 backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                border: 1px solid rgb(34 35 35 / 20%);
                 color: white;
                 font-weight: 600;
                 transform: translateX(120%);
@@ -296,7 +303,7 @@ if (!isset($_SESSION['admin_email'])) {
             }
 
             .confirm-btn-delete:hover {
-                background: #dc2626;
+                background: #232223;
                 transform: translateY(-1px);
             }
 
@@ -342,11 +349,11 @@ if (!isset($_SESSION['admin_email'])) {
                 display: grid;
                 grid-template-columns: 2.5fr 1fr 1fr 120px;
                 padding: 16px 24px;
-                background: #fff;
-                border-bottom: 2px solid #f1f5f9;
-                font-size: 12px;
+                background: #f8fafc;
+                border-bottom: 1.5px solid #e2e8f0;
+                font-size: 13px;
                 font-weight: 700;
-                color: #64748b;
+                color: #475569;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
             }
@@ -400,6 +407,7 @@ if (!isset($_SESSION['admin_email'])) {
                 color: #64748b;
                 display: -webkit-box;
                 -webkit-line-clamp: 1;
+                line-clamp: 1;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -568,15 +576,17 @@ if (!isset($_SESSION['admin_email'])) {
             }
 
             .page-link:hover:not(.disabled) {
-                background: #DF2127;
-                color: #FFEAEB;
-                border-color: #DF2127;
+                background: #232223;
+                color: rgb(34 35 35 / 20%);
+                ;
+                border-color: #232223;
             }
 
             .page-link.active {
-                background: #FFEAEB;
-                color: #DF2127;
-                border-color: #DF2127;
+                background: rgb(34 35 35 / 20%);
+                ;
+                color: #232223;
+                border-color: #232223;
                 text-decoration: none !important;
             }
 
@@ -592,134 +602,160 @@ if (!isset($_SESSION['admin_email'])) {
                 <i class="fa fa-bullhorn"></i>
                 <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Announcements</h3>
             </div>
-            <div class="announcement-header-row">
-                <div style="padding-left: 64px;">Title</div>
-                <div style="text-align: center;">Posted On</div>
-                <div style="text-align: center;">Status</div>
-                <div style="text-align: center;">Manage</div>
-            </div>
 
-            <div class="announcement-list-body">
-                <?php
-                /* ==============================
-                   PAGINATION SETUP & QUERIES
-                ============================== */
-                $limit = 5; // Number of records per page
-                $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
-                $offset = ($page - 1) * $limit;
+            <div class="table-responsive">
+                <table class="table-premium">
+                    <thead>
+                        <tr>
+                            <th style="padding-left: 24px;">Title</th>
+                            <th style="text-align: center;">Posted On</th>
+                            <th style="text-align: center;">Status</th>
+                            <th style="text-align: center;">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        /* ==============================
+                           PAGINATION SETUP & QUERIES
+                        ============================== */
+                        $limit = 5; // Number of records per page
+                        $page = isset($_GET['page']) && intval($_GET['page']) > 0 ? intval($_GET['page']) : 1;
+                        $offset = ($page - 1) * $limit;
 
-                // Count total records
-                $countSql = "SELECT COUNT(*) as total FROM announcements WHERE deleted_at IS NULL";
-                $countResult = mysqli_query($con, $countSql);
-                $totalRecords = 0;
-                if ($countResult) {
-                    $countRow = mysqli_fetch_assoc($countResult);
-                    $totalRecords = $countRow['total'];
-                }
-                $totalPages = ceil($totalRecords / $limit);
+                        // Count total records
+                        $countSql = "SELECT COUNT(*) as total FROM announcements WHERE deleted_at IS NULL";
+                        $countResult = mysqli_query($con, $countSql);
+                        $totalRecords = 0;
+                        if ($countResult) {
+                            $countRow = mysqli_fetch_assoc($countResult);
+                            $totalRecords = $countRow['total'];
+                        }
+                        $totalPages = ceil($totalRecords / $limit);
 
-                $i = $offset; // Adjust numbering
-                $get_announcements = "SELECT * FROM announcements WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT $offset, $limit";
-                $run_announcements = mysqli_query($con, $get_announcements);
+                        $i = $offset; // Adjust numbering
+                        // Auto deactivate expired announcements
+                        mysqli_query($con, "UPDATE announcements SET is_active = '0' WHERE end_date IS NOT NULL AND end_date <= NOW() AND is_active = '1' AND deleted_at IS NULL");
 
-                $icon_classes = [
-                    ['bg' => '#eff6ff', 'color' => '#3b82f6', 'icon' => 'fa-bullhorn'],
-                    ['bg' => '#ecfdf5', 'color' => '#10b981', 'icon' => 'fa-rocket'],
-                    ['bg' => '#fff7ed', 'color' => '#f97316', 'icon' => 'fa-calendar-o'],
-                    ['bg' => '#f5f3ff', 'color' => '#8b5cf6', 'icon' => 'fa-graduation-cap'],
-                    ['bg' => '#fdf2f8', 'color' => '#ec4899', 'icon' => 'fa-gift'],
-                    ['bg' => '#f0fdf4', 'color' => '#22c55e', 'icon' => 'fa-shield']
-                ];
+                        $get_announcements = "SELECT * FROM announcements WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT $offset, $limit";
+                        $run_announcements = mysqli_query($con, $get_announcements);
 
-                while ($row_announcements = mysqli_fetch_array($run_announcements)) {
-                    $announcement_id = $row_announcements['id'];
-                    $announcement_title = $row_announcements['title'];
-                    $announcement_message = $row_announcements['message'];
-                    $announcement_date = !empty($row_announcements['publish_date']) ? $row_announcements['publish_date'] : $row_announcements['created_at'];
-                    $is_active = isset($row_announcements['is_active']) ? $row_announcements['is_active'] : 1;
-                    $end_date = !empty($row_announcements['end_date']) ? $row_announcements['end_date'] : null;
-                    $i++;
+                        $icon_classes = [
+                            ['bg' => '#eff6ff', 'color' => '#3b82f6', 'icon' => 'fa-bullhorn'],
+                            ['bg' => '#ecfdf5', 'color' => '#10b981', 'icon' => 'fa-rocket'],
+                            ['bg' => '#fff7ed', 'color' => '#f97316', 'icon' => 'fa-calendar-o'],
+                            ['bg' => '#f5f3ff', 'color' => '#8b5cf6', 'icon' => 'fa-graduation-cap'],
+                            ['bg' => '#fdf2f8', 'color' => '#ec4899', 'icon' => 'fa-gift'],
+                            ['bg' => '#f0fdf4', 'color' => '#22c55e', 'icon' => 'fa-shield']
+                        ];
 
-                    $icon_data = $icon_classes[$i % 6];
+                        if (mysqli_num_rows($run_announcements) > 0) {
+                            while ($row_announcements = mysqli_fetch_array($run_announcements)) {
+                                $announcement_id = $row_announcements['id'];
+                                $announcement_title = $row_announcements['title'];
+                                $announcement_message = $row_announcements['message'];
+                                $announcement_date = !empty($row_announcements['publish_date']) ? $row_announcements['publish_date'] : $row_announcements['created_at'];
+                                $is_active = isset($row_announcements['is_active']) ? $row_announcements['is_active'] : 1;
+                                $end_date = !empty($row_announcements['end_date']) ? $row_announcements['end_date'] : null;
+                                $i++;
 
-                    $is_scheduled = strtotime($announcement_date) > time();
-                    $is_expired = $end_date && strtotime($end_date) <= time();
+                                $icon_data = $icon_classes[$i % 6];
 
-                    if ($is_expired) {
-                        $badge_class = '';
-                        $badge_text = 'Expired';
-                        $dot_class = '';
-                        $is_grey = true;
-                    } else if ($is_active == 0) {
-                        $badge_class = '';
-                        $badge_text = 'Inactive';
-                        $dot_class = '';
-                        $is_grey = true;
-                    } else {
-                        $badge_class = $is_scheduled ? 'badge-scheduled' : '';
-                        $badge_text = $is_scheduled ? 'Scheduled' : 'Published';
-                        $dot_class = $is_scheduled ? 'dot-scheduled' : '';
-                        $is_grey = false;
-                    }
-                ?>
-                    <div class="announcement-item-row" data-announcement-row="<?php echo $announcement_id; ?>">
-                        <div class="announcement-left">
-                            <div class="announcement-icon-box" style="background: <?php echo $icon_data['bg']; ?>; color: <?php echo $icon_data['color']; ?>;">
-                                <i class="fa <?php echo $icon_data['icon']; ?>"></i>
-                            </div>
-                            <div class="announcement-info">
-                                <h4><?php echo htmlspecialchars($announcement_title); ?></h4>
-                                <p><?php echo htmlspecialchars($announcement_message); ?></p>
-                            </div>
-                        </div>
-                        <div class="announcement-date-col" style="align-items: center; text-align: center;">
-                            <div class="announcement-date-val"><?php echo date('d M Y, h:i A', strtotime($announcement_date)); ?></div>
-                            <div class="announcement-date-author">by Admin</div>
-                        </div>
-                        <div style="display: flex; justify-content: center;">
-                            <div class="announcement-status-badge <?php echo $badge_class; ?>" style="<?php echo $is_grey ? 'background: #f1f5f9; color: #64748b;' : ''; ?>">
-                                <span class="status-dot <?php echo $dot_class; ?>" style="<?php echo $is_grey ? 'background: #94a3b8;' : ''; ?>"></span> <?php echo $badge_text; ?>
-                            </div>
-                        </div>
-                        <div class="announcement-actions" style="justify-content: center;">
-                            <?php if (canAdminAccess('announcement_update')): ?>
-                                <button type="button" class="btn-icon-premium" style="color: <?php echo $is_active == 1 ? '#10b981' : '#94a3b8'; ?>" title="<?php echo $is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $is_active == 1 ? 0 : 1; ?>)">
-                                    <i class="fa <?php echo $is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
-                                </button>
-                            <?php endif; ?>
+                                $is_scheduled = strtotime($announcement_date) > time();
+                                $is_expired = $end_date && strtotime($end_date) <= time();
+
+                                if ($is_expired) {
+                                    $badge_class = '';
+                                    $badge_text = 'Expired';
+                                    $dot_class = '';
+                                    $is_grey = true;
+                                    $toggle_is_active = 0;
+                                } else if ($is_active == 0) {
+                                    $badge_class = '';
+                                    $badge_text = 'Inactive';
+                                    $dot_class = '';
+                                    $is_grey = true;
+                                    $toggle_is_active = 0;
+                                } else {
+                                    $badge_class = $is_scheduled ? 'badge-scheduled' : '';
+                                    $badge_text = $is_scheduled ? 'Scheduled' : 'Published';
+                                    $dot_class = $is_scheduled ? 'dot-scheduled' : '';
+                                    $is_grey = false;
+                                    $toggle_is_active = 1;
+                                }
+                        ?>
+                                <tr data-announcement-row="<?php echo $announcement_id; ?>">
+                                    <td style="padding-left: 24px; vertical-align: middle;">
+                                        <div class="announcement-left" style="display: flex; align-items: center; gap: 16px;">
+                                            <div class="announcement-icon-box" style="background: <?php echo $icon_data['bg']; ?>; color: <?php echo $icon_data['color']; ?>;">
+                                                <i class="fa <?php echo $icon_data['icon']; ?>"></i>
+                                            </div>
+                                            <div class="announcement-info">
+                                                <h4><?php echo htmlspecialchars($announcement_title); ?></h4>
+                                                <p><?php echo htmlspecialchars($announcement_message); ?></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div class="announcement-date-col" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                                            <div class="announcement-date-val"><?php echo date('d M Y, h:i A', strtotime($announcement_date)); ?></div>
+                                            <div class="announcement-date-author">by Admin</div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div style="display: flex; justify-content: center; align-items: center;">
+                                            <div class="announcement-status-badge <?php echo $badge_class; ?>" style="<?php echo $is_grey ? 'background: #f1f5f9; color: #64748b;' : ''; ?>">
+                                                <span class="status-dot <?php echo $dot_class; ?>" style="<?php echo $is_grey ? 'background: #94a3b8;' : ''; ?>"></span> <?php echo $badge_text; ?>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div class="announcement-actions" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                                            <?php if (canAdminAccess('announcement_update')): ?>
+                                                <button type="button" class="btn-icon-premium" style="color: <?php echo $toggle_is_active == 1 ? '#10b981' : '#94a3b8'; ?>;" title="<?php echo $toggle_is_active == 1 ? 'Set Inactive' : 'Set Active'; ?>" onclick="toggleStatus(<?php echo $announcement_id; ?>, <?php echo $toggle_is_active == 1 ? 0 : 1; ?>)">
+                                                    <i class="fa <?php echo $toggle_is_active == 1 ? 'fa-toggle-on' : 'fa-toggle-off'; ?>" style="font-size: 16px;"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php
+                                            $edit_data = json_encode([
+                                                "id" => $announcement_id,
+                                                "title" => $announcement_title,
+                                                "message" => $announcement_message,
+                                                "publish_date" => date("Y-m-d\TH:i", strtotime($announcement_date)),
+                                                "end_date" => !empty($row_announcements['end_date']) ? date("Y-m-d\TH:i", strtotime($row_announcements['end_date'])) : ""
+                                            ]);
+                                            $safe_edit_data = htmlspecialchars($edit_data, ENT_QUOTES, 'UTF-8');
+                                            ?>
+                                            <?php if (canAdminAccess('announcement_update')): ?>
+                                                <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if (canAdminAccess('announcement_delete')): ?>
+                                                <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
                             <?php
-                            $edit_data = json_encode([
-                                "id" => $announcement_id,
-                                "title" => $announcement_title,
-                                "message" => $announcement_message,
-                                "publish_date" => date("Y-m-d\TH:i", strtotime($announcement_date)),
-                                "end_date" => !empty($row_announcements['end_date']) ? date("Y-m-d\TH:i", strtotime($row_announcements['end_date'])) : ""
-                            ]);
-                            $safe_edit_data = htmlspecialchars($edit_data, ENT_QUOTES, 'UTF-8');
+                            }
+                        } else {
                             ?>
-                            <?php if (canAdminAccess('announcement_update')): ?>
-                                <button type="button" class="btn-icon-premium btn-icon-edit" onclick="openEditModal(<?php echo $safe_edit_data; ?>)" title="Edit Announcement">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                            <?php endif; ?>
-                            <?php if (canAdminAccess('announcement_delete')): ?>
-                                <button type="button" class="btn-icon-premium btn-icon-delete" title="Delete Announcement" onclick="showDeleteConfirm(<?php echo $announcement_id; ?>)">
-                                    <i class="fa fa-trash-o"></i>
-                                </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php }
-                if (mysqli_num_rows($run_announcements) == 0) {
-                    echo "<div style='display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; width: 100%;'>
-                            <div style='width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;'>
-                                <i class='fa fa-folder-open-o' style='font-size: 28px; color: #cbd5e1;'></i>
-                            </div>
-                            <div style='font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;'>No announcements.</div>
-                            <div style='font-size: 13px; color: #94a3b8;'>No notices to show right now.</div>
-                        </div>";
-                }
-                ?>
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 60px 20px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                        <div style="width: 64px; height: 64px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                            <i class="fa fa-folder-open-o" style="font-size: 28px; color: #cbd5e1;"></i>
+                                        </div>
+                                        <div style="font-size: 15px; font-weight: 700; color: #64748b; margin-bottom: 4px;">No announcements.</div>
+                                        <div style="font-size: 13px; color: #94a3b8;">No notices to show right now.</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
 
             <?php if ($totalPages > 1): ?>
@@ -760,12 +796,12 @@ if (!isset($_SESSION['admin_email'])) {
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <form method="post" action="index.php?announcement">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
                         <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: #232223; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
                             </div>
                             New Notice
@@ -775,22 +811,22 @@ if (!isset($_SESSION['admin_email'])) {
                     <div class="modal-body" style="padding: 30px 25px; background: #fff;">
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
+                            <textarea name="announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
                         </div>
                     </div>
 
@@ -812,12 +848,12 @@ if (!isset($_SESSION['admin_email'])) {
             <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <form method="post" action="index.php?announcement">
                     <input type="hidden" name="edit_id" id="edit_announcement_id">
-                    <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+                    <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                         <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
                         <h4 class="modal-title" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; text-align: left !important; flex: 1;">
-                            <div style="background: #dd2127; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: #232223; color:white;width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa fa-bullhorn" style="font-size: 14px;"></i>
                             </div>
                             Edit Announcement
@@ -827,22 +863,22 @@ if (!isset($_SESSION['admin_email'])) {
                     <div class="modal-body" style="padding: 30px 25px; background: #fff;">
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Announcement Title</label>
-                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="text" name="announcement_title" id="edit_announcement_title" class="form-control" required placeholder="Enter a concise title..." style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Publish Date & Time (Optional)</label>
-                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="publish_date" id="edit_publish_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">End Date & Time (Optional)</label>
-                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                            <input type="datetime-local" name="end_date" id="edit_end_date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 700; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Detailed Message</label>
-                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
+                            <textarea name="announcement_message" id="edit_announcement_message" class="form-control" rows="6" required placeholder="Type the announcement content here..." style="background: #f8fafc; border-radius: 14px; border: 1.5px solid #e2e8f0; padding: 15px 20px; width: 100%; color: #0f172a; font-size: 14px; font-weight: 600; outline: none; transition: all 0.3s; resize: none;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"></textarea>
                         </div>
                     </div>
 

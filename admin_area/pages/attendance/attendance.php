@@ -62,7 +62,7 @@ if (!$table_exists) {
         `attendance_date` DATE NOT NULL,
         `check_in_time` TIME NULL,
         `check_out_time` TIME NULL,
-        `status` ENUM('present', 'absent', 'leave') DEFAULT 'present',
+        `status` ENUM('present', 'absent', 'late') DEFAULT 'present',
         `remarks` VARCHAR(255),
         `performance` INT DEFAULT NULL,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -71,6 +71,15 @@ if (!$table_exists) {
     ) ENGINE=InnoDB";
     mysqli_query($con, $create_table);
 } else {
+    // Migrate old 'leave' to 'absent' and update ENUM
+    $check_enum = mysqli_query($con, "SHOW COLUMNS FROM attendance LIKE 'status'");
+    if ($check_enum) {
+        $row_enum = mysqli_fetch_assoc($check_enum);
+        if (strpos($row_enum['Type'], 'late') === false) {
+            mysqli_query($con, "UPDATE attendance SET status='absent' WHERE status='leave'");
+            mysqli_query($con, "ALTER TABLE `attendance` MODIFY `status` ENUM('present', 'absent', 'late') DEFAULT 'present'");
+        }
+    }
     // Ensure check_in_time column exists
     $col_check = mysqli_query($con, "SHOW COLUMNS FROM attendance LIKE 'check_in_time'");
     if ($col_check && mysqli_num_rows($col_check) === 0) {
@@ -190,16 +199,30 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
     $time_out = $normalized_checkout ? mysqli_real_escape_string($con, $normalized_checkout) : null;
     $perf_val = is_numeric($performance) ? (int)$performance : null;
 
-    // Auto-flag late if after 10:15 AM when marked present
+    // Auto-flag late if after 10:00:00 AM when marked present
     $late_cutoff = strtotime('1970-01-01 10:15:00');
-    if ($time_in && $status === 'present') {
+    if ($time_in && ($status === 'present' || $status === 'late')) {
         $tstamp = strtotime('1970-01-01 ' . $normalized_checkin);
-        if ($tstamp !== false && $tstamp > $late_cutoff && stripos($rm_raw, 'late') === false) {
-            $rm_raw = ($rm_raw ? $rm_raw . ' | ' : '') . 'Late check-in (after 10:15 AM)';
+        if ($tstamp !== false && $tstamp > $late_cutoff) {
+            $st = 'late';
+            if (stripos($rm_raw, 'late') === false) {
+                $rm_raw = ($rm_raw ? $rm_raw . ' | ' : '') . 'Late check-in';
+            }
+        } else {
+            $st = 'present';
         }
     }
 
     $rm   = mysqli_real_escape_string($con, $rm_raw);
+
+    $duration_secs = 0;
+    if ($time_in && $time_out) {
+        $in_t = strtotime("1970-01-01 $time_in");
+        $out_t = strtotime("1970-01-01 $time_out");
+        if ($out_t > $in_t) {
+            $duration_secs = $out_t - $in_t;
+        }
+    }
 
     $row_id = null;
     if ($exists) {
@@ -209,7 +232,7 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
         $row_id = (int)$existing['id'];
         $update = "UPDATE attendance 
                    SET status='$st', remarks='$rm', check_in_time " . ($time_in !== null ? "='$time_in'" : "=NULL") . ", 
-                       check_out_time " . ($time_out !== null ? "='$time_out'" : "=NULL");
+                       check_out_time " . ($time_out !== null ? "='$time_out'" : "=NULL") . ", total_duration_secs='$duration_secs'";
         if ($perf_val !== null) {
             $update .= ", performance='$perf_val'";
         }
@@ -219,13 +242,13 @@ function save_attendance_record($con, $emp_id, $attendance_date, $status, $remar
     } else {
         if (!canAdminAccess('attendance_insert')) return false;
 
-        $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks";
+        $insert = "INSERT INTO attendance (emp_id, attendance_date, check_in_time, check_out_time, status, remarks, total_duration_secs";
         if ($perf_val !== null) {
             $insert .= ", performance";
         }
         $insert .= ", created_at";
         $insert .= ") 
-                   VALUES ('$eid', '$date', " . ($time_in !== null ? "'$time_in'" : "NULL") . ", " . ($time_out !== null ? "'$time_out'" : "NULL") . ", '$st', '$rm'";
+                   VALUES ('$eid', '$date', " . ($time_in !== null ? "'$time_in'" : "NULL") . ", " . ($time_out !== null ? "'$time_out'" : "NULL") . ", '$st', '$rm', '$duration_secs'";
         if ($perf_val !== null) {
             $insert .= ", '$perf_val'";
         }
@@ -270,18 +293,7 @@ if (isset($_POST['save_attendance'])) {
     $check_out_time  = isset($_POST['check_out_time']) ? $_POST['check_out_time'] : '';
     $performance     = isset($_POST['performance']) ? $_POST['performance'] : null;
 
-    // Validate: if status is 'leave', remarks are mandatory
-    if ($status === 'leave' && empty(trim($remarks))) {
-        $message = "Remarks are mandatory for Leave status!";
-        // Repopulate modal fields with previous values
-        echo '<script>document.addEventListener("DOMContentLoaded", function() {';
-        echo 'openModal(' . json_encode($emp_id) . ', ' . json_encode($attendance_date) . ', ' . json_encode($check_in_time) . ', ' . json_encode($check_out_time) . ', ' . json_encode($remarks) . ', ' . json_encode($performance) . ');';
-        echo 'setTimeout(function(){';
-        echo 'document.getElementById("status").value = "leave";';
-        echo 'document.getElementById("remarks").value = ' . json_encode($remarks) . ';';
-        echo '}, 100);';
-        echo '});</script>';
-    } elseif ($emp_id && $attendance_date && $status) {
+    if ($emp_id && $attendance_date && $status) {
         // Require check-in time only for presents
         if ($status === 'present' && empty($check_in_time)) {
             $message = "Check-in time is required for Present status.";
@@ -313,12 +325,7 @@ if (isset($_POST['save_daily_attendance'])) {
             $rm = isset($remarks_arr[$idx]) ? trim($remarks_arr[$idx]) : '';
             $ci = isset($checkins_arr[$idx]) ? trim($checkins_arr[$idx]) : '';
 
-            // 1. Mandatory remarks for leave
-            if ($st === 'leave' && empty($rm)) {
-                $validation_error = true;
-                $message = "Remarks are mandatory for Leave status!";
-                break;
-            }
+            // (Removed mandatory remarks for leave)
 
             // 2. Smart Auto-fill: If Present but no time, default to 10:00
             if ($st === 'present' && empty($ci)) {
@@ -399,7 +406,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 
         <div style="padding: 35px 30px; background: #fff;">
             <?php if ($message) : ?>
-                <div class="alert alert-info" style="border-radius: 10px; margin-bottom: 25px; font-weight: 600; border: none; background: #f0f9ff; color: #df2127;">
+                <div class="alert alert-info" style="border-radius: 10px; margin-bottom: 25px; font-weight: 600; border: none; background: #f0f9ff; color: #232223;">
                     <i class="fa fa-info-circle"></i> <?php echo $message; ?>
                 </div>
             <?php endif; ?>
@@ -513,7 +520,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
             <div style="padding: 15px 24px; background: #fafafa; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa fa-clock-o" style="color: #64748b; font-size: 18px;"></i>
-                    <h3 style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">Daily Entries: <span style="color: #4338ca;"><?php echo date('d M Y', strtotime($selected_date)); ?></span></h3>
+                    <h3 style="margin: 0; font-size: 15px; color: #1e293b; font-weight: 600;">Daily Entries: <span style="color: #232223;"><?php echo date('d M Y', strtotime($selected_date)); ?></span></h3>
                 </div>
                 <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -565,8 +572,8 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 <th style="min-width:120px;">Status</th>
                                 <th style="white-space: nowrap;">Check-in Time</th>
                                 <th style="white-space: nowrap;">Check-out Time</th>
-                                <th style="white-space: nowrap;">Performance</th>
-                                <th style="width: 30%;">Remarks</th>
+                                <!-- <th style="white-space: nowrap;">Performance</th>
+                                <th style="width: 30%;">Remarks</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -587,6 +594,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     $pref_checkin = isset($_POST['check_in_time_arr'][$i]) ? $_POST['check_in_time_arr'][$i] : '';
                                     $pref_checkout = isset($_POST['check_out_time_arr'][$i]) ? $_POST['check_out_time_arr'][$i] : '';
                                     $pref_performance = isset($_POST['performance_arr'][$i]) ? $_POST['performance_arr'][$i] : '';
+
+                                    if ($pref_status === 'present' && $pref_checkin) {
+                                        $tstamp = strtotime('1970-01-01 ' . $pref_checkin);
+                                        $late_cutoff = strtotime('1970-01-01 10:15:00');
+                                        if ($tstamp !== false && $tstamp > $late_cutoff) {
+                                            $pref_status = 'late';
+                                        }
+                                    }
                                 } else {
                                     $pref        = isset($daily_attendance[$eid]) ? $daily_attendance[$eid] : null;
                                     $pref_status = $pref ? $pref['status'] : '';
@@ -594,6 +609,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     $pref_checkin = $pref ? htmlspecialchars($pref['check_in_time'] ?? '') : '10:00';
                                     $pref_checkout = $pref ? htmlspecialchars($pref['check_out_time'] ?? '') : '';
                                     $pref_performance = $pref ? htmlspecialchars($pref['performance'] ?? '') : '';
+
+                                    if ($pref_status === 'present' && $pref_checkin) {
+                                        $tstamp = strtotime('1970-01-01 ' . $pref_checkin);
+                                        $late_cutoff = strtotime('1970-01-01 10:15:00');
+                                        if ($tstamp !== false && $tstamp > $late_cutoff) {
+                                            $pref_status = 'late';
+                                        }
+                                    }
                                 }
                             ?>
                                 <tr>
@@ -608,14 +631,11 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     <td style="white-space: nowrap;">
                                         <?php if (canAdminAccess('attendance_insert')): ?>
                                             <div class="status-options">
-                                                <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status == '') ? ' active' : ''; ?>">
-                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status == '') ? 'checked' : ''; ?>>P
+                                                <label class="status-btn<?php echo ($pref_status === 'present' || $pref_status === 'late' || $pref_status == '') ? ($pref_status === 'late' ? ' active-late' : ' active') : ''; ?>">
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="present" <?php echo ($pref_status === 'present' || $pref_status === 'late' || $pref_status == '') ? 'checked' : ''; ?> onclick="updateStatusUI(this)">P
                                                 </label>
                                                 <label class="status-btn<?php echo ($pref_status === 'absent') ? ' active' : ''; ?>">
-                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="absent" <?php echo ($pref_status === 'absent') ? 'checked' : ''; ?>>A
-                                                </label>
-                                                <label class="status-btn<?php echo ($pref_status === 'leave') ? ' active' : ''; ?>">
-                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="leave" <?php echo ($pref_status === 'leave') ? 'checked' : ''; ?>>L
+                                                    <input type="radio" name="status[<?php echo $i; ?>]" value="absent" <?php echo ($pref_status === 'absent') ? 'checked' : ''; ?> onclick="updateStatusUI(this)">A
                                                 </label>
                                             </div>
                                         <?php else: ?>
@@ -626,44 +646,11 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                     </td>
                                     <td>
                                         <?php if (canAdminAccess('attendance_insert')): ?>
-                                            <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm">
+                                            <input type="time" name="check_in_time_arr[]" value="<?php echo $pref_checkin; ?>" class="form-control input-sm" onchange="autoSetLateStatus(this, <?php echo $i; ?>)">
                                         <?php else: ?>
                                             <?php echo htmlspecialchars($pref_checkin ? date('h:i A', strtotime($pref_checkin)) : '-'); ?>
                                         <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if (canAdminAccess('attendance_insert')): ?>
-                                            <input type="time" name="check_out_time_arr[]" value="<?php echo $pref_checkout; ?>" class="form-control input-sm">
-                                        <?php else: ?>
-                                            <?php echo htmlspecialchars($pref_checkout ? date('h:i A', strtotime($pref_checkout)) : '-'); ?>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if (canAdminAccess('attendance_insert')): ?>
-                                            <input type="number" name="performance_arr[]" value="<?php echo isset($pref_performance) ? htmlspecialchars($pref_performance) : ''; ?>" min="0" max="100" placeholder="0-100" class="form-control input-sm">
-                                        <?php else: ?>
-                                            <?php echo htmlspecialchars($pref_performance !== '' ? $pref_performance : '-'); ?>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if (canAdminAccess('attendance_insert')): ?>
-                                            <input type="text" name="remarks_arr[]" value="<?php echo $pref_remarks; ?>" placeholder="Optional remarks" class="form-control input-sm">
-                                        <?php else: ?>
-                                            <?php echo htmlspecialchars($pref_remarks ? $pref_remarks : '-'); ?>
-                                        <?php endif; ?>
-                                        <?php
-                                        // Inline error for leave without remarks (after failed POST)
-                                        $show_leave_error = false;
-                                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_daily_attendance'])) {
-                                            if ($pref_status === 'leave' && trim($pref_remarks) === '') {
-                                                $show_leave_error = true;
-                                            }
-                                        }
-                                        if ($show_leave_error): ?>
-                                            <div class="inline-error" style="color:#d9534f; font-size:12px; margin-top:2px;">
-                                                Remarks are mandatory for Leave status!
-                                            </div>
-                                        <?php endif; ?>
+
                                         <?php
                                         $show_time_error = false;
                                         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_daily_attendance'])) {
@@ -677,6 +664,27 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                             </div>
                                         <?php endif; ?>
                                     </td>
+                                    <td>
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="time" name="check_out_time_arr[]" value="<?php echo $pref_checkout; ?>" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_checkout ? date('h:i A', strtotime($pref_checkout)) : '-'); ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <!-- <td>
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="number" name="performance_arr[]" value="<?php echo isset($pref_performance) ? htmlspecialchars($pref_performance) : ''; ?>" min="0" max="100" placeholder="0-100" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_performance !== '' ? $pref_performance : '-'); ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if (canAdminAccess('attendance_insert')): ?>
+                                            <input type="text" name="remarks_arr[]" value="<?php echo $pref_remarks; ?>" placeholder="Optional remarks" class="form-control input-sm">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($pref_remarks ? $pref_remarks : '-'); ?>
+                                        <?php endif; ?>
+                                    </td> -->
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -707,16 +715,16 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                             <th style="white-space: nowrap; width: 100px;">Check-in</th>
                             <th style="white-space: nowrap; width: 100px;">Check-out</th>
                             <th style="white-space: nowrap; width: 100px;">Total Hours</th>
-                            <th style="white-space: nowrap; width: 100px;">Performance</th>
+                            <!-- <th style="white-space: nowrap; width: 100px;">Performance</th>
                             <th style="white-space: nowrap; width: 160px;">Created At</th>
-                            <th>Remarks</th>
+                            <th>Remarks</th> -->
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $present_count = 0;
                         $absent_count  = 0;
-                        $leave_count   = 0;
+                        $late_count    = 0;
                         $marked_days   = 0;
                         $today = date('Y-m-d');
                         $can_edit_today = false;
@@ -725,6 +733,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         }
 
                         $total_secs_month = 0;
+                        $total_display_minutes = 0;
 
                         for ($day = 1; $day <= $days_in_month; $day++) {
                             $date     = sprintf('%04d-%02d-%02d', $current_year, $current_month, $day);
@@ -743,23 +752,47 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 $checkin      = htmlspecialchars($attendance_data[$date]['check_in_time'] ?? '');
                                 $checkout     = htmlspecialchars($attendance_data[$date]['check_out_time'] ?? '');
 
+                                if ($status_class === 'present' && $checkin) {
+                                    $tstamp = strtotime('1970-01-01 ' . $checkin);
+                                    $late_cutoff = strtotime('1970-01-01 10:15:00');
+                                    if ($tstamp !== false && $tstamp > $late_cutoff) {
+                                        $status = 'Late';
+                                        $status_class = 'late';
+                                    }
+                                }
+
                                 // Calculate formatted duration
                                 $row_secs = isset($attendance_data[$date]['total_duration_secs']) ? (int)$attendance_data[$date]['total_duration_secs'] : 0;
+                                if ($date === date('Y-m-d') && isset($attendance_data[$date]['is_working']) && $attendance_data[$date]['is_working'] == 1) {
+                                    $last_res = $attendance_data[$date]['last_resume_time'];
+                                    $db_tot_secs = (int)($attendance_data[$date]['total_duration_secs'] ?? 0);
+                                    $start_time_calc = ($db_tot_secs > 0 && !empty($last_res)) ? $last_res : ($date . ' ' . $checkin);
+                                    if (!empty($start_time_calc)) {
+                                        $row_secs = $db_tot_secs + (time() - strtotime($start_time_calc));
+                                    }
+                                } elseif ($row_secs == 0 && $checkin && $checkout) {
+                                    $in_t = strtotime("1970-01-01 $checkin");
+                                    $out_t = strtotime("1970-01-01 $checkout");
+                                    if ($out_t > $in_t) {
+                                        $row_secs = $out_t - $in_t;
+                                    }
+                                }
                                 $total_secs_month += $row_secs;
 
                                 if ($row_secs > 0) {
                                     $rh = floor($row_secs / 3600);
                                     $rm = floor(($row_secs % 3600) / 60);
                                     $display_duration = "{$rh}h {$rm}m";
+                                    $total_display_minutes += ($rh * 60) + $rm;
                                 }
 
                                 $created_at   = htmlspecialchars($attendance_data[$date]['created_at'] ?? '');
                                 $perf         = htmlspecialchars($attendance_data[$date]['performance'] ?? '');
                                 $marked_days++;
 
-                                if ($attendance_data[$date]['status'] === 'present') $present_count++;
+                                if ($status_class === 'late') $late_count++;
+                                elseif ($attendance_data[$date]['status'] === 'present') $present_count++;
                                 elseif ($attendance_data[$date]['status'] === 'absent')  $absent_count++;
-                                elseif ($attendance_data[$date]['status'] === 'leave')   $leave_count++;
                                 elseif ($attendance_data[$date]['status'] === 'holiday') {
                                     // No count increase for now unless requested
                                 }
@@ -787,9 +820,9 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                             echo '<td style="white-space: nowrap;">' . ($checkin ? $checkin : '-') . '</td>';
                             echo '<td style="white-space: nowrap;">' . ($checkout ? $checkout : '-') . '</td>';
                             echo '<td style="white-space: nowrap; color: #3b82f6; font-weight: 600;">' . $display_duration . '</td>';
-                            echo '<td style="white-space: nowrap;">' . ($perf !== '' ? $perf : '-') . '</td>';
-                            echo '<td style="white-space: nowrap;">' . ($created_at ? date('d-m-y H:i:s', strtotime($created_at)) : '-') . '</td>';
-                            echo '<td class="remarks-cell" style="max-width: 250px; word-wrap: break-word; word-break: break-word; white-space: normal;">' . ($remarks ? $remarks : '-') . '</td>';
+                            // echo '<td style="white-space: nowrap;">' . ($perf !== '' ? $perf : '-') . '</td>';
+                            // echo '<td style="white-space: nowrap;">' . ($created_at ? date('d-m-y H:i:s', strtotime($created_at)) : '-') . '</td>';
+                            // echo '<td class="remarks-cell" style="max-width: 250px; word-wrap: break-word; word-break: break-word; white-space: normal;">' . ($remarks ? $remarks : '-') . '</td>';
                             echo '</tr>';
                         }
                         ?>
@@ -798,15 +831,15 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                             <td colspan="2">
                                 <span style="color: #10b981;">P: <?php echo $present_count; ?></span> |
                                 <span style="color: #ef4444;">A: <?php echo $absent_count; ?></span> |
-                                <span style="color: #f59e0b;">L: <?php echo $leave_count; ?></span> |
+                                <span style="color: #e65100;">L: <?php echo $late_count; ?></span> |
                                 <span style="color: #6366f1;">Total: <?php echo $marked_days; ?></span>
                             </td>
 
                             <td style="color: #3b82f6;">
                                 <?php
-                                if ($total_secs_month > 0) {
-                                    $th = floor($total_secs_month / 3600);
-                                    $tm = floor(($total_secs_month % 3600) / 60);
+                                if ($total_display_minutes > 0) {
+                                    $th = floor($total_display_minutes / 60);
+                                    $tm = $total_display_minutes % 60;
                                     echo "{$th}h {$tm}m";
                                 } else {
                                     echo "-";
@@ -814,7 +847,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 ?>
                             </td>
 
-                            <td>
+                            <!-- <td>
                                 <?php if ($avg_daily_performance !== null): ?>
                                     <span style="background: #3b82f6; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
                                         <?php echo $avg_daily_performance; ?>%
@@ -824,7 +857,7 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                                 <?php endif; ?>
                             </td>
 
-                            <td colspan="2"></td>
+                            <td colspan="2"></td> -->
                         </tr>
                     </tbody>
                 </table>
@@ -860,7 +893,6 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                         <option value="">Select Status</option>
                         <option value="present">Present</option>
                         <option value="absent">Absent</option>
-                        <option value="leave">Leave</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -871,14 +903,14 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
                     <label for="check_out_time">Check-out Time:</label>
                     <input type="time" id="check_out_time" name="check_out_time" class="form-control">
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="performance">Performance (0-100):</label>
                     <input type="number" min="0" max="100" id="performance" name="performance" class="form-control" placeholder="Optional">
                 </div>
                 <div class="form-group">
                     <label for="remarks">Remarks: <span id="remarksRequired" style="color: #d9534f; display:none;">*</span></label>
                     <textarea id="remarks" name="remarks" class="form-control" placeholder="Optional remarks..."></textarea>
-                </div>
+                </div> -->
                 <input type="hidden" id="emp_id" name="emp_id">
                 <input type="hidden" id="attendance_date" name="attendance_date">
                 <input type="hidden" name="save_attendance" value="1">
@@ -892,37 +924,56 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
 </div>
 
 <script>
-    // ---- LEAVE REMARKS VALIDATION ----
-    function validateLeaveRemarks() {
-        // For daily form
-        const dailyForm = document.querySelector('form[name*="save_daily"]') ||
-            document.querySelector('form').parentElement.querySelector('form[method="POST"]');
-        let anyError = false;
-        if (dailyForm) {
-            const statuses = dailyForm.querySelectorAll('input[type="radio"]:checked');
-            const remarksInputs = dailyForm.querySelectorAll('input[name*="remarks_arr"]');
-            // Remove old errors
-            dailyForm.querySelectorAll('.inline-error').forEach(function(el) {
-                el.remove();
-            });
-            for (let i = 0; i < statuses.length; i++) {
-                if (statuses[i].value === 'leave') {
-                    const remark = remarksInputs[i] ? remarksInputs[i].value.trim() : '';
-                    if (!remark) {
-                        // Insert error below this remarks input
-                        const errDiv = document.createElement('div');
-                        errDiv.className = 'inline-error';
-                        errDiv.style.color = '#d9534f';
-                        errDiv.style.fontSize = '12px';
-                        errDiv.style.marginTop = '2px';
-                        errDiv.textContent = 'Remarks are mandatory for Leave status!';
-                        remarksInputs[i].parentNode.appendChild(errDiv);
-                        anyError = true;
+    // ---- AUTO LATE STATUS UI ----
+    function updateStatusUI(radio) {
+        let name = radio.name;
+        let allRadios = document.querySelectorAll('input[name="' + name + '"]');
+        allRadios.forEach(r => {
+            if (r.checked) {
+                if (r.value === 'present') {
+                    let tr = r.closest('tr');
+                    let timeInput = tr.querySelector('input[type="time"]');
+                    let isLate = false;
+                    if (timeInput && timeInput.value) {
+                        let timeParts = timeInput.value.split(':');
+                        let hours = parseInt(timeParts[0]);
+                        let minutes = parseInt(timeParts[1]);
+                        if (hours > 10 || (hours === 10 && minutes > 15)) {
+                            isLate = true;
+                        }
                     }
+                    if (isLate) {
+                        r.parentElement.classList.add('active-late');
+                        r.parentElement.classList.remove('active');
+                    } else {
+                        r.parentElement.classList.add('active');
+                        r.parentElement.classList.remove('active-late');
+                    }
+                } else {
+                    r.parentElement.classList.add('active');
+                    r.parentElement.classList.remove('active-late');
                 }
+            } else {
+                r.parentElement.classList.remove('active');
+                r.parentElement.classList.remove('active-late');
             }
+        });
+    }
+
+    function autoSetLateStatus(input, index) {
+        let pRadio = document.querySelector('input[name="status[' + index + ']"][value="present"]');
+        let aRadio = document.querySelector('input[name="status[' + index + ']"][value="absent"]');
+
+        // Only change it if they haven't explicitly marked it Absent
+        if (aRadio && !aRadio.checked && pRadio) {
+            pRadio.checked = true;
+            updateStatusUI(pRadio);
         }
-        return !anyError;
+    }
+
+    // ---- REMARKS VALIDATION (REMOVED LEAVE VALIDATION) ----
+    function validateLeaveRemarks() {
+        return true;
     }
 
     // Intercept daily attendance form submission
@@ -944,23 +995,17 @@ $showDataScreen      = ($is_daily && $selected_date) || ($selected_emp_id > 0);
             let inlineErr = document.createElement('div');
             inlineErr.id = 'modalLeaveError';
             inlineErr.style.display = 'none';
-            inlineErr.style.color = '#d9534f';
-            inlineErr.style.fontSize = '13px';
-            inlineErr.style.marginTop = '4px';
-            attendanceForm.querySelector('.form-group:last-child').appendChild(inlineErr);
+            const lastGroup = attendanceForm.querySelector('.form-group:last-child') || attendanceForm.querySelector('.modal-body') || attendanceForm;
+            if (lastGroup) {
+                lastGroup.appendChild(inlineErr);
+            }
 
             attendanceForm.addEventListener('submit', function(e) {
                 const status = document.getElementById('status').value;
                 const remarks = document.getElementById('remarks').value.trim();
                 const checkIn = document.getElementById('check_in_time').value;
                 const errDiv = document.getElementById('modalLeaveError');
-                if (status === 'leave' && !remarks) {
-                    e.preventDefault();
-                    errDiv.textContent = 'Remarks are mandatory for Leave status!';
-                    errDiv.style.display = 'block';
-                    document.getElementById('remarks').focus();
-                    return false;
-                }
+
                 if (status === 'present' && !checkIn) {
                     e.preventDefault();
                     errDiv.textContent = 'Check-in time is required for Present status.';

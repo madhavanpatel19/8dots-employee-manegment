@@ -8,7 +8,6 @@ if (!isset($_SESSION['emp_id']) || !isset($_SESSION['emp_name'])) {
     header('Location: ../../pages/auth/login.php');
     exit();
 }
-
 $emp_id = $_SESSION['emp_id'];
 
 // Fetch allowed categories for this employee
@@ -67,20 +66,22 @@ if (!empty($allowed_categories)) {
             <div style="padding: 15px 20px; border-bottom: 1px solid #e2e8f0; background: var(--p-bg-header);">
                 <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #fff;">Pinned Resources (Private)</h3>
             </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background: #fafbfc; border-bottom: 1px solid #e2e8f0;">
-                        <th style="padding: 12px 20px; text-align: left; font-size: 12px; color: #64748b; font-weight: 600;">Name</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Type</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Section</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Updated On</th>
-                        <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #64748b; font-weight: 600;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="emp-pinned-links-table">
-                    <!-- populated by JS -->
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table-premium" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th style="text-align: center;">Type</th>
+                            <th style="text-align: center;">Section</th>
+                            <th style="text-align: center;">Updated On</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="emp-pinned-links-table">
+                        <!-- populated by JS -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -95,12 +96,12 @@ if (!empty($allowed_categories)) {
         <!-- Header -->
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
             <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="width: 60px; height: 60px; background: #ffeaeb; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #df2127;">
+                <div style="width: 60px; height: 60px; background: rgb(34 35 35 / 20%);; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #232223;">
                     <i class="fa fa-folder"></i>
                 </div>
                 <div>
                     <h2 id="hub-section-title" style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 800;">Section</h2>
-                    <p id="hub-section-stats" style="margin: 4px 0 0 0; color: #df2127; font-size: 14px; font-weight: 500;">
+                    <p id="hub-section-stats" style="margin: 4px 0 0 0; color: #232223; font-size: 14px; font-weight: 500;">
                         0 Files &bull; 0 Links
                     </p>
                 </div>
@@ -173,17 +174,19 @@ if (!empty($allowed_categories)) {
         <div style="margin-bottom: 40px;" id="files-section-container">
             <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 700; color: #0f172a;" id="files-section-title">Files (0)</h3>
             <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #fff;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: var(--p-bg-header); border-bottom: 1px solid #e2e8f0;">
-                            <th style="padding: 12px 20px; text-align: left; font-size: 12px; color: #fff; font-weight: 600;">Name</th>
-                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #fff; font-weight: 600;">Type</th>
-                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #fff; font-weight: 600;">Updated On</th>
-                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #fff; font-weight: 600;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hub-files-table"></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table-premium" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th style="text-align: center;">Type</th>
+                                <th style="text-align: center;">Updated On</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hub-files-table"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -191,17 +194,19 @@ if (!empty($allowed_categories)) {
         <div id="links-section-container">
             <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 700; color: #0f172a;" id="links-section-title">Links (0)</h3>
             <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #fff;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: var(--p-bg-header); border-bottom: 1px solid #e2e8f0;">
-                            <th style="padding: 12px 20px; text-align: left; font-size: 12px; color: #fff; font-weight: 600;">Name</th>
-                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #fff; font-weight: 600;">URL</th>
-                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #fff; font-weight: 600;">Updated On</th>
-                            <th style="padding: 12px 20px; text-align: center; font-size: 12px; color: #fff; font-weight: 600;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hub-links-table"></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table-premium" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th style="text-align: center;">URL</th>
+                                <th style="text-align: center;">Updated On</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hub-links-table"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -236,28 +241,6 @@ if (!empty($allowed_categories)) {
         justify-content: center;
         font-size: 16px;
         flex-shrink: 0;
-    }
-
-    .btn-icon-premium {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        width: 34px;
-        height: 34px;
-        transition: 0.3s;
-        cursor: pointer;
-        color: #64748b;
-        text-decoration: none !important;
-    }
-
-    .btn-icon-premium:hover {
-        background: #f8fafc;
-        border-color: #1e293b;
-        color: #1e293b;
-        transform: translateY(-2px);
     }
 
     .add-menu-item:hover {
@@ -374,7 +357,7 @@ if (!empty($allowed_categories)) {
                     html += `
                     <div class="folder-card" data-category="${cat}" data-mode="company">
                         <div style="display:flex;gap:15px;align-items:center;">
-                            <div style="width:50px;height:50px;background:#FFEAEB;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#DF2127;font-size:24px;">
+                            <div style="width:50px;height:50px;background:rgb(34 35 35 / 20%);;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#232223;font-size:24px;">
                                 <i class="fa fa-folder"></i>
                             </div>
                             <div>
@@ -445,7 +428,7 @@ if (!empty($allowed_categories)) {
                     <tr class="table-row-hover">
                         <td style="padding: 15px 20px; vertical-align: middle;">
                             <div style="display: flex; align-items: center; justify-content: flex-start; gap: 12px;">
-                                <div style="width: 32px; height: 32px; border-radius: 6px; background: ${isPrivate ? '#e0f2fe' : '#ffeaeb'}; color: ${isPrivate ? '#0284c7' : '#df2127'}; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                                <div style="width: 32px; height: 32px; border-radius: 6px; background: ${isPrivate ? '#e0f2fe' : 'rgb(34 35 35 / 20%);'}; color: ${isPrivate ? '#0284c7' : '#232223'}; display: flex; align-items: center; justify-content: center; font-size: 16px;">
                                     <i class="fa ${typeInfo.icon}"></i>
                                 </div>
                                 <span style="color: #0f172a; font-weight: 500; font-size: 14px;">${item.link_name}</span>
@@ -453,15 +436,15 @@ if (!empty($allowed_categories)) {
                         </td>
                         <td style="padding: 15px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 14px;">${typeInfo.type}</td>
                         <td style="padding: 15px 20px; text-align: center; vertical-align: middle;">
-                            <span style="color: ${isPrivate ? '#0284c7' : '#df2127'}; cursor: pointer; font-size: 14px; font-weight: 500;" onclick="openResourceHub('${item.category}', '${mode}')">${item.category} ${isPrivate ? '(Private)' : ''}</span>
+                            <span style="color: ${isPrivate ? '#0284c7' : '#232223'}; cursor: pointer; font-size: 14px; font-weight: 500;" onclick="openResourceHub('${item.category}', '${mode}')">${item.category} ${isPrivate ? '(Private)' : ''}</span>
                         </td>
                         <td style="padding: 15px 20px; text-align: center; vertical-align: middle; color: #475569; font-size: 14px;">${updatedOn}</td>
                         <td style="padding: 15px 20px; text-align: center; vertical-align: middle;">
                             <div style="display: flex; justify-content: center; gap: 8px;">
-                                <button class="btn-icon-premium btn-pin-resource" data-id="${item.id}" data-pinned="${item.is_pinned}" data-mode="${mode}" style="width: 32px; height: 32px; font-size: 12px; background: #fefce8; border-color: #fef9c3; color: #eab308;" title="Unpin">
+                                <button class="btn-icon-premium btn-pin-resource" data-id="${item.id}" data-pinned="${item.is_pinned}" data-mode="${mode}" style="background: #fefce8; border-color: #fef9c3; color: #eab308;" title="Unpin">
                                     <i class="fa fa-thumb-tack"></i>
                                 </button>
-                                <a href="${url}" target="_blank" class="btn-icon-premium" style="width: 32px; height: 32px; font-size: 12px; background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="${typeInfo.type === 'Link' ? 'Visit' : 'Download'}">
+                                <a href="${url}" target="_blank" class="btn-icon-premium" style="background: #f0f9ff; border-color: #e0f2fe; color: #0284c7;" title="${typeInfo.type === 'Link' ? 'Visit' : 'Download'}">
                                     <i class="fa ${typeInfo.type === 'Link' ? 'fa-external-link' : 'fa-download'}"></i>
                                 </a>
                             </div>
@@ -589,7 +572,7 @@ if (!empty($allowed_categories)) {
                         </div>
                     </td>
                     <td style="padding:12px 20px;text-align:center;vertical-align:middle;">
-                        <a href="${url}" target="_blank" style="color:#df2127;font-size:13px;text-decoration:none;word-break:break-all;">${url}</a>
+                        <a href="${url}" target="_blank" style="color:#232223;font-size:13px;text-decoration:none;word-break:break-all;">${url}</a>
                     </td>
                     <td style="padding:12px 20px;text-align:center;vertical-align:middle;color:#475569;font-size:13px;">${dateOn}</td>
                     <td style="padding:12px 20px;text-align:center;vertical-align:middle;">

@@ -248,7 +248,7 @@ endif; ?>
     .step-badge {
         width: 32px;
         height: 32px;
-        background: #dc2626;
+        background: #232223;
         color: #fff;
         border-radius: 8px;
         display: flex;
@@ -285,7 +285,7 @@ endif; ?>
     }
 
     .form-label-custom .req {
-        color: #dc2626;
+        color: #232223;
     }
 
     .p-input-premium {
@@ -301,8 +301,9 @@ endif; ?>
     }
 
     .p-input-premium:focus {
-        border-color: #df2127;
-        box-shadow: 0 0 0 4px rgba(223, 33, 39, 0.1);
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%);
+        !important;
         outline: none;
     }
 
@@ -330,7 +331,7 @@ endif; ?>
 
     .upload-icon {
         font-size: 32px;
-        color: #dc2626;
+        color: #232223;
         margin-bottom: 15px;
     }
 
@@ -350,8 +351,8 @@ endif; ?>
 
     .btn-choose {
         padding: 8px 24px;
-        border: 1.5px solid #dc2626;
-        color: #dc2626;
+        border: 1.5px solid #232223;
+        color: #232223;
         background: #fff;
         border-radius: 8px;
         font-weight: 700;
@@ -553,7 +554,7 @@ endif; ?>
                             ?>
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                         <label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; font-size: 13px;">
-                                            <input type="checkbox" name="industry[]" value="<?php echo htmlspecialchars($i_name); ?>" <?php echo $checked; ?> style="margin-right: 8px; width: 14px; height: 14px; vertical-align: middle; accent-color: #DF2127;"> <?php echo htmlspecialchars($i_name); ?>
+                                            <input type="checkbox" name="industry[]" value="<?php echo htmlspecialchars($i_name); ?>" <?php echo $checked; ?> style="margin-right: 8px; width: 14px; height: 14px; vertical-align: middle; accent-color: #232223;"> <?php echo htmlspecialchars($i_name); ?>
                                         </label>
                                         <i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteIndustry(<?php echo $i_id; ?>, this)"></i>
                                     </div>
@@ -595,12 +596,12 @@ endif; ?>
 <div class="modal fade" id="addIndustryModal" tabindex="-1" role="dialog" aria-labelledby="addIndustryModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
-            <div class="modal-header" style="background: #ffedeb; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
+            <div class="modal-header" style="background: #ffffff ; color: #1e293b; padding: 20px 25px; border: none; position: relative;">
                 <button class="btn-modal-close" data-dismiss="modal" aria-label="Close">
                     <i class="fa fa-times"></i>
                 </button>
                 <h4 class="modal-title" id="addSourceModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 12px; margin: 0;">
-                    <div style="background: #DD2127; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: #232223; color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="font-size: 14px;"></i>
                     </div>
                     Add New Industry
@@ -610,7 +611,7 @@ endif; ?>
                 <form id="add-industry-form-main">
                     <div style="margin-bottom: 25px;">
                         <label style="font-weight: 700; color: #475569; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Industry Name</label>
-                        <input type="text" name="industry_name" id="new_industry_name" placeholder="e.g. Technology, Healthcare" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#DF2127'; this.style.boxShadow='0 0 0 4px rgba(223, 33, 39, 0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        <input type="text" name="industry_name" id="new_industry_name" placeholder="e.g. Technology, Healthcare" required style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 4px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
                     </div>
                     <div style="text-align: right; gap: 12px; display: flex; justify-content: flex-end;">
                         <button type="button" data-dismiss="modal" class="btn-premium-cancel">Cancel</button>
@@ -650,7 +651,7 @@ endif; ?>
                     if (data.status == "success") {
                         var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
                             '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; font-size: 13px;">' +
-                            '<input type="checkbox" name="industry[]" value="' + data.name + '" checked style="margin-right: 8px; width: 14px; height: 14px; vertical-align: middle; accent-color: #DF2127;"> ' + data.name +
+                            '<input type="checkbox" name="industry[]" value="' + data.name + '" checked style="margin-right: 8px; width: 14px; height: 14px; vertical-align: middle; accent-color: #232223;"> ' + data.name +
                             '</label>' +
                             '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteIndustry(' + data.id + ', this)"></i>' +
                             '</div>';
@@ -672,7 +673,7 @@ endif; ?>
                             } else {
                                 var newHtml = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
                                     '<label style="font-weight: 500; color: #475569; cursor: pointer; margin: 0; font-size: 13px;">' +
-                                    '<input type="checkbox" name="industry[]" value="' + industry + '" checked style="margin-right: 8px; width: 14px; height: 14px; vertical-align: middle; accent-color: #DF2127;"> ' + industry +
+                                    '<input type="checkbox" name="industry[]" value="' + industry + '" checked style="margin-right: 8px; width: 14px; height: 14px; vertical-align: middle; accent-color: #232223;"> ' + industry +
                                     '</label>' +
                                     '<i class="fa fa-trash" style="color: #ef4444; cursor: pointer; font-size: 13px;" onclick="deleteIndustry(' + data.id + ', this)"></i>' +
                                     '</div>';
@@ -698,25 +699,88 @@ endif; ?>
     });
 
     function deleteIndustry(industryId, element) {
-        if (confirm("Do you really want to delete this industry?")) {
-            $.ajax({
-                url: "ajax/misc/ajax_delete_industry.php",
-                method: "POST",
-                data: {
-                    industry_id: industryId
-                },
-                dataType: "json",
-                success: function(data) {
-                    if (data.status === "success") {
-                        $(element).closest('div').remove();
-                    } else {
-                        Swal.fire('Notification', 'Error: ' + data.message, 'error');
-                    }
-                },
-                error: function() {
-                    Swal.fire('Notification', 'Connection Error: Failed to connect to the server.', 'error');
+        if (!industryId || industryId <= 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Invalid Industry ID.',
+                icon: 'error',
+                confirmButtonColor: '#232223'
+            });
+            return;
+        }
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Delete Industry?',
+                html: 'Are you sure you want to delete this industry?<br><span style="font-size: 13px; color: #64748b;">This action cannot be undone.</span>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#232223',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+                focusCancel: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "ajax/misc/ajax_delete_industry.php",
+                        method: "POST",
+                        data: {
+                            industry_id: industryId,
+                            id: industryId
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.status === "success") {
+                                $(element).closest('div').remove();
+                                Swal.fire({
+                                    title: 'Industry Deleted Successfully!',
+                                    text: 'The industry has been removed.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#232223',
+                                    confirmButtonText: 'OK',
+                                    timer: 1800,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.message || 'Could not delete industry.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#232223'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            var errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : (xhr.responseText ? xhr.responseText : 'Failed to connect to the server.');
+                            Swal.fire({
+                                title: 'Error',
+                                text: errMsg,
+                                icon: 'error',
+                                confirmButtonColor: '#232223'
+                            });
+                        }
+                    });
                 }
             });
+        } else {
+            if (confirm("Do you really want to delete this industry?")) {
+                $.ajax({
+                    url: "ajax/misc/ajax_delete_industry.php",
+                    method: "POST",
+                    data: {
+                        industry_id: industryId
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.status === "success") {
+                            $(element).closest('div').remove();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    }
+                });
+            }
         }
     }
 </script>

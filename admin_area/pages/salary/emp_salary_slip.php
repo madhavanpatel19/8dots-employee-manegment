@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (session_status() == PHP_SESSION_NONE) {
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
@@ -160,11 +160,12 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
         <div class="slip-top-decor"></div>
         <div class="slip-header">
             <div class="company-left">
-                <img src="../admin_area/images/cadlete_Black_logo_favicon.png" alt="CADLETE DESIGNS Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
+                <img src="../admin_area/images/favicon.png" alt="8Dots Logo" class="company-logo" style="max-height: 80px;" onerror="this.style.display='none'">
                 <div class="company-center">
                     <h3 class="company-name">Cadlete Design</h3>
-                    <div class="company-address">A-106, Sun South Street, Ahmedabad</div>
-                    <div class="company-meta-small">Phone: +91 95865 45430 &nbsp;|&nbsp; Email: info@cadletedesigns.com</div>
+                    <div class="company-address">516,8DOTS, STC ,Bopal, Ahmedabad, Gujarat 380058
+                    </div>
+                    <div class="company-meta-small">Phone: 8155816776 &nbsp;|&nbsp; Email: hr@8dots.in</div>
                 </div>
             </div>
             <div class="slip-meta">
@@ -235,12 +236,15 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
             </table>
         </div>
 
-        <div class="slip-signature clearfix">
-            <div class="sign-left">
-                <p>Employee Signature</p>
+        <div class="slip-signature clearfix" style="border-top: none; display: flex; align-items: flex-end; justify-content: space-between; margin-top: 20px;">
+            <div class="sign-left" style="width: 60%; text-align: left; float: none;">
+                <p style="font-size: 11px; color: #666; border-top: none; margin: 0; padding: 0; margin-bottom: 5px; display: block; font-weight: normal;">This is a system generated payslip.</p>
             </div>
-            <div class="sign-right">
-                <p>Authorized Signatory</p>
+            <div class="sign-right" style="width: 40%; float: none; text-align: right;">
+                <div style="display: inline-block; text-align: center; position: relative; margin-top: 50px;">
+                    <img src="images/k_logo_sign.png" alt="Signature" class="sign-image" style="height: 73px; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: -5px; z-index: 1;">
+                    <p style="margin: 0; border-top: 1px solid #444; padding-top: 5px; min-width: 150px; display: inline-block; font-weight: 600;">Authorized Signatory</p>
+                </div>
             </div>
         </div>
     </div>
@@ -420,9 +424,8 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                                         <?php if ($can_view): ?>
                                             <div style="display: flex; justify-content: center;">
                                                 <button type="button"
-                                                    class="p-btn-action p-btn-view view-slip-btn"
+                                                    class="btn-icon-premium btn-icon-view view-slip-btn"
                                                     data-month="<?php echo $m_val; ?>"
-                                                    style="border: none;"
                                                     title="View Salary Slip">
                                                     <i class="fa fa-eye"></i>
                                                 </button>
@@ -458,8 +461,8 @@ if (isset($_GET['ajax']) && isset($_GET['view']) && $employee) {
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 20px 25px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="border-radius: 10px; padding: 10px 20px; font-weight: 600; margin: 0;">Close</button>
-                    <button type="button" class="btn btn-success" id="modalDownloadBtn" style="border-radius: 10px; padding: 10px 20px; font-weight: 600; margin: 0;">
+                    <button type="button" class="btn-premium-cancel" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn-premium-add" id="modalDownloadBtn">
                         <i class="fa fa-download"></i> Save as PDF
                     </button>
                 </div>

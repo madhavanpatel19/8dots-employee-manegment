@@ -10,7 +10,7 @@
     border: 1px solid #e3e3e3;
     padding: 26px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: "Poppins", sans-serif;
     color: #222;
 }
 
@@ -91,7 +91,7 @@
 .slip-meta h4 {
     margin: 0 0 6px 0;
     font-size: 16px;
-    font-family: Georgia, serif;
+    font-family: "Poppins", sans-serif;
 }
 
 .slip-meta .slip-id {
@@ -161,7 +161,7 @@
 .earn-ded-table th.amt {
     text-align: right;
     width: 22%;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Poppins", sans-serif;
     font-weight: 600;
 }
 
@@ -243,7 +243,7 @@
 .slip-table td.amt {
     text-align: right;
     font-weight: 600;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Poppins", sans-serif;
 }
 
 .currency-symbol {
@@ -260,7 +260,30 @@
     }
 
     body {
-        background: #fff;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .earn-ded-table th,
+    .earn-ded-table td {
+        border: 1px solid #ccc !important;
+    }
+
+    .earn-ded-table thead th {
+        background: #f8f8f8 !important;
+        border-bottom: 2px solid #999 !important;
+    }
+
+    .earn-ded-table tfoot tr.net td {
+        background: #e8f5e9 !important;
+        border-top: 2px solid #0b6b2b !important;
+        border-bottom: 2px solid #0b6b2b !important;
     }
 
     /* hide everything, then re-show slip area to avoid sidebar/navigation in print */
@@ -281,12 +304,9 @@
     #slip,
     #slip-content,
     .salary-slip {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
         box-shadow: none !important;
         border: 1px solid #eee !important;
+        margin: 0 auto !important;
     }
 
     .slip-controls,
@@ -297,9 +317,12 @@
     .btn,
     .no-print,
     .modal-header,
-    .modal-footer,
-    .slip-top-decor {
+    .modal-footer {
         display: none !important;
+    }
+
+    .slip-top-decor {
+        display: block !important;
     }
 
     /* let slips flow normally for multipage print */

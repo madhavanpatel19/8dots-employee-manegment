@@ -28,7 +28,7 @@ if ($run_projs) {
     <div class="page-header-premium" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
         <div style="display: flex; align-items: center; gap: 20px;">
             <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px;">
-                <i class="fa fa-globe" style="color: #dc2626;"></i> Global Team Tasks
+                <i class="fa fa-globe" style="color: #232223;"></i> Global Team Tasks
             </h1>
             <div style="padding: 8px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
                 All Workspace Tasks
@@ -42,7 +42,7 @@ if ($run_projs) {
                 <i class="fa fa-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;"></i>
                 <input type="text" id="task-search" placeholder="Search tasks..." style="width: 250px; padding: 10px 15px 10px 38px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #334155; font-weight: 500; outline: none; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
             </div> -->
-            <button class="btn btn-primary" onclick="showGlobalAddTask()" style="background: #dc2626; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: #fff; box-shadow: 0 2px 4px rgba(220,38,38,0.2);">
+            <button class="btn btn-primary" onclick="showGlobalAddTask()" style="background: #232223; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: #fff; box-shadow: 0 2px 4px rgba(220,38,38,0.2);">
                 <i class="fa fa-plus"></i> Add Task
             </button>
         </div>
@@ -94,7 +94,7 @@ if ($run_projs) {
         <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.18);">
             <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background: linear-gradient(135deg, #fff 0%, #fef9f9 100%); border-radius: 14px 14px 0 0;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-plus" style="color: #fff; font-size: 14px;"></i>
                     </div>
                     <div>
@@ -109,7 +109,7 @@ if ($run_projs) {
             <div class="modal-body" style="padding: 24px;">
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa fa-briefcase" style="color: #dc2626; font-size: 11px;"></i> Project
+                        <i class="fa fa-briefcase" style="color: #232223; font-size: 11px;"></i> Project
                     </label>
                     <select class="form-control premium-modal-input" id="global-task-project" onchange="fetchProjectEmployees(this.value)">
                         <option value="">-- Select a Project --</option>
@@ -121,7 +121,7 @@ if ($run_projs) {
 
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa fa-user" style="color: #dc2626; font-size: 11px;"></i> Assign To
+                        <i class="fa fa-user" style="color: #232223; font-size: 11px;"></i> Assign To
                     </label>
                     <select class="form-control premium-modal-input" id="global-task-employee" disabled>
                         <option value="">-- Select Project First --</option>
@@ -130,7 +130,7 @@ if ($run_projs) {
 
                 <div class="form-group" style="margin-bottom: 16px;">
                     <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa fa-tasks" style="color: #dc2626; font-size: 11px;"></i> Task Name
+                        <i class="fa fa-tasks" style="color: #232223; font-size: 11px;"></i> Task Name
                     </label>
                     <input type="text" class="form-control premium-modal-input" id="global-task-input" placeholder="e.g. Prepare monthly report...">
                 </div>
@@ -138,13 +138,13 @@ if ($run_projs) {
                 <div class="row" style="margin: 0 -6px;">
                     <div class="col-md-6 form-group" style="padding: 0 6px; margin-bottom: 8px;">
                         <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa fa-calendar" style="color: #dc2626; font-size: 11px;"></i> Due Date
+                            <i class="fa fa-calendar" style="color: #232223; font-size: 11px;"></i> Due Date
                         </label>
                         <input type="date" class="form-control premium-modal-input" id="global-task-date">
                     </div>
                     <div class="col-md-6 form-group" style="padding: 0 6px; margin-bottom: 8px;">
                         <label style="font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa fa-flag" style="color: #dc2626; font-size: 11px;"></i> Priority
+                            <i class="fa fa-flag" style="color: #232223; font-size: 11px;"></i> Priority
                         </label>
                         <select class="form-control premium-modal-input" id="global-task-priority">
                             <option value="Low">🟢 Low Priority</option>
@@ -198,7 +198,7 @@ if ($run_projs) {
         justify-content: space-between;
         align-items: center;
         padding: 16px 20px;
-        border-left: 4px solid #dc2626;
+        border-left: 4px solid #232223;
         background: #fff;
     }
 
@@ -216,7 +216,7 @@ if ($run_projs) {
         height: 44px;
         border-radius: 50%;
         background: linear-gradient(135deg, #fef2f2, #fee2e2);
-        color: #dc2626;
+        color: #232223;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -333,7 +333,7 @@ if ($run_projs) {
     }
 
     .task-checkbox:hover {
-        border-color: #dc2626;
+        border-color: #232223;
         background: #fef2f2;
     }
 
@@ -344,8 +344,8 @@ if ($run_projs) {
     }
 
     .task-item.completed .task-checkbox {
-        background: #dc2626;
-        border-color: #dc2626;
+        background: #232223;
+        border-color: #232223;
     }
 
     .task-item.completed .task-checkbox i {
@@ -384,7 +384,7 @@ if ($run_projs) {
 
     .date-badge {
         background: #fef2f2;
-        color: #dc2626;
+        color: #232223;
         padding: 2px 7px;
         border-radius: 20px;
         font-size: 11px;
@@ -403,7 +403,7 @@ if ($run_projs) {
     }
 
     .priority-High {
-        color: #dc2626;
+        color: #232223;
         background: #fef2f2;
     }
 
@@ -436,7 +436,7 @@ if ($run_projs) {
     }
 
     .premium-modal-input:focus {
-        border-color: #dc2626 !important;
+        border-color: #232223 !important;
         box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08) !important;
     }
 
@@ -447,7 +447,7 @@ if ($run_projs) {
     }
 
     .premium-btn-save {
-        background: #dc2626 !important;
+        background: #232223 !important;
         color: #fff !important;
         border: none !important;
         font-weight: 600 !important;

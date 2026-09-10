@@ -16,6 +16,12 @@ if (!isset($_GET['edit_user'])) {
     header('Location: ../../index.php?view_users');
     exit;
 }
+// Auto-check and add department column to admins table if missing
+$check_dept_col = @mysqli_query($con, "SHOW COLUMNS FROM admins LIKE 'department'");
+if ($check_dept_col && mysqli_num_rows($check_dept_col) == 0) {
+    @mysqli_query($con, "ALTER TABLE admins ADD COLUMN department VARCHAR(255) DEFAULT 'Management'");
+}
+
 $edit_id = (int)$_GET['edit_user'];
 $run_admin = mysqli_query($con, "SELECT * FROM admins WHERE admin_id=" . $edit_id . " LIMIT 1");
 if (!$run_admin || mysqli_num_rows($run_admin) == 0) {
@@ -31,6 +37,8 @@ $admin_image = $row_admin['admin_image'];
 $new_admin_image = $row_admin['admin_image'];
 $admin_country = $row_admin['admin_country'];
 $admin_job = $row_admin['admin_job'];
+$admin_dept = isset($row_admin['department']) && trim($row_admin['department']) !== '' ? trim($row_admin['department']) : 'Management';
+$saved_depts = array_filter(array_map('trim', explode(',', $admin_dept)));
 $admin_contact = $row_admin['admin_contact'];
 $admin_about = $row_admin['admin_about'];
 $current_super = isset($row_admin['is_super_admin']) ? (int)$row_admin['is_super_admin'] : 0;
@@ -48,6 +56,17 @@ if (isset($_POST['update'])) {
     $admin_pass = $_POST['admin_pass'];
     $admin_country = $_POST['admin_country'];
     $admin_job = $_POST['admin_job'];
+    $admin_dept = '';
+    if (isset($_POST['department'])) {
+        if (is_array($_POST['department'])) {
+            $admin_dept = implode(', ', array_filter(array_map('trim', $_POST['department'])));
+        } else {
+            $admin_dept = trim($_POST['department']);
+        }
+    }
+    if (empty($admin_dept)) {
+        $admin_dept = 'Management';
+    }
     $admin_contact = $_POST['admin_contact'];
     $admin_about = $_POST['admin_about'];
     $admin_image = $_FILES['admin_image']['name'];
@@ -72,14 +91,65 @@ if (isset($_POST['update'])) {
     $contact_esc = mysqli_real_escape_string($con, $admin_contact);
     $country_esc = mysqli_real_escape_string($con, $admin_country);
     $job_esc = mysqli_real_escape_string($con, $admin_job);
+    $dept_esc = mysqli_real_escape_string($con, $admin_dept);
     $about_esc = mysqli_real_escape_string($con, $admin_about);
-    $update_admin = "UPDATE admins SET admin_name='$name_esc', admin_email='$email_esc', admin_pass='$pass_esc', admin_image='$img_esc', admin_contact='$contact_esc', admin_country='$country_esc', admin_job='$job_esc', admin_about='$about_esc', permissions='$perm_esc', is_super_admin='$is_super' WHERE admin_id='$admin_id'";
+    $update_admin = "UPDATE admins SET admin_name='$name_esc', admin_email='$email_esc', admin_pass='$pass_esc', admin_image='$img_esc', admin_contact='$contact_esc', admin_country='$country_esc', admin_job='$job_esc', department='$dept_esc', admin_about='$about_esc', permissions='$perm_esc', is_super_admin='$is_super' WHERE admin_id='$admin_id'";
     $run_admin = mysqli_query($con, $update_admin);
     if ($run_admin) {
-        echo "<script>Swal.fire({title: 'Notification', text: 'User Updated Successfully', icon: 'success'}).then(() => { window.location.href='index.php?view_users'; });</script>";
-        exit;
+        $update_success = true;
     }
 }
+
+// Fetch distinct departments & functions/jobs for user dropdowns (only assigned & user added)
+$user_depts = [];
+foreach ($saved_depts as $sd) {
+    if ($sd && strcasecmp($sd, 'not assigned') !== 0 && !in_array($sd, $user_depts)) {
+        $user_depts[] = $sd;
+    }
+}
+$user_dept_q = @mysqli_query($con, "SELECT DISTINCT department FROM admins WHERE department IS NOT NULL AND TRIM(department) != '' AND LOWER(TRIM(department)) != 'not assigned'");
+if ($user_dept_q) {
+    while ($udr = mysqli_fetch_assoc($user_dept_q)) {
+        $udv = trim($udr['department']);
+        if ($udv && !in_array($udv, $user_depts)) {
+            $user_depts[] = $udv;
+        }
+    }
+}
+$emp_dept_q = @mysqli_query($con, "SELECT DISTINCT department FROM emp_list WHERE department IS NOT NULL AND TRIM(department) != '' AND LOWER(TRIM(department)) != 'not assigned'");
+if ($emp_dept_q) {
+    while ($edr = mysqli_fetch_assoc($emp_dept_q)) {
+        $edv = trim($edr['department']);
+        if ($edv && !in_array($edv, $user_depts)) {
+            $user_depts[] = $edv;
+        }
+    }
+}
+sort($user_depts);
+
+$user_desigs = [];
+if ($admin_job && strcasecmp($admin_job, 'not assigned') !== 0 && !in_array($admin_job, $user_desigs)) {
+    $user_desigs[] = $admin_job;
+}
+$user_job_q = @mysqli_query($con, "SELECT DISTINCT admin_job FROM admins WHERE admin_job IS NOT NULL AND TRIM(admin_job) != '' AND LOWER(TRIM(admin_job)) != 'not assigned'");
+if ($user_job_q) {
+    while ($ujr = mysqli_fetch_assoc($user_job_q)) {
+        $ujv = trim($ujr['admin_job']);
+        if ($ujv && !in_array($ujv, $user_desigs)) {
+            $user_desigs[] = $ujv;
+        }
+    }
+}
+$emp_desig_q = @mysqli_query($con, "SELECT DISTINCT designation FROM emp_list WHERE designation IS NOT NULL AND TRIM(designation) != '' AND LOWER(TRIM(designation)) != 'not assigned'");
+if ($emp_desig_q) {
+    while ($esr = mysqli_fetch_assoc($emp_desig_q)) {
+        $esv = trim($esr['designation']);
+        if ($esv && !in_array($esv, $user_desigs)) {
+            $user_desigs[] = $esv;
+        }
+    }
+}
+sort($user_desigs);
 ?>
 
 <!-- Google Fonts: Inter -->
@@ -90,7 +160,7 @@ if (isset($_POST['update'])) {
         <!-- Card 1: Basic Account Details -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #DF2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     1
                 </div>
                 <div>
@@ -103,15 +173,15 @@ if (isset($_POST['update'])) {
                 <div class="row">
                     <!-- Image Upload -->
                     <div class="col-md-4">
-                        <label class="premium-label" style="font-size: 14px; color: #334155;">User Photo <span style="color: #ef4444;">*</span></label>
+                        <label class="premium-label" style="font-size: 14px; color: #334155;">User Photo <span style="color: #64748b; font-weight: normal; font-size: 12px;">(Optional)</span></label>
                         <div class="upload-area" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; background: #f8fafc; position: relative; transition: 0.3s;">
-                            <div style="width: 100px; height: 100px; background: #eff6ff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #DF2127; font-size: 20px; margin-bottom: 15px; margin-left: auto; margin-right: auto;">
+                            <div style="width: 100px; height: 100px; background: #eff6ff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #232223; font-size: 20px; margin-bottom: 15px; margin-left: auto; margin-right: auto;">
                                 <img id="usr_preview" src="admin_images/<?php echo htmlspecialchars($admin_image); ?>" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                             </div>
                             <h4 style="margin: 0 0 5px 0; font-size: 15px; font-weight: 700; color: #1e293b;">Upload user photo</h4>
                             <p style="margin: 0 0 15px 0; font-size: 12px; color: #64748b;">JPG, PNG up to 5MB</p>
 
-                            <label for="admin_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #DF2127; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
+                            <label for="admin_image" class="btn btn-outline-primary" style="background: #fff; border: 1px solid #e2e8f0; color: #232223; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer;">
                                 Choose File
                             </label>
                             <input type="file" name="admin_image" id="admin_image" style="display: none;" accept="image/*" onchange="previewImg(this)">
@@ -158,10 +228,46 @@ if (isset($_POST['update'])) {
                             <input type="text" name="admin_contact" class="p-input-premium" style="height: 48px; width:100%; border-radius: 8px; border: 1px solid #e2e8f0; padding:0 15px;" placeholder="e.g. 9876543210" value="<?php echo htmlspecialchars($admin_contact); ?>" required>
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="premium-label" style="font-size: 14px; color: #334155;">Designation / Job <span style="color: #ef4444;">*</span></label>
-                            <input type="text" name="admin_job" class="p-input-premium" style="height: 48px; width:100%; border-radius: 8px; border: 1px solid #e2e8f0; padding:0 15px;" placeholder="e.g. HR Manager" value="<?php echo htmlspecialchars($admin_job); ?>" required>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <label class="premium-label" style="font-size: 14px; color: #334155; margin:0;">Assign Department(s) <span style="color: #ef4444;">*</span></label>
+                                <button type="button" class="btn btn-sm btn-success" style="padding: 2px 10px; font-size: 11px; border-radius: 6px; font-weight: 700; background: #059669; border: none; cursor: pointer;" onclick="addNewDepartmentChecklist('dept_checklist_container')"><i class="fa fa-plus"></i> New</button>
+                            </div>
+                            <div id="dept_checklist_container" style="border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; max-height: 140px; overflow-y: auto; background: #fff; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);">
+                                <?php if (!empty($user_depts)): ?>
+                                    <?php foreach ($user_depts as $dept):
+                                        $is_sel = false;
+                                        foreach ($saved_depts as $sd) {
+                                            if (strcasecmp($sd, $dept) === 0) {
+                                                $is_sel = true;
+                                                break;
+                                            }
+                                        }
+                                    ?>
+                                        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; font-weight: 500; margin-bottom: 6px; cursor: pointer; user-select: none;">
+                                            <input type="checkbox" name="department[]" value="<?php echo htmlspecialchars($dept); ?>" <?php echo $is_sel ? 'checked' : ''; ?> style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;">
+                                            <span><?php echo htmlspecialchars($dept); ?></span>
+                                        </label>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <span style="color:#94a3b8; font-size:12px;" id="no_dept_text">No departments found. Click + New to add.</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <label class="premium-label" style="font-size: 14px; color: #334155; margin:0;">Assign Function / Job <span style="color: #ef4444;">*</span></label>
+                                <button type="button" class="btn btn-sm btn-success" style="padding: 2px 10px; font-size: 11px; border-radius: 6px; font-weight: 700; background: #059669; border: none; cursor: pointer;" onclick="addNewDesignation('user_job')"><i class="fa fa-plus"></i> New</button>
+                            </div>
+                            <select name="admin_job" id="user_job" class="p-input-premium" style="height: 48px; width:100%; border-radius: 8px; border: 1px solid #e2e8f0; padding:0 15px;" required>
+                                <option value="">-- Select Function / Job --</option>
+                                <?php foreach ($user_desigs as $desig): ?>
+                                    <option value="<?php echo htmlspecialchars($desig); ?>" <?php echo (strcasecmp($admin_job, $desig) === 0) ? 'selected' : ''; ?>><?php echo htmlspecialchars($desig); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -182,7 +288,7 @@ if (isset($_POST['update'])) {
         <!-- Card 2: Access Permissions -->
         <div class="premium-card" style="margin: 0 30px 30px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); background: #fff;">
             <div style="padding: 25px 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                <div style="width: 32px; height: 32px; background: #DF2127; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                <div style="width: 32px; height: 32px; background: #232223; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
                     2
                 </div>
                 <div>
@@ -267,6 +373,12 @@ if (isset($_POST['update'])) {
 </div>
 
 <style>
+    .swal2-container.swal2-backdrop-show {
+        background: rgba(15, 23, 42, 0.45) !important;
+        backdrop-filter: blur(6px) !important;
+        -webkit-backdrop-filter: blur(6px) !important;
+    }
+
     .premium-label {
         font-weight: 600;
         color: #475569;
@@ -275,7 +387,7 @@ if (isset($_POST['update'])) {
     }
 
     .upload-area:hover {
-        border-color: #DF2127;
+        border-color: #232223;
     }
 
     /* Toggle Switch Styles */
@@ -319,7 +431,7 @@ if (isset($_POST['update'])) {
     }
 
     input:checked+.toggle-slider {
-        background-color: #DF2127;
+        background-color: #232223;
     }
 
     input:checked+.toggle-slider:before {
@@ -337,4 +449,203 @@ if (isset($_POST['update'])) {
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    (function() {
+        var superToggle = document.querySelector('input[name="is_super_admin"]');
+        if (!superToggle) return;
+
+        var permInputs = document.querySelectorAll('input[name="permissions[]"]');
+
+        function applySuper(isSuper) {
+            permInputs.forEach(function(chk) {
+                if (isSuper) {
+                    chk.checked = false;
+                    chk.disabled = true;
+                    chk.closest('.toggle-switch').style.opacity = '0.4';
+                    chk.closest('.toggle-switch').style.pointerEvents = 'none';
+                } else {
+                    chk.disabled = false;
+                    chk.closest('.toggle-switch').style.opacity = '';
+                    chk.closest('.toggle-switch').style.pointerEvents = '';
+                }
+            });
+        }
+
+        // Apply on page load (if super admin is already ON)
+        applySuper(superToggle.checked);
+
+        // Apply on change
+        superToggle.addEventListener('change', function() {
+            applySuper(this.checked);
+        });
+    })();
+
+    /**
+     * Dynamic Department Checklist & Designation / Function Creation
+     */
+    function addNewDepartmentChecklist(containerId = 'dept_checklist_container') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Add New Department',
+                input: 'text',
+                inputLabel: 'Enter Department Name',
+                inputPlaceholder: 'e.g. Quality Assurance',
+                showCancelButton: true,
+                confirmButtonText: 'Add Department',
+                confirmButtonColor: '#232223',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Please enter a department name!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newDept = result.value.trim();
+                    let exists = false;
+                    const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(chk => {
+                        if (chk.value.toLowerCase() === newDept.toLowerCase()) {
+                            chk.checked = true;
+                            exists = true;
+                        }
+                    });
+                    if (!exists) {
+                        const noText = document.getElementById('no_dept_text');
+                        if (noText) noText.remove();
+
+                        const label = document.createElement('label');
+                        label.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; font-weight: 500; margin-bottom: 6px; cursor: pointer; user-select: none;';
+                        label.innerHTML = `<input type="checkbox" name="department[]" value="${newDept}" checked style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;"> <span>${newDept}</span>`;
+                        container.appendChild(label);
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Department Added',
+                        text: `"${newDept}" has been added to the checklist.`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        } else {
+            const newDept = prompt('Enter New Department Name:');
+            if (newDept && newDept.trim()) {
+                const val = newDept.trim();
+                let exists = false;
+                const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(chk => {
+                    if (chk.value.toLowerCase() === val.toLowerCase()) {
+                        chk.checked = true;
+                        exists = true;
+                    }
+                });
+                if (!exists) {
+                    const noText = document.getElementById('no_dept_text');
+                    if (noText) noText.remove();
+
+                    const label = document.createElement('label');
+                    label.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; font-weight: 500; margin-bottom: 6px; cursor: pointer; user-select: none;';
+                    label.innerHTML = `<input type="checkbox" name="department[]" value="${val}" checked style="accent-color: #232223; width: 16px; height: 16px; cursor: pointer;"> <span>${val}</span>`;
+                    container.appendChild(label);
+                }
+            }
+        }
+    }
+
+    function addNewDepartment(selectId = 'user_department') {
+        addNewDepartmentChecklist('dept_checklist_container');
+    }
+
+    function addNewDesignation(selectId = 'user_job') {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Add New Function / Designation',
+                input: 'text',
+                inputLabel: 'Enter Function / Designation Name',
+                inputPlaceholder: 'e.g. Lead Architect',
+                showCancelButton: true,
+                confirmButtonText: 'Add Designation',
+                confirmButtonColor: '#232223',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Please enter a designation / function name!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newDesig = result.value.trim();
+                    let exists = false;
+                    for (let i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value.toLowerCase() === newDesig.toLowerCase()) {
+                            select.selectedIndex = i;
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        const opt = document.createElement('option');
+                        opt.value = newDesig;
+                        opt.textContent = newDesig;
+                        opt.selected = true;
+                        select.appendChild(opt);
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Function / Designation Added',
+                        text: `"${newDesig}" has been added and selected.`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        } else {
+            const newDesig = prompt('Enter New Function / Designation Name:');
+            if (newDesig && newDesig.trim()) {
+                const val = newDesig.trim();
+                let exists = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.toLowerCase() === val.toLowerCase()) {
+                        select.selectedIndex = i;
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = val;
+                    opt.textContent = val;
+                    opt.selected = true;
+                    select.appendChild(opt);
+                }
+            }
+        }
+    }
 </script>
+
+<?php if (isset($update_success) && $update_success): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'User Updated Successfully!',
+                    text: 'The admin user details have been saved.',
+                    icon: 'success',
+                    confirmButtonColor: '#232223',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = 'index.php?view_users';
+                });
+            } else {
+                alert('User Updated Successfully!');
+                window.location.href = 'index.php?view_users';
+            }
+        });
+    </script>
+<?php endif; ?>

@@ -18,10 +18,111 @@ $emp_id   = (int)$_SESSION['emp_id'];
 $emp_name = $_SESSION['emp_name'];
 $today    = date('Y-m-d');
 
+if (!function_exists('parse_work_details')) {
+    function parse_work_details(string $text = '')
+    {
+        $text = trim($text ?? '');
+        $res = ['progress' => '', 'planning' => '', 'issues' => '', 'help' => ''];
+        if (empty($text)) {
+            return $res;
+        }
+
+        $headers_pattern = "/(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:|Need any Help\?:?)/iu";
+
+        if (preg_match($headers_pattern, $text)) {
+            $clean = function ($s) {
+                $s = preg_replace("/^Today[’']s Progress:\s*/iu", "", $s);
+                $s = preg_replace("/^Planning for Tomorrow:\s*/iu", "", $s);
+                $s = preg_replace("/^Issues:\s*/iu", "", $s);
+                $s = preg_replace("/^Need any Help\??:\s*/iu", "", $s);
+                $s = preg_replace("/\n{2,}/", "\n", $s);
+                return trim($s);
+            };
+
+            if (preg_match("/Today[’']s Progress:\s*(.*?)(?=(?:Planning for Tomorrow:|Issues:|Need any Help\?:?)|$)/isu", $text, $m)) {
+                $res['progress'] = $clean($m[1]);
+            }
+            if (preg_match("/Planning for Tomorrow:\s*(.*?)(?=(?:Today[’']s Progress:|Issues:|Need any Help\?:?)|$)/isu", $text, $m)) {
+                $res['planning'] = $clean($m[1]);
+            }
+            if (preg_match("/Issues:\s*(.*?)(?=(?:Today[’']s Progress:|Planning for Tomorrow:|Need any Help\?:?)|$)/isu", $text, $m)) {
+                $res['issues'] = $clean($m[1]);
+            }
+            if (preg_match("/Need any Help\?:?\s*(.*?)(?=(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:)|$)/isu", $text, $m)) {
+                $res['help'] = $clean($m[1]);
+            }
+
+            if (empty($res['progress'])) {
+                if (preg_match("/^(.*?)(?=(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:|Need any Help\?:?))/isu", $text, $m)) {
+                    $res['progress'] = $clean($m[1]);
+                }
+            }
+        } else {
+            $res['progress'] = $text;
+        }
+        return $res;
+    }
+}
+
 // ── Attendance today ──────────────────────────────────────────
 $res          = mysqli_query($con, "SELECT * FROM attendance WHERE emp_id='$emp_id' AND attendance_date='$today'");
 $today_record = mysqli_fetch_assoc($res);
+$parsed_remarks = parse_work_details($today_record['remarks'] ?? '');
 
+// ── Auto-fill today's completed To-Do tasks into Today's Progress ──────────
+// Build authoritative deduplicated list from DB (single source of truth)
+$todos_today_q = mysqli_query($con, "SELECT t.task_name, p.project_name
+    FROM project_team_todos t
+    LEFT JOIN client_projects p ON t.project_id = p.id
+    WHERE t.emp_id = '$emp_id'
+      AND t.status = 1
+      AND DATE(COALESCE(t.completed_at, t.due_date, t.created_at)) = '$today'
+      AND t.deleted_at IS NULL
+    ORDER BY t.id ASC");
+if ($todos_today_q && mysqli_num_rows($todos_today_q) > 0) {
+    $db_entries   = [];
+    while ($ct = mysqli_fetch_assoc($todos_today_q)) {
+        $t_name = trim($ct['task_name']);
+        $p_name = !empty($ct['project_name']) ? trim($ct['project_name']) : '';
+        $entry  = $p_name ? "Completed Task [$p_name]: $t_name" : "Completed Task: $t_name";
+        $db_entries[] = '- ' . $entry;
+    }
+    // Keep any custom (non-Completed Task) lines the employee wrote
+    $custom_lines = [];
+    foreach (explode("\n", $parsed_remarks['progress']) as $line) {
+        $line = trim($line);
+        if ($line !== '' && stripos($line, 'Completed Task') === false) {
+            $custom_lines[] = $line;
+        }
+    }
+    $all_lines = array_merge($db_entries, $custom_lines);
+    $parsed_remarks['progress'] = implode("\n", $all_lines);
+}
+
+
+if ($today_record) {
+    $att_id = (int)$today_record['id'];
+    $logs_res = mysqli_query($con, "SELECT * FROM attendance_logs WHERE att_id = $att_id ORDER BY action_time ASC");
+    if ($logs_res && mysqli_num_rows($logs_res) > 0) {
+        $events = [];
+        while ($lr = mysqli_fetch_assoc($logs_res)) {
+            $events[] = $lr;
+        }
+        $sum_secs = 0;
+        $current_start = null;
+        foreach ($events as $ev) {
+            if (in_array($ev['action'], ['check_in', 'resume'])) {
+                $current_start = $ev;
+            } elseif (in_array($ev['action'], ['pause', 'check_out']) && $current_start) {
+                $start_ts = strtotime($current_start['action_time']);
+                $end_ts   = strtotime($ev['action_time']);
+                $sum_secs += max(0, $end_ts - $start_ts);
+                $current_start = null;
+            }
+        }
+        $today_record['total_duration_secs'] = $sum_secs;
+    }
+}
 // ── Latest Announcement ───────────────────────────────────────
 $latest_announcement = "";
 $has_announcement = false;
@@ -82,7 +183,7 @@ $week_data = [];
 $week_total_secs = 0;
 if ($week_res) {
     while ($r = mysqli_fetch_assoc($week_res)) {
-        $secs = (int)$r['total_duration_secs'];
+        $secs = ($r['attendance_date'] == $today && isset($today_record['total_duration_secs'])) ? (int)$today_record['total_duration_secs'] : (int)$r['total_duration_secs'];
         if ($r['attendance_date'] == $today && $r['is_working'] && $r['last_resume_time']) {
             $secs += time() - strtotime($r['last_resume_time']);
         }
@@ -110,18 +211,21 @@ $max_week = max(array_column($week_secs_arr, 'secs')) ?: 1;
 
 // ── Today's logged duration ───────────────────────────────────
 $today_secs = (int)($today_record['total_duration_secs'] ?? 0);
-if ($today_record && $today_record['is_working'] && $today_record['last_resume_time']) {
-    $today_secs += time() - strtotime($today_record['last_resume_time']);
+if ($today_record && $today_record['is_working']) {
+    $startTime = !empty($today_record['last_resume_time']) ? $today_record['last_resume_time'] : ($today . ' ' . $today_record['check_in_time']);
+    if ($startTime) {
+        $today_secs += time() - strtotime($startTime);
+    }
 }
 
-function fmtHM($secs)
+function fmtHM(int $secs)
 {
     $h = floor($secs / 3600);
     $m = floor(($secs % 3600) / 60);
     return "{$h}h " . str_pad($m, 2, '0', STR_PAD_LEFT) . "m";
 }
 
-function fmtHMS($secs)
+function fmtHMS(int $secs)
 {
     $h = floor($secs / 3600);
     $m = floor(($secs % 3600) / 60);
@@ -149,7 +253,7 @@ if (!empty($allowed_categories)) {
     }
 }
 
-function getResourceTypePhp($url)
+function getResourceTypePhp(string $url)
 {
     $path = parse_url($url, PHP_URL_PATH);
     $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
@@ -173,9 +277,18 @@ function getResourceTypePhp($url)
     }
 
     /* ── Announcement ── */
+    .premium-swal-popup {
+        border-radius: 20px !important;
+        padding: 24px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        border: none !important;
+        width: 440px !important;
+        max-width: 90vw !important;
+    }
+
     .dash-announce {
         background: linear-gradient(90deg, #fff1f2, #fce7f3);
-        border-left: 4px solid #e11d48;
+        border-left: 4px solid #232223;
         border-radius: 10px;
         padding: 11px 18px;
         font-size: 14px;
@@ -188,7 +301,7 @@ function getResourceTypePhp($url)
     }
 
     .dash-announce i {
-        color: #e11d48;
+        color: #232223;
         font-size: 16px;
     }
 
@@ -207,6 +320,7 @@ function getResourceTypePhp($url)
         padding: 18px;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 14px;
         position: relative;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
@@ -231,13 +345,14 @@ function getResourceTypePhp($url)
     }
 
     .dc-icon.red {
-        background: #ffe4e6;
-        color: #e11d48;
+        background: rgb(34 35 35 / 20%);
+        color: #232223;
     }
 
     .dc-icon.blue {
-        background: #ffeaeb;
-        color: #dd2127;
+        background: rgb(34 35 35 / 20%);
+        ;
+        color: #232223;
     }
 
     .dc-icon.green {
@@ -279,7 +394,7 @@ function getResourceTypePhp($url)
         right: 14px;
         font-size: 11px;
         font-weight: 700;
-        color: #e11d48;
+        color: #232223;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -416,7 +531,7 @@ function getResourceTypePhp($url)
     .sec-hd a {
         font-size: 12px;
         font-weight: 700;
-        color: #e11d48;
+        color: #232223;
         text-decoration: none;
         outline: none;
     }
@@ -443,14 +558,23 @@ function getResourceTypePhp($url)
     .t-row {
         display: flex;
         align-items: center;
-        gap: 11px;
-        padding: 10px 0;
-        border-bottom: 1px solid #f3f4f6;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #f1f5f9;
+        background: #fff;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .t-row:hover {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        transform: translateX(2px);
     }
 
     .t-row:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
+        margin-bottom: 0;
     }
 
     .t-chk {
@@ -498,7 +622,7 @@ function getResourceTypePhp($url)
 
     .t-proj {
         font-size: 11px;
-        color: #e11d48;
+        color: #232223;
         margin: 2px 0 0;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -517,7 +641,7 @@ function getResourceTypePhp($url)
 
     .tb-high {
         background: #fee2e2;
-        color: #dc2626;
+        color: #232223;
     }
 
     .tb-medium {
@@ -543,21 +667,30 @@ function getResourceTypePhp($url)
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 10px 0;
-        border-bottom: 1px solid #f3f4f6;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #f1f5f9;
+        background: #fff;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .p-row:hover {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        transform: translateX(2px);
     }
 
     .p-row:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
+        margin-bottom: 0;
     }
 
     .p-av {
         width: 42px;
         height: 42px;
         border-radius: 10px;
-        background: #ffe4e6;
-        color: #e11d48;
+        background: rgb(34 35 35 / 20%);
+        color: #232223;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -624,14 +757,14 @@ function getResourceTypePhp($url)
     }
 
     .ql-item:hover {
-        color: #e11d48;
+        color: #232223;
     }
 
     .ql-ic {
         width: 50px;
         height: 50px;
         background: #fff1f2;
-        color: #e11d48;
+        color: #232223;
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -721,7 +854,7 @@ function getResourceTypePhp($url)
         max-width: 32px;
         border-radius: 8px;
         min-height: 4px;
-        background: #fda4af;
+        background: #232223;
         transition: height .6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
     }
 
@@ -730,7 +863,7 @@ function getResourceTypePhp($url)
     }
 
     .bar-fill.today-bar {
-        background: #e11d48;
+        background: #232223;
         box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
     }
 
@@ -755,21 +888,30 @@ function getResourceTypePhp($url)
     }
 
     .bar-col.today-lbl .bar-lbl {
-        color: #e11d48;
+        color: #232223;
     }
 
     /* ── Empty state ── */
     .empty-s {
         text-align: center;
-        padding: 22px 0;
-        color: #9ca3af;
+        padding: 30px 15px;
+        color: #94a3b8;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 150px;
+        font-size: 13px;
+        font-weight: 500;
     }
 
     .empty-s i {
-        font-size: 32px;
+        font-size: 36px;
         display: block;
-        margin-bottom: 8px;
-        opacity: .3;
+        margin-bottom: 10px;
+        opacity: .4;
+        color: #94a3b8;
     }
 
     /* ── Scrollbars ── */
@@ -794,7 +936,7 @@ function getResourceTypePhp($url)
     .bm-box:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border-color: #dd2127 !important;
+        border-color: #232223 !important;
     }
 
     .bm-box:hover .bm-rem {
@@ -802,18 +944,18 @@ function getResourceTypePhp($url)
     }
 
     .bm-box-empty:hover {
-        border-color: #dd2127 !important;
-        background: #ffeaeb !important;
+        border-color: #232223 !important;
+        background: rgb(34 35 35 / 20%) !important;
     }
 
     .bm-box-empty:hover i {
-        color: #dd2127 !important;
+        color: #232223 !important;
     }
 
     /* ── SweetAlert Input ── */
     .swal2-input:focus {
-        border-color: #dd2127 !important;
-        box-shadow: 0 0 0 3px #ffeaeb !important;
+        border-color: #232223 !important;
+        box-shadow: 0 0 0 3px rgb(34 35 35 / 20%) !important;
     }
 
     /* ── Responsive ── */
@@ -865,7 +1007,7 @@ function getResourceTypePhp($url)
                 <h2><?php echo $pending_task_count; ?></h2>
                 <p><?php echo $total_tasks; ?> total assigned</p>
             </div>
-            <a href="#taskSec" class="dc-link">View <i class="fa fa-arrow-right"></i></a>
+            <!-- <a href="#taskSec" class="dc-link">View <i class="fa fa-arrow-right"></i></a> -->
         </div>
 
         <!-- Projects -->
@@ -876,7 +1018,7 @@ function getResourceTypePhp($url)
                 <h2><?php echo $active_proj_count; ?></h2>
                 <p>Ongoing projects</p>
             </div>
-            <a href="#projSec" class="dc-link">View <i class="fa fa-arrow-right"></i></a>
+            <!-- <a href="#projSec" class="dc-link">View <i class="fa fa-arrow-right"></i></a> -->
         </div>
 
         <!-- Today Work Log -->
@@ -929,8 +1071,8 @@ function getResourceTypePhp($url)
         <!-- My Tasks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="taskSec">
-                <h3><i class="fa fa-tasks" style="color:#e11d48;"></i> My Tasks</h3>
-                <a href="#">View All</a>
+                <h3><i class="fa fa-tasks" style="color:#232223;"></i> My Tasks</h3>
+                <a href="index.php?todo">View All</a>
             </div>
             <div id="emptyTasksMsg" class="empty-s" style="<?php echo empty($tasks) ? '' : 'display:none;'; ?>">
                 <i class="fa fa-check-circle"></i>You're all caught up! No pending tasks.
@@ -939,7 +1081,7 @@ function getResourceTypePhp($url)
                 <?php foreach ($tasks as $task):
                     $done     = (int)$task['status'] === 1;
                     $priority = strtolower($task['priority'] ?? 'low');
-                    $due      = !empty($task['due_date']) ? date('d M', strtotime($task['due_date'])) : '';
+                    $due      = !empty($task['due_date']) ? date('d-m-Y', strtotime($task['due_date'])) : '';
                     $pname    = $task['project_name'] ?: 'General';
                     $task_id  = $task['id'];
                 ?>
@@ -959,7 +1101,7 @@ function getResourceTypePhp($url)
         <!-- My Bookmarks -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-bookmark" style="color:#e11d48;"></i> My Bookmarks</h3>
+                <h3><i class="fa fa-bookmark" style="color:#232223;"></i> My Bookmarks</h3>
                 <a href="#" onclick="clearBookmarks(); return false;" style="font-weight:normal; font-size:11px; color:#6b7280;"><i class="fa fa-trash"></i> Clear All</a>
             </div>
             <div id="bookmarksGrid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
@@ -970,8 +1112,8 @@ function getResourceTypePhp($url)
         <!-- My Projects -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd" id="projSec">
-                <h3><i class="fa fa-briefcase" style="color:#dd2127;"></i> My Projects</h3>
-                <a href="#">View All</a>
+                <h3><i class="fa fa-briefcase" style="color:#232223;"></i> My Projects</h3>
+                <a href="index.php?projects">View All</a>
             </div>
             <?php if (empty($projects)): ?>
                 <div class="empty-s"><i class="fa fa-folder-open-o"></i>No active projects assigned to you.</div>
@@ -979,7 +1121,7 @@ function getResourceTypePhp($url)
                 <div style="max-height: 320px; overflow-y: auto; padding-right: 5px;" class="custom-scrollbar">
                     <?php foreach ($projects as $proj):
                         $init = strtoupper(mb_substr($proj['project_name'], 0, 2));
-                        $dl   = !empty($proj['deadline']) ? date('d M Y', strtotime($proj['deadline'])) : 'No deadline';
+                        $dl   = !empty($proj['deadline']) ? date('d-m-Y', strtotime($proj['deadline'])) : 'No deadline';
                     ?>
                         <div class="p-row">
                             <div class="p-av"><?php echo $init; ?></div>
@@ -997,7 +1139,7 @@ function getResourceTypePhp($url)
         <!-- This Week's Time Log -->
         <div class="cbox" style="margin-bottom: 0;">
             <div class="sec-hd">
-                <h3><i class="fa fa-bar-chart" style="color:#e11d48;"></i> Time Log <span style="font-size:11px;color:#9ca3af;font-weight:400;">(This Week)</span></h3>
+                <h3><i class="fa fa-bar-chart" style="color:#232223;"></i> Time Log <span style="font-size:11px;color:#9ca3af;font-weight:400;">(This Week)</span></h3>
                 <a href="index.php?worksheet">View All</a>
             </div>
             <p class="tl-total" id="weekTotalLabel"><?php echo fmtHM($displayed_week_secs); ?></p>
@@ -1039,6 +1181,12 @@ function getResourceTypePhp($url)
             basePastMins: <?php echo (int)$base_past_mins; ?>,
             maxWeek: <?php echo $max_week > 0 ? $max_week : 1; ?>
         };
+        if (att.totalSecs === 0 && <?php echo ($today_record && $today_record['check_in_time']) ? 'true' : 'false'; ?>) {
+            att.lastResume = <?php echo ($today_record && $today_record['check_in_time']) ? (strtotime($today . ' ' . $today_record['check_in_time']) * 1000) : 'null'; ?>;
+        }
+
+        var serverTime = <?php echo time() * 1000; ?>;
+        var serverClientOffset = serverTime - Date.now();
 
         function fmtDur(s) {
             var h = Math.floor(s / 3600),
@@ -1058,7 +1206,8 @@ function getResourceTypePhp($url)
             var cur = att.totalSecs;
             var activeSecs = 0;
             if (att.isWorking && att.lastResume) {
-                activeSecs = Math.floor((Date.now() - att.lastResume) / 1000);
+                var adjustedNow = Date.now() + serverClientOffset;
+                activeSecs = Math.floor((adjustedNow - att.lastResume) / 1000);
             }
             cur += activeSecs;
 
@@ -1135,13 +1284,80 @@ function getResourceTypePhp($url)
             $('#checkOutModal').modal('show');
         });
 
+        window.parseWorkDetails = function(text) {
+            text = text || '';
+            var progress = '',
+                planning = '',
+                issues = '',
+                help = '';
+
+            function cleanHeaders(s) {
+                if (!s) return '';
+                return s.replace(/^Today[’']s Progress:\s*/gi, '')
+                    .replace(/^Planning for Tomorrow:\s*/gi, '')
+                    .replace(/^Issues:\s*/gi, '')
+                    .replace(/^Need any Help\??:\s*/gi, '')
+                    .trim();
+            }
+
+            var headersPattern = /(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:|Need any Help\?:?)/i;
+
+            if (headersPattern.test(text)) {
+                var matchP = text.match(/Today[’']s Progress:\s*([\s\S]*?)(?=(?:Planning for Tomorrow:|Issues:|Need any Help\?:?)|$)/i);
+                if (matchP) progress = cleanHeaders(matchP[1]);
+
+                var matchPlan = text.match(/Planning for Tomorrow:\s*([\s\S]*?)(?=(?:Today[’']s Progress:|Issues:|Need any Help\?:?)|$)/i);
+                if (matchPlan) planning = cleanHeaders(matchPlan[1]);
+
+                var matchIss = text.match(/Issues:\s*([\s\S]*?)(?=(?:Today[’']s Progress:|Planning for Tomorrow:|Need any Help\?:?)|$)/i);
+                if (matchIss) issues = cleanHeaders(matchIss[1]);
+
+                var matchHelp = text.match(/Need any Help\?:?\s*([\s\S]*?)(?=(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:)|$)/i);
+                if (matchHelp) help = cleanHeaders(matchHelp[1]);
+
+                if (!progress) {
+                    var matchFirst = text.match(/^([\s\S]*?)(?=(?:Today[’']s Progress:|Planning for Tomorrow:|Issues:|Need any Help\?:?))/i);
+                    if (matchFirst) progress = cleanHeaders(matchFirst[1]);
+                }
+            } else {
+                progress = text.trim();
+            }
+
+            return {
+                progress: progress,
+                planning: planning,
+                issues: issues,
+                help: help
+            };
+        };
+
         /* Confirm Check Out */
         $(document).on('click', '#confirmCheckOut', function() {
-            var wd = $('#workDetails').val().trim();
-            if (!wd) {
-                Swal.fire('Notification', 'Please provide work details.', 'info');
+            function cleanHeaders(s) {
+                if (!s) return '';
+                s = s.replace(/Today.*?Progress:\s*/gi, '')
+                    .replace(/Planning for Tomorrow:\s*/gi, '')
+                    .replace(/Issues:\s*/gi, '')
+                    .replace(/Need any Help\??:\s*/gi, '');
+                return s.trim();
+            }
+            var progress = cleanHeaders($('#wsTodayProgress').val());
+            var planning = cleanHeaders($('#wsPlanningTomorrow').val());
+            var issues = cleanHeaders($('#wsIssues').val());
+            var help = cleanHeaders($('#wsNeedHelp').val());
+
+            if (!progress) {
+                Swal.fire('Notification', 'Please provide Today’s Progress.', 'info');
                 return;
             }
+
+            var parts = [];
+            parts.push("Today’s Progress:\n" + progress);
+            if (planning) parts.push("Planning for Tomorrow:\n" + planning);
+            if (issues) parts.push("Issues:\n" + issues);
+            if (help) parts.push("Need any Help?:\n" + help);
+
+            var wd = parts.join("\n\n");
             if (!$('#modalCheckInTime').val() || !$('#modalCheckOutTime').val()) {
                 Swal.fire('Notification', 'Check-in and check-out times required.', 'info');
                 return;
@@ -1149,7 +1365,10 @@ function getResourceTypePhp($url)
             var hasPhoto = false;
             for (var i = 1; i <= 4; i++) {
                 var fi = document.getElementById('work_photo_' + i);
-                if (fi && fi.files && fi.files.length > 0) hasPhoto = true;
+                var prev = document.getElementById('preview_' + i);
+                if ((fi && fi.files && fi.files.length > 0) || (prev && prev.src && prev.style.display !== 'none' && prev.src !== '' && !prev.src.endsWith('/'))) {
+                    hasPhoto = true;
+                }
             }
             if (!hasPhoto) {
                 Swal.fire('Notification', 'Please upload at least 1 work photo.', 'info');
@@ -1215,9 +1434,9 @@ function getResourceTypePhp($url)
                     } catch (e) {
                         domain = bookmarks[i].url;
                     }
-                    html += `<div style="height:80px; border:1px solid #dd2127; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
+                    html += `<div style="height:80px; border:1px solid #232223; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#ffffff; transition:all 0.2s; cursor:pointer;" class="bm-box" onclick="window.open('${bookmarks[i].url}', '_blank')">
                         <div onclick="event.stopPropagation(); removeBookmark(${i})" style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; opacity:0; transition:0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.2);" class="bm-rem"><i class="fa fa-times"></i></div>
-                        <div style="width:36px; height:36px; border-radius:10px; background:#ffeaeb; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
+                        <div style="width:36px; height:36px; border-radius:10px; background:rgb(34 35 35 / 20%);; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">
                             <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" style="width:18px; height:18px; border-radius:3px;" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
                             <i class="fa fa-globe" style="color:#3b82f6; font-size:16px; display:none;"></i>
                         </div>
@@ -1234,27 +1453,55 @@ function getResourceTypePhp($url)
 
         window.addBookmark = function(idx) {
             Swal.fire({
-                title: 'Add Bookmark',
-                html: '<input id="swal-input1" class="swal2-input" placeholder="Name (e.g. Google)" style="font-size:14px;">' +
-                    '<input id="swal-input2" class="swal2-input" placeholder="URL (e.g. google.com)" style="font-size:14px; ">',
+                html: `
+                    <div style="padding: 10px 5px 5px 5px;">
+                        <div style="width: 48px; height: 48px; background: #232223; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+                            <i class="fa fa-bookmark" style="color: #ffffff; font-size: 20px;"></i>
+                        </div>
+                        <h4 style="font-weight: 800; color: #0f172a; font-size: 19px; margin: 0 0 6px 0;">Add Bookmark</h4>                        
+                        <div style="text-align: left; margin-bottom: 16px;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa fa-tag" style="color: #232223; font-size: 11px;"></i> Bookmark Name <span style="color: #232223;">*</span>
+                            </label>
+                            <input id="swal-input1" type="text" class="form-control" placeholder="e.g. Google, Figma, Portal..." style="height: 46px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #0f172a; width: 100%; outline: none; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+
+                        <div style="text-align: left; margin-bottom: 10px;">
+                            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa fa-link" style="color: #232223; font-size: 11px;"></i> Website URL <span style="color: #232223;">*</span>
+                            </label>
+                            <input id="swal-input2" type="text" class="form-control" placeholder="e.g. google.com, figma.com..." style="height: 46px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #0f172a; width: 100%; outline: none; box-sizing: border-box; transition: 0.2s;" onfocus="this.style.borderColor='#232223'; this.style.boxShadow='0 0 0 3px rgba(35, 34, 35, 0.15)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                        </div>
+                    </div>
+                `,
                 focusConfirm: false,
                 showCancelButton: true,
-                confirmButtonText: 'Save',
-                confirmButtonColor: '#e11d48',
+                confirmButtonText: '<i class="fa fa-check" style="margin-right: 6px;"></i> Save Bookmark',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#232223',
+                cancelButtonColor: '#94a3b8',
+                customClass: {
+                    popup: 'premium-swal-popup',
+                    confirmButton: 'btn-premium-add',
+                    cancelButton: 'btn-premium-cancel'
+                },
+                didOpen: () => {
+                    const el = document.getElementById('swal-input1');
+                    if (el) el.focus();
+                },
                 preConfirm: () => {
-                    return [
-                        document.getElementById('swal-input1').value,
-                        document.getElementById('swal-input2').value
-                    ]
+                    const val1 = document.getElementById('swal-input1').value;
+                    const val2 = document.getElementById('swal-input2').value;
+                    if (!val1.trim() || !val2.trim()) {
+                        Swal.showValidationMessage('Please fill in both Bookmark Name and URL');
+                        return false;
+                    }
+                    return [val1, val2];
                 }
             }).then((result) => {
-                if (result.isConfirmed) {
+                if (result.isConfirmed && result.value) {
                     let name = result.value[0].trim();
                     let url = result.value[1].trim();
-                    if (!name || !url) {
-                        Swal.fire('Error', 'Both fields are required', 'error');
-                        return;
-                    }
                     if (!url.startsWith('http://') && !url.startsWith('https://')) {
                         url = 'https://' + url;
                     }
@@ -1282,17 +1529,35 @@ function getResourceTypePhp($url)
 
         window.clearBookmarks = function() {
             Swal.fire({
-                title: 'Clear All Bookmarks?',
-                text: "This will remove all your saved links.",
-                icon: 'warning',
+                html: `
+                    <div style="padding: 10px 5px 5px 5px;">
+                        <div style="width: 48px; height: 48px; background: #fef2f2; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+                            <i class="fa fa-trash-o" style="color: #232223; font-size: 22px;"></i>
+                        </div>
+                        <h4 style="font-weight: 800; color: #0f172a; font-size: 19px; margin: 0 0 6px 0;">Clear All Bookmarks?</h4>
+                        <p style="margin: 0; font-size: 13px; color: #64748b; font-weight: 500; line-height: 1.5;">Are you sure you want to remove all saved links? This action cannot be undone.</p>
+                    </div>
+                `,
                 showCancelButton: true,
-                confirmButtonColor: '#e11d48',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Yes, clear them!'
+                confirmButtonText: '<i class="fa fa-trash-o" style="margin-right: 6px;"></i> Yes, Clear All',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'premium-swal-popup',
+                    confirmButton: 'btn-premium-add',
+                    cancelButton: 'btn-premium-cancel'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     localStorage.removeItem('empBookmarks_<?php echo $emp_id; ?>');
                     initBookmarks();
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Bookmarks cleared',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
                 }
             });
         };
@@ -1316,6 +1581,21 @@ function getResourceTypePhp($url)
             dataType: 'json',
             success: function(r) {
                 if (r.success) {
+                    if (r.all_progress) {
+                        // Use the complete list of today's completed tasks
+                        $('#wsTodayProgress').val(r.all_progress);
+                    } else if (r.work_details) {
+                        var parsed = (typeof window.parseWorkDetails === 'function') ? window.parseWorkDetails(r.work_details) : {
+                            progress: r.work_details,
+                            planning: '',
+                            issues: '',
+                            help: ''
+                        };
+                        $('#wsTodayProgress').val(parsed.progress);
+                        $('#wsPlanningTomorrow').val(parsed.planning);
+                        $('#wsIssues').val(parsed.issues);
+                        $('#wsNeedHelp').val(parsed.help);
+                    }
                     $row.slideUp(300, function() {
                         $(this).remove();
                         if ($('.t-row').length === 0) {
@@ -1347,9 +1627,9 @@ function getResourceTypePhp($url)
                     <i class="fa fa-pencil-square-o"></i> Submit Worksheet & Check Out
                 </h4>
             </div> -->
-            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:#ffeaeb; border-radius: 14px 14px 0 0; position: relative;">
+            <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px; background:rgb(34 35 35 / 20%);; border-radius: 14px 14px 0 0; position: relative;">
                 <div style="display: flex; align-items: center; width: 100%; gap: 12px;">
-                    <div style="width: 36px; height: 36px; background: #dc2626; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 36px; height: 36px; background: #232223; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa fa-pencil-square-o" style="color: #fff; font-size: 14px;"></i>
                     </div>
                     <div>
@@ -1365,30 +1645,52 @@ function getResourceTypePhp($url)
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Date</label>
-                        <div class="col-md-8"><input type="date" class="form-control" style="border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;" value="<?php echo date('Y-m-d'); ?>" readonly></div>
+                        <div class="col-md-8"><input type="date" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" value="<?php echo date('Y-m-d'); ?>" readonly></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Check-in <span class="text-danger">*</span></label>
-                        <div class="col-md-8"><input type="time" id="modalCheckInTime" class="form-control" style="border-radius:10px;border:1px solid #e2e8f0;" required></div>
+                        <div class="col-md-8"><input type="time" id="modalCheckInTime" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" required readonly></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Check-out <span class="text-danger">*</span></label>
-                        <div class="col-md-8"><input type="time" id="modalCheckOutTime" class="form-control" style="border-radius:10px;border:1px solid #e2e8f0;" required></div>
+                        <div class="col-md-8"><input type="time" id="modalCheckOutTime" class="form-control" style="height: 50px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 20px; width: 100%; color: #0f172a; font-weight: 600; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--p-bg-color)'; this.style.boxShadow='0 4px 10px rgba(166, 166, 167, 0.2)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" required readonly></div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Details <span class="text-danger">*</span></label>
-                        <div class="col-md-8"><textarea id="workDetails" class="form-control" style="height:90px;border-radius:10px;border:1px solid #e2e8f0;resize:none;" placeholder="What did you accomplish today?" required></textarea></div>
+                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Today’s Progress <span class="text-danger">*</span></label>
+                        <div class="col-md-8"><textarea id="wsTodayProgress" class="form-control" style="height:85px;border-radius:12px;border:1.5px solid #e2e8f0;resize:none;padding:10px 14px;font-size:13px;outline:none;" placeholder="What did you accomplish today?"><?php echo htmlspecialchars($parsed_remarks['progress']); ?></textarea></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Planning for Tomorrow</label>
+                        <div class="col-md-8"><textarea id="wsPlanningTomorrow" class="form-control" style="height:60px;border-radius:12px;border:1.5px solid #e2e8f0;resize:none;padding:10px 14px;font-size:13px;outline:none;" placeholder="What will you work on tomorrow?"><?php echo htmlspecialchars($parsed_remarks['planning']); ?></textarea></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Issues</label>
+                        <div class="col-md-8"><textarea id="wsIssues" class="form-control" style="height:60px;border-radius:12px;border:1.5px solid #e2e8f0;resize:none;padding:10px 14px;font-size:13px;outline:none;" placeholder="Any blockers or challenges faced today?"><?php echo htmlspecialchars($parsed_remarks['issues']); ?></textarea></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Need any Help?</label>
+                        <div class="col-md-8"><textarea id="wsNeedHelp" class="form-control" style="height:60px;border-radius:12px;border:1.5px solid #e2e8f0;resize:none;padding:10px 14px;font-size:13px;outline:none;" placeholder="Do you need any assistance?"><?php echo htmlspecialchars($parsed_remarks['help']); ?></textarea></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label" style="text-align:left;color:#64748b;font-weight:600;">Work Photos <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                                <?php for ($id = 1; $id <= 4; $id++): ?>
+                                <?php
+                                $prefill_photos = (!empty($today_record['work_photos'])) ? json_decode($today_record['work_photos'], true) : [];
+                                if (!is_array($prefill_photos)) $prefill_photos = [];
+                                for ($id = 1; $id <= 4; $id++):
+                                    $photo_src = '';
+                                    $has_prefill = isset($prefill_photos[$id - 1]) && !empty($prefill_photos[$id - 1]);
+                                    if ($has_prefill) {
+                                        $p_url = $prefill_photos[$id - 1];
+                                        $photo_src = (strpos($p_url, 'http') === 0 || strpos($p_url, '/') === 0) ? $p_url : '../admin_area/' . $p_url;
+                                    }
+                                ?>
                                     <div id="box_<?php echo $id; ?>" onclick="document.getElementById('work_photo_<?php echo $id; ?>').click()"
                                         style="width:70px;height:70px;border:2px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;background:#f8fafc;">
-                                        <i class="fa fa-plus" style="color:#94a3b8;font-size:18px;"></i>
+                                        <i class="fa fa-plus" style="color:#94a3b8;font-size:18px; <?php echo $has_prefill ? 'display:none;' : ''; ?>"></i>
                                         <input type="file" id="work_photo_<?php echo $id; ?>" style="display:none;" accept="image/*" onchange="previewWorkPhoto(this,<?php echo $id; ?>)">
-                                        <img id="preview_<?php echo $id; ?>" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+                                        <img id="preview_<?php echo $id; ?>" src="<?php echo htmlspecialchars($photo_src); ?>" style="<?php echo $has_prefill ? 'display:block;' : 'display:none;'; ?>width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
                                     </div>
                                 <?php endfor; ?>
                             </div>

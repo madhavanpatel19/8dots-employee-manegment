@@ -15,6 +15,8 @@ if (!isset($_SESSION['admin_email'])) {
     $row_admin = mysqli_fetch_array($run_admin);
     $admin_id = $row_admin['admin_id'];
     $admin_name = $row_admin['admin_name'];
+    $_SESSION['admin_id'] = $admin_id;
+    $_SESSION['admin_name'] = $admin_name;
     $admin_email = $row_admin['admin_email'];
     $admin_image = $row_admin['admin_image'];
     $admin_country = $row_admin['admin_country'];
@@ -23,37 +25,43 @@ if (!isset($_SESSION['admin_email'])) {
     $admin_about = $row_admin['admin_about'];
     $admin_is_super = !empty($row_admin['is_super_admin']);
     $admin_role_label = $admin_is_super ? 'Super Admin' : (!empty($row_admin['admin_job']) ? htmlspecialchars($row_admin['admin_job']) : 'Admin');
+    $header_display_name = !empty($admin_name) ? htmlspecialchars($admin_name) : 'Admin User';
     include("includes/admin_permissions.php");
-    // $get_products = "select * from products";
-    // $run_products = mysqli_query($con, $get_products);
-    // $count_products = mysqli_num_rows($run_products);
-    // $get_customers = "select * from customers";
-    // $run_customers = mysqli_query($con, $get_customers);
-    // $count_customers = mysqli_num_rows($run_customers);
-    // $get_p_categories = "select * from product_categories";
-    // $run_p_categories = mysqli_query($con, $get_p_categories);
-    // $count_p_categories = mysqli_num_rows($run_p_categories);
-    // $get_pending_orders = "select * from pending_orders";
-    // $run_pending_orders = mysqli_query($con, $get_pending_orders);
-    // $count_pending_orders = mysqli_num_rows($run_pending_orders);
     ?>
 
     <!DOCTYPE html>
     <html>
 
     <head>
-        <title>Cadelete Designs HRMS</title>
+        <title>8Dots HRMS</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet">
-        <link href="css/dashboard.css" rel="stylesheet">
-        <link href="css/sidebar.css" rel="stylesheet">
+        <link href="css/dashboard.css?v=<?php echo time(); ?>" rel="stylesheet">
+        <link href="css/sidebar.css?v=<?php echo time(); ?>" rel="stylesheet">
         <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="shortcut icon" href="images/Cadlete_Black_logo_favicon.png?v=<?php echo time(); ?>" type="image/png">
+        <link rel="shortcut icon" href="images/favicon.png?v=<?php echo time(); ?>" type="image/png">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <style>
+            .flatpickr-calendar {
+                font-family: inherit;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                border: 1px solid #e2e8f0;
+            }
+
+            .flatpickr-day.selected,
+            .flatpickr-day.startRange,
+            .flatpickr-day.endRange {
+                background: #232223 !important;
+                border-color: #232223 !important;
+            }
+        </style>
     </head>
 
 
@@ -124,48 +132,19 @@ if (!isset($_SESSION['admin_email'])) {
                         <input type="text" placeholder="Search projects, employees...">
                     </div> -->
                     <div class="topbar-right">
-                        <div class="notification-bell dropdown">
-                            <div data-toggle="dropdown" style="cursor: pointer; position: relative;">
+                        <div class="notification-bell dropdown" id="admin-system-notif-dropdown">
+                            <div data-toggle="dropdown" style="cursor: pointer; position: relative;" onclick="fetchLiveNotifications()">
                                 <i class="fa fa-bell-o"></i>
-                                <?php if (isset($total_notifications) && $total_notifications > 0): ?>
-                                    <span class="notification-badge"><?php echo $total_notifications; ?></span>
-                                <?php endif; ?>
+                                <span class="notification-badge sys-notif-badge" style="display: none;">0</span>
                             </div>
-                            <ul class="dropdown-menu" style="right: -10px; left: auto; top: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--border-light); margin-top: 15px; min-width: 250px;">
-                                <?php if (isset($pending_leave_count) && $pending_leave_count > 0) : ?>
-                                    <li>
-                                        <a href="index.php?view_leave_requests" style="padding: 10px 20px; color: var(--text-main); font-weight: 500;">
-                                            <i class="fa fa-file-text" style="color: var(--yellow); margin-right: 8px;"></i> <?php echo $pending_leave_count; ?> New Leave Requests
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                                <?php if (isset($unread_feedback_count) && $unread_feedback_count > 0) : ?>
-                                    <li>
-                                        <a href="index.php?view_client_feedback" style="padding: 10px 20px; color: var(--text-main); font-weight: 500;">
-                                            <i class="fa fa-comments" style="color: var(--blue); margin-right: 8px;"></i> <?php echo $unread_feedback_count; ?> New Client Feedbacks
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                                <?php if (isset($today_followup_count) && $today_followup_count > 0) : ?>
-                                    <li>
-                                        <a href="index.php?leads" style="padding: 10px 20px; color: var(--text-main); font-weight: 500;">
-                                            <i class="fa fa-bullseye" style="color: var(--red); margin-right: 8px;"></i> <?php echo $today_followup_count; ?> Follow-ups Today (<?php echo date('d M Y'); ?>)
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                                <?php if (empty($total_notifications) || $total_notifications == 0) : ?>
-                                    <li>
-                                        <a href="#" style="padding: 10px 20px; color: var(--text-muted); text-align: center;">
-                                            No new notifications
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
+                            <ul class="dropdown-menu sys-notif-list" style="right: -10px; left: auto; top: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--border-light); margin-top: 15px; min-width: 320px; max-height: 400px; overflow-y: auto; padding: 0;">
+                                <li style="padding: 15px; text-align: center; color: #94a3b8;"><i class="fa fa-spinner fa-spin"></i> Loading...</li>
                             </ul>
                         </div>
                         <div class="topbar-profile dropdown">
                             <div data-toggle="dropdown" style="display:flex; align-items:center; gap:12px; padding:6px;background: white; border-radius:11px; cursor:pointer;">
                                 <div class="profile-avatar">
-                                    <img src="<?php echo !empty($admin_image) ? 'admin_images/' . $admin_image : 'https://ui-avatars.com/api/?name=' . urlencode($header_display_name) . '&background=3b82f6&color=fff'; ?>" alt="Admin Avatar">
+                                    <img src="<?php echo !empty($admin_image) ? 'admin_images/' . $admin_image : 'https://ui-avatars.com/api/?name=' . urlencode($header_display_name) . '&background=dd2127&color=fff'; ?>" alt="Admin Avatar">
                                 </div>
                                 <div class="profile-info">
                                     <span class="profile-name"><?php echo $header_display_name; ?></span>
@@ -263,7 +242,7 @@ if (!isset($_SESSION['admin_email'])) {
                         include("pages/settings/view_users.php");
                     }
                     if (isset($_GET['user_delete'])) {
-                        requireAdminPermission('user_update');
+                        requireAdminPermission('user_delete');
                         include("pages/settings/user_delete.php");
                     }
                     if (isset($_GET['edit_user'])) {
@@ -542,8 +521,10 @@ if (!isset($_SESSION['admin_email'])) {
                     });
                 }
 
-                /* check admin notifications every 5 seconds */
-                setInterval(checkAdminNotifications, 5000);
+                /* check admin notifications every 1.5 seconds */
+                // setInterval(checkAdminNotifications, 1500);
+                // setInterval(fetchLiveNotifications, 1500);
+                // fetchLiveNotifications();
             });
 
             function showAnnouncementNotification(title, message) {
@@ -602,7 +583,235 @@ if (!isset($_SESSION['admin_email'])) {
             }
 
             /* ajax check */
+            let _lastUnreadCount = 0;
+            let _lastSeenNotifId = 0;
+
+            function fetchLiveNotifications() {
+                // Live notification polling disabled
+                return;
+                const isEmp = (window.location.pathname.indexOf('emp_area') !== -1);
+                const endpoint = isEmp ? '../admin_area/ajax/notifications/ajax_get_user_notifications.php?portal=employee' : 'ajax/notifications/ajax_get_user_notifications.php?portal=admin';
+                const markReadEndpoint = isEmp ? '../admin_area/ajax/notifications/ajax_mark_notification_read.php?portal=employee' : 'ajax/notifications/ajax_mark_notification_read.php?portal=admin';
+
+                $.ajax({
+                    url: endpoint,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (!res || !res.success) return;
+
+                        const unread = res.unread_count || 0;
+
+                        if (unread > 0) {
+                            $('.sys-notif-badge, .emp-sys-notif-badge').text(unread).show();
+                        } else {
+                            $('.sys-notif-badge, .emp-sys-notif-badge').hide();
+                        }
+
+                        if (res.notifications && res.notifications.length > 0) {
+                            const latest = res.notifications[0];
+                            const latestId = parseInt(latest.id);
+                            if (_lastSeenNotifId !== 0 && latestId > _lastSeenNotifId && parseInt(latest.is_read) === 0) {
+                                playNotificationChime();
+                                showFloatingToastNotification(latest.title, latest.message, latest.url, latest.id);
+                            }
+                            _lastSeenNotifId = latestId;
+                        }
+                        _lastUnreadCount = unread;
+
+                        const list = $('.sys-notif-list, .emp-sys-notif-list');
+                        list.empty();
+
+                        if (!res.notifications || res.notifications.length === 0) {
+                            list.append('<li style="padding:15px; text-align:center; color:#94a3b8; font-size:13px;">No new notifications</li>');
+                            return;
+                        }
+
+                        list.append(`
+                            <li style="padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #0f172a;">
+                                <span>Notifications</span>
+                                <a href="#" onclick="markAllNotificationsRead(event, '${markReadEndpoint}')" style="color: #232223; text-decoration: none; font-size: 11px;">Mark all read</a>
+                            </li>
+                        `);
+
+                        res.notifications.forEach(n => {
+                            const isUnread = parseInt(n.is_read) === 0;
+                            const bg = isUnread ? '#fff5f5' : '#ffffff';
+                            const targetUrl = n.url || '#';
+
+                            let icon = 'fa-info-circle';
+                            if (n.type === 'task_assigned') icon = 'fa-tasks';
+                            else if (n.type === 'comment_added') icon = 'fa-commenting';
+                            else if (n.type === 'project_assigned') icon = 'fa-briefcase';
+
+                            list.append(`
+                                <li style="background:${bg}; border-bottom:1px solid #f1f5f9; transition:0.15s;">
+                                    <a href="${targetUrl}" onclick="handleNotifClick(event, ${n.id}, '${targetUrl}', '${markReadEndpoint}')" style="display:flex; gap:10px; padding:10px 14px; text-decoration:none; color:#334155; font-size:12.5px;">
+                                        <div style="width:28px; height:28px; border-radius:50%; background:rgb(34 35 35 / 20%);; color:#232223; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px;">
+                                            <i class="fa ${icon}"></i>
+                                        </div>
+                                        <div style="flex:1; min-width:0;">
+                                            <div style="font-weight:700; color:#0f172a; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtmlNotif(n.title)}</div>
+                                            <div style="font-size:11.5px; color:#64748b; margin-top:2px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${escapeHtmlNotif(n.message)}</div>
+                                            <small style="color:#94a3b8; font-size:10px; margin-top:4px; display:block;">${n.time_ago}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            `);
+                        });
+                    }
+                });
+            }
+
+            function handleNotifClick(e, id, url, markEndpoint) {
+                if (e) e.preventDefault();
+
+                const $badge = $('.sys-notif-badge, .emp-sys-notif-badge');
+                let count = parseInt($badge.text()) || 0;
+                if (count > 0) {
+                    count--;
+                    if (count > 0) $badge.text(count);
+                    else $badge.hide().text('0');
+                }
+
+                $.ajax({
+                    url: markEndpoint,
+                    type: 'POST',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json'
+                }).always(function() {
+                    fetchLiveNotifications();
+                    if (url && url !== '#' && url !== 'javascript:void(0);') {
+                        var matchTask = url.match(/open_task_id=(\d+)/);
+                        var matchEmp = url.match(/emp_id=(\d+)/);
+
+                        var targetTaskId = matchTask ? parseInt(matchTask[1]) : 0;
+                        var targetEmpId = matchEmp ? parseInt(matchEmp[1]) : 0;
+
+                        if (targetTaskId > 0 && typeof openTaskDetail === 'function' && $('#taskDetailOverlay').length > 0) {
+                            openTaskDetail(targetTaskId, targetEmpId);
+                        } else {
+                            window.location.href = url;
+                        }
+                    }
+                });
+            }
+
+            function markAllNotificationsRead(e, markEndpoint) {
+                if (e) e.preventDefault();
+                $('.sys-notif-badge, .emp-sys-notif-badge').hide().text('0');
+                $.ajax({
+                    url: markEndpoint,
+                    type: 'POST',
+                    data: {
+                        mark_all: 'true'
+                    },
+                    dataType: 'json'
+                }).always(function() {
+                    fetchLiveNotifications();
+                });
+            }
+
+            function playNotificationChime() {
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioCtx) return;
+                    const ctx = new AudioCtx();
+
+                    const osc1 = ctx.createOscillator();
+                    const gain1 = ctx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.value = 659.25;
+                    osc1.connect(gain1);
+                    gain1.connect(ctx.destination);
+                    gain1.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                    osc1.start(ctx.currentTime);
+                    osc1.stop(ctx.currentTime + 0.3);
+
+                    const osc2 = ctx.createOscillator();
+                    const gain2 = ctx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.value = 880.00;
+                    osc2.connect(gain2);
+                    gain2.connect(ctx.destination);
+                    gain2.gain.setValueAtTime(0.4, ctx.currentTime + 0.12);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+                    osc2.start(ctx.currentTime + 0.12);
+                    osc2.stop(ctx.currentTime + 0.55);
+                } catch (e) {}
+            }
+
+            function showFloatingToastNotification(title, message, url, notifId) {
+                const existing = document.getElementById('sys-floating-toast');
+                if (existing) existing.remove();
+
+                const toast = document.createElement('div');
+                toast.id = 'sys-floating-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 24px;
+                    right: 24px;
+                    z-index: 999999;
+                    background: #ffffff;
+                    border-left: 4px solid #232223;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 4px 12px rgba(221, 33, 39, 0.12);
+                    border-radius: 12px;
+                    padding: 14px 18px;
+                    width: 320px;
+                    max-width: calc(100vw - 32px);
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                    display: flex;
+                    gap: 12px;
+                    align-items: flex-start;
+                    cursor: pointer;
+                    transition: transform 0.25s ease, opacity 0.25s ease;
+                `;
+
+                toast.innerHTML = `
+                    <div style="width:34px; height:34px; border-radius:50%; background:rgb(34 35 35 / 20%);; color:#232223; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px; margin-top:2px;">
+                        <i class="fa fa-bell"></i>
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:700; color:#0f172a; font-size:13.5px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtmlNotif(title)}</div>
+                        <div style="font-size:12px; color:#475569; margin-top:3px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${escapeHtmlNotif(message)}</div>
+                        <div style="font-size:11px; color:#232223; font-weight:700; margin-top:6px; display:inline-flex; align-items:center; gap:4px;">
+                            View Details <i class="fa fa-arrow-right" style="font-size:9px;"></i>
+                        </div>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); document.getElementById('sys-floating-toast')?.remove();" style="background:none; border:none; color:#94a3b8; font-size:16px; cursor:pointer; padding:0 2px; margin-left:4px; line-height:1;" title="Dismiss">&times;</button>
+                `;
+
+                toast.onclick = function(e) {
+                    toast.remove();
+                    const isEmp = (window.location.pathname.indexOf('emp_area') !== -1);
+                    const markEndpoint = isEmp ? '../admin_area/ajax/notifications/ajax_mark_notification_read.php?portal=employee' : 'ajax/notifications/ajax_mark_notification_read.php?portal=admin';
+                    handleNotifClick(e, notifId, url, markEndpoint);
+                };
+
+                document.body.appendChild(toast);
+
+                setTimeout(function() {
+                    if (toast && toast.parentNode) {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateY(-10px)';
+                        setTimeout(function() {
+                            if (toast && toast.parentNode) toast.remove();
+                        }, 300);
+                    }
+                }, 7000);
+            }
+
+            function escapeHtmlNotif(str) {
+                if (!str) return '';
+                return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+            }
+
             function checkAdminNotifications() {
+                // Admin notification check disabled
+                return;
                 fetch("ajax/notifications/check_admin_notifications.php")
                     .then(response => response.json())
                     .then(data => {
@@ -611,7 +820,68 @@ if (!isset($_SESSION['admin_email'])) {
                         }
                     })
                     .catch(error => console.log('Error checking admin notifications:', error));
+                // fetchLiveNotifications();
             }
+
+            // Automatically convert all input[type="date"] & input[type="datetime-local"] to display dd-mm-yyyy format
+            function initGlobalFlatpickr() {
+                if (typeof flatpickr !== 'function') return;
+                $('input[type="date"], input[type="datetime-local"]').not('.no-global-flatpickr').each(function() {
+                    if (this._flatpickr || $(this).hasClass('flatpickr-input')) return;
+                    var $input = $(this);
+                    var isReadonly = $input.is('[readonly]');
+                    var rawVal = $input.attr('value') || $input.val();
+                    var isDateTime = $input.attr('type') === 'datetime-local';
+
+                    // Parse initial value to Y-m-d format if present
+                    var defaultDateVal = null;
+                    if (rawVal && rawVal.trim() !== '') {
+                        var d = new Date(rawVal);
+                        if (!isNaN(d.getTime())) {
+                            defaultDateVal = d;
+                        }
+                    }
+
+                    flatpickr(this, {
+                        enableTime: isDateTime,
+                        dateFormat: isDateTime ? 'Y-m-d H:i' : 'Y-m-d',
+                        altInput: true,
+                        altFormat: isDateTime ? 'd-m-Y h:i K' : 'd-m-Y',
+                        allowInput: !isReadonly,
+                        clickOpens: !isReadonly,
+                        defaultDate: defaultDateVal,
+                        onChange: function(selectedDates, dateStr, instance) {
+                            $(instance.element).val(dateStr).trigger('change');
+                        },
+                        onReady: function(selectedDates, dateStr, instance) {
+                            if (instance.altInput) {
+                                instance.altInput.placeholder = $input.attr('placeholder') || (isDateTime ? "dd-mm-yyyy --:-- --" : "dd-mm-yyyy");
+                                if (isReadonly) {
+                                    instance.altInput.readOnly = true;
+                                }
+                                var origStyle = $input.attr('style');
+                                if (origStyle) {
+                                    $(instance.altInput).attr('style', origStyle);
+                                }
+                                var origClass = $input.attr('class');
+                                if (origClass) {
+                                    $(instance.altInput).addClass(origClass);
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+
+            $(document).ready(function() {
+                initGlobalFlatpickr();
+                setTimeout(initGlobalFlatpickr, 300);
+                setTimeout(initGlobalFlatpickr, 1000);
+            });
+
+            $(document).ajaxComplete(function() {
+                setTimeout(initGlobalFlatpickr, 100);
+            });
 
             // Close sidebar when clicking outside on mobile
             document.addEventListener('click', function(event) {

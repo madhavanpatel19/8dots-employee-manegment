@@ -1,4 +1,5 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) { session_start(); }
 header('Content-Type: application/json');
 if (!isset($con)) { include(__DIR__ . '/../../includes/db.php'); }
 if (!isset($_SESSION['admin_email'])) {
@@ -39,7 +40,7 @@ if (isset($_POST['project_id']) && isset($_POST['project_name'])) {
         
         // Log update
         $system_remark = "System: Project details updated (Name: $project_name, Budget: $budget, Status: $status)";
-        $insert_remark = "INSERT INTO client_project_remarks (project_id, remark) VALUES ($project_id, '$system_remark')";
+        $insert_remark = "INSERT INTO client_project_remarks (project_id, remark, posted_by) VALUES ($project_id, '$system_remark', 'System')";
         mysqli_query($con, $insert_remark);
     } else {
         $response['message'] = 'Database error: ' . mysqli_error($con);
